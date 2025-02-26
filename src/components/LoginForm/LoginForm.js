@@ -33,7 +33,7 @@ const LoginForm = () => {
 
     return (
         <div className="d-flex justify-content-center align-items-center vh-100">
-            <form className="card p-4 shadow-lg login-form" onSubmit={handleSubmit}>
+            <form className="p-4 shadow-lg login-form bgr-color" onSubmit={handleSubmit}>
                 <h2 className="text-center mb-3 fw-bold text-blue-holo">Đăng nhập</h2>
 
                 {error && <div className="alert alert-danger text-center p-2">{error}</div>}
