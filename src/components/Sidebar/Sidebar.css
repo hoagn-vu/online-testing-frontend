@@ -6,7 +6,6 @@
     position: fixed;
     top: 65px; /* Đặt dưới Header */
     left: 0;
-    transition: width 0.3s ease;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
