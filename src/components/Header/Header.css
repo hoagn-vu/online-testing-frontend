@@ -1,0 +1,38 @@
+.header-container {
+    background-color: #d0e8ff; /* Màu xanh nhạt */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    height: 70px;
+}
+
+/* Logo góc trái */
+.logo {
+    width: 120px;
+    height: auto;
+}
+
+/* User info góc phải */
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+/* Avatar */
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid white;
+}
+
+/* Tên người dùng */
+.username {
+    font-size: 1rem;
+    color: #333;
+    margin-left: 10px;
+}
