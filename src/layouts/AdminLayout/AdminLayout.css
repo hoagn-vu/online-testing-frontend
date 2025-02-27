@@ -1,0 +1,40 @@
+.admin-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.admin-main {
+    display: flex;
+    flex: 1;
+    margin-top: 65px; /* Đẩy nội dung xuống dưới Header */
+}
+
+.sidebar {
+    width: 210px;
+    height: calc(100vh - 65px); /* Trừ chiều cao Header */
+    position: fixed;
+    top: 65px;
+    left: 0;
+    background: #f8f9fa;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: width 0.3s ease;
+}
+
+.sidebar.closed {
+    width: 60px;
+}
+
+.main-content {
+    flex: 1;
+    margin-left: 210px; /* Đẩy nội dung sang phải bằng chiều rộng Sidebar */
+    padding: 20px;
+    background: #ffffff;
+    overflow-y: auto;
+    height: calc(100vh - 65px); /* Đảm bảo nội dung không vượt quá màn hình */
+    transition: margin-left 0.3s ease;
+}
+
+.sidebar.closed + .main-content {
+    margin-left: 60px; /* Khi Sidebar đóng, nội dung mở rộng */
+}

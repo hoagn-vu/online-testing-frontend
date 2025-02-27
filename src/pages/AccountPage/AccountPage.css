@@ -1,0 +1,116 @@
+.account-page {
+  width: 100%;
+  padding: 10px 10px 10px 230px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+/* Thanh chọn vai trò */
+.role-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.role-tab {
+  padding: 8px 15px;
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.role-tab.active {
+  background-color: #007bff;
+  color: white;
+  border: none;
+}
+
+/* Đảm bảo bảng tài khoản không tràn ra ngoài */
+.account-table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Định dạng lại bảng để phù hợp với giao diện admin */
+.account-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.breadcrumb-container {
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+.breadcrumb-link {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.breadcrumb-current {
+  font-weight: bold;
+}
+
+/* Thanh tìm kiếm & nút */
+.account-actions {
+  display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-box {
+   /* Tự động mở rộng */
+    min-width: 350px; /* Tăng độ dài tối thiểu */
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.add-btn, .upload-btn {
+  background-color: #007bff;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.upload-btn {
+  background-color: #28a745;
+}
+
+/* Bảng tài khoản */
+.account-table-container {
+  margin-bottom: 20px;
+}
+
+.account-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.account-table th, .account-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.account-table th {
+  background-color: #f4f4f4;
+}
+
+.edit-btn, .delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.edit-btn {
+  color: #007bff;
+}
+
+.delete-btn {
+  color: red;
+}

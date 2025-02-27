@@ -86,3 +86,20 @@
     opacity: 0;
     visibility: hidden;
 }
+
+/* Bỏ gạch chân & chuyển màu chữ sang đen */
+li a {
+    text-decoration: none; /* Bỏ gạch chân */
+    color: black; /* Chuyển màu chữ sang đen */
+}
+
+/* Khi mục được chọn (active) */
+li.active {
+    background-color: #f0f0f0; /* Màu nền nhẹ khi được chọn */
+    font-weight: bold; /* Đậm chữ */
+}
+
+/* Hiệu ứng khi hover */
+li:hover {
+    background-color: #e0e0e0;
+}
