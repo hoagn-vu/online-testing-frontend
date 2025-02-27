@@ -3,8 +3,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LoginPage from './pages/LoginPage/LoginPage';
-import Header from './components/Header/Header';
-import AdminLayout from './layouts/AdminLayout';
+import AdminLayout from './layouts/AdminLayout/AdminLayout';
+import DefaultLayout from './layouts/DefaultLayout/DefaultLayout';
 
 function App() {
   return (
@@ -14,6 +14,9 @@ function App() {
       </Routes>
       <Routes>
         <Route path="/admin" element={<AdminLayout />} />
+      </Routes>
+      <Routes>
+        <Route path="/thisinh" element={<DefaultLayout />} />
       </Routes>
     </Router>
   );
