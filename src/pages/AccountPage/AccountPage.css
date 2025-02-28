@@ -2,7 +2,7 @@
   width: 100%;
   box-sizing: border-box;
   overflow-y: auto;
-  margin-left: 220px;
+  padding-left: 220px;
 }
 
 /* Thanh chọn vai trò */
@@ -207,4 +207,14 @@ input, select {
   border: none;
   cursor: pointer;
   border-radius: 5px;
+}
+
+@media (max-width: 760px) {
+  .account-page {
+    width: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+    padding-left: 60px;
+    transition: width 0.3s ease-in-out;
+  }
 }

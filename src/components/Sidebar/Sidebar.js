@@ -28,10 +28,6 @@ const Sidebar = () => {
 
     return (
         <div className={`sidebar ${isOpen ? "open" : "closed"}`}>
-            {/* Nút Toggle Menu */}
-            <button className="toggle-btn" onClick={toggleSidebar}>
-                <FaBars />
-            </button>
 
             {/* Danh sách menu */}
             <ul className="menu-list">

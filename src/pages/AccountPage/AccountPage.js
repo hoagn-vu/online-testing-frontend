@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import "./AccountPage.css";
+import { DataGrid } from '@mui/x-data-grid';
+import Paper from '@mui/material/Paper';
+import { MenuItem, Select, IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 
 const dummyAccounts = {
     "Thí sinh": [
-        { id: 1, studentId: "SV001", name: "Nguyễn Văn A", dob: "01/01/2000", gender:"Nữ", username: "nguyenvana", status: "active" },
+        { id: 1, studentId: "BIT220089", name: "Phan Thị Phương Linh", dob: "01/01/2000", gender:"Nữ", username: "nguyenvana", status: "active" },
         { id: 2, studentId: "SV002", name: "Trần Thị B", dob: "15/05/2001", gender:"Nữ", username: "tranthib", status: "disabled" },
     ],
     "Giám thị": [
@@ -19,14 +25,6 @@ const dummyAccounts = {
     ],
 };
 
-const permissionOptions = [
-    "Quản lý kỳ thi",
-    "Quản lý ngân hàng câu hỏi",
-    "Quản lý đề thi",
-    "Quản lý ma trận đề thi",
-    "Quản lý phòng thi"
-];
-
 const AccountPage = () => {
     const [selectedRole, setSelectedRole] = useState("Thí sinh");
     const [showForm, setShowForm] = useState(false);
@@ -34,7 +32,80 @@ const AccountPage = () => {
     const [editingAccount, setEditingAccount] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [accountToDelete, setAccountToDelete] = useState(null);
+    const [rows, setRows] = useState(Object.values(dummyAccounts).flat());
 
+    const columns = [
+        { field: 'id', headerName: '#', width: 10,  },
+        { field: 'studentId', headerName: 'Mã', width: 130,},
+        { field: 'name', headerName: 'Họ Tên', width: 230, },
+        { field: 'dob', headerName: 'Ngày sinh', type: 'datetime',width: 115,},
+        { field: 'gender', headerName: 'Giới tính', width: 100, align: "center", // ✅ Căn giữa tiêu đề cột
+            headerAlign: "center", // ✅ Căn giữa nội dung trong cột
+        },
+        { field: 'username', headerName: 'username', width: 140,},
+        { field: 'password', headerName: 'password', width: 140,},
+        { 
+            field: 'status', 
+            headerName: 'Trạng thái', 
+            width: 160,
+            renderCell: (params) => (
+              <Select
+                value={params.row.status}
+                onChange={(e) => handleStatusChange(params.row.id, e.target.value)}
+                size="small" // ✅ Làm nhỏ dropdown
+                sx={{
+                    minWidth: 120, // ✅ Giới hạn chiều rộng
+                    fontSize: "15px", // ✅ Chữ nhỏ hơn
+                    padding: "0px", // ✅ Giảm padding
+                }}
+              >
+                <MenuItem value="active">Active</MenuItem>
+                <MenuItem value="disabled">Disabled</MenuItem>
+              </Select>
+            )
+          },
+          { 
+            field: 'actions', 
+            headerName: 'Thao tác', 
+            width: 130,
+            sortable: false,
+            renderCell: (params) => (
+              <>
+                <IconButton color="primary" onClick={() => handleEdit(params.row)}>
+                  <EditIcon />
+                </IconButton>
+                <IconButton color="error" onClick={() => handleDelete(params.row.id)}>
+                  <DeleteIcon />
+                </IconButton>
+              </>
+            )
+          }
+      ];
+    
+    
+
+    const paginationModel = { page: 0, pageSize: 5 };
+
+    const permissionOptions = [
+        "Quản lý kỳ thi",
+        "Quản lý ngân hàng câu hỏi",
+        "Quản lý đề thi",
+        "Quản lý ma trận đề thi",
+        "Quản lý phòng thi"
+    ];
+    useEffect(() => {
+        // Chuyển đổi object thành mảng
+        const mergedRows = Object.values(dummyAccounts).flat();
+        setRows(mergedRows);
+      }, []);
+
+    const handleStatusChange = (id, newStatus) => {
+    setRows(rows.map(row => (row.id === id ? { ...row, status: newStatus } : row)));
+    };
+
+    const handleDelete = (id) => {
+    setRows(rows.filter(row => row.id !== id));
+    };
 
     const [formData, setFormData] = useState({
         studentId: "",
@@ -124,6 +195,8 @@ const AccountPage = () => {
         setShowDeleteModal(false); // Đóng modal sau khi xóa
     };
     
+
+
     return (
         <div className="account-page">
             {/* Breadcrumbs */}
@@ -155,7 +228,7 @@ const AccountPage = () => {
             {/* Hiển thị bảng theo vai trò đã chọn */}
             <div className="account-table-container">
                 <h5>Danh sách tài khoản {selectedRole}</h5>
-                <table className="account-table">
+                {/* <table className="account-table">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -196,7 +269,27 @@ const AccountPage = () => {
                             </tr>
                         ))}
                     </tbody>
-                </table>
+                </table> */}
+                <Paper sx={{ height: 400, width: '100%' }}>
+                    <DataGrid
+                    rows={rows} // Sử dụng danh sách đã được hợp nhất
+                    columns={columns}
+                    initialState={{ pagination: { paginationModel: { page: 0, pageSize: 5 } } }}
+                    pageSizeOptions={[5, 10]}
+                    checkboxSelection
+                    disableColumnResize // ✅ Ngăn kéo giãn cột
+                    disableExtendRowFullWidth
+                    disableRowSelectionOnClick
+                    sx={{
+                        '& .MuiDataGrid-cell': {
+                          whiteSpace: "normal", // ✅ Cho phép xuống dòng khi nội dung dài
+                          wordWrap: "break-word", // ✅ Xuống dòng tự động
+                          lineHeight: "1.2", // ✅ Giảm khoảng cách giữa các dòng nếu nội dung quá dài
+                          padding: "8px", // ✅ Thêm padding cho đẹp hơn
+                        },
+                      }}
+                    />
+                </Paper>
             </div>
 
             {/* Form thêm tài khoản */}
