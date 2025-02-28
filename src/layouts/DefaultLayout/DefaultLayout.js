@@ -1,8 +1,9 @@
 import React from 'react';
-import Header from '../components/Header/Header';
-import logo from '../assets/logo/logo.png';
-import avatar from '../assets/images/avar.jpg'
-const AdminLayout = () => {
+import Header from '../../components/Header/Header'
+import logo from '../../assets/logo/logo.png'
+import avatar from '../../assets/images/avar.jpg'
+
+const DefaultLayout = () => {
 
     return (
         <div>
@@ -15,4 +16,4 @@ const AdminLayout = () => {
     );
 }
 
-export default AdminLayout;
+export default DefaultLayout;

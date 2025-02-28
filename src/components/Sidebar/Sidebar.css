@@ -1,0 +1,105 @@
+.sidebar {
+    width: 210px;
+    height: 100vh;
+    background: #f8f9fa;
+    padding-top: 20px;
+    position: fixed;
+    top: 65px; /* Đặt dưới Header */
+    left: 0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar.closed {
+    width: 60px;
+}
+
+.toggle-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    margin-left: 13px;
+    color:rgb(37, 150, 226);
+}
+
+.menu-list {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 15px;
+}
+
+.menu-list li {
+    padding: 10px 20px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.menu-list li:hover {
+    background: #e2e6ea;
+}
+
+.icon {
+    margin-right: 10px;
+    font-size: 18px;
+    min-height: 30px;
+    color:rgb(37, 150, 226);
+}
+
+/* Khi sidebar đóng, ẩn tên menu */
+.sidebar.closed .menu-list span {
+    display: none;
+}
+
+/* Hiển thị tooltip khi di chuột vào icon */
+.sidebar.closed .menu-list li {
+    position: relative;
+}
+
+/* Giữ kích thước cố định cho icon */
+.menu-list li .icon {
+    font-size: 18px; /* Kích thước icon */
+    min-width: 18px; /* Đảm bảo không bị thu nhỏ */
+    text-align: center;
+}
+
+.sidebar.closed .menu-list li:hover::after {
+    content: attr(data-title); /* Lấy nội dung từ data-title */
+    position: absolute;
+    left: 60px; /* Hiển thị bên phải icon */
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+    font-size: 14px;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.2s ease-in-out;
+}
+
+/* Mặc định tooltip bị ẩn */
+.sidebar.closed .menu-list li::after {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* Bỏ gạch chân & chuyển màu chữ sang đen */
+li a {
+    text-decoration: none; /* Bỏ gạch chân */
+    color: black; /* Chuyển màu chữ sang đen */
+}
+
+/* Khi mục được chọn (active) */
+li.active {
+    background-color: #f0f0f0; /* Màu nền nhẹ khi được chọn */
+    font-weight: bold; /* Đậm chữ */
+}
+
+/* Hiệu ứng khi hover */
+li:hover {
+    background-color: #e0e0e0;
+}

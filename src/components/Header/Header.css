@@ -3,10 +3,21 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 40px;
-    border-radius: 8px;
+    padding: 10px 20px;
+    border-radius: 0;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    height: 70px;
+    height: 65px;
+    
+    position: fixed; /* Giữ cố định trên cùng */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Đảm bảo header nằm trên các phần khác */
+}
+
+/* Đẩy nội dung chính xuống dưới để không bị header che */
+.main-content {
+    margin-top: 65px; /* Bằng với chiều cao của header */
 }
 
 /* Logo góc trái */
