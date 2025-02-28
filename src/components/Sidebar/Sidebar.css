@@ -1,56 +1,68 @@
 .sidebar {
-    width: 210px;
+    width: 220px;
     height: 100vh;
     background: #f8f9fa;
     padding-top: 20px;
     position: fixed;
-    top: 65px; /* Đặt dưới Header */
+    top: 65px;
     left: 0;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     transition: width 0.3s ease-in-out;
 }
 
 .sidebar.closed {
-    width: 60px;
+    width: 80px;
 }
 
-.toggle-btn {
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    margin-left: 13px;
-    color:rgb(37, 150, 226);
-}
-
+/* Danh sách menu */
 .menu-list {
     list-style-type: none;
     padding: 0;
-    margin-top: 15px;
+    margin: 0;
 }
 
+/* Từng mục menu */
 .menu-list li {
-    padding: 10px 20px;
-    font-size: 16px;
     display: flex;
     align-items: center;
+    padding: 12px 16px;
+    font-size: 16px;
+    margin: 8px;
+    border-radius: 10px;
+    transition: all 0.3s ease-in-out;
     cursor: pointer;
+    color: #333;
 }
 
+/* Khi mục menu được chọn */
+.menu-list li.active {
+    background: #fffefe;
+    color: white;
+    box-shadow: 0px 4px 10px rgba(21, 22, 22, 0.3);
+}
+
+/* Khi hover vào mục menu */
 .menu-list li:hover {
-    background: #e2e6ea;
+    background: #fffefe;
+    box-shadow: 0px 4px 10px rgba(21, 22, 22, 0.3);
 }
 
+/* Icon bên trái menu */
 .icon {
-    margin-right: 10px;
-    font-size: 18px;
-    min-height: 30px;
-    color:rgb(37, 150, 226);
+    margin-right: 12px;
+    font-size: 20px;
+    color: #2b99e8;
+    transition: color 0.3s ease-in-out;
 }
 
 /* Khi sidebar đóng, ẩn tên menu */
 .sidebar.closed .menu-list span {
     display: none;
+}
+
+/* Khi sidebar thu nhỏ, icon vẫn giữ khoảng cách chuẩn */
+.sidebar.closed .menu-list li {
+    justify-content: center;
 }
 
 /* Hiển thị tooltip khi di chuột vào icon */
@@ -65,16 +77,15 @@
     text-align: center;
 }
 
+/* Tooltip hiển thị khi hover vào icon (ở sidebar thu nhỏ) */
 .sidebar.closed .menu-list li:hover::after {
-    content: attr(data-title); /* Lấy nội dung từ data-title */
+    content: attr(data-title);
     position: absolute;
-    left: 60px; /* Hiển thị bên phải icon */
-    top: 50%;
-    transform: translateY(-50%);
+    left: 90px;
     background: rgba(0, 0, 0, 0.8);
     color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
+    padding: 5px 12px;
+    border-radius: 6px;
     white-space: nowrap;
     font-size: 14px;
     opacity: 1;
@@ -97,7 +108,6 @@ li a {
 /* Khi mục được chọn (active) */
 li.active {
     background-color: #f0f0f0; /* Màu nền nhẹ khi được chọn */
-    font-weight: bold; /* Đậm chữ */
 }
 
 /* Hiệu ứng khi hover */

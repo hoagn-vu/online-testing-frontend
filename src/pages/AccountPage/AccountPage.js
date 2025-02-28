@@ -1,27 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { FaEdit, FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import "./AccountPage.css";
 import { DataGrid } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
-import { MenuItem, Select, IconButton } from '@mui/material';
+import { Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, InputLabel, FormGroup, FormControlLabel } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Swal from "sweetalert2";
+import { Search } from "lucide-react"; // Dùng Lucide icon
 
 
 const dummyAccounts = {
     "Thí sinh": [
         { id: 1, studentId: "BIT220089", name: "Phan Thị Phương Linh", dob: "01/01/2000", gender:"Nữ", username: "nguyenvana", status: "active" },
         { id: 2, studentId: "SV002", name: "Trần Thị B", dob: "15/05/2001", gender:"Nữ", username: "tranthib", status: "disabled" },
+        { id: 3, studentId: "BIT220089", name: "Phan Thị Phương Linh", dob: "01/01/2000", gender:"Nữ", username: "nguyenvana", status: "active" },
+        { id: 4, studentId: "SV002", name: "Trần Thị B", dob: "15/05/2001", gender:"Nữ", username: "tranthib", status: "disabled" },
+        { id: 5, studentId: "BIT220089", name: "Phan Thị Phương Linh", dob: "01/01/2000", gender:"Nữ", username: "nguyenvana", status: "active" },
+        { id: 6, studentId: "SV002", name: "Trần Thị B", dob: "15/05/2001", gender:"Nữ", username: "tranthib", status: "disabled" },
+        { id: 7, studentId: "BIT220089", name: "Phan Thị Phương Linh", dob: "01/01/2000", gender:"Nữ", username: "nguyenvana", status: "active" },
+        { id: 8, studentId: "SV002", name: "Trần Thị B", dob: "15/05/2001", gender:"Nữ", username: "tranthib", status: "disabled" },
+        { id: 9, studentId: "BIT220089", name: "Phan Thị Phương Linh", dob: "01/01/2000", gender:"Nữ", username: "nguyenvana", status: "active" },
+        { id: 10, studentId: "SV002", name: "Trần Thị B", dob: "15/05/2001", gender:"Nữ", username: "tranthib", status: "disabled" },
     ],
     "Giám thị": [
-        { id: 3, studentId: "GT001", name: "Lê Văn C", dob: "22/09/1990", gender:"Nữ", username: "levanc", status: "active" },
+        { id: 11, studentId: "GT001", name: "Lê Văn C", dob: "22/09/1990", gender:"Nữ", username: "levanc", status: "active" },
     ],
     "Quản trị viên": [
-        { id: 4, studentId: "QT001", name: "Phạm Thị D", dob: "05/06/1985", gender:"Nữ", username: "phamthid", status: "active" },
+        { id: 12, studentId: "QT001", name: "Phạm Thị D", dob: "05/06/1985", gender:"Nữ", username: "phamthid", status: "active" },
     ],
     "Cán bộ phụ trách kỳ thi": [
-        { id: 5, studentId: "CB001", name: "Hoàng Văn E", dob: "12/12/1980", gender:"Nữ", username: "hoangvane", status: "active" },
+        { id: 13, studentId: "CB001", name: "Hoàng Văn E", dob: "12/12/1980", gender:"Nữ", username: "hoangvane", status: "active" },
     ],
 };
 
@@ -33,6 +42,8 @@ const AccountPage = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [accountToDelete, setAccountToDelete] = useState(null);
     const [rows, setRows] = useState(Object.values(dummyAccounts).flat());
+    // Lọc danh sách tài khoản theo vai trò được chọn
+    const filteredRows = dummyAccounts[selectedRole] || [];
 
     const columns = [
         { field: 'id', headerName: '#', width: 10,  },
@@ -103,10 +114,6 @@ const AccountPage = () => {
     setRows(rows.map(row => (row.id === id ? { ...row, status: newStatus } : row)));
     };
 
-    const handleDelete = (id) => {
-    setRows(rows.filter(row => row.id !== id));
-    };
-
     const [formData, setFormData] = useState({
         studentId: "",
         name: "",
@@ -118,8 +125,7 @@ const AccountPage = () => {
         status: "active",
         permissions: []
     });
-
-    
+  
     const handleAddNew = () => {
         setEditingAccount(null); // Đảm bảo không ở chế độ chỉnh sửa
         setFormData({
@@ -195,8 +201,53 @@ const AccountPage = () => {
         setShowDeleteModal(false); // Đóng modal sau khi xóa
     };
     
+    const handleDelete = (id) => {
+        Swal.fire({
+          title: "Bạn có chắc chắn xóa?",
+          text: "Bạn sẽ không thể hoàn tác hành động này!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Xóa",
+          cancelButtonText: "Hủy",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Xóa tài khoản ở đây (ví dụ: gọi API hoặc cập nhật state)
+                console.log("Xóa tài khoản có ID:", id);
+        
+                Swal.fire({
+                title: "Đã xóa!",
+                text: "Tài khoản đã bị xóa.",
+                icon: "success",
+                });
+                setRows(rows.filter(row => row.id !== id));
+            }
+        });
+    };
 
-
+    const handleUploadClick = async () => {
+    const { value: file } = await Swal.fire({
+        title: "Chọn file",
+        input: "file",
+        inputAttributes: {
+        accept: "image/*",
+        "aria-label": "Tải ảnh lên"
+        }
+    });
+    
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+        Swal.fire({
+            title: "Tải lên thành công",
+            icon: "success",
+        });
+        };
+        reader.readAsDataURL(file);
+    }
+    };
+    
     return (
         <div className="account-page">
             {/* Breadcrumbs */}
@@ -208,71 +259,32 @@ const AccountPage = () => {
 
             {/* Thanh tìm kiếm + Nút thêm mới + Upload */}
             <div className="account-actions">
-                <input type="text" placeholder="Tìm kiếm..." className="search-box" />
-                <button className="add-btn" onClick={handleAddNew}>Thêm mới</button>
-                <button className="change-password-btn" onClick={() => setShowPasswordForm(true)}>Đổi mật khẩu</button>
-                <button className="upload-btn">Upload File</button>
-            </div>
+                <div className="role-selector">
+                    <label>Chọn loại tài khoản: </label>
+                    <select onChange={(e) => setSelectedRole(e.target.value)} value={selectedRole}>
+                        {Object.keys(dummyAccounts).map((role) => (
+                            <option key={role} value={role}>{role}</option>
+                        ))}
+                    </select>
+                    <button className="add-btn" onClick={handleAddNew}>Thêm mới</button>
+                    <button className="change-password-btn" onClick={() => setShowPasswordForm(true)}>Đổi mật khẩu</button>
+                    <button className="upload-btn" onClick={handleUploadClick}>Upload File</button>
+                </div>
 
-            {/* Dropdown chọn role */}
-            <div className="role-selector">
-                <label>Chọn loại tài khoản: </label>
-                <select onChange={(e) => setSelectedRole(e.target.value)} value={selectedRole}>
-                    <option value="Thí sinh">Thí sinh</option>
-                    <option value="Giám thị">Giám thị</option>
-                    <option value="Quản trị viên">Quản trị viên</option>
-                    <option value="Cán bộ phụ trách kỳ thi">Cán bộ phụ trách</option>
-                </select>
+                {/* Ô tìm kiếm + icon */}
+                <div className="search-container">
+                    <input type="text" placeholder="Tìm kiếm..." className="search-box" />
+                    <Search className="search-icon" size={20} />
+                </div>
             </div>
 
             {/* Hiển thị bảng theo vai trò đã chọn */}
             <div className="account-table-container">
-                <h5>Danh sách tài khoản {selectedRole}</h5>
-                {/* <table className="account-table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Mã SV</th>
-                            <th>Họ Tên</th>
-                            <th>Ngày Sinh</th>
-                            <th>Giới tính</th>
-                            <th>Username</th>
-                            <th>Password</th>
-                            <th>Trạng thái</th>
-                            <th>Chỉnh sửa</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {dummyAccounts[selectedRole]?.map((account, index) => (
-                            <tr key={account.id}>
-                                <td>{index + 1}</td>
-                                <td>{account.studentId}</td>
-                                <td>{account.name}</td>
-                                <td>{account.dob}</td>
-                                <td>{account.gender}</td>
-                                <td>{account.username}</td>
-                                <td>******</td>
-                                <td>
-                                    <select defaultValue={account.status}>
-                                        <option value="active">Active</option>
-                                        <option value="disabled">Disabled</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <button className="edit-btn" onClick={() => handleEdit(account)}>
-                                        <FaEdit />
-                                    </button>
-                                    <button className="delete-btn" onClick={() => handleDeleteClick(account)}>
-                                        <FaTrash />
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table> */}
-                <Paper sx={{ height: 400, width: '100%' }}>
+                <h5>Danh sách tài khoản {selectedRole}</h5>               
+                <Paper sx={{ height: 600, width: '100%' }}>
                     <DataGrid
-                    rows={rows} // Sử dụng danh sách đã được hợp nhất
+                    rows={filteredRows}
+                    
                     columns={columns}
                     initialState={{ pagination: { paginationModel: { page: 0, pageSize: 5 } } }}
                     pageSizeOptions={[5, 10]}
@@ -287,6 +299,15 @@ const AccountPage = () => {
                           lineHeight: "1.2", // ✅ Giảm khoảng cách giữa các dòng nếu nội dung quá dài
                           padding: "8px", // ✅ Thêm padding cho đẹp hơn
                         },
+                        '& .MuiDataGrid-columnHeaders': {
+                            borderBottom: "2px solid #ccc", // Đường phân cách dưới tiêu đề cột
+                        },
+                        '& .MuiDataGrid-cell': {
+                            borderRight: "1px solid #ddd", // Đường phân cách giữa các cột
+                        },
+                        '& .MuiDataGrid-row:last-child .MuiDataGrid-cell': {
+                            borderBottom: "none", // Loại bỏ viền dưới cùng của hàng cuối
+                        },
                       }}
                     />
                 </Paper>
@@ -295,40 +316,193 @@ const AccountPage = () => {
             {/* Form thêm tài khoản */}
             {showForm && (
                 <div className="form-overlay">
-                    <div className="form-container">
-                        <h3>{editingAccount ? "Chỉnh sửa tài khoản" : "Thêm tài khoản mới"}</h3>
-                        <form onSubmit={handleSubmit}>
-                            <label>Mã:</label>
-                            <input type="text" value={formData.studentId} onChange={(e) => setFormData({ ...formData, studentId: e.target.value })} required />
+                    <Box
+                        component="form"
+                        sx={{
+                            width: "600px",
+                            backgroundColor: "white",
+                            p: 2,
+                            borderRadius: "8px",
+                            boxShadow: 3,
+                            mx: "auto",
+                        }}
+                        onSubmit={handleSubmit}
+                        >
+                        <p className='text-align fw-bold'>{editingAccount ? "Chỉnh sửa tài khoản" : "Thêm tài khoản mới"}</p>
 
-                            <label>Họ Tên:</label>
-                            <input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required />
+                        <Grid container spacing={2}>
+                            {/* Mã và Họ Tên */}
+                            <Grid item xs={6}>
+                            <TextField
+                                fullWidth
+                                label="Mã"
+                                required
+                                value={formData.studentId}
+                                onChange={(e) => setFormData({ ...formData, studentId: e.target.value })}
+                                sx={{ 
+                                    "& .MuiInputBase-input": { fontSize: "14px", paddingBottom: "11px" } ,
+                                    '& .MuiInputLabel-root': { fontSize: '14px' },  // Giảm cỡ chữ label
+                                }}
+                            />
+                            </Grid>
+                            <Grid item xs={6}>
+                            <TextField
+                                fullWidth
+                                label="Họ và tên"
+                                required
+                                value={formData.name}
+                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                sx={{ 
+                                    "& .MuiInputBase-input": { fontSize: "14px", paddingBottom: "11px" } ,
+                                    '& .MuiInputLabel-root': { fontSize: '14px' },  // Giảm cỡ chữ label
+                                }}                           
+                            />
+                            </Grid>
 
-                            <label>Ngày Sinh:</label>
-                            <input type="date" value={formData.dob} onChange={(e) => setFormData({ ...formData, dob: e.target.value })} required />
+                            {/* Ngày sinh và Giới tính */}
+                            <Grid item xs={6}>
+                            <TextField
+                                fullWidth
+                                label="Ngày Sinh"
+                                type="date"
+                                InputLabelProps={{ shrink: true }}
+                                
+                                value={formData.dob}
+                                onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
+                                sx={{ 
+                                    "& .MuiInputBase-input": { fontSize: "14px", paddingBottom: "11px" } ,
+                                    '& .MuiInputLabel-root': { fontSize: '14px' },  // Giảm cỡ chữ label
+                                }}                           
+                            />
+                            </Grid>
+                            <Grid item xs={6}>
+                            <TextField
+                                fullWidth
+                                select
+                                label="Giới tính"
+                                value={formData.gender}
+                                onChange={(e) => setFormData({ ...formData, gender: e.target.value })} 
+                                sx={{ 
+                                    "& .MuiInputBase-input": { fontSize: "14px", paddingBottom: "11px" } ,
+                                    '& .MuiInputLabel-root': { fontSize: '14px' },  // Giảm cỡ chữ label
+                                }}                        >
+                                <MenuItem value="Nam">Nam</MenuItem>
+                                <MenuItem value="Nữ">Nữ</MenuItem>
+                            </TextField>
+                            </Grid>
 
-                            <label>Giới tính:</label>
-                            <select value={formData.gender} onChange={(e) => setFormData({ ...formData, gender: e.target.value })}>
-                                <option value="Nam">Nam</option>
-                                <option value="Nữ">Nữ</option>
-                            </select>
+                            {/* Username và Password */}
+                            <Grid item xs={6}>
+                            <TextField
+                                fullWidth
+                                label="Username"
+                                
+                                value={formData.username}
+                                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                                sx={{ 
+                                    "& .MuiInputBase-input": { fontSize: "14px", paddingBottom: "11px" } ,
+                                    '& .MuiInputLabel-root': { fontSize: '14px' },  // Giảm cỡ chữ label
+                                }}                            />
+                            </Grid>
+                            <Grid item xs={6}>
+                            <TextField
+                                fullWidth
+                                label="Password"
+                                type="password"
+                                
+                                value={formData.password}
+                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                sx={{ 
+                                    "& .MuiInputBase-input": { fontSize: "14px", paddingBottom: "11px" } ,
+                                    '& .MuiInputLabel-root': { fontSize: '14px' },  // Giảm cỡ chữ label
+                                }}                            />
+                            </Grid>
 
-                            <label>Username:</label>
-                            <input type="text" value={formData.username} onChange={(e) => setFormData({ ...formData, username: e.target.value })} required />
+                            {/* Trạng thái và Vai trò */}
+                            <Grid item xs={6}>
+                            <TextField 
+                                fullWidth
+                                select
+                                label="Trạng thái"
+                                required
+                                value={formData.status}
+                                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                                sx={{ 
+                                    "& .MuiInputBase-input": { fontSize: "14px", paddingBottom: "11px" } ,
+                                    '& .MuiInputLabel-root': { fontSize: '14px' },  // Giảm cỡ chữ label
+                                }}                            >                            
+                                <MenuItem value="active">Active</MenuItem>
+                                <MenuItem value="disabled">Disabled</MenuItem>
 
-                            <label>Password:</label>
-                            <input type="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} required={!editingAccount} />
+                            </TextField>
+                            </Grid>
 
-                            <label>Trạng thái:</label>
-                            <select value={formData.status} onChange={(e) => setFormData({ ...formData, status: e.target.value })}>
-                                <option value="active">Active</option>
-                                <option value="disabled">Disabled</option>
-                            </select>
+                            <Grid item xs={6}>
+                            <TextField 
+                                fullWidth
+                                select
+                                required
+                                label="Vai trò"
+                                value={formData.role}
+                                onChange={(e) => setFormData({ ...formData, role: e.target.value })} 
+                                sx={{ 
+                                    "& .MuiInputBase-input": { fontSize: "14px", paddingBottom: "11px" } ,
+                                    '& .MuiInputLabel-root': { fontSize: '14px' },  // Giảm cỡ chữ label
+                                }}                            >
+                                <MenuItem value="Thí sinh">Thí sinh</MenuItem>
+                                <MenuItem value="Giám thị">Giám thị</MenuItem>
+                                <MenuItem value="Quản trị viên">Quản trị viên</MenuItem>
+                                <MenuItem value="Cán bộ phụ trách kỳ thi">Cán bộ phụ trách kỳ thi</MenuItem>
+                            </TextField>
+                            </Grid>
+                        </Grid>
 
-                            <button type="submit">{editingAccount ? "Cập nhật" : "Lưu"}</button>
-                            <button type="button" onClick={() => setShowForm(false)}>Hủy</button>
-                        </form>
-                    </div>
+                        {/* Phân quyền nếu là Cán bộ phụ trách kỳ thi */}
+                        {formData.role === "Cán bộ phụ trách kỳ thi" && (
+                            <FormControl component="fieldset" sx={{ mt: 2 }}>
+                                <label style={{ fontSize: "14px", fontWeight: "bold" }}>Phân quyền:</label>
+                                <FormGroup>
+                                    <Grid container spacing={2}>
+                                        {permissionOptions.map((permission, index) => (
+                                            <Grid item xs={6} key={index}>
+                                                <FormControlLabel
+                                                    sx={{ mb: -3 }}
+                                                    control={
+                                                        <Checkbox
+                                                            checked={formData.permissions.includes(permission)}
+                                                            onChange={(e) => {
+                                                                const updatedPermissions = e.target.checked
+                                                                    ? [...formData.permissions, permission]
+                                                                    : formData.permissions.filter((p) => p !== permission);
+                                                                setFormData({ ...formData, permissions: updatedPermissions });
+                                                            }}
+                                                            sx={{ '& .MuiCheckbox-root': { padding: '0px' } }}  // Giảm padding checkbox
+                                                        />
+                                                    }
+                                                    label={<span style={{ fontSize: "14px" }}>{permission}</span>}
+                                                />
+                                            </Grid>
+                                        ))}
+                                    </Grid>
+                                </FormGroup>
+                            </FormControl>
+                        )}
+
+                        {/* Buttons */}
+                        <Grid container spacing={2} sx={{ mt: 2 }}>
+                            <Grid item xs={6}>
+                            <Button type="submit" variant="contained" color="primary" fullWidth>
+                                {editingAccount ? "Cập nhật" : "Lưu"}
+                            </Button>
+                            </Grid>
+                            <Grid item xs={6}>
+                            <Button variant="outlined" color="secondary" fullWidth onClick={() => setShowForm(false)}>
+                                Hủy
+                            </Button>
+                            </Grid>
+                        </Grid>
+                        </Box>
+                
                 </div>
             )}
 
@@ -360,7 +534,7 @@ const AccountPage = () => {
                 </div>
             )}
 
-        {showDeleteModal && (
+        {/* {showDeleteModal && (
             <div className="modal-overlay">
                 <div className="modal-content">
                     <h3>Xác nhận xóa</h3>
@@ -371,7 +545,7 @@ const AccountPage = () => {
                     </div>
                 </div>
             </div>
-        )}
+        )} */}
 
         </div>
     );
