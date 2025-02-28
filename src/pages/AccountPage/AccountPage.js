@@ -32,6 +32,9 @@ const AccountPage = () => {
     const [showForm, setShowForm] = useState(false);
     const [showPasswordForm, setShowPasswordForm] = useState(false);
     const [editingAccount, setEditingAccount] = useState(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [accountToDelete, setAccountToDelete] = useState(null);
+
 
     const [formData, setFormData] = useState({
         studentId: "",
@@ -110,7 +113,17 @@ const AccountPage = () => {
         setShowForm(true);
     };
     
+    const handleDeleteClick = (account) => {
+        setAccountToDelete(account);
+        setShowDeleteModal(true);
+    };
 
+    const confirmDelete = () => {
+        console.log(`Đã xóa tài khoản có ID: ${accountToDelete.id}`);
+        // Thêm logic xóa tài khoản tại đây (gọi API hoặc cập nhật state)
+        setShowDeleteModal(false); // Đóng modal sau khi xóa
+    };
+    
     return (
         <div className="account-page">
             {/* Breadcrumbs */}
@@ -176,7 +189,9 @@ const AccountPage = () => {
                                     <button className="edit-btn" onClick={() => handleEdit(account)}>
                                         <FaEdit />
                                     </button>
-                                    <button className="delete-btn"><FaTrash /></button>
+                                    <button className="delete-btn" onClick={() => handleDeleteClick(account)}>
+                                        <FaTrash />
+                                    </button>
                                 </td>
                             </tr>
                         ))}
@@ -251,6 +266,20 @@ const AccountPage = () => {
                     </div>
                 </div>
             )}
+
+            {showDeleteModal && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h3>Xác nhận xóa</h3>
+                        <p>Bạn có chắc chắn muốn xóa tài khoản <strong>{accountToDelete?.name}</strong> không?</p>
+                        <div className="modal-actions">
+                            <button className="confirm-btn" onClick={confirmDelete}>Xác nhận</button>
+                            <button className="cancel-btn" onClick={() => setShowDeleteModal(false)}>Hủy</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 };
