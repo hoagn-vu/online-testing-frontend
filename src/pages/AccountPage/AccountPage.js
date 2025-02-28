@@ -31,6 +31,7 @@ const AccountPage = () => {
     const [selectedRole, setSelectedRole] = useState("Thí sinh");
     const [showForm, setShowForm] = useState(false);
     const [showPasswordForm, setShowPasswordForm] = useState(false);
+    const [editingAccount, setEditingAccount] = useState(null);
 
     const [formData, setFormData] = useState({
         studentId: "",
@@ -39,11 +40,28 @@ const AccountPage = () => {
         gender: "Nam",
         username: "",
         password: "",
-        role: "Thí sinh",
+        role: selectedRole,
         status: "active",
         permissions: []
     });
 
+    
+    const handleAddNew = () => {
+        setEditingAccount(null); // Đảm bảo không ở chế độ chỉnh sửa
+        setFormData({
+            studentId: "",
+            name: "",
+            dob: "",
+            gender: "Nam",
+            username: "",
+            password: "",
+            role: selectedRole,
+            status: "active",
+            permissions: []
+        });
+        setTimeout(() => setShowForm(true), 0); // Đợi React cập nhật state rồi mới hiển thị form
+    };
+    
     const [passwordData, setPasswordData] = useState({
         role: "Thí sinh",
         newPassword: "",
@@ -76,6 +94,23 @@ const AccountPage = () => {
         setShowPasswordForm(false);
     };
 
+    const handleEdit = (account) => {
+        setFormData({
+            studentId: account.studentId,
+            name: account.name,
+            dob: account.dob,
+            gender: account.gender,
+            username: account.username,
+            password: "", // Không hiển thị mật khẩu
+            role: selectedRole,
+            status: account.status,
+            permissions: account.permissions || []
+        });
+        setEditingAccount(account);
+        setShowForm(true);
+    };
+    
+
     return (
         <div className="account-page">
             {/* Breadcrumbs */}
@@ -88,7 +123,7 @@ const AccountPage = () => {
             {/* Thanh tìm kiếm + Nút thêm mới + Upload */}
             <div className="account-actions">
                 <input type="text" placeholder="Tìm kiếm..." className="search-box" />
-                <button className="add-btn" onClick={() => setShowForm(true)}>Thêm mới</button>
+                <button className="add-btn" onClick={handleAddNew}>Thêm mới</button>
                 <button className="change-password-btn" onClick={() => setShowPasswordForm(true)}>Đổi mật khẩu</button>
                 <button className="upload-btn">Upload File</button>
             </div>
@@ -138,7 +173,9 @@ const AccountPage = () => {
                                     </select>
                                 </td>
                                 <td>
-                                    <button className="edit-btn"><FaEdit /></button>
+                                    <button className="edit-btn" onClick={() => handleEdit(account)}>
+                                        <FaEdit />
+                                    </button>
                                     <button className="delete-btn"><FaTrash /></button>
                                 </td>
                             </tr>
@@ -151,66 +188,42 @@ const AccountPage = () => {
             {showForm && (
                 <div className="form-overlay">
                     <div className="form-container">
-                        <h3>Thêm tài khoản mới</h3>
+                        <h3>{editingAccount ? "Chỉnh sửa tài khoản" : "Thêm tài khoản mới"}</h3>
                         <form onSubmit={handleSubmit}>
                             <label>Mã:</label>
-                            <input type="text" required onChange={(e) => setFormData({ ...formData, studentId: e.target.value })} />
+                            <input type="text" value={formData.studentId} onChange={(e) => setFormData({ ...formData, studentId: e.target.value })} required />
 
                             <label>Họ Tên:</label>
-                            <input type="text" required onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
+                            <input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required />
 
                             <label>Ngày Sinh:</label>
-                            <input type="date" required onChange={(e) => setFormData({ ...formData, dob: e.target.value })} />
+                            <input type="date" value={formData.dob} onChange={(e) => setFormData({ ...formData, dob: e.target.value })} required />
 
                             <label>Giới tính:</label>
-                            <select onChange={(e) => setFormData({ ...formData, gender: e.target.value })}>
+                            <select value={formData.gender} onChange={(e) => setFormData({ ...formData, gender: e.target.value })}>
                                 <option value="Nam">Nam</option>
                                 <option value="Nữ">Nữ</option>
                             </select>
 
                             <label>Username:</label>
-                            <input type="text" required onChange={(e) => setFormData({ ...formData, username: e.target.value })} />
+                            <input type="text" value={formData.username} onChange={(e) => setFormData({ ...formData, username: e.target.value })} required />
 
                             <label>Password:</label>
-                            <input type="password" required onChange={(e) => setFormData({ ...formData, password: e.target.value })} />
+                            <input type="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} required={!editingAccount} />
 
                             <label>Trạng thái:</label>
-                            <select onChange={(e) => setFormData({ ...formData, status: e.target.value })}>
+                            <select value={formData.status} onChange={(e) => setFormData({ ...formData, status: e.target.value })}>
                                 <option value="active">Active</option>
                                 <option value="disabled">Disabled</option>
                             </select>
 
-                            <label>Vai trò:</label>
-                            <select onChange={(e) => setFormData({ ...formData, role: e.target.value, permissions: [] })}>
-                                <option value="Thí sinh">Thí sinh</option>
-                                <option value="Giám thị">Giám thị</option>
-                                <option value="Cán bộ phụ trách kỳ thi">Cán bộ phụ trách kỳ thi</option>
-                                <option value="Quản trị viên">Quản trị viên</option>
-                            </select>
-
-                            {/* Hiển thị phân quyền nếu chọn Cán bộ phụ trách kỳ thi */}
-                            {formData.role === "Cán bộ phụ trách kỳ thi" && (
-                                <div>
-                                    <label>Phân quyền:</label>
-                                    {permissionOptions.map((permission) => (
-                                        <div key={permission}>
-                                            <input
-                                                type="checkbox"
-                                                value={permission}
-                                                onChange={() => handlePermissionChange(permission)}
-                                            />
-                                            {permission}
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-
-                            <button type="submit">Lưu</button>
+                            <button type="submit">{editingAccount ? "Cập nhật" : "Lưu"}</button>
                             <button type="button" onClick={() => setShowForm(false)}>Hủy</button>
                         </form>
                     </div>
                 </div>
             )}
+
 
             {/* Form Đổi mật khẩu */}
             {showPasswordForm && (
