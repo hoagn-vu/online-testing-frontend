@@ -267,18 +267,18 @@ const AccountPage = () => {
                 </div>
             )}
 
-            {showDeleteModal && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
-                        <h3>Xác nhận xóa</h3>
-                        <p>Bạn có chắc chắn muốn xóa tài khoản <strong>{accountToDelete?.name}</strong> không?</p>
-                        <div className="modal-actions">
-                            <button className="confirm-btn" onClick={confirmDelete}>Xác nhận</button>
-                            <button className="cancel-btn" onClick={() => setShowDeleteModal(false)}>Hủy</button>
-                        </div>
+        {showDeleteModal && (
+            <div className="modal-overlay">
+                <div className="modal-content">
+                    <h3>Xác nhận xóa</h3>
+                    <p>Bạn có chắc chắn muốn xóa tài khoản <strong>{accountToDelete?.name}</strong> không?</p>
+                    <div className="modal-actions">
+                        <button className="confirm-btn" onClick={confirmDelete}>Xác nhận</button>
+                        <button className="cancel-btn" onClick={() => setShowDeleteModal(false)}>Hủy</button>
                     </div>
                 </div>
-            )}
+            </div>
+        )}
 
         </div>
     );

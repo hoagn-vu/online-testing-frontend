@@ -1,8 +1,8 @@
 .account-page {
   width: 100%;
-  padding: 10px 10px 10px 230px;
   box-sizing: border-box;
   overflow-y: auto;
+  margin-left: 220px;
 }
 
 /* Thanh chọn vai trò */

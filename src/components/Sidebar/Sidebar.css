@@ -7,6 +7,7 @@
     top: 65px; /* Đặt dưới Header */
     left: 0;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: width 0.3s ease-in-out;
 }
 
 .sidebar.closed {
@@ -102,4 +103,22 @@ li.active {
 /* Hiệu ứng khi hover */
 li:hover {
     background-color: #e0e0e0;
+}
+
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 60px;
+    }
+
+    .sidebar.open {
+        width: 210px;
+    }
+
+    .sidebar.closed {
+        width: 60px;
+    }
+
+    .sidebar.closed .menu-list span {
+        display: none;
+    }
 }
