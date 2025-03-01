@@ -1,0 +1,12 @@
+.icon-card {
+    font-weight: 20px;
+    font-size: 20px;
+}
+
+.frame-icon {
+    background-color: rgb(141, 222, 247);
+    padding: 4px 15px 8px 15px;
+    border-radius: 8px;
+    color: black;
+    box-shadow: 1px 0 5px rgba(0, 0, 0, 0.2);
+}

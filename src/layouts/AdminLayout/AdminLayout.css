@@ -13,7 +13,7 @@
 .main-content {
     flex: 1; /* Chiếm hết phần còn lại */
     overflow: auto;
-    padding: 20px; /* Tạo khoảng cách giữa nội dung và viền */
+    padding: 0px; /* Tạo khoảng cách giữa nội dung và viền */
     background-color: white;
     padding-right: 0px;
 }
