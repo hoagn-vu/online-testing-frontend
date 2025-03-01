@@ -23,6 +23,7 @@ const LineChart = ({ title, labels, dataPoints, color = 'rgba(75, 192, 192, 1)' 
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         display: true,
@@ -50,7 +51,11 @@ const LineChart = ({ title, labels, dataPoints, color = 'rgba(75, 192, 192, 1)' 
     },
   };
 
-  return <Line data={data} options={options} />;
+  return (
+    <div style={{ width: '100%', height: '300px' }}>
+        <Line data={data} options={options} />
+    </div>
+  ) 
 };
 
 export default LineChart;
