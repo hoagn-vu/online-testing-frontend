@@ -46,7 +46,12 @@ const Sidebar = () => {
                 <li data-title="Quản lý ma trận đề"><FaThLarge className="icon" /> <span>Quản lý ma trận đề</span></li>
                 <li data-title="Quản lý đề thi"><FaFileAlt className="icon" /> <span>Quản lý đề thi</span></li>
                 <li data-title="Quản lý phòng thi"><FaBuilding className="icon" /> <span>Quản lý phòng thi</span></li>
-                <li data-title="Nhật ký sử dụng"><FaBuilding className="icon" /> <span>Nhật ký sử dụng</span></li>
+                
+                <li className={location.pathname === "/admin/log" ? "active" : ""} 
+                data-title="Nhật ký sử dụng">
+                <FaBuilding className="icon" />
+                    <Link to="/admin/log"><span>Nhật ký sử dụng</span></Link>
+                </li> 
             </ul>
         </div>
     );
