@@ -2,8 +2,9 @@
   width: 100%;
   box-sizing: border-box;
   overflow-y: auto;
-  padding-left: 210px;
+  padding-left: 230px;
   padding-right: 15px;
+  padding-top: 15px;
 }
 
 /* Thanh chọn vai trò */

@@ -14,7 +14,7 @@ import './CardDashboard.css'
 
 const CardDashboard = ({ title, value, icon }) => {
     return (
-      <div className="bg-white shadow items-center justify-between p-3 d-flex card-dash">
+      <div className="bg-white items-center justify-between p-3 d-flex shadow card-dash">
         <div>
           <h6 className=" font-semibold">{title}</h6>
           <p className="fw-bold m-0">{value}</p>

@@ -14,13 +14,7 @@ const Dashboard = () => {
     // Thông tin linechart gian lận
     const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
     const dataPoints = [10, 20, 30, 25, 15, 35];
-
-    const stats = [
-    { title: "Today's Money", value: "$53,000", percentage: 55, icon: <FaDollarSign className="icon" />},
-    { title: "Today's Users", value: "2,300", percentage: 3, icon: <FaGlobe className="icon" />},
-    { title: "New Clients", value: "+3,462", percentage: -2, icon: <FaTrophy className="icon" /> },
-    ];
-
+    
   return (
     <div className="dashboard-page">
         <div className="justify-between gap-6 w-full card-dash">
@@ -31,13 +25,11 @@ const Dashboard = () => {
         {/* Biểu đồ đường - Gian lận qua từng kỳ thi */} 
         <div className="content-1">
             <div className="line-chart">
-                <h4 className="text-lg font-semibold">Số lượng thí sinh gian lận</h4>
                 <LineChart title="Số lượng thí sinh gian lận" labels={labels} dataPoints={dataPoints} color="rgba(255, 99, 132, 1)" 
                     width="100%" height="300px" 
                 />
             </div>
             <div className="barchart-score">
-                <h4 className="text-lg font-semibold">Tỷ lệ phân bố điểm</h4>
                 <BarChart title="Tỷ lệ phân bố điểm" labels={labels} dataPoints={dataPoints} 
                 width="100%" height="300px" 
                 />

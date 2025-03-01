@@ -14,6 +14,7 @@
     align-items: center; /* Căn giữa theo chiều dọc */
     gap: 20px; /* Khoảng cách giữa 2 biểu đồ */
     width: 100%;
+    margin-top: 20px;
 }
 
 .content-1 > div {
@@ -30,3 +31,16 @@
     border-radius: 15px;
 }
 
+.line-chart {
+    border-radius: 15px;
+}
+
+@media (max-width: 760px) {
+    .dashboard-page {
+      width: 100%;
+      box-sizing: border-box;
+      overflow-y: auto;
+      padding-left: 80px;
+      transition: width 0.3s ease-in-out;
+    }
+  }

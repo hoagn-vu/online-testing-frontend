@@ -38,13 +38,13 @@
 .menu-list li.active {
     background: #fffefe;
     color: white;
-    box-shadow: 0px 4px 10px rgba(21, 22, 22, 0.3);
+    box-shadow: 1px 2px 6px rgba(21, 22, 22, 0.3);
 }
 
 /* Khi hover vào mục menu */
 .menu-list li:hover {
     background: #fffefe;
-    box-shadow: 0px 4px 10px rgba(21, 22, 22, 0.3);
+    box-shadow: 1px 2px 6px rgba(21, 22, 22, 0.3);
 }
 
 /* Icon bên trái menu */
