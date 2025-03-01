@@ -31,7 +31,11 @@ const Sidebar = () => {
 
             {/* Danh sách menu */}
             <ul className="menu-list">
-                <li data-title="Dashboard"><FaThLarge className="icon" /> <span>Dashboard</span></li>
+                <li className={location.pathname === "/admin/dashboard" ? "active" : ""} 
+                data-title="Dashboard">
+                    <FaThLarge className="icon" />
+                    <Link to="/admin/dashboard"><span>Dashboard</span></Link>
+                </li>
                 <li className={location.pathname === "/admin/accountmanage" ? "active" : ""} 
                 data-title="Quản lý tài khoản">
                 <FaUserCog className="icon" />

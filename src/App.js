@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage/LoginPage';
 import AdminLayout from './layouts/AdminLayout/AdminLayout';
 import DefaultLayout from './layouts/DefaultLayout/DefaultLayout';
 import AccountPage from './pages/AccountPage/AccountPage';
+import Dashboard from './pages/Dashboard/Dashboard';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Routes>
         <Route path="/admin" element={<AdminLayout />} >
           <Route path="accountmanage" element={<AccountPage />} />
+          <Route path="dashboard" element={<Dashboard />} />
         </Route>
       </Routes>
       <Routes>
