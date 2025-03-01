@@ -12,25 +12,25 @@ import { Search } from "lucide-react"; // Dùng Lucide icon
 
 const dummyAccounts = {
     "Thí sinh": [
-        { id: 1, studentId: "BIT220089", name: "Phan Thị Phương Linh", dob: "01/01/2000", gender:"Nữ", username: "nguyenvana", status: "active" },
-        { id: 2, studentId: "SV002", name: "Trần Thị B", dob: "15/05/2001", gender:"Nữ", username: "tranthib", status: "disabled" },
-        { id: 3, studentId: "BIT220089", name: "Phan Thị Phương Linh", dob: "01/01/2000", gender:"Nữ", username: "nguyenvana", status: "active" },
-        { id: 4, studentId: "SV002", name: "Trần Thị B", dob: "15/05/2001", gender:"Nữ", username: "tranthib", status: "disabled" },
-        { id: 5, studentId: "BIT220089", name: "Phan Thị Phương Linh", dob: "01/01/2000", gender:"Nữ", username: "nguyenvana", status: "active" },
-        { id: 6, studentId: "SV002", name: "Trần Thị B", dob: "15/05/2001", gender:"Nữ", username: "tranthib", status: "disabled" },
-        { id: 7, studentId: "BIT220089", name: "Phan Thị Phương Linh", dob: "01/01/2000", gender:"Nữ", username: "nguyenvana", status: "active" },
-        { id: 8, studentId: "SV002", name: "Trần Thị B", dob: "15/05/2001", gender:"Nữ", username: "tranthib", status: "disabled" },
-        { id: 9, studentId: "BIT220089", name: "Phan Thị Phương Linh", dob: "01/01/2000", gender:"Nữ", username: "nguyenvana", status: "active" },
-        { id: 10, studentId: "SV002", name: "Trần Thị B", dob: "15/05/2001", gender:"Nữ", username: "tranthib", status: "disabled" },
+        { id: 1, studentId: "BIT220079", lastname: "Nguyễn Thu", firstname: "An", dob: "01/01/2000", gender:"Nữ", username: "nguyenvana", status: "active" },
+        { id: 2, studentId: "SV002", lastname: "Trần Thị", firstname: "Dương", dob: "15/05/2001", gender:"Nữ", username: "tranthib", status: "disabled" },
+        { id: 3, studentId: "BIT220089", lastname: "Phan Thị Phương", firstname: "Linh", dob: "01/01/2000", gender:"Nữ", username: "nguyenvana", status: "active" },
+        { id: 4, studentId: "SV002", lastname: "Trần Thị", firstname: "Linh", dob: "15/05/2001", gender:"Nữ", username: "tranthib", status: "disabled" },
+        { id: 5, studentId: "BIT220089", lastname: "Phan Thị Phương", firstname: "Linh", dob: "01/01/2000", gender:"Nữ", username: "nguyenvana", status: "active" },
+        { id: 6, studentId: "SV002", lastname: "Trần Thị", firstname: "Linh", dob: "15/05/2001", gender:"Nữ", username: "tranthib", status: "disabled" },
+        { id: 7, studentId: "BIT220089", lastname: "Phan Thị Phương", firstname: "Linh", dob: "01/01/2000", gender:"Nữ", username: "nguyenvana", status: "active" },
+        { id: 8, studentId: "SV002", lastname: "Trần Thị", firstname: "Linh", dob: "15/05/2001", gender:"Nữ", username: "tranthib", status: "disabled" },
+        { id: 9, studentId: "BIT220089", lastname: "Phan Thị Phương", firstname: "Linh", dob: "01/01/2000", gender:"Nữ", username: "nguyenvana", status: "active" },
+        { id: 10, studentId: "SV002", lastname: "Trần Thị", firstname: "Linh", dob: "15/05/2001", gender:"Nữ", username: "tranthib", status: "disabled" },
     ],
     "Giám thị": [
-        { id: 11, studentId: "GT001", name: "Lê Văn C", dob: "22/09/1990", gender:"Nữ", username: "levanc", status: "active" },
+        { id: 11, studentId: "GT001", lastname: "Lê Văn", firstname: "Thuận", dob: "22/09/1990", gender:"Nam", username: "levanc", status: "active" },
     ],
     "Quản trị viên": [
-        { id: 12, studentId: "QT001", name: "Phạm Thị D", dob: "05/06/1985", gender:"Nữ", username: "phamthid", status: "active" },
+        { id: 12, studentId: "QT001", lastname: "Phạm Thị", firstname: "Linh", dob: "05/06/1985", gender:"Nữ", username: "phamthid", status: "active" },
     ],
     "Cán bộ phụ trách kỳ thi": [
-        { id: 13, studentId: "CB001", name: "Hoàng Văn E", dob: "12/12/1980", gender:"Nữ", username: "hoangvane", status: "active" },
+        { id: 13, studentId: "CB001", lastname: "Hoàng Văn", firstname: "Vũ", dob: "12/12/1980", gender:"Nam", username: "hoangvane", status: "active" },
     ],
 };
 
@@ -48,13 +48,14 @@ const AccountPage = () => {
     const columns = [
         { field: 'id', headerName: '#', width: 10,  },
         { field: 'studentId', headerName: 'Mã', width: 130,},
-        { field: 'name', headerName: 'Họ Tên', width: 230, },
+        { field: 'lastname', headerName: 'Họ và tên đệm', width: 180, },
+        { field: 'firstname', headerName: 'Tên', width: 100, },
         { field: 'dob', headerName: 'Ngày sinh', type: 'datetime',width: 115,},
         { field: 'gender', headerName: 'Giới tính', width: 100, align: "center", // ✅ Căn giữa tiêu đề cột
             headerAlign: "center", // ✅ Căn giữa nội dung trong cột
         },
-        { field: 'username', headerName: 'username', width: 140,},
-        { field: 'password', headerName: 'password', width: 140,},
+        { field: 'username', headerName: 'username', width: 120,},
+        { field: 'password', headerName: 'password', width: 120,},
         { 
             field: 'status', 
             headerName: 'Trạng thái', 
@@ -505,7 +506,6 @@ const AccountPage = () => {
                 
                 </div>
             )}
-
 
             {/* Form Đổi mật khẩu */}
             {showPasswordForm && (

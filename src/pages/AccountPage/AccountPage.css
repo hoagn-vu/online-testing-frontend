@@ -2,7 +2,8 @@
   width: 100%;
   box-sizing: border-box;
   overflow-y: auto;
-  padding-left: 220px;
+  padding-left: 210px;
+  padding-right: 15px;
 }
 
 /* Thanh chọn vai trò */
@@ -29,7 +30,7 @@
 /* Đảm bảo bảng tài khoản không tràn ra ngoài */
 .account-table-container {
   width: 100%;
-  overflow-x: auto;
+
 }
 
 /* Định dạng lại bảng để phù hợp với giao diện admin */

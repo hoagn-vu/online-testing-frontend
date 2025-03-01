@@ -15,4 +15,5 @@
     overflow: auto;
     padding: 20px; /* Tạo khoảng cách giữa nội dung và viền */
     background-color: white;
+    padding-right: 0px;
 }
