@@ -3,6 +3,8 @@ import logo from '../../assets/logo/logo.png'
 import avatar from '../../assets/images/avar.jpg'
 import HeaderCandidate from '../../components/HeaderCandidate/HeaderCandidate';
 import HomeCandidate from '../../pages/HomeCandidate/HomeCandidate';
+import { Outlet } from 'react-router-dom'; // Import Outlet
+
 const DefaultLayout = () => {
 
     return (
@@ -12,7 +14,12 @@ const DefaultLayout = () => {
                 avatarUrl={avatar}
                 logoUrl={logo}
             />
-            <HomeCandidate/>
+            <div className="candi-main">
+                <div className="main-content-candi">
+                    <Outlet />
+                </div>
+            </div>
+
         </div>
     );
 }

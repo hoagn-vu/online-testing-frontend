@@ -8,6 +8,8 @@ import DefaultLayout from './layouts/DefaultLayout/DefaultLayout';
 import AccountPage from './pages/AccountPage/AccountPage';
 import Dashboard from './pages/Dashboard/Dashboard';
 import LogPage from './pages/LogPage/LogPage';
+import HistoryCandidatePage from './pages/HistoryCandidatePage/HistoryCandidatePage';
+import HomeCandidate from './pages/HomeCandidate/HomeCandidate';
 
 function App() {
   return (
@@ -15,6 +17,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
       </Routes>
+      
       <Routes>
         <Route path="/admin" element={<AdminLayout />} >
           <Route path="accountmanage" element={<AccountPage />} />
@@ -22,12 +25,14 @@ function App() {
           <Route path="log" element={<LogPage />} />
         </Route>
       </Routes>
+
       <Routes>
-        <Route 
-          path="/thisinh" element={<DefaultLayout />} >
-          
+        <Route path="/thisinh" element={<DefaultLayout />} >
+          <Route path="home" element={<HomeCandidate />} />
+          <Route path="history" element={<HistoryCandidatePage />} />
         </Route>
       </Routes>
+
     </Router>
   );
 }

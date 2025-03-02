@@ -16,7 +16,7 @@ const HeaderCandidate = ({ username, avatarUrl, logoUrl }) => {
             <div className="user-info position-relative">
                 {/* Navigation */}
                 <nav className="flex space-x-6 history">
-                    <Link to="/history" className="text-gray-700 hover:text-blue-500">Lịch sử thi</Link>
+                    <Link to="/thisinh/history" className="text-black hover:text-blue-500 his-under">Lịch sử thi</Link>
                 </nav>
                 <img src={avatarUrl} alt="Avatar" className="avatar" />
                 <span className="username">{username}</span>

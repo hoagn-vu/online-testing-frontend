@@ -50,7 +50,7 @@ const BarChart = ({ title, labels, dataPoints, width, height }) => {
   return (
     <div className="bg-white  p-2" 
       style={{ width: width || "100%", height: height || "300px" , borderRadius: '15px',
-        boxShadow: '1px 1px 8px rgba(21, 22, 22, 0.1)',
+        boxShadow: '0px 1px 15px rgba(107, 106, 106, 0.1)',
       }}>
       <Bar data={data} options={options} />
     </div>

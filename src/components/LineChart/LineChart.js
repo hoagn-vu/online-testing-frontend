@@ -53,7 +53,7 @@ const LineChart = ({ title, labels, dataPoints, color = 'rgba(75, 192, 192, 1)' 
 
   return (
     <div className="bg-white p-2 " style={{ width: '100%', height: '300px', borderRadius: '15px',
-      boxShadow: '1px 1px 8px rgba(21, 22, 22, 0.1)',
+      boxShadow: '0px 1px 15px rgba(107, 106, 106, 0.1)',
      }}>
         <Line data={data} options={options} />
     </div>

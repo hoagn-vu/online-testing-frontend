@@ -88,3 +88,12 @@
     cursor: pointer;
 
 }
+
+.his-under {
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.his-under:hover {
+    text-decoration: underline;
+}

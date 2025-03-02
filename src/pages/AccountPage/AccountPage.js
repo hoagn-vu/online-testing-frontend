@@ -262,7 +262,7 @@ const AccountPage = () => {
             <div className="account-actions">
                 <div className="role-selector">
                     <label>Chọn loại tài khoản: </label>
-                    <select onChange={(e) => setSelectedRole(e.target.value)} value={selectedRole}>
+                    <select className='ms-0' onChange={(e) => setSelectedRole(e.target.value)} value={selectedRole}>
                         {Object.keys(dummyAccounts).map((role) => (
                             <option key={role} value={role}>{role}</option>
                         ))}
