@@ -19,7 +19,7 @@ const QuestionCard = ({ question, options, questionNumber }) => {
         </ul>
       </div>
       {/* Nút gắn cờ */}
-      <button className="absolute top-4 right-4 p-2 rounded-lg border shadow-md hover:bg-gray-100">
+      <button className="absolute top-4 right-4 p-2 rounded-lg border shadow-md hover:bg-gray-100 btn-question-card">
         <FlagIcon size={16} />
       </button>
     </div>
