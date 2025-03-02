@@ -35,3 +35,20 @@
     border-bottom: solid 1px rgb(201, 207, 210);
     padding-bottom: 10px;
 }
+
+.form-announce {
+    width: 250px;
+    background-color: bisque;
+}
+
+.model-content{
+    width: 300px;
+}
+
+.baithi {
+    cursor: pointer;
+}
+
+.baithi:hover {
+    text-decoration: underline; /* Hiệu ứng khi hover */
+}

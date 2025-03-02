@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
-import './HomeCandidate.css'
 import { FaFileAlt, FaUserCircle } from 'react-icons/fa';
+import { Modal, Button } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './HomeCandidate.css'
 
 
 const HomeCandidate = () => {
@@ -17,6 +19,15 @@ const HomeCandidate = () => {
         "Bài kiểm tra giữa kỳ II (22 toán)",
         "Bài kiểm tra giữa kỳ I (22 toán)",
     ];
+
+    const [selectedExam, setSelectedExam] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+
+    // Xử lý khi nhấn vào bài thi
+    const handleExamClick = (exam) => {
+        setSelectedExam(exam);
+        setShowModal(true);
+    };
 
     return (
         <div className="home-candi-page">
@@ -40,9 +51,10 @@ const HomeCandidate = () => {
                         <ul className="space-y-2 detail-list-exam">
                             {exams.map((exam, index) => (
                                 <ol key={index} className="flex items-center space-x-2 text-blue-600 cursor-pointer p-0 pt-3">
-                                    <div className="cursor-pointer baithi">
+                                    <div className="cursor-pointer baithi cursor-pointer"
+                                        onClick={() => handleExamClick(exam)}>
                                         <FaFileAlt className="text-blue-400 icon" />
-                                        <span >{exam}</span>
+                                        <span>{exam}</span>
                                     </div>
                                     
                                 </ol>
@@ -50,6 +62,31 @@ const HomeCandidate = () => {
                         </ul>
                     </div>
                 </div>
+            </div>
+
+            {/* Modal Xác nhận */}
+            <div className='form-announce'>
+
+            
+            <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+                <Modal.Header className="bg-light">
+                    <Modal.Title className="text-center w-100">Thông báo</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="text-center">
+                    <h5 className="fw-bold pb-2">Xác nhận làm bài thi</h5>
+                    <p>Bạn chuẩn bị thực hiện bài thi: <strong>{selectedExam}</strong></p>
+                    <p>Trình duyệt sẽ vào chế độ toàn màn hình</p>
+                    <p className="text-danger">Không được thoát ra ngoài khi đang thực hiện bài thi</p>
+                </Modal.Body>
+                <Modal.Footer className="d-flex justify-content-center">
+                    <Button variant="primary" onClick={() => {
+                        setShowModal(false);
+                        console.log(`Bắt đầu bài thi: ${selectedExam}`);
+                        // Điều hướng sang trang làm bài
+                    }}>Bắt đầu</Button>
+                    <Button variant="secondary" onClick={() => setShowModal(false)}>Quay lại</Button>
+                </Modal.Footer>
+            </Modal>
             </div>
         </div>
     );

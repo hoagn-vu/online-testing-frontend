@@ -242,14 +242,6 @@ input, select {
   justify-content: center;
 }
 
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  width: 300px;
-}
-
 .modal-actions {
   margin-top: 20px;
   display: flex;
