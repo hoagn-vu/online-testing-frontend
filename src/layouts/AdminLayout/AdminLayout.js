@@ -3,7 +3,6 @@ import Header from '../../components/Header/Header'
 import logo from '../../assets/logo/logo.png'
 import avatar from '../../assets/images/avar.jpg'
 import Sidebar from '../../components/Sidebar/Sidebar'
-import AccountPage from '../../pages/AccountPage/AccountPage';
 import { Outlet } from 'react-router-dom'; // Import Outlet
 import './AdminLayout.css'
 

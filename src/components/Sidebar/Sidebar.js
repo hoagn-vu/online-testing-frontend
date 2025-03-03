@@ -31,7 +31,11 @@ const Sidebar = () => {
 
             {/* Danh sách menu */}
             <ul className="menu-list">
-                <li data-title="Dashboard"><FaThLarge className="icon" /> <span>Dashboard</span></li>
+                <li className={location.pathname === "/admin/dashboard" ? "active" : ""} 
+                data-title="Dashboard">
+                    <FaThLarge className="icon" />
+                    <Link to="/admin/dashboard"><span>Dashboard</span></Link>
+                </li>
                 <li className={location.pathname === "/admin/accountmanage" ? "active" : ""} 
                 data-title="Quản lý tài khoản">
                 <FaUserCog className="icon" />
@@ -42,6 +46,12 @@ const Sidebar = () => {
                 <li data-title="Quản lý ma trận đề"><FaThLarge className="icon" /> <span>Quản lý ma trận đề</span></li>
                 <li data-title="Quản lý đề thi"><FaFileAlt className="icon" /> <span>Quản lý đề thi</span></li>
                 <li data-title="Quản lý phòng thi"><FaBuilding className="icon" /> <span>Quản lý phòng thi</span></li>
+                
+                <li className={location.pathname === "/admin/log" ? "active" : ""} 
+                data-title="Nhật ký sử dụng">
+                <FaBuilding className="icon" />
+                    <Link to="/admin/log"><span>Nhật ký sử dụng</span></Link>
+                </li> 
             </ul>
         </div>
     );

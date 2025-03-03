@@ -1,0 +1,10 @@
+.content-01 {
+    border: solid 1px;
+    background-color: antiquewhite;
+}
+
+.content-02 {
+    border: solid 1px;
+    background-color: blueviolet;
+    height: 500px;
+}

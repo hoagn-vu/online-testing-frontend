@@ -2,7 +2,9 @@
   width: 100%;
   box-sizing: border-box;
   overflow-y: auto;
-  padding-left: 220px;
+  padding-left: 230px;
+  padding-right: 15px;
+  padding-top: 15px;
 }
 
 /* Thanh chọn vai trò */
@@ -29,7 +31,7 @@
 /* Đảm bảo bảng tài khoản không tràn ra ngoài */
 .account-table-container {
   width: 100%;
-  overflow-x: auto;
+
 }
 
 /* Định dạng lại bảng để phù hợp với giao diện admin */
@@ -238,14 +240,6 @@ input, select {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  width: 300px;
 }
 
 .modal-actions {

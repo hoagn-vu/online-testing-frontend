@@ -1,5 +1,5 @@
 .sidebar {
-    width: 220px;
+    width: 210px;
     height: 100vh;
     background: #f8f9fa;
     padding-top: 20px;
@@ -25,8 +25,8 @@
 .menu-list li {
     display: flex;
     align-items: center;
-    padding: 12px 16px;
-    font-size: 16px;
+    padding: 6px 16px;
+    font-size: 15px;
     margin: 8px;
     border-radius: 10px;
     transition: all 0.3s ease-in-out;
@@ -38,13 +38,13 @@
 .menu-list li.active {
     background: #fffefe;
     color: white;
-    box-shadow: 0px 4px 10px rgba(21, 22, 22, 0.3);
+    box-shadow: 1px 2px 6px rgba(21, 22, 22, 0.3);
 }
 
 /* Khi hover vào mục menu */
 .menu-list li:hover {
     background: #fffefe;
-    box-shadow: 0px 4px 10px rgba(21, 22, 22, 0.3);
+    box-shadow: 1px 2px 6px rgba(21, 22, 22, 0.3);
 }
 
 /* Icon bên trái menu */
@@ -81,7 +81,7 @@
 .sidebar.closed .menu-list li:hover::after {
     content: attr(data-title);
     position: absolute;
-    left: 90px;
+    left: 53px;
     background: rgba(0, 0, 0, 0.8);
     color: white;
     padding: 5px 12px;

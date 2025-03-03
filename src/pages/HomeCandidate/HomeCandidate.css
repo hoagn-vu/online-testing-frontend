@@ -1,0 +1,54 @@
+.home-candi-page {
+    margin-top: 150px;
+    padding-left: 50px;
+    padding-right: 50px;
+}
+
+.info-content {
+    width: 50%;
+    padding: 20px;
+    text-align: center;
+    border-radius: 15px;
+    box-shadow: 1px 1px 10px rgba(106, 106, 106, 0.2);
+}
+
+.exam-content {
+    width: 80%;
+    margin-left: 50px;
+    padding: 20px 30px 20px 30px;
+    border-radius: 15px;
+    box-shadow: 1px 1px 10px rgba(106, 106, 106, 0.2);
+}
+
+.icon-user {
+    margin-top: 10px;
+    padding-top: 10px;
+
+}
+
+.detail-list-exam{
+    padding: 0px;
+    margin: 0px;
+}
+
+.baithi {
+    border-bottom: solid 1px rgb(201, 207, 210);
+    padding-bottom: 10px;
+}
+
+.form-announce {
+    width: 250px;
+    background-color: bisque;
+}
+
+.model-content{
+    width: 300px;
+}
+
+.baithi {
+    cursor: pointer;
+}
+
+.baithi:hover {
+    text-decoration: underline; /* Hiệu ứng khi hover */
+}
