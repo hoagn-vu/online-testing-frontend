@@ -23,24 +23,14 @@ const LogPage = () => {
     const [rows, setRows] = useState(Object.values(dummyLogs).flat());
     // Lọc danh sách tài khoản theo vai trò được chọn
     const columns = [
-        { field: 'id', headerName: '#', width: 10,  },
-        { field: 'studentId', headerName: 'Thời điểm',type: 'datetime', width: 200,},
+        { field: 'id', headerName: '#', width: 30,  },
+        { field: 'studentId', headerName: 'Thời điểm',type: 'datetime', width: 260,},
         { field: 'lastname', headerName: 'Người thực hiện', width: 200, },
-        { field: 'gender', headerName: 'Hành động', width: 120, align: "center", // ✅ Căn giữa tiêu đề cột
+        { field: 'gender', headerName: 'Hành động', width: 150, align: "center", // ✅ Căn giữa tiêu đề cột
             headerAlign: "center", // ✅ Căn giữa nội dung trong cột
         },
-        { field: 'dob', headerName: 'Mô tả', type: 'datetime',width: 560, headerAlign: "center",},
-        { 
-        field: 'actions', 
-        headerName: 'Thao tác', headerAlign: "center", align: "center",
-        width: 130,
-        sortable: false,
-        renderCell: (params) => (
-            <a href={`/detail/${params.row.id}`} style={{ color: "blue", textDecoration: "underline" }}>
-              Chi tiết
-            </a>
-          ),
-        }
+        { field: 'dob', headerName: 'Mô tả', type: 'datetime',width: 600, headerAlign: "center",},
+        
       ];
 
     const paginationModel = { page: 0, pageSize: 5 };
