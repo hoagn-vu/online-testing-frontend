@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './LoginForm.css'
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
     const [username, setUsername] = useState('');
@@ -9,27 +11,49 @@ const LoginForm = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-     // Xóa thông báo lỗi khi username hoặc password trống
-     useEffect(() => {
+    const navigate = useNavigate();
+
+    useEffect(() => {
         if (!username && !password) {
             setError('');
         }
     }, [username, password]);
     
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
+        setError(null);
+    
+        // console.log("Dữ liệu gửi đi:", { username, password });
+    
+        if (!username || !password) {
+            setError('Vui lòng nhập tài khoản và mật khẩu');
+            return;
+        }
+    
+        if (username.length < 6 || password.length < 6) {
+            setError('Tài khoản và mật khẩu phải có ít nhất 6 ký tự');
+            return;
+        }
+    
         setLoading(true);
-
-        setTimeout(() => {
-            if (username === 'admin' && password === '123456') {
-                console.log('Login successful!');
-            } else {
-                setError('⚠ Sai tên tài khoản hoặc mật khẩu!');
-            }
+        
+        try {
+            const response = await axios.post("http://localhost:5146/api/auth/login", 
+                { username, password }, 
+                { headers: { "Content-Type": "application/json" } }
+            );    
+            sessionStorage.setItem("userId", response.data.userId);
+            sessionStorage.setItem("userFullname", response.data.userFullname);
             setLoading(false);
-        }, 200);
+            navigate('/welcome');
+        }
+        catch (err) {
+            console.error("Lỗi đăng nhập:", err.response ? err.response.data : err);
+            setError(err.response?.data?.message || "Đã xảy ra lỗi, vui lòng thử lại!");
+            setLoading(false);
+        }
     };
+    
 
     return (
         <div className="d-flex justify-content-center align-items-center vh-100">
@@ -38,7 +62,6 @@ const LoginForm = () => {
 
                 {error && <div className="alert alert-danger text-center p-2">{error}</div>}
 
-                {/* Ô nhập tài khoản */}
                 <div className="mb-3 text-start">
                     <label className="form-label fw-bold">Tên tài khoản</label>
                     <input
@@ -47,11 +70,9 @@ const LoginForm = () => {
                         placeholder="Nhập tài khoản"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        required
                     />
                 </div>
 
-                {/* Ô nhập mật khẩu */}
                 <div className="mb-3 text-start">
                     <label className="form-label fw-bold">Mật khẩu</label>
                     <input
@@ -60,7 +81,6 @@ const LoginForm = () => {
                         placeholder="Nhập mật khẩu"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        required
                     />
                     <button
                         type="button"
@@ -70,7 +90,6 @@ const LoginForm = () => {
                     </button>
                 </div>
 
-                {/* Nút đăng nhập */}
                 <button type="submit" className="btn w-100 fw-bold css-btn" disabled={loading}>
                     {loading ? (
                         <div className="spinner-border spinner-border-sm" role="status"></div>

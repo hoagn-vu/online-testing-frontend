@@ -1,6 +1,6 @@
 import './App.css';
-import React, { useContext, useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from 'react-router-dom';
+import React, {  } from 'react';
+import { BrowserRouter as Router, Route, Routes, } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LoginPage from './pages/LoginPage/LoginPage';
 import AdminLayout from './layouts/AdminLayout/AdminLayout';
@@ -12,11 +12,16 @@ import HistoryCandidatePage from './pages/HistoryCandidatePage/HistoryCandidateP
 import HomeCandidate from './pages/HomeCandidate/HomeCandidate';
 import TakeExamPage from './pages/TakeExamPage/TakeExamPage';
 
+import WelcomePage from './pages/WelcomePage/WelcomePage';
+
 function App() {
   return (
     <Router> {/* Thêm BrowserRouter */}
       <Routes>
         <Route path="/" element={<LoginPage />} />
+      </Routes>
+      <Routes>
+        <Route path="/welcome" element={<WelcomePage />} />
       </Routes>
       
       <Routes>

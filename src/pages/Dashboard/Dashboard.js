@@ -1,12 +1,12 @@
 import React from "react";
-import { Bar, Line } from "react-chartjs-2";
+// import { Bar, Line } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, Title, Tooltip, Legend, PointElement} from "chart.js";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LineChart from '../../components/LineChart/LineChart'
 import BarChart from "../../components/BarChart/BarChart";
 import CardDashboard from "../../components/CardDashboard/CardDashboard";
 import './Dashboard.css'
-import { FaDollarSign, FaGlobe, FaTrophy } from "react-icons/fa"; // Import icons từ react-icons
+import { FaDollarSign, } from "react-icons/fa"; // Import icons từ react-icons
 
 ChartJS.register( CategoryScale, LinearScale, BarElement, LineElement, Title, Tooltip, Legend, PointElement );
 

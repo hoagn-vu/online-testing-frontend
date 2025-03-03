@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FlagIcon } from "lucide-react";
+// import { FlagIcon } from "lucide-react";
 import './QuestionCard.css'
 
 const QuestionCard = ({ question, options, questionNumber, allowMultiple }) => {
