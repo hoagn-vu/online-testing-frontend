@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
 
 const WelcomePage = () => {
-    const [uId, setUId] = useState(null);
     const [uFullname, setUFullname] = useState(null);
 
     useEffect(() => {
-        setUId(sessionStorage.getItem("userId"));
-        setUFullname(sessionStorage.getItem("userFullname"));
-
-        if (!uId) {
+        const storedUserId = sessionStorage.getItem("userId");
+        const storedUserFullname = sessionStorage.getItem("userFullname");
+    
+        if (!storedUserId || !storedUserFullname) {
+            sessionStorage.removeItem("userId");
+            sessionStorage.removeItem("userFullname");
             window.location.href = "/";
+        } else {
+            setUFullname(storedUserFullname);
         }
-    }, [uId]);
+    }, []);    
 
     const handleLogout = () => {
         sessionStorage.removeItem("userId");
