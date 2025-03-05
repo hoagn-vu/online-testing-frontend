@@ -24,8 +24,6 @@ Hệ thống thi trắc nghiệm trực tuyến là một nền tảng giúp t�
 - Frontend:
   - Ngôn ngữ: JavaScript
   - Thư viện/UI Framework: React.js
-  - Tài liệu SRS:
-  - Tài liệu SDD:
 
 ## Cách cài đặt và chạy dự án
 ### 1. Clone repository
