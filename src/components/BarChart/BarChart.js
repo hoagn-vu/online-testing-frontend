@@ -1,9 +1,24 @@
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 import React from "react";
 import { Bar } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 
 // Đăng ký các thành phần Chart.js
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const BarChart = ({ title, labels, dataPoints, width, height }) => {
   const data = {
@@ -48,10 +63,15 @@ const BarChart = ({ title, labels, dataPoints, width, height }) => {
   };
 
   return (
-    <div className="bg-white  p-2" 
-      style={{ width: width || "100%", height: height || "300px" , borderRadius: '15px',
-        boxShadow: '0px 1px 15px rgba(107, 106, 106, 0.1)',
-      }}>
+    <div
+      className="bg-white  p-2"
+      style={{
+        width: width || "100%",
+        height: height || "300px",
+        borderRadius: "15px",
+        boxShadow: "0px 1px 15px rgba(107, 106, 106, 0.1)",
+      }}
+    >
       <Bar data={data} options={options} />
     </div>
   );
