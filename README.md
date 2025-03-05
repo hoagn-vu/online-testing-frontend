@@ -19,7 +19,7 @@ Hệ thống thi trắc nghiệm trực tuyến là một nền tảng giúp t�
   - Cơ sở dữ liệu: MongoDB
   - API giao tiếp: RESTful API với JSON
 - Frontend:
-  - Ngôn ngữ: JavaScript, TypeScript
+  - Ngôn ngữ: JavaScript
   - Thư viện/UI Framework: React.js
 
 ## Cách cài đặt và chạy dự án
