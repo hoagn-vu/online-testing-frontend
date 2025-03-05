@@ -28,8 +28,8 @@ Hệ thống thi trắc nghiệm trực tuyến là một nền tảng giúp t�
 ## Cách cài đặt và chạy dự án
 ### 1. Clone repository
 ```sh
-git clone https://github.com/hoagn-vu/frontend_online_testing
-cd online-quiz-frontend
+git clone https://github.com/hoagn-vu/online-testing-frontend/
+cd online-testing-frontend
 ```
 
 ### 2. Cài đặt dependencies
@@ -52,12 +52,12 @@ npm run format
 ## Cấu trúc thư mục
 ```
 📂 src
- ┣ 📂 components       # Các component dùng chung
- ┣ 📂 pages            # Các trang chính của ứng dụng
- ┣ 📂 redux            # Quản lý state với Redux Toolkit
- ┣ 📂 services         # Các service gọi API
- ┣ 📜 App.js           # Thành phần chính của ứng dụng
- ┗ 📜 index.js         # Điểm vào chính
+ ┣ 📂 assets
+ ┣ 📂 components
+ ┣ 📂 layouts
+ ┣ 📂 pages
+ ┣ 📜 App.js
+ ┗ 📜 index.js
 ```
 
 ## Demo
