@@ -8,7 +8,7 @@ Hệ thống thi trắc nghiệm trực tuyến là một nền tảng giúp t�
 - Chống gian lận bằng các biện pháp giám sát.
 - Báo cáo kết quả và phân tích dữ liệu điểm thi
 
-## Đường dẫn
+## Liên kết
 - Frontend: [https://github.com/hoagn-vu/frontend_online_testing](https://github.com/hoagn-vu/frontend_online_testing)
 - Backend: [https://github.com/hoagn-vu/backend_online_testing](https://github.com/hoagn-vu/backend_online_testing)
 
@@ -51,7 +51,5 @@ npm start
  ┗ 📜 index.js         # Điểm vào chính
 ```
 
-## Đóng góp
-
-## Liên hệ
+## Demo
 
