@@ -39,7 +39,7 @@ const TakeExamPage = () => {
             allowMultiple: false 
         },
         { question: "Ngành nuôi trồng thuỷ sản đang phát triển với tốc độ nhanh hơn ngành khai thác là do", 
-            options: ["đáp ứng tốt hơn nhu cầu của con người và chủ động nguyên liệu cho các nhà máy chế biến.", 
+            options: ["đáp ứng tốt hơn nhu cầu của con người và chủ động nguyên liệu cho các nhà máy chế biến, nguồn lợi thuỷ sản tự nhiên đã cạn kiệt.đáp ứng tốt hơn nhu cầu của con người và chủ động nguyên liệu cho các nhà máy chế biến, nguồn lợi thuỷ sản tự nhiên đã cạn kiệt.", 
                 "nguồn lợi thuỷ sản tự nhiên đã cạn kiệt.", 
                 "thiên tai ngày càng nhiều nên không thể đánh bắt được.", 
                 "không phải đầu tư ban đầu.", 
@@ -97,31 +97,30 @@ const TakeExamPage = () => {
                             <span className="studentID"> - {studentID}</span>
                         </div>
                     </div>
-                    <button className='btn btn-primary btn-sm '>Nộp bài</button>
+                    <button className='btn btn-primary btn-sm btn-submit'>Nộp bài</button>
                 </div>
             </div>
 
             <div className="container container-take-exam d-flex justify-content-between">
                 <div className="content-take-exam w-100">
                 {questions.map((q, index) => (
-    <React.Fragment key={index}>
-        <div ref={(el) => (questionRefs.current[index] = el)}>
-            <QuestionCard 
-                questionNumber={index + 1} 
-                question={q.question} 
-                options={q.options} 
-                allowMultiple={q.allowMultiple}
-                onAnswerSelect={() => handleAnswerSelect(index)}
-                flagged={flaggedQuestions[index]} 
-                onToggleFlag={toggleFlag} 
-            />
-        </div>
-        {index < questions.length - 1 && (
-            <hr className='m-0 mt-3 mb-3 mx-auto' style={{ width: '95%' }} />
-        )}
-    </React.Fragment>
-))}
-                    
+                    <React.Fragment key={index}>
+                        <div ref={(el) => (questionRefs.current[index] = el)}>
+                            <QuestionCard 
+                                questionNumber={index + 1} 
+                                question={q.question} 
+                                options={q.options} 
+                                allowMultiple={q.allowMultiple}
+                                onAnswerSelect={() => handleAnswerSelect(index)}
+                                flagged={flaggedQuestions[index]} 
+                                onToggleFlag={toggleFlag} 
+                            />
+                        </div>
+                        {index < questions.length - 1 && (
+                            <hr className='m-0 mt-1 mb-3 mx-auto' style={{ width: '95%' }} />
+                        )}
+                    </React.Fragment>
+                ))}  
                 </div>
 
                 <div className="sidebar-take-exams">

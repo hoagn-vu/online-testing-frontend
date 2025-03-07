@@ -6,11 +6,12 @@ button {
 
 .header-question-take-exam {
     justify-content: space-between;
+    gap: 10px;
 }
 
 .question-take-exam {
     border-radius: 10px;
-    padding: 0px 25px 0px 25px;
+    padding: 0px 25px 10px 25px;
     box-sizing: border-box;
     background-color: white;
     margin-top: 5px;
@@ -20,10 +21,12 @@ button {
     list-style-type: none;
     padding: 0px;
     margin: 0px;
+    padding-right: 50px;
 }
 
 .options-take-exam li {
     margin-bottom: 3px;
+    
 }
 
 .options-take-exam input{

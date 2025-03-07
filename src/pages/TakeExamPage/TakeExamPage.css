@@ -1,6 +1,6 @@
 .header-candidate-takexam-container{
     background-color: #d0e8ff; /* Màu xanh nhạt */
-    padding: 10px 50px;
+    padding: 10px 120px;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
     height: 65px;
     position: fixed; /* Giữ cố định trên cùng */
@@ -12,6 +12,7 @@
 .container-take-exam {
     padding-top: 70px;
     gap: 15px;
+    margin-bottom: 5px;
 }
 
 .content-take-exam {
@@ -121,4 +122,7 @@ button.finish {
     cursor: pointer;
 }
 
-
+.btn-submit{
+    border-radius: 7px;
+    min-width: 100px;
+}

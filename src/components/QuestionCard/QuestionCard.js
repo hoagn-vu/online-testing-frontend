@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './QuestionCard.css';
 import { FlagIcon } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFlag } from '@fortawesome/free-solid-svg-icons';
+
 
 const QuestionCard = ({ question, options, questionNumber, allowMultiple, onAnswerSelect, flagged, onToggleFlag }) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -31,26 +34,28 @@ const QuestionCard = ({ question, options, questionNumber, allowMultiple, onAnsw
     <div className="question-card">
       <div className="question-take-exam">
         <div className="header-question-take-exam align-items-center d-flex">
-          <p className='mb-0'>Câu {questionNumber}: {question}</p>
+          <p className='mb-0 fw-bold'>Câu {questionNumber}: {question}</p>
           <button 
-              className={`ps-2 pe-2 pb-1 ${flagged ? 'flag-active' : ''}`} 
+              className={`ps-2 pe-2 ${flagged ? 'flag-active' : ''}`} 
               onClick={() => onToggleFlag(questionNumber - 1)}
           >
-              <FlagIcon size={16} />
+              <FontAwesomeIcon icon={faFlag} size="" />
           </button>
 
         </div>
         <ul className="options-take-exam">
           {options.map((option, index) => (
             <li key={index} className={`option ${selectedOptions.includes(option) ? 'selected' : ''}`}>
-              <label className='d-flex align-items-center pt-1'>
-                <input
-                  type={allowMultiple ? 'checkbox' : 'radio'}
-                  name={allowMultiple ? undefined : `question-${questionNumber}`}
-                  value={option}
-                  checked={selectedOptions.includes(option)}
-                  onChange={() => handleOptionChange(option)}
-                />
+              <label className='d-flex pt-1'>
+                <div>
+                  <input
+                    type={allowMultiple ? 'checkbox' : 'radio'}
+                    name={allowMultiple ? undefined : `question-${questionNumber}`}
+                    value={option}
+                    checked={selectedOptions.includes(option)}
+                    onChange={() => handleOptionChange(option)}
+                  />
+                </div>
                 <span>{option}</span>
               </label>
             </li>
