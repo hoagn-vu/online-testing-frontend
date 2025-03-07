@@ -126,3 +126,11 @@ button.finish {
     border-radius: 7px;
     min-width: 100px;
 }
+
+.swal-button {
+    width: 120px !important;
+    height: 40px !important; /* Đặt chiều cao cố định */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}

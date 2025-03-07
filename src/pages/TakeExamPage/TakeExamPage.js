@@ -2,6 +2,7 @@ import React, { useState, useRef  } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './TakeExamPage.css';
 import QuestionCard from '../../components/QuestionCard/QuestionCard';
+import Swal from 'sweetalert2';
 
 const TakeExamPage = () => {
     const username = "Phương Linh";
@@ -85,6 +86,35 @@ const TakeExamPage = () => {
         }
     };
     
+    const handleSubmitExam = () => {
+        Swal.fire({
+            title: "Bạn có chắc chắn muốn nộp bài?",
+            text: "Sau khi nộp, bạn sẽ không thể thay đổi câu trả lời!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Nộp bài",
+            cancelButtonText: "Hủy",
+            didOpen: () => {
+                // Thêm class tùy chỉnh khi alert mở ra
+                document.querySelector(".swal2-confirm").classList.add("swal-button");
+                document.querySelector(".swal2-cancel").classList.add("swal-button");
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: "Nộp bài thành công!",
+                    text: "Bài thi của bạn đã được gửi.",
+                    icon: "success",
+                    didOpen: () => {
+                        document.querySelector(".swal2-confirm").classList.add("swal-button");
+                    }
+                });
+            }
+        });
+    };
+    
 
     return (
         <div>
@@ -97,7 +127,7 @@ const TakeExamPage = () => {
                             <span className="studentID"> - {studentID}</span>
                         </div>
                     </div>
-                    <button className='btn btn-primary btn-sm btn-submit'>Nộp bài</button>
+                    <button className='btn btn-primary btn-sm btn-submit' onClick={handleSubmitExam}>Nộp bài</button>
                 </div>
             </div>
 
@@ -125,8 +155,8 @@ const TakeExamPage = () => {
 
                 <div className="sidebar-take-exams">
                     <div className="timer-take-exam">
-                        <p className="time-title-take-exam">Thời gian còn lại</p>
-                        <p className="time-count-take-exam">0:02:47</p>
+                        <p className="time-title-take-exam pt-2">Thời gian còn lại</p>
+                        <p className="time-count-take-exam mb-2">0:02:47</p>
                     </div>
                     <div className="progress-take-exam">
                         <h5>Câu hỏi</h5>
