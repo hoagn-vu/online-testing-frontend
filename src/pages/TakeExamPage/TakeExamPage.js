@@ -38,6 +38,7 @@ const TakeExamPage = () => {
     // Tính phần trăm tiến trình
     const answeredCount = answeredQuestions.filter(q => q).length;
     const progressPercentage = (answeredCount / questions.length) * 100;
+    const [flaggedQuestions, setFlaggedQuestions] = useState(Array(questions.length).fill(false));
 
     const handleAnswerSelect = (questionIndex) => {
         setAnsweredQuestions((prev) => {
@@ -47,6 +48,14 @@ const TakeExamPage = () => {
         });
       };
     
+    const toggleFlag = (index) => {
+        setFlaggedQuestions((prev) => {
+            const updated = [...prev];
+            updated[index] = !updated[index]; // Đảo trạng thái flag
+            return updated;
+        });
+    };
+
     return (
         <div>
             <div className="header-candidate-takexam-container d-flex align-items-center">
@@ -72,6 +81,8 @@ const TakeExamPage = () => {
                             options={q.options} 
                             allowMultiple={q.allowMultiple}
                             onAnswerSelect={() => handleAnswerSelect(index)}
+                            flagged={flaggedQuestions[index]} // Truyền trạng thái flagged
+                            onToggleFlag={toggleFlag} // Gọi toggleFlag khi nhấn cờ
                         />
                         {/* Thêm <hr> giữa các câu hỏi, nhưng không thêm sau câu cuối cùng */}
                         {index < questions.length - 1 && (
@@ -102,8 +113,9 @@ const TakeExamPage = () => {
                             key={index} 
                             className={`btn btn-sm m-1 
                               ${currentQuestion === index ? "" : ""}
-                              ${answeredQuestions[index] ? "finish" : ""}`} // Chuyển xanh khi đã trả lời
-                            onClick={() => setCurrentQuestion(index)}
+                              ${answeredQuestions[index] ? "finish" : ""} // Chuyển xanh khi đã trả lời
+                              ${flaggedQuestions[index] ? "flagged" : ""}`}
+                              onClick={() => setCurrentQuestion(index)}
                         >
                             {index + 1}
                         </button>

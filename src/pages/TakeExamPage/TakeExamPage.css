@@ -109,9 +109,16 @@
     color: white;
 }
 
+.questions-nav-take-exam button:hover {
+    background-color: #007bff;
+    color: white;
+}
+
 button.finish {
     background-color: #007bff;
     color: white;
     border: none;
     cursor: pointer;
 }
+
+

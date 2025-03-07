@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './QuestionCard.css';
 import { FlagIcon } from 'lucide-react';
 
-const QuestionCard = ({ question, options, questionNumber, allowMultiple, onAnswerSelect }) => {
+const QuestionCard = ({ question, options, questionNumber, allowMultiple, onAnswerSelect, flagged, onToggleFlag }) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
 
   const handleOptionChange = (option) => {
@@ -32,9 +32,13 @@ const QuestionCard = ({ question, options, questionNumber, allowMultiple, onAnsw
       <div className="question-take-exam">
         <div className="header-question-take-exam align-items-center d-flex">
           <p className='mb-0'>Câu {questionNumber}: {question}</p>
-          <button className='ps-2 pe-2 pb-1'>
-            <FlagIcon size={16} className='' />
+          <button 
+              className={`ps-2 pe-2 pb-1 ${flagged ? 'flag-active' : ''}`} 
+              onClick={() => onToggleFlag(questionNumber - 1)}
+          >
+              <FlagIcon size={16} />
           </button>
+
         </div>
         <ul className="options-take-exam">
           {options.map((option, index) => (
