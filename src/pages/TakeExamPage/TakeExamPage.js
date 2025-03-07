@@ -122,9 +122,9 @@ const TakeExamPage = () => {
                 <div className="user-info position-relative align-items-center d-flex justify-content-between w-100">
                     <div className='d-flex align-items-center '>
                         <img src={avatarUrl} alt="Avatar" className="avatar" />
-                        <div>
-                            <span className="username">{username}</span>
-                            <span className="studentID"> - {studentID}</span>
+                        <div className='ms-3'>
+                            <p className="username m-0 p-0">{username}</p>
+                            <p className="studentID m-0 p-0">{studentID}</p>
                         </div>
                     </div>
                     <button className='btn btn-primary btn-sm btn-submit' onClick={handleSubmitExam}>Nộp bài</button>

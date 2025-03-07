@@ -24,7 +24,7 @@
     height: fit-content;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
     background-color: white;
     border-radius: 10px;
     padding: 20px;
@@ -56,6 +56,8 @@
 .progress-take-exam {
     padding: 10px;
     border-radius: 10px;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
 }
 
 .progress-take-exam p {
@@ -64,12 +66,9 @@
 }
 
 .progress-detail-take-exam {
-    margin: 0 0 0 0;
-    padding: 0 0 0 0;
     display: flex;
     align-items: center;
     font-size: 15px;
-    gap:10px
 }
 
 .progress-container-take-exam {
@@ -78,6 +77,7 @@
     border-radius: 8px;
     overflow: hidden;
     margin: 20px auto;
+    margin-right: 0px;
 }
 
 .progress-bar-take-exam {
