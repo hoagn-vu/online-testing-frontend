@@ -1,21 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './QuestionCard.css';
 import { FlagIcon } from 'lucide-react';
 
-const QuestionCard = ({ question, options, questionNumber, allowMultiple }) => {
+const QuestionCard = ({ question, options, questionNumber, allowMultiple, onAnswerSelect }) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
 
   const handleOptionChange = (option) => {
+    let updatedSelection;
+
     if (allowMultiple) {
-      setSelectedOptions((prev) =>
-        prev.includes(option)
-          ? prev.filter((item) => item !== option) // Bỏ chọn nếu đã chọn
-          : [...prev, option] // Thêm vào danh sách nếu chưa chọn
-      );
+      updatedSelection = selectedOptions.includes(option)
+        ? selectedOptions.filter((o) => o !== option)
+        : [...selectedOptions, option];
     } else {
-      setSelectedOptions([option]); // Chỉ chọn 1 đáp án
+      updatedSelection = [option];
     }
+
+    setSelectedOptions(updatedSelection);
+    
   };
+
+  // Gọi callback khi selectedOptions thay đổi
+  useEffect(() => {
+    if (selectedOptions.length > 0 && onAnswerSelect) {
+      onAnswerSelect(questionNumber); // Truyền index câu hỏi
+    }
+  }, [selectedOptions, onAnswerSelect, questionNumber]);
 
   return (
     <div className="question-card">
@@ -32,7 +42,8 @@ const QuestionCard = ({ question, options, questionNumber, allowMultiple }) => {
               <label className='d-flex align-items-center pt-1'>
                 <input
                   type={allowMultiple ? 'checkbox' : 'radio'}
-                  name={allowMultiple ? undefined : `question-${questionNumber}`} // Nếu là radio, dùng name để nhóm lại
+                  name={allowMultiple ? undefined : `question-${questionNumber}`}
+                  value={option}
                   checked={selectedOptions.includes(option)}
                   onChange={() => handleOptionChange(option)}
                 />
