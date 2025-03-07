@@ -12,18 +12,18 @@ const examHistory = [
 
 const HistoryCandidatePage = () => {
     return (
-        <div className="container">
-            <h2 className="text-center mb-4">Lịch sử thi</h2>
+        <div className="container d-flex justify-content-center container-history">
             <div className="table-responsive tbl-history">
+                <h2 className="text-center mb-4">Lịch sử thi</h2>
                 <table className="table table-striped" >
                     <thead className="bg-light">
                         <tr>
-                            <th style={{ width: "0px" }}>STT</th>
-                            <th style={{ width: "130px" }}>Kỳ thi</th>
-                            <th style={{ width: "70px" }}>Môn thi</th>
-                            <th style={{ width: "30px" }}>Điểm số</th>
-                            <th style={{ width: "50px" }}>Ngày thực hiện</th>
-                            <th style={{ width: "150px" }}>Chú thích</th>
+                            <th style={{ minWidth: "0px" }}>STT</th>
+                            <th style={{ minWidth: "130px" }}>Kỳ thi</th>
+                            <th style={{ minWidth: "70px" }}>Môn thi</th>
+                            <th style={{ minWidth: "30px" }}>Điểm số</th>
+                            <th style={{ minWidth: "50px" }}>Ngày thực hiện</th>
+                            <th style={{ minWidth: "150px" }}>Chú thích</th>
                         </tr>
                     </thead>
                     <tbody>

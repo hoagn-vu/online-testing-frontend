@@ -23,8 +23,8 @@ const TakeExamPage = ({ username, avatarUrl, studentID }) => {
                 </div>
             </div>
 
-            <div className="container-take-exam">
-                <div className="content-take-exam">
+            <div className="container container-take-exam d-flex justify-content-between">
+                <div className="content-take-exam w-100">
                     {/* Truyền dữ liệu vào QuestionCard */}
                     <QuestionCard 
                         questionNumber={currentQuestion + 1} 
@@ -41,7 +41,7 @@ const TakeExamPage = ({ username, avatarUrl, studentID }) => {
                     />
                 </div>
 
-                <div className="sidebar-take-exam">
+                <div className="sidebar-take-exams">
                     <div className="timer-take-exam">
                         <p className="time-title-take-exam">Thời gian còn lại</p>
                         <p className="time-count-take-exam">0:02:47</p>
