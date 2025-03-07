@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef  } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './TakeExamPage.css';
 import QuestionCard from '../../components/QuestionCard/QuestionCard';
@@ -12,6 +12,23 @@ const TakeExamPage = () => {
     const questions = [
         { question: "8 x 8 = ?", options: ["72", "80", "64", "56"], allowMultiple: false },
         { question: "1 + 1 = ?", options: ["1", "5", "4", "3", "2"], allowMultiple: true },
+        { question: "Hôm nay là thứ mấy?", options: ["Thứ hai", "Chủ nhật", "Thứ năm", "Thứ ba"], allowMultiple: false },
+        { question: "Cây lúa gạo thích hợp với điều kiện sinh thái nào sau đây?", 
+            options: ["Khí hậu nóng, ẩm, chân ruộng ngập nước,đất phù sa.", 
+                "Khí hậu ấm, khô, đất màu mỡ.", 
+                "Khí hậu nóng, đất ẩm.", 
+                "Khí hậu khô, đất thoát nước.", 
+            ], 
+            allowMultiple: false 
+        },
+        { question: "Ngành nuôi trồng thuỷ sản đang phát triển với tốc độ nhanh hơn ngành khai thác là do", 
+            options: ["đáp ứng tốt hơn nhu cầu của con người và chủ động nguyên liệu cho các nhà máy chế biến.", 
+                "nguồn lợi thuỷ sản tự nhiên đã cạn kiệt.", 
+                "thiên tai ngày càng nhiều nên không thể đánh bắt được.", 
+                "không phải đầu tư ban đầu.", 
+            ], 
+            allowMultiple: false 
+        },
         { question: "Hôm nay là thứ mấy?", options: ["Thứ hai", "Chủ nhật", "Thứ năm", "Thứ ba"], allowMultiple: false },
         { question: "Cây lúa gạo thích hợp với điều kiện sinh thái nào sau đây?", 
             options: ["Khí hậu nóng, ẩm, chân ruộng ngập nước,đất phù sa.", 
@@ -56,6 +73,19 @@ const TakeExamPage = () => {
         });
     };
 
+    // Tạo danh sách tham chiếu đến các câu hỏi
+    const questionRefs = useRef(questions.map(() => React.createRef()));
+    
+    const handleScrollToQuestion = (index) => {
+        if (questionRefs.current[index]) {
+            questionRefs.current[index].scrollIntoView({
+                behavior: 'smooth', // Cuộn mượt
+                block: 'center',    // Căn giữa màn hình
+            });
+        }
+    };
+    
+
     return (
         <div>
             <div className="header-candidate-takexam-container d-flex align-items-center">
@@ -74,22 +104,23 @@ const TakeExamPage = () => {
             <div className="container container-take-exam d-flex justify-content-between">
                 <div className="content-take-exam w-100">
                 {questions.map((q, index) => (
-                    <React.Fragment key={index}>
-                        <QuestionCard 
-                            questionNumber={index + 1} 
-                            question={q.question} 
-                            options={q.options} 
-                            allowMultiple={q.allowMultiple}
-                            onAnswerSelect={() => handleAnswerSelect(index)}
-                            flagged={flaggedQuestions[index]} // Truyền trạng thái flagged
-                            onToggleFlag={toggleFlag} // Gọi toggleFlag khi nhấn cờ
-                        />
-                        {/* Thêm <hr> giữa các câu hỏi, nhưng không thêm sau câu cuối cùng */}
-                        {index < questions.length - 1 && (
-                            <hr className='m-0 mt-3 mb-3 mx-auto' style={{width:'95%'}} />
-                        )}
-                    </React.Fragment>
-                ))}
+    <React.Fragment key={index}>
+        <div ref={(el) => (questionRefs.current[index] = el)}>
+            <QuestionCard 
+                questionNumber={index + 1} 
+                question={q.question} 
+                options={q.options} 
+                allowMultiple={q.allowMultiple}
+                onAnswerSelect={() => handleAnswerSelect(index)}
+                flagged={flaggedQuestions[index]} 
+                onToggleFlag={toggleFlag} 
+            />
+        </div>
+        {index < questions.length - 1 && (
+            <hr className='m-0 mt-3 mb-3 mx-auto' style={{ width: '95%' }} />
+        )}
+    </React.Fragment>
+))}
                     
                 </div>
 
@@ -115,7 +146,7 @@ const TakeExamPage = () => {
                               ${currentQuestion === index ? "" : ""}
                               ${answeredQuestions[index] ? "finish" : ""} // Chuyển xanh khi đã trả lời
                               ${flaggedQuestions[index] ? "flagged" : ""}`}
-                              onClick={() => setCurrentQuestion(index)}
+                              onClick={() => handleScrollToQuestion(index)}
                         >
                             {index + 1}
                         </button>
