@@ -17,10 +17,11 @@
 }
 
 .login-form-container {
-    padding: 40px;
+    padding: 0px 40px 0px 40px;
     border-radius: 12px;
     text-align: center;
     width: 550px;
+
 }
 
 .login-form {

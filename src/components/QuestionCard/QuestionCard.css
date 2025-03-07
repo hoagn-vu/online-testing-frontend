@@ -6,7 +6,6 @@ button {
 
 .header-question-take-exam {
     justify-content: space-between;
-    padding: 0px;
 }
 
 .question-take-exam {
@@ -27,23 +26,17 @@ button {
     margin-bottom: 3px;
 }
 
-.question-take-exam p{
-    
-}
-
 .options-take-exam input{
     margin-right: 5px;
     margin-top: 0px;
     margin-bottom: 0px;
 }
 
-
-
 .header-question-take-exam button {
     background-color: #ffffff;
     border: solid 1px #d8d8d8;
-    padding: 10px;
     border-radius: 8px;
     cursor: pointer;
     color: #e4e4e6;
+    height: 30px;
 }

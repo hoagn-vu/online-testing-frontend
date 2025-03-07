@@ -22,8 +22,8 @@ const QuestionCard = ({ question, options, questionNumber, allowMultiple }) => {
       <div className="question-take-exam">
         <div className="header-question-take-exam align-items-center d-flex">
           <p className='mb-0'>Câu {questionNumber}: {question}</p>
-          <button>
-            <FlagIcon size={20} className='mb-2' />
+          <button className='ps-2 pe-2 pb-1'>
+            <FlagIcon size={16} className='' />
           </button>
         </div>
         <ul className="options-take-exam">

@@ -1,17 +1,22 @@
-.container-take-exam {
-
-
+.header-candidate-takexam-container{
+    background-color: #d0e8ff; /* Màu xanh nhạt */
+    padding: 10px 50px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    height: 65px;
+    position: fixed; /* Giữ cố định trên cùng */
+    top: 0;
+    width: 100%;
+    z-index: 1000; /* Đảm bảo header nằm trên các phần khác */
 }
+
+.container-take-exam {
+    padding-top: 70px;
+    gap: 15px;
+}
+
 .content-take-exam {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
-
-}
-
-#button-active-take-exam {
-    background-color: #fff8eb;
-    border: none;
-    color: #f78d06;
 }
 
 .sidebar-take-exams {
@@ -29,28 +34,34 @@
     margin-right: 10px;
     min-width: 350px;
 }
+
 .timer-take-exam {
     background-color: #f0f0f0;
     padding: 10px;
     border-radius: 10px;
     text-align: center;
 }
+
 .time-title-take-exam {
     font-size: 18px;
     font-weight: bold;
 }
+
 .time-count-take-exam  {
     color: #f78d06;
     font-size: 28px;
 }
+
 .progress-take-exam {
     padding: 10px;
     border-radius: 10px;
 }
+
 .progress-take-exam p {
     margin: 0;
     font-size: 18px;
 }
+
 .progress-detail-take-exam {
     margin: 0 0 0 0;
     padding: 0 0 0 0;
@@ -59,6 +70,7 @@
     font-size: 15px;
     gap:10px
 }
+
 .progress-container-take-exam {
     width: 80%;
     background-color: #f0f0f0;
@@ -66,6 +78,7 @@
     overflow: hidden;
     margin: 20px auto;
 }
+
 .progress-bar-take-exam {
     margin: 0;
     width: 0;
@@ -83,16 +96,19 @@
     grid-template-columns: repeat(5, 1fr);
     gap: 5px;
 }
+
 .questions-nav-take-exam button {
     padding: 10px;
     border: none;
     border-radius: 5px;
     background-color: #e0e0e0;
 }
+
 .questions-nav-take-exam button.active {
     background-color: #007bff;
     color: white;
 }
+
 button.finish {
     background-color: #007bff;
     color: white;
