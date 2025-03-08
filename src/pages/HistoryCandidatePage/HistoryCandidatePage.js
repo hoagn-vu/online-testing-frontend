@@ -47,6 +47,7 @@ const examHistory = [
 
 const HistoryCandidatePage = () => {
     return (
+      <div style={{backgroundColor:"#f4f6f9", minHeight:"100vh"}}>       
         <div className="container container-history justify-content-center d-flex">
             <div className="table-responsive tbl-history">
                 <h2 className="text-center mb-4">Lịch sử thi</h2>
@@ -76,6 +77,7 @@ const HistoryCandidatePage = () => {
                 </table>
             </div>
         </div>
+      </div>
     );
 };
 

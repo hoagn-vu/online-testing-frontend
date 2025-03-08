@@ -6,6 +6,9 @@
     padding-bottom: 170px;
 }
 
+.result-content p {
+    margin-bottom: 13px;
+}
 
 .result-content {
     background: white;
