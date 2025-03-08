@@ -1,0 +1,30 @@
+.result-candidate-container {
+    display: flex;
+    justify-content: center;
+    background-color: #f4f6f9;
+    padding-top: 90px;
+    padding-bottom: 170px;
+}
+
+
+.result-content {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    min-width: 800px;
+}
+
+.btn-home {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+    transition: 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-home:hover {
+    background-color: #0056b3;
+}
