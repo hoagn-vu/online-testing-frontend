@@ -1,7 +1,9 @@
 .home-candi-page {
-    margin-top: 150px;
+    padding-top: 150px;
     padding-left: 50px;
     padding-right: 50px;
+    background-color: #f4f6f9;
+    min-height: 100vh;
 }
 
 .info-content {

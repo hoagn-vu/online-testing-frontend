@@ -12,6 +12,7 @@ import LogPage from "./pages/LogPage/LogPage";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import TakeExamPage from "./pages/TakeExamPage/TakeExamPage";
 import WelcomePage from "./pages/WelcomePage/WelcomePage";
+import ResultCandidatePage from "./pages/ResultCandidatePage/ResultCandidatePage";
 
 function App() {
   return (
@@ -35,10 +36,12 @@ function App() {
         <Route path="/thisinh" element={<DefaultLayout />}>
           <Route path="home" element={<HomeCandidate />} />
           <Route path="history" element={<HistoryCandidatePage />} />
+          <Route path="result" element={<ResultCandidatePage />} />
+          <Route path="takexam" element={<TakeExamPage />} />
         </Route>
       </Routes>
       <Routes>
-        <Route path="/takexam" element={<TakeExamPage />} />
+        
       </Routes>
     </Router>
   );

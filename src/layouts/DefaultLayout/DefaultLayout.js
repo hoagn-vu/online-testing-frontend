@@ -1,7 +1,6 @@
 import avatar from "../../assets/images/avar.jpg";
 import logo from "../../assets/logo/logo.png";
 import HeaderCandidate from "../../components/HeaderCandidate/HeaderCandidate";
-import HomeCandidate from "../../pages/HomeCandidate/HomeCandidate";
 import React from "react";
 import { Outlet } from "react-router-dom";
 
