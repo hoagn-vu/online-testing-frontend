@@ -1,70 +1,64 @@
-# Getting Started with Create React App
+# online-testing-frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Giới thiệu
+Hệ thống thi trắc nghiệm trực tuyến là một nền tảng giúp tổ chức các kỳ thi trực tuyến một cách dễ dàng, hiệu quả và bảo mật. Hệ thống hỗ trợ nhiều vai trò người dùng như thí sinh, giám thị, quản trị viên, và cán bộ phụ trách ca thi. Các tính năng chính bao gồm:
+- Tạo và quản lý ngân hàng câu hỏi.
+- Xây dựng và tổ chức kỳ thi với nhiều cấp độ khó khác nhau.
+- Hỗ trợ nộp bài tự động và lưu bài thi theo từng câu để tránh mất dữ liệu.
+- Chống gian lận bằng các biện pháp giám sát.
+- Báo cáo kết quả và phân tích dữ liệu điểm thi
 
-## Available Scripts
+## Liên kết
+- Frontend: [https://github.com/hoagn-vu/frontend_online_testing](https://github.com/hoagn-vu/frontend_online_testing)
+- Backend: [https://github.com/hoagn-vu/backend_online_testing](https://github.com/hoagn-vu/backend_online_testing)
+- Jira: https://hoangvu.atlassian.net/jira/software/projects/OT/boards/2
+- SRS:
+- SDD:
 
-In the project directory, you can run:
+## Công nghệ sử dụng
+- Backend:
+  - Ngôn ngữ: C#
+  - Framework: ASP.NET Core
+  - Cơ sở dữ liệu: MongoDB
+  - API giao tiếp: RESTful API với JSON
+- Frontend:
+  - Ngôn ngữ: JavaScript
+  - Thư viện/UI Framework: React.js
 
-### `npm start`
+## Cách cài đặt và chạy dự án
+### 1. Clone repository
+```sh
+git clone https://github.com/hoagn-vu/online-testing-frontend/
+cd online-testing-frontend
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 2. Cài đặt dependencies
+```sh
+npm install
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 3. Chạy ứng dụng
+```sh
+npm start
+```
+Ứng dụng sẽ chạy tại `http://localhost:3000/`.
 
-### `npm test`
+### 4. Kiểm thử và format code
+```sh
+npm run lint
+npm run format
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Cấu trúc thư mục
+```
+📂 src
+ ┣ 📂 assets
+ ┣ 📂 components
+ ┣ 📂 layouts
+ ┣ 📂 pages
+ ┣ 📜 App.js
+ ┗ 📜 index.js
+```
 
-### `npm run build`
+## Demo
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

@@ -4,7 +4,6 @@ import { FlagIcon } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFlag } from '@fortawesome/free-solid-svg-icons';
 
-
 const QuestionCard = ({ question, options, questionNumber, allowMultiple, onAnswerSelect, flagged, onToggleFlag }) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
 
@@ -62,6 +61,7 @@ const QuestionCard = ({ question, options, questionNumber, allowMultiple, onAnsw
           ))}
         </ul>
       </div>
+
     </div>
   );
 };

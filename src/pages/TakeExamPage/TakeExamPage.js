@@ -185,7 +185,9 @@ const TakeExamPage = () => {
                 </div>
             </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default TakeExamPage;
