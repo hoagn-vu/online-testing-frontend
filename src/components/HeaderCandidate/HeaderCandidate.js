@@ -9,8 +9,8 @@ const HeaderCandidate = ({ username, avatarUrl, logoUrl }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="header-candi-container">
-      {/* Logo góc trái */}
+    <div className="header-candidate-container">
+          {/* Logo góc trái */}
       <img src={logoUrl} alt="Logo" className="logo" />
 
       {/* Avatar + Tên + Nút mở dropdown */}

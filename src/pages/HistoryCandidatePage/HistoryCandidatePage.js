@@ -46,37 +46,37 @@ const examHistory = [
 ];
 
 const HistoryCandidatePage = () => {
-  return (
-    <div className="container">
-      <h2 className="text-center mb-4">Lịch sử thi</h2>
-      <div className="table-responsive tbl-history">
-        <table className="table table-striped">
-          <thead className="bg-light">
-            <tr>
-              <th style={{ width: "0px" }}>STT</th>
-              <th style={{ width: "130px" }}>Kỳ thi</th>
-              <th style={{ width: "70px" }}>Môn thi</th>
-              <th style={{ width: "30px" }}>Điểm số</th>
-              <th style={{ width: "50px" }}>Ngày thực hiện</th>
-              <th style={{ width: "150px" }}>Chú thích</th>
-            </tr>
-          </thead>
-          <tbody>
-            {examHistory.map((exam, index) => (
-              <tr key={exam.id}>
-                <td>{index + 1}</td>
-                <td>{exam.exam}</td>
-                <td>{exam.subject}</td>
-                <td>{exam.score}</td>
-                <td>{exam.date}</td>
-                <td>{exam.note}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
+    return (
+        <div className="container container-history justify-content-center d-flex">
+            <div className="table-responsive tbl-history">
+                <h2 className="text-center mb-4">Lịch sử thi</h2>
+                <table className="table table-striped" >
+                    <thead className="bg-light">
+                        <tr>
+                            <th style={{ minWidth: "0px" }}>STT</th>
+                            <th style={{ minWidth: "130px" }}>Kỳ thi</th>
+                            <th style={{ minWidth: "70px" }}>Môn thi</th>
+                            <th style={{ minWidth: "30px" }}>Điểm số</th>
+                            <th style={{ minWidth: "150px" }}>Ngày thực hiện</th>
+                            <th style={{ minWidth: "300px" }}>Chú thích</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {examHistory.map((exam, index) => (
+                            <tr key={exam.id}>
+                                <td>{index + 1}</td>
+                                <td>{exam.exam}</td>
+                                <td>{exam.subject}</td>
+                                <td>{exam.score}</td>
+                                <td>{exam.date}</td>
+                                <td>{exam.note}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
 };
 
 export default HistoryCandidatePage;

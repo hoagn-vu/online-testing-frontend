@@ -1,44 +1,67 @@
-import React, { useState } from "react";
-// import { FlagIcon } from "lucide-react";
-import "./QuestionCard.css";
+import React, { useState, useEffect } from 'react';
+import './QuestionCard.css';
+import { FlagIcon } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFlag } from '@fortawesome/free-solid-svg-icons';
 
-const QuestionCard = ({ question, options, questionNumber, allowMultiple }) => {
+const QuestionCard = ({ question, options, questionNumber, allowMultiple, onAnswerSelect, flagged, onToggleFlag }) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
 
-  const handleOptionClick = (option) => {
+  const handleOptionChange = (option) => {
+    let updatedSelection;
+
     if (allowMultiple) {
-      setSelectedOptions((prev) =>
-        prev.includes(option)
-          ? prev.filter((item) => item !== option)
-          : [...prev, option]
-      );
+      updatedSelection = selectedOptions.includes(option)
+        ? selectedOptions.filter((o) => o !== option)
+        : [...selectedOptions, option];
     } else {
-      setSelectedOptions([option]);
+      updatedSelection = [option];
     }
+
+    setSelectedOptions(updatedSelection);
+    
   };
+
+  // Gọi callback khi selectedOptions thay đổi
+  useEffect(() => {
+    if (selectedOptions.length > 0 && onAnswerSelect) {
+      onAnswerSelect(questionNumber); // Truyền index câu hỏi
+    }
+  }, [selectedOptions, onAnswerSelect, questionNumber]);
 
   return (
     <div className="question-card">
-      <div className="header-question-card">
-        <h2>Question {questionNumber}</h2>
-        <button>
-          <i className="fa-solid fa-flag"></i>
-        </button>
-      </div>
-      <p>{question}</p>
-      <ul className="options-list">
-        {options.map((option, index) => (
-          <li
-            key={index}
-            className={`option ${
-              selectedOptions.includes(option) ? "selected" : ""
-            }`}
-            onClick={() => handleOptionClick(option)}
+      <div className="question-take-exam">
+        <div className="header-question-take-exam align-items-center d-flex">
+          <p className='mb-0 fw-bold'>Câu {questionNumber}: {question}</p>
+          <button 
+              className={`ps-2 pe-2 ${flagged ? 'flag-active' : ''}`} 
+              onClick={() => onToggleFlag(questionNumber - 1)}
           >
-            {option}
-          </li>
-        ))}
-      </ul>
+              <FontAwesomeIcon icon={faFlag} size="" />
+          </button>
+
+        </div>
+        <ul className="options-take-exam">
+          {options.map((option, index) => (
+            <li key={index} className={`option ${selectedOptions.includes(option) ? 'selected' : ''}`}>
+              <label className='d-flex pt-1'>
+                <div>
+                  <input
+                    type={allowMultiple ? 'checkbox' : 'radio'}
+                    name={allowMultiple ? undefined : `question-${questionNumber}`}
+                    value={option}
+                    checked={selectedOptions.includes(option)}
+                    onChange={() => handleOptionChange(option)}
+                  />
+                </div>
+                <span>{option}</span>
+              </label>
+            </li>
+          ))}
+        </ul>
+      </div>
+
     </div>
   );
 };
