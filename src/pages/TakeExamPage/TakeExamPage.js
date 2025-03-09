@@ -8,7 +8,6 @@ const TakeExamPage = () => {
     const username = "Phương Linh";
     const studentID = "123456";
     const avatarUrl = ""; // Đường dẫn ảnh avatar
-
     
     const questions = [
         { question: "8 x 8 = ?", options: ["72", "80", "64", "56"], allowMultiple: false },
@@ -181,7 +180,6 @@ const TakeExamPage = () => {
                         </button>
                         ))}
                     </div>
-
                 </div>
             </div>
         </div>
