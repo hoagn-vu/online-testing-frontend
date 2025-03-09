@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // react-router-dom components
 import { Link } from "react-router-dom";
@@ -39,7 +40,8 @@ function DefaultNavbarLink({ icon, name, route, light }) {
     >
       <Icon
         sx={{
-          color: ({ palette: { white, secondary } }) => (light ? white.main : secondary.main),
+          color: ({ palette: { white, secondary } }) =>
+            light ? white.main : secondary.main,
           verticalAlign: "middle",
         }}
       >

@@ -37,10 +37,15 @@ const LoginForm = () => {
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100">
-      <form className="p-4 shadow-lg login-form bgr-color" onSubmit={handleSubmit}>
+      <form
+        className="p-4 shadow-lg login-form bgr-color"
+        onSubmit={handleSubmit}
+      >
         <h2 className="text-center mb-3 fw-bold text-blue-holo">Đăng nhập</h2>
 
-        {error && <div className="alert alert-danger text-center p-2">{error}</div>}
+        {error && (
+          <div className="alert alert-danger text-center p-2">{error}</div>
+        )}
 
         <div className="mb-3 text-start">
           <label className="form-label fw-bold">Tên tài khoản</label>
@@ -69,9 +74,16 @@ const LoginForm = () => {
           ></button>
         </div>
 
-        <button type="submit" className="btn w-100 fw-bold css-btn" disabled={loading}>
+        <button
+          type="submit"
+          className="btn w-100 fw-bold css-btn"
+          disabled={loading}
+        >
           {loading ? (
-            <div className="spinner-border spinner-border-sm" role="status"></div>
+            <div
+              className="spinner-border spinner-border-sm"
+              role="status"
+            ></div>
           ) : (
             "Đăng nhập"
           )}

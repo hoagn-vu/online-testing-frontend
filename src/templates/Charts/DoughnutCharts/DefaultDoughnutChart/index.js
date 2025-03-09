@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 
 // porp-types is a library for typechecking of props
 import PropTypes from "prop-types";
@@ -32,7 +32,11 @@ import SoftTypography from "components/SoftTypography";
 import configs from "examples/Charts/DoughnutCharts/DefaultDoughnutChart/configs";
 
 function DefaultDoughnutChart({ title, description, height, chart }) {
-  const { data, options } = configs(chart.labels || [], chart.datasets || {}, chart.cutout);
+  const { data, options } = configs(
+    chart.labels || [],
+    chart.datasets || {},
+    chart.cutout
+  );
 
   const renderChart = (
     <SoftBox p={2}>
@@ -44,7 +48,12 @@ function DefaultDoughnutChart({ title, description, height, chart }) {
             </SoftBox>
           )}
           <SoftBox mb={2}>
-            <SoftTypography component="div" variant="button" fontWeight="regular" color="text">
+            <SoftTypography
+              component="div"
+              variant="button"
+              fontWeight="regular"
+              color="text"
+            >
               {description}
             </SoftTypography>
           </SoftBox>
@@ -76,7 +85,9 @@ DefaultDoughnutChart.propTypes = {
   title: PropTypes.string,
   description: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  chart: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.array, PropTypes.object])).isRequired,
+  chart: PropTypes.objectOf(
+    PropTypes.oneOfType([PropTypes.array, PropTypes.object])
+  ).isRequired,
 };
 
 export default DefaultDoughnutChart;

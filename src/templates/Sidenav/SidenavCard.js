@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -25,7 +26,12 @@ import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
 
 // Custom styles for the SidenavCard
-import { card, cardContent, cardIconBox, cardIcon } from "templates/Sidenav/styles/sidenavCard";
+import {
+  card,
+  cardContent,
+  cardIconBox,
+  cardIcon,
+} from "templates/Sidenav/styles/sidenavCard";
 
 // Soft UI Dashboard React context
 import { useSoftUIController } from "context";
@@ -46,7 +52,10 @@ function SidenavCard() {
           mb={2}
           sx={cardIconBox}
         >
-          <Icon fontSize="medium" sx={(theme) => cardIcon(theme, { sidenavColor })}>
+          <Icon
+            fontSize="medium"
+            sx={(theme) => cardIcon(theme, { sidenavColor })}
+          >
             star
           </Icon>
         </SoftBox>

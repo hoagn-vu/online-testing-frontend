@@ -35,7 +35,7 @@ Coded by www.creative-tim.com
   10. The `component` key is used to store the component of its route.
 */
 
-import React from "react"; 
+import React from "react";
 
 // Soft UI Dashboard React layouts
 import DashboardPage from "modules/Dashboard/pages/DashboardPage";

@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 
 // react-router-dom components
 import { useLocation, NavLink } from "react-router-dom";
@@ -71,64 +71,70 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   }, [dispatch, location]);
 
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
-  const renderRoutes = routes.map(({ type, name, icon, title, noCollapse, key, route, href }) => {
-    let returnValue;
+  const renderRoutes = routes.map(
+    ({ type, name, icon, title, noCollapse, key, route, href }) => {
+      let returnValue;
 
-    if (type === "collapse") {
-      returnValue = href ? (
-        <Link
-          href={href}
-          key={key}
-          target="_blank"
-          rel="noreferrer"
-          sx={{ textDecoration: "none" }}
-        >
-          <SidenavCollapse
-            color={color}
-            name={name}
-            icon={icon}
-            active={key === collapseName}
-            noCollapse={noCollapse}
-          />
-        </Link>
-      ) : (
-        <NavLink to={route} key={key}>
-          <SidenavCollapse
-            color={color}
+      if (type === "collapse") {
+        returnValue = href ? (
+          <Link
+            href={href}
             key={key}
-            name={name}
-            icon={icon}
-            active={key === collapseName}
-            noCollapse={noCollapse}
-          />
-        </NavLink>
-      );
-    } else if (type === "title") {
-      returnValue = (
-        <SoftTypography
-          key={key}
-          display="block"
-          variant="caption"
-          fontWeight="bold"
-          textTransform="uppercase"
-          opacity={0.6}
-          pl={3}
-          mt={2}
-          mb={1}
-          ml={1}
-        >
-          {title}
-        </SoftTypography>
-      );
-    } else if (type === "divider") {
-      returnValue = <Divider key={key} />;
-    }
+            target="_blank"
+            rel="noreferrer"
+            sx={{ textDecoration: "none" }}
+          >
+            <SidenavCollapse
+              color={color}
+              name={name}
+              icon={icon}
+              active={key === collapseName}
+              noCollapse={noCollapse}
+            />
+          </Link>
+        ) : (
+          <NavLink to={route} key={key}>
+            <SidenavCollapse
+              color={color}
+              key={key}
+              name={name}
+              icon={icon}
+              active={key === collapseName}
+              noCollapse={noCollapse}
+            />
+          </NavLink>
+        );
+      } else if (type === "title") {
+        returnValue = (
+          <SoftTypography
+            key={key}
+            display="block"
+            variant="caption"
+            fontWeight="bold"
+            textTransform="uppercase"
+            opacity={0.6}
+            pl={3}
+            mt={2}
+            mb={1}
+            ml={1}
+          >
+            {title}
+          </SoftTypography>
+        );
+      } else if (type === "divider") {
+        returnValue = <Divider key={key} />;
+      }
 
-    return returnValue;
-  });
+      return returnValue;
+    }
+  );
 
   return (
-    <SidenavRoot {...rest} variant="permanent" ownerState={{ transparentSidenav, miniSidenav }}>
+    <SidenavRoot
+      {...rest}
+      variant="permanent"
+      ownerState={{ transparentSidenav, miniSidenav }}
+    >
       <SoftBox pt={1.625} pb={1} px={4} textAlign="center">
         <SoftBox
           display={{ xs: "block", xl: "none" }}
@@ -143,8 +149,20 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
             <Icon sx={{ fontWeight: "bold" }}>close</Icon>
           </SoftTypography>
         </SoftBox>
-        <SoftBox component={NavLink} to="/dashboard" display="flex" alignItems="center">
-          {brand && <SoftBox component="img" src={brand} alt="Soft UI Logo" width="6rem" />}
+        <SoftBox
+          component={NavLink}
+          to="/dashboard"
+          display="flex"
+          alignItems="center"
+        >
+          {brand && (
+            <SoftBox
+              component="img"
+              src={brand}
+              alt="Soft UI Logo"
+              width="6rem"
+            />
+          )}
           <SoftBox
             width={!brandName && "100%"}
             sx={(theme) => sidenavLogoLabel(theme, { miniSidenav })}
@@ -177,15 +195,17 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   );
 }
 
-// Setting default values for the props of Sidenav
-Sidenav.defaultProps = {
-  color: "info",
-  brand: "",
-};
-
 // Typechecking props for the Sidenav
 Sidenav.propTypes = {
-  color: PropTypes.oneOf(["primary", "secondary", "info", "success", "warning", "error", "dark"]),
+  color: PropTypes.oneOf([
+    "primary",
+    "secondary",
+    "info",
+    "success",
+    "warning",
+    "error",
+    "dark",
+  ]),
   brand: PropTypes.string,
   brandName: PropTypes.string.isRequired,
   routes: PropTypes.arrayOf(PropTypes.object).isRequired,

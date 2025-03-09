@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 // react-router components
 import { useLocation, Link } from "react-router-dom";
@@ -77,7 +77,10 @@ function DashboardNavbar({ absolute, light, isMini }) {
 
     // A function that sets the transparent state of the navbar.
     function handleTransparentNavbar() {
-      setTransparentNavbar(dispatch, (fixedNavbar && window.scrollY === 0) || !fixedNavbar);
+      setTransparentNavbar(
+        dispatch,
+        (fixedNavbar && window.scrollY === 0) || !fixedNavbar
+      );
     }
 
     /** 
@@ -94,7 +97,8 @@ function DashboardNavbar({ absolute, light, isMini }) {
   }, [dispatch, fixedNavbar]);
 
   const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
-  const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
+  const handleConfiguratorOpen = () =>
+    setOpenConfigurator(dispatch, !openConfigurator);
   const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
   const handleCloseMenu = () => setOpenMenu(false);
 
@@ -126,7 +130,10 @@ function DashboardNavbar({ absolute, light, isMini }) {
       <NotificationItem
         color="secondary"
         image={
-          <Icon fontSize="small" sx={{ color: ({ palette: { white } }) => white.main }}>
+          <Icon
+            fontSize="small"
+            sx={{ color: ({ palette: { white } }) => white.main }}
+          >
             payment
           </Icon>
         }
@@ -144,8 +151,17 @@ function DashboardNavbar({ absolute, light, isMini }) {
       sx={(theme) => navbar(theme, { transparentNavbar, absolute, light })}
     >
       <Toolbar sx={(theme) => navbarContainer(theme)}>
-        <SoftBox color="inherit" mb={{ xs: 1, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
-          <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} />
+        <SoftBox
+          color="inherit"
+          mb={{ xs: 1, md: 0 }}
+          sx={(theme) => navbarRow(theme, { isMini })}
+        >
+          <Breadcrumbs
+            icon="home"
+            title={route[route.length - 1]}
+            route={route}
+            light={light}
+          />
         </SoftBox>
         {isMini ? null : (
           <SoftBox sx={(theme) => navbarRow(theme, { isMini })}>
@@ -201,7 +217,9 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 variant="contained"
                 onClick={handleOpenMenu}
               >
-                <Icon className={light ? "text-white" : "text-dark"}>notifications</Icon>
+                <Icon className={light ? "text-white" : "text-dark"}>
+                  notifications
+                </Icon>
               </IconButton>
               {renderMenu()}
             </SoftBox>
@@ -211,13 +229,6 @@ function DashboardNavbar({ absolute, light, isMini }) {
     </AppBar>
   );
 }
-
-// Setting default values for the props of DashboardNavbar
-DashboardNavbar.defaultProps = {
-  absolute: false,
-  light: false,
-  isMini: false,
-};
 
 // Typechecking props for the DashboardNavbar
 DashboardNavbar.propTypes = {

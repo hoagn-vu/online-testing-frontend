@@ -19,10 +19,22 @@ import { styled } from "@mui/material/styles";
 
 export default styled(Typography)(({ theme, ownerState }) => {
   const { palette, typography, functions } = theme;
-  const { color, textTransform, verticalAlign, fontWeight, opacity, textGradient } = ownerState;
+  const {
+    color,
+    textTransform,
+    verticalAlign,
+    fontWeight,
+    opacity,
+    textGradient,
+  } = ownerState;
 
   const { gradients, transparent } = palette;
-  const { fontWeightLight, fontWeightRegular, fontWeightMedium, fontWeightBold } = typography;
+  const {
+    fontWeightLight,
+    fontWeightRegular,
+    fontWeightMedium,
+    fontWeightBold,
+  } = typography;
   const { linearGradient } = functions;
 
   // fontWeight styles
@@ -36,7 +48,10 @@ export default styled(Typography)(({ theme, ownerState }) => {
   // styles for the typography with textGradient={true}
   const gradientStyles = () => ({
     backgroundImage:
-      color !== "inherit" && color !== "text" && color !== "white" && gradients[color]
+      color !== "inherit" &&
+      color !== "text" &&
+      color !== "white" &&
+      gradients[color]
         ? linearGradient(gradients[color].main, gradients[color].state)
         : linearGradient(gradients.dark.main, gradients.dark.state),
     display: "inline-block",
@@ -51,7 +66,8 @@ export default styled(Typography)(({ theme, ownerState }) => {
     textTransform,
     verticalAlign,
     textDecoration: "none",
-    color: color === "inherit" || !palette[color] ? "inherit" : palette[color].main,
+    color:
+      color === "inherit" || !palette[color] ? "inherit" : palette[color].main,
     fontWeight: fontWeights[fontWeight] && fontWeights[fontWeight],
     ...(textGradient && gradientStyles()),
   };

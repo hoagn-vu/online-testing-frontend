@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // prop-types is library for typechecking of props
 import PropTypes from "prop-types";
@@ -26,6 +27,8 @@ import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
 
 function DefaultInfoCard({ color, icon, title, description, value }) {
+  console.log(color);
+
   return (
     <Card>
       <SoftBox p={2} mx={3} display="flex" justifyContent="center">
@@ -45,7 +48,11 @@ function DefaultInfoCard({ color, icon, title, description, value }) {
         </SoftBox>
       </SoftBox>
       <SoftBox pb={2} px={2} textAlign="center" lineHeight={1.25}>
-        <SoftTypography variant="h6" fontWeight="medium" textTransform="capitalize">
+        <SoftTypography
+          variant="h6"
+          fontWeight="medium"
+          textTransform="capitalize"
+        >
           {title}
         </SoftTypography>
         {description && (
@@ -73,7 +80,15 @@ DefaultInfoCard.defaultProps = {
 
 // Typechecking props for the DefaultInfoCard
 DefaultInfoCard.propTypes = {
-  color: PropTypes.oneOf(["primary", "secondary", "info", "success", "warning", "error", "dark"]),
+  color: PropTypes.oneOf([
+    "primary",
+    "secondary",
+    "info",
+    "success",
+    "warning",
+    "error",
+    "dark",
+  ]),
   icon: PropTypes.node.isRequired,
   title: PropTypes.string.isRequired,
   description: PropTypes.string,

@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 import { forwardRef } from "react";
 
@@ -24,22 +25,26 @@ import SoftTypography from "components/SoftTypography";
 // Custom styles for SoftProgress
 import SoftProgressRoot from "components/SoftProgress/SoftProgressRoot";
 
-const SoftProgress = forwardRef(({ variant, color, value, label, ...rest }, ref) => (
-  <>
-    {label && (
-      <SoftTypography variant="button" fontWeight="medium" color="text">
-        {value}%
-      </SoftTypography>
-    )}
-    <SoftProgressRoot
-      {...rest}
-      ref={ref}
-      variant="determinate"
-      value={value}
-      ownerState={{ color, value, variant }}
-    />
-  </>
-));
+const SoftProgress = forwardRef(
+  ({ variant, color, value, label, ...rest }, ref) => (
+    <>
+      {label && (
+        <SoftTypography variant="button" fontWeight="medium" color="text">
+          {value}%
+        </SoftTypography>
+      )}
+      <SoftProgressRoot
+        {...rest}
+        ref={ref}
+        variant="determinate"
+        value={value}
+        ownerState={{ color, value, variant }}
+      />
+    </>
+  )
+);
+
+SoftProgress.displayName = "SoftProgress";
 
 // Setting default values for the props of SoftProgress
 SoftProgress.defaultProps = {

@@ -17,6 +17,7 @@ Coded by www.creative-tim.com
   This file is used for controlling the global states of the components,
   you can customize the states for the different components here.
 */
+import React from "react";
 
 import { createContext, useContext, useReducer, useMemo } from "react";
 
@@ -87,7 +88,9 @@ function useSoftUIController() {
   const context = useContext(SoftUI);
 
   if (!context) {
-    throw new Error("useSoftUIController should be used inside the SoftUIControllerProvider.");
+    throw new Error(
+      "useSoftUIController should be used inside the SoftUIControllerProvider."
+    );
   }
 
   return context;
@@ -99,13 +102,20 @@ SoftUIControllerProvider.propTypes = {
 };
 
 // Context module functions
-const setMiniSidenav = (dispatch, value) => dispatch({ type: "MINI_SIDENAV", value });
-const setTransparentSidenav = (dispatch, value) => dispatch({ type: "TRANSPARENT_SIDENAV", value });
-const setSidenavColor = (dispatch, value) => dispatch({ type: "SIDENAV_COLOR", value });
-const setTransparentNavbar = (dispatch, value) => dispatch({ type: "TRANSPARENT_NAVBAR", value });
-const setFixedNavbar = (dispatch, value) => dispatch({ type: "FIXED_NAVBAR", value });
-const setOpenConfigurator = (dispatch, value) => dispatch({ type: "OPEN_CONFIGURATOR", value });
-const setDirection = (dispatch, value) => dispatch({ type: "DIRECTION", value });
+const setMiniSidenav = (dispatch, value) =>
+  dispatch({ type: "MINI_SIDENAV", value });
+const setTransparentSidenav = (dispatch, value) =>
+  dispatch({ type: "TRANSPARENT_SIDENAV", value });
+const setSidenavColor = (dispatch, value) =>
+  dispatch({ type: "SIDENAV_COLOR", value });
+const setTransparentNavbar = (dispatch, value) =>
+  dispatch({ type: "TRANSPARENT_NAVBAR", value });
+const setFixedNavbar = (dispatch, value) =>
+  dispatch({ type: "FIXED_NAVBAR", value });
+const setOpenConfigurator = (dispatch, value) =>
+  dispatch({ type: "OPEN_CONFIGURATOR", value });
+const setDirection = (dispatch, value) =>
+  dispatch({ type: "DIRECTION", value });
 const setLayout = (dispatch, value) => dispatch({ type: "LAYOUT", value });
 
 export {

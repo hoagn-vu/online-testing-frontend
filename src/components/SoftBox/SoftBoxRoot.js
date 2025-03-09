@@ -83,7 +83,9 @@ export default styled(Box)(({ theme, ownerState }) => {
       ? linearGradient(gradients[bgColor].main, gradients[bgColor].state)
       : white.main;
   } else if (validColors.find((el) => el === bgColor)) {
-    backgroundValue = palette[bgColor] ? palette[bgColor].main : greyColors[bgColor];
+    backgroundValue = palette[bgColor]
+      ? palette[bgColor].main
+      : greyColors[bgColor];
   } else {
     backgroundValue = bgColor;
   }

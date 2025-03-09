@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
@@ -33,7 +34,14 @@ import pageRoutes from "page.routes";
 // Images
 import pattern from "assets/images/shapes/pattern-lines.svg";
 
-function IllustrationLayout({ color, header, title, description, illustration, children }) {
+function IllustrationLayout({
+  color,
+  header,
+  title,
+  description,
+  illustration,
+  children,
+}) {
   return (
     <PageLayout background="white">
       <DefaultNavbar
@@ -46,7 +54,12 @@ function IllustrationLayout({ color, header, title, description, illustration, c
       />
       <Grid container>
         <Grid item xs={11} sm={8} md={6} lg={4} xl={3} sx={{ mx: "auto" }}>
-          <SoftBox display="flex" flexDirection="column" justifyContent="center" height="100vh">
+          <SoftBox
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            height="100vh"
+          >
             <SoftBox pt={3} px={3}>
               {!header ? (
                 <>
@@ -55,7 +68,11 @@ function IllustrationLayout({ color, header, title, description, illustration, c
                       {title}
                     </SoftTypography>
                   </SoftBox>
-                  <SoftTypography variant="body2" fontWeight="regular" color="text">
+                  <SoftTypography
+                    variant="body2"
+                    fontWeight="regular"
+                    color="text"
+                  >
                     {description}
                   </SoftTypography>
                 </>
@@ -134,7 +151,15 @@ IllustrationLayout.defaultProps = {
 
 // Typechecking props for the IllustrationLayout
 IllustrationLayout.propTypes = {
-  color: PropTypes.oneOf(["primary", "secondary", "info", "success", "warning", "error", "dark"]),
+  color: PropTypes.oneOf([
+    "primary",
+    "secondary",
+    "info",
+    "success",
+    "warning",
+    "error",
+    "dark",
+  ]),
   header: PropTypes.node,
   title: PropTypes.string,
   description: PropTypes.string,

@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
@@ -32,7 +33,11 @@ function TimelineList({ title, dark, children }) {
       <Card>
         <SoftBox bgColor={dark ? "dark" : "white"} variant="gradient">
           <SoftBox pt={3} px={3}>
-            <SoftTypography variant="h6" fontWeight="medium" color={dark ? "white" : "dark"}>
+            <SoftTypography
+              variant="h6"
+              fontWeight="medium"
+              color={dark ? "white" : "dark"}
+            >
               {title}
             </SoftTypography>
           </SoftBox>

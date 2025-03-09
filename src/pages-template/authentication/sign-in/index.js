@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState } from "react";
+import React, { useState } from "react";
 
 // react-router-dom components
 import { Link } from "react-router-dom";
@@ -47,7 +47,11 @@ function SignIn() {
       <SoftBox component="form" role="form">
         <SoftBox mb={2}>
           <SoftBox mb={1} ml={0.5}>
-            <SoftTypography component="label" variant="caption" fontWeight="bold">
+            <SoftTypography
+              component="label"
+              variant="caption"
+              fontWeight="bold"
+            >
               Email
             </SoftTypography>
           </SoftBox>
@@ -55,7 +59,11 @@ function SignIn() {
         </SoftBox>
         <SoftBox mb={2}>
           <SoftBox mb={1} ml={0.5}>
-            <SoftTypography component="label" variant="caption" fontWeight="bold">
+            <SoftTypography
+              component="label"
+              variant="caption"
+              fontWeight="bold"
+            >
               Password
             </SoftTypography>
           </SoftBox>

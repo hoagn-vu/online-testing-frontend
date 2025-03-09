@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { forwardRef } from "react";
+import React, { forwardRef } from "react";
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
@@ -22,10 +22,32 @@ import PropTypes from "prop-types";
 import SoftBadgeRoot from "components/SoftBadge/SoftBadgeRoot";
 
 const SoftBadge = forwardRef(
-  ({ color, variant, size, circular, indicator, border, container, children, ...rest }, ref) => (
+  (
+    {
+      color,
+      variant,
+      size,
+      circular,
+      indicator,
+      border,
+      container,
+      children,
+      ...rest
+    },
+    ref
+  ) => (
     <SoftBadgeRoot
       {...rest}
-      ownerState={{ color, variant, size, circular, indicator, border, container, children }}
+      ownerState={{
+        color,
+        variant,
+        size,
+        circular,
+        indicator,
+        border,
+        container,
+        children,
+      }}
       ref={ref}
       color="default"
     >
@@ -33,6 +55,8 @@ const SoftBadge = forwardRef(
     </SoftBadgeRoot>
   )
 );
+
+SoftBadge.displayName = "SoftBadge";
 
 // Setting default values for the props of SoftBadge
 SoftBadge.defaultProps = {

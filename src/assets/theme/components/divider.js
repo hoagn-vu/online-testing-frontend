@@ -38,10 +38,10 @@ const divider = {
 
     vertical: {
       backgroundColor: transparent.main,
-      backgroundImage: `linear-gradient(to bottom, ${rgba(dark.main, 0)}, ${rgba(
+      backgroundImage: `linear-gradient(to bottom, ${rgba(
         dark.main,
-        0.5
-      )}, ${rgba(dark.main, 0)}) !important`,
+        0
+      )}, ${rgba(dark.main, 0.5)}, ${rgba(dark.main, 0)}) !important`,
       width: pxToRem(1),
       height: "100%",
       margin: `0 ${pxToRem(16)}`,
@@ -50,16 +50,16 @@ const divider = {
 
     light: {
       backgroundColor: transparent.main,
-      backgroundImage: `linear-gradient(to right, ${rgba(white.main, 0)}, ${rgba(
+      backgroundImage: `linear-gradient(to right, ${rgba(
         white.main,
-        0.5
-      )}, ${rgba(white.main, 0)}) !important`,
+        0
+      )}, ${rgba(white.main, 0.5)}, ${rgba(white.main, 0)}) !important`,
 
       "&.MuiDivider-vertical": {
-        backgroundImage: `linear-gradient(to bottom, ${rgba(white.main, 0)}, ${rgba(
+        backgroundImage: `linear-gradient(to bottom, ${rgba(
           white.main,
-          0.5
-        )}, ${rgba(white.main, 0)}) !important`,
+          0
+        )}, ${rgba(white.main, 0.5)}, ${rgba(white.main, 0)}) !important`,
       },
     },
   },

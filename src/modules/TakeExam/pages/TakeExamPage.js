@@ -5,14 +5,24 @@ import "../styles/TakeExamPage.css";
 import DefaultLayout from "templates/LayoutContainers/DefaultLayout";
 import QuestionCard from "../components/QuestionCard";
 
+import Swal from "sweetalert2";
+
 const TakeExamPage = () => {
   const username = "Phương Linh";
   const studentID = "123456";
   const avatarUrl = ""; // Đường dẫn ảnh avatar
 
   const questions = [
-    { question: "8 x 8 = ?", options: ["72", "80", "64", "56"], allowMultiple: false },
-    { question: "1 + 1 = ?", options: ["1", "5", "4", "3", "2"], allowMultiple: true },
+    {
+      question: "8 x 8 = ?",
+      options: ["72", "80", "64", "56"],
+      allowMultiple: false,
+    },
+    {
+      question: "1 + 1 = ?",
+      options: ["1", "5", "4", "3", "2"],
+      allowMultiple: true,
+    },
     {
       question: "Hôm nay là thứ mấy?",
       options: ["Thứ hai", "Chủ nhật", "Thứ năm", "Thứ ba"],
@@ -67,14 +77,19 @@ const TakeExamPage = () => {
     },
   ];
 
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [currentQuestion] = useState(0);
+  // const [currentQuestion, setCurrentQuestion] = useState(0);
 
-  const [answeredQuestions, setAnsweredQuestions] = useState(Array(questions.length).fill(false));
+  const [answeredQuestions, setAnsweredQuestions] = useState(
+    Array(questions.length).fill(false)
+  );
 
   // Tính phần trăm tiến trình
   const answeredCount = answeredQuestions.filter((q) => q).length;
   const progressPercentage = (answeredCount / questions.length) * 100;
-  const [flaggedQuestions, setFlaggedQuestions] = useState(Array(questions.length).fill(false));
+  const [flaggedQuestions, setFlaggedQuestions] = useState(
+    Array(questions.length).fill(false)
+  );
 
   const handleAnswerSelect = (questionIndex) => {
     setAnsweredQuestions((prev) => {
@@ -126,7 +141,9 @@ const TakeExamPage = () => {
           text: "Bài thi của bạn đã được gửi.",
           icon: "success",
           didOpen: () => {
-            document.querySelector(".swal2-confirm").classList.add("swal-button");
+            document
+              .querySelector(".swal2-confirm")
+              .classList.add("swal-button");
           },
         });
       }
@@ -145,7 +162,10 @@ const TakeExamPage = () => {
                 <p className="studentID m-0 p-0">{studentID}</p>
               </div>
             </div>
-            <button className="btn btn-primary btn-sm btn-submit" onClick={handleSubmitExam}>
+            <button
+              className="btn btn-primary btn-sm btn-submit"
+              onClick={handleSubmitExam}
+            >
               Nộp bài
             </button>
           </div>
@@ -167,7 +187,10 @@ const TakeExamPage = () => {
                   />
                 </div>
                 {index < questions.length - 1 && (
-                  <hr className="m-0 mt-1 mb-3 mx-auto" style={{ width: "95%" }} />
+                  <hr
+                    className="m-0 mt-1 mb-3 mx-auto"
+                    style={{ width: "95%" }}
+                  />
                 )}
               </React.Fragment>
             ))}

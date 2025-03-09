@@ -19,7 +19,8 @@ import { styled } from "@mui/material/styles";
 
 export default styled(InputBase)(({ theme, ownerState }) => {
   const { palette, boxShadows, functions, typography, borders } = theme;
-  const { size, error, success, iconDirection, direction, disabled } = ownerState;
+  const { size, error, success, iconDirection, direction, disabled } =
+    ownerState;
 
   const { inputColors, grey, white, transparent } = palette;
   const { inputBoxShadow } = boxShadows;
@@ -71,7 +72,12 @@ export default styled(InputBase)(({ theme, ownerState }) => {
     focusedPaddingRightValue = pxToRem(12);
   }
 
-  let focusedBoxShadowValue = boxShadow([0, 0], [0, 2], inputColors.boxShadow, 1);
+  let focusedBoxShadowValue = boxShadow(
+    [0, 0],
+    [0, 2],
+    inputColors.boxShadow,
+    1
+  );
 
   if (error) {
     focusedBoxShadowValue = inputBoxShadow.error;
@@ -149,7 +155,8 @@ export default styled(InputBase)(({ theme, ownerState }) => {
     ...(size === "large" && largeStyles()),
     ...(error && errorStyles()),
     ...(success && successStyles()),
-    ...((iconDirection === "left" || iconDirection === "right") && withIconStyles()),
+    ...((iconDirection === "left" || iconDirection === "right") &&
+      withIconStyles()),
 
     "&.Mui-focused": {
       borderColor: focusedBorderColorValue,

@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
@@ -30,7 +31,15 @@ import PageLayout from "examples/LayoutContainers/PageLayout";
 // Authentication layout components
 import Footer from "layouts/authentication/components/Footer";
 
-function CoverLayout({ color, header, title, description, image, top, children }) {
+function CoverLayout({
+  color,
+  header,
+  title,
+  description,
+  image,
+  top,
+  children,
+}) {
   return (
     <PageLayout background="white">
       <DefaultNavbar
@@ -55,11 +64,20 @@ function CoverLayout({ color, header, title, description, image, top, children }
               {!header ? (
                 <>
                   <SoftBox mb={1}>
-                    <SoftTypography variant="h3" fontWeight="bold" color={color} textGradient>
+                    <SoftTypography
+                      variant="h3"
+                      fontWeight="bold"
+                      color={color}
+                      textGradient
+                    >
                       {title}
                     </SoftTypography>
                   </SoftBox>
-                  <SoftTypography variant="body2" fontWeight="regular" color="text">
+                  <SoftTypography
+                    variant="body2"
+                    fontWeight="regular"
+                    color="text"
+                  >
                     {description}
                   </SoftTypography>
                 </>
@@ -80,7 +98,8 @@ function CoverLayout({ color, header, title, description, image, top, children }
             sx={{
               transform: "skewX(-10deg)",
               overflow: "hidden",
-              borderBottomLeftRadius: ({ borders: { borderRadius } }) => borderRadius.lg,
+              borderBottomLeftRadius: ({ borders: { borderRadius } }) =>
+                borderRadius.lg,
             }}
           >
             <SoftBox

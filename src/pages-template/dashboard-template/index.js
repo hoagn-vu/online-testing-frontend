@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -123,12 +124,26 @@ function DashboardTemplate() {
                 title="Sales Overview"
                 description={
                   <SoftBox display="flex" alignItems="center">
-                    <SoftBox fontSize={size.lg} color="success" mb={0.3} mr={0.5} lineHeight={0}>
+                    <SoftBox
+                      fontSize={size.lg}
+                      color="success"
+                      mb={0.3}
+                      mr={0.5}
+                      lineHeight={0}
+                    >
                       <Icon className="font-bold">arrow_upward</Icon>
                     </SoftBox>
-                    <SoftTypography variant="button" color="text" fontWeight="medium">
+                    <SoftTypography
+                      variant="button"
+                      color="text"
+                      fontWeight="medium"
+                    >
                       4% more{" "}
-                      <SoftTypography variant="button" color="text" fontWeight="regular">
+                      <SoftTypography
+                        variant="button"
+                        color="text"
+                        fontWeight="regular"
+                      >
                         in 2021
                       </SoftTypography>
                     </SoftTypography>

@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 import { forwardRef, createContext, useContext, useMemo } from "react";
 
@@ -31,7 +32,10 @@ const SoftPagination = forwardRef(
   ({ item, variant, color, size, active, children, ...rest }, ref) => {
     const context = item ? useContext(Context) : null;
     const paginationSize = context ? context.size : null;
-    const value = useMemo(() => ({ variant, color, size }), [variant, color, size]);
+    const value = useMemo(
+      () => ({ variant, color, size }),
+      [variant, color, size]
+    );
 
     return (
       <Context.Provider value={value}>
@@ -61,6 +65,8 @@ const SoftPagination = forwardRef(
     );
   }
 );
+
+SoftPagination.displayName = "SoftPagination";
 
 // Setting default values for the props of SoftPagination
 SoftPagination.defaultProps = {

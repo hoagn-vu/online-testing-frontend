@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -34,7 +35,11 @@ function BuildByDevelopers() {
           <Grid item xs={12} lg={6}>
             <SoftBox display="flex" flexDirection="column" height="100%">
               <SoftBox pt={1} mb={0.5}>
-                <SoftTypography variant="body2" color="text" fontWeight="medium">
+                <SoftTypography
+                  variant="body2"
+                  color="text"
+                  fontWeight="medium"
+                >
                   Build by developers
                 </SoftTypography>
               </SoftBox>
@@ -43,8 +48,8 @@ function BuildByDevelopers() {
               </SoftTypography>
               <SoftBox mb={6}>
                 <SoftTypography variant="body2" color="text">
-                  From colors, cards, typography to complex elements, you will find the full
-                  documentation.
+                  From colors, cards, typography to complex elements, you will
+                  find the full documentation.
                 </SoftTypography>
               </SoftBox>
               <SoftTypography
@@ -63,12 +68,14 @@ function BuildByDevelopers() {
                   "& .material-icons-round": {
                     fontSize: "1.125rem",
                     transform: `translate(2px, -0.5px)`,
-                    transition: "transform 0.2s cubic-bezier(0.34,1.61,0.7,1.3)",
+                    transition:
+                      "transform 0.2s cubic-bezier(0.34,1.61,0.7,1.3)",
                   },
 
-                  "&:hover .material-icons-round, &:focus  .material-icons-round": {
-                    transform: `translate(6px, -0.5px)`,
-                  },
+                  "&:hover .material-icons-round, &:focus  .material-icons-round":
+                    {
+                      transform: `translate(6px, -0.5px)`,
+                    },
                 }}
               >
                 Read More
@@ -96,7 +103,13 @@ function BuildByDevelopers() {
                 width="100%"
                 height="100%"
               />
-              <SoftBox component="img" src={rocketWhite} alt="rocket" width="100%" pt={3} />
+              <SoftBox
+                component="img"
+                src={rocketWhite}
+                alt="rocket"
+                width="100%"
+                pt={3}
+              />
             </SoftBox>
           </Grid>
         </Grid>

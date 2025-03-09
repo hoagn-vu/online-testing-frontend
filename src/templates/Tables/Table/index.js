@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 import { useMemo } from "react";
 
@@ -90,13 +91,24 @@ function Table({ columns, rows }) {
             key={uuidv4()}
             component="td"
             p={1}
-            borderBottom={row.hasBorder ? `${borderWidth[1]} solid ${light.main}` : null}
+            borderBottom={
+              row.hasBorder ? `${borderWidth[1]} solid ${light.main}` : null
+            }
           >
             <SoftBox display="flex" alignItems="center" py={0.5} px={1}>
               <SoftBox mr={2}>
-                <SoftAvatar src={row[name][0]} name={row[name][1]} variant="rounded" size="sm" />
+                <SoftAvatar
+                  src={row[name][0]}
+                  name={row[name][1]}
+                  variant="rounded"
+                  size="sm"
+                />
               </SoftBox>
-              <SoftTypography variant="button" fontWeight="medium" sx={{ width: "max-content" }}>
+              <SoftTypography
+                variant="button"
+                fontWeight="medium"
+                sx={{ width: "max-content" }}
+              >
                 {row[name][1]}
               </SoftTypography>
             </SoftBox>
@@ -109,7 +121,9 @@ function Table({ columns, rows }) {
             component="td"
             p={1}
             textAlign={align}
-            borderBottom={row.hasBorder ? `${borderWidth[1]} solid ${light.main}` : null}
+            borderBottom={
+              row.hasBorder ? `${borderWidth[1]} solid ${light.main}` : null
+            }
           >
             <SoftTypography
               variant="button"

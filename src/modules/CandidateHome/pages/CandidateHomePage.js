@@ -68,7 +68,10 @@ const CandidateHomePage = () => {
                       className="cursor-pointer baithi cursor-pointer d-flex align-items-center"
                       onClick={() => handleExamClick(exam)}
                     >
-                      <FaFileAlt className="text-blue-400 icon me-2" style={{ color: "#2b99e8" }} />
+                      <FaFileAlt
+                        className="text-blue-400 icon me-2"
+                        style={{ color: "#2b99e8" }}
+                      />
                       <span className="fs-6">{exam}</span>
                     </div>
                   </ol>

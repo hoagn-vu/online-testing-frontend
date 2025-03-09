@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // react-router-dom components
 import { Link } from "react-router-dom";
@@ -45,7 +46,9 @@ function DefaultPricingCard({ badge, price, specifications, action }) {
         mr={2}
       >
         <SoftTypography variant="button" color="white" sx={{ lineHeight: 0 }}>
-          <Icon sx={{ fontWeight: "bold" }}>{includes ? "done" : "remove"}</Icon>
+          <Icon sx={{ fontWeight: "bold" }}>
+            {includes ? "done" : "remove"}
+          </Icon>
         </SoftTypography>
       </SoftBox>
       <SoftTypography variant="body2" color="text">

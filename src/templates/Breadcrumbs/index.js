@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // react-router-dom components
 import { Link } from "react-router-dom";
@@ -35,7 +36,8 @@ function Breadcrumbs({ icon, title, route, light }) {
       <MuiBreadcrumbs
         sx={{
           "& .MuiBreadcrumbs-separator": {
-            color: ({ palette: { white, grey } }) => (light ? white.main : grey[600]),
+            color: ({ palette: { white, grey } }) =>
+              light ? white.main : grey[600],
           },
         }}
       >
@@ -87,11 +89,6 @@ function Breadcrumbs({ icon, title, route, light }) {
     </SoftBox>
   );
 }
-
-// Setting default values for the props of Breadcrumbs
-Breadcrumbs.defaultProps = {
-  light: false,
-};
 
 // Typechecking props for the Breadcrumbs
 Breadcrumbs.propTypes = {

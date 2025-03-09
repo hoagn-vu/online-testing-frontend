@@ -1,3 +1,5 @@
+import React from "react";
+
 // @mui material components
 import Tooltip from "@mui/material/Tooltip";
 
@@ -73,7 +75,12 @@ export default function data() {
         ),
         completion: (
           <SoftBox width="8rem" textAlign="left">
-            <SoftProgress value={60} color="info" variant="gradient" label={false} />
+            <SoftProgress
+              value={60}
+              color="info"
+              variant="gradient"
+              label={false}
+            />
           </SoftBox>
         ),
       },
@@ -94,7 +101,12 @@ export default function data() {
         ),
         completion: (
           <SoftBox width="8rem" textAlign="left">
-            <SoftProgress value={10} color="info" variant="gradient" label={false} />
+            <SoftProgress
+              value={10}
+              color="info"
+              variant="gradient"
+              label={false}
+            />
           </SoftBox>
         ),
       },
@@ -115,7 +127,12 @@ export default function data() {
         ),
         completion: (
           <SoftBox width="8rem" textAlign="left">
-            <SoftProgress value={100} color="success" variant="gradient" label={false} />
+            <SoftProgress
+              value={100}
+              color="success"
+              variant="gradient"
+              label={false}
+            />
           </SoftBox>
         ),
       },
@@ -138,7 +155,12 @@ export default function data() {
         ),
         completion: (
           <SoftBox width="8rem" textAlign="left">
-            <SoftProgress value={100} color="success" variant="gradient" label={false} />
+            <SoftProgress
+              value={100}
+              color="success"
+              variant="gradient"
+              label={false}
+            />
           </SoftBox>
         ),
       },
@@ -156,7 +178,12 @@ export default function data() {
         ),
         completion: (
           <SoftBox width="8rem" textAlign="left">
-            <SoftProgress value={25} color="info" variant="gradient" label={false} />
+            <SoftProgress
+              value={25}
+              color="info"
+              variant="gradient"
+              label={false}
+            />
           </SoftBox>
         ),
       },
@@ -177,7 +204,12 @@ export default function data() {
         ),
         completion: (
           <SoftBox width="8rem" textAlign="left">
-            <SoftProgress value={40} color="info" variant="gradient" label={false} />
+            <SoftProgress
+              value={40}
+              color="info"
+              variant="gradient"
+              label={false}
+            />
           </SoftBox>
         ),
       },

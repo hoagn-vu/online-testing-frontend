@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -36,7 +37,10 @@ function WorkWithTheRockets() {
           px={2}
           borderRadius="lg"
           sx={{
-            backgroundImage: ({ functions: { linearGradient, rgba }, palette: { gradients } }) =>
+            backgroundImage: ({
+              functions: { linearGradient, rgba },
+              palette: { gradients },
+            }) =>
               `${linearGradient(
                 rgba(gradients.dark.main, 0.8),
                 rgba(gradients.dark.state, 0.8)
@@ -51,8 +55,8 @@ function WorkWithTheRockets() {
           </SoftBox>
           <SoftBox mb={2}>
             <SoftTypography variant="body2" color="white">
-              Wealth creation is an evolutionarily recent positive-sum game. It is all about who
-              take the opportunity first.
+              Wealth creation is an evolutionarily recent positive-sum game. It
+              is all about who take the opportunity first.
             </SoftTypography>
           </SoftBox>
           <SoftTypography

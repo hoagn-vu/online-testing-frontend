@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // react-router components
 import { Link } from "react-router-dom";
@@ -83,11 +84,21 @@ function TransparentBlogCard({ image, title, description, action }) {
     >
       {action.type === "internal" ? (
         <Link to={action.route}>
-          <CardMedia src={image} component="img" title={title} sx={cardImageStyles} />
+          <CardMedia
+            src={image}
+            component="img"
+            title={title}
+            sx={cardImageStyles}
+          />
         </Link>
       ) : (
         <MuiLink href={action.route} target="_blank" rel="noreferrer">
-          <CardMedia src={image} component="img" title={title} sx={cardImageStyles} />
+          <CardMedia
+            src={image}
+            component="img"
+            title={title}
+            sx={cardImageStyles}
+          />
         </MuiLink>
       )}
       <SoftBox py={3}>
@@ -98,7 +109,12 @@ function TransparentBlogCard({ image, title, description, action }) {
             </SoftTypography>
           </Link>
         ) : (
-          <MuiLink href={action.route} target="_blank" rel="noreferrer" sx={cardActionStyles}>
+          <MuiLink
+            href={action.route}
+            target="_blank"
+            rel="noreferrer"
+            sx={cardActionStyles}
+          >
             <SoftTypography variant="h5" gutterBottom>
               {title}
             </SoftTypography>
@@ -122,7 +138,12 @@ function TransparentBlogCard({ image, title, description, action }) {
             </SoftTypography>
           </Link>
         ) : (
-          <MuiLink href={action.route} target="_blank" rel="noreferrer" sx={cardActionStyles}>
+          <MuiLink
+            href={action.route}
+            target="_blank"
+            rel="noreferrer"
+            sx={cardActionStyles}
+          >
             <SoftTypography
               variant="body2"
               color={action.color}

@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -28,8 +29,18 @@ import Transaction from "pages-template/billing/components/Transaction";
 function Transactions() {
   return (
     <Card sx={{ height: "100%" }}>
-      <SoftBox display="flex" justifyContent="space-between" alignItems="center" pt={3} px={2}>
-        <SoftTypography variant="h6" fontWeight="medium" textTransform="capitalize">
+      <SoftBox
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        pt={3}
+        px={2}
+      >
+        <SoftTypography
+          variant="h6"
+          fontWeight="medium"
+          textTransform="capitalize"
+        >
           Your Transaction&apos;s
         </SoftTypography>
         <SoftBox display="flex" alignItems="flex-start">

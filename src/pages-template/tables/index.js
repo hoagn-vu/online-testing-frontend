@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -40,7 +41,12 @@ function Tables() {
       <SoftBox py={3}>
         <SoftBox mb={3}>
           <Card>
-            <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
+            <SoftBox
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              p={3}
+            >
               <SoftTypography variant="h6">Authors table</SoftTypography>
             </SoftBox>
             <SoftBox
@@ -58,7 +64,12 @@ function Tables() {
           </Card>
         </SoftBox>
         <Card>
-          <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
+          <SoftBox
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            p={3}
+          >
             <SoftTypography variant="h6">Projects table</SoftTypography>
           </SoftBox>
           <SoftBox

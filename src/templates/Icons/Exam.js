@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
@@ -30,14 +31,23 @@ function Exam({ color, size }) {
       xmlnsXlink="http://www.w3.org/1999/xlink"
     >
       <title>exam</title>
-      <g id="Basic-Elements" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+      <g
+        id="Basic-Elements"
+        stroke="none"
+        strokeWidth="1"
+        fill="none"
+        fillRule="evenodd"
+      >
         <g
           id="Rounded-Icons"
           transform="translate(-1780.4000, -289.800)"
           fill={colors[color] ? colors[color].main : colors.dark.main}
           fillRule="nonzero"
         >
-          <g id="Icons-with-opacity" transform="translate(1716.000000, 291.000000)">
+          <g
+            id="Icons-with-opacity"
+            transform="translate(1716.000000, 291.000000)"
+          >
             <g id="exam" transform="translate(1.000000, 0.000000)">
               <path
                 d="M426.412,19.559h-46.803c-3.765,0-6.816,3.05-6.815,6.815c0.001,8.546-0.001,28.545-0.001,75.844
@@ -63,12 +73,6 @@ function Exam({ color, size }) {
     </svg>
   );
 }
-
-// Setting default values for the props of Exam
-Exam.defaultProps = {
-  color: "dark",
-  size: "16px",
-};
 
 // Typechecking props for the Exam
 Exam.propTypes = {

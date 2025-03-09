@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // react-routers components
 import { Link } from "react-router-dom";
@@ -43,7 +44,10 @@ function ProfileInfoCard({ title, description, info, social, action }) {
   Object.keys(info).forEach((el) => {
     if (el.match(/[A-Z\s]+/)) {
       const uppercaseLetter = Array.from(el).find((i) => i.match(/[A-Z]+/));
-      const newElement = el.replace(uppercaseLetter, ` ${uppercaseLetter.toLowerCase()}`);
+      const newElement = el.replace(
+        uppercaseLetter,
+        ` ${uppercaseLetter.toLowerCase()}`
+      );
 
       labels.push(newElement);
     } else {
@@ -57,7 +61,11 @@ function ProfileInfoCard({ title, description, info, social, action }) {
   // Render the card info items
   const renderItems = labels.map((label, key) => (
     <SoftBox key={label} display="flex" py={1} pr={2}>
-      <SoftTypography variant="button" fontWeight="bold" textTransform="capitalize">
+      <SoftTypography
+        variant="button"
+        fontWeight="bold"
+        textTransform="capitalize"
+      >
         {label}: &nbsp;
       </SoftTypography>
       <SoftTypography variant="button" fontWeight="regular" color="text">
@@ -86,11 +94,26 @@ function ProfileInfoCard({ title, description, info, social, action }) {
 
   return (
     <Card sx={{ height: "100%" }}>
-      <SoftBox display="flex" justifyContent="space-between" alignItems="center" pt={2} px={2}>
-        <SoftTypography variant="h6" fontWeight="medium" textTransform="capitalize">
+      <SoftBox
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        pt={2}
+        px={2}
+      >
+        <SoftTypography
+          variant="h6"
+          fontWeight="medium"
+          textTransform="capitalize"
+        >
           {title}
         </SoftTypography>
-        <SoftTypography component={Link} to={action.route} variant="body2" color="secondary">
+        <SoftTypography
+          component={Link}
+          to={action.route}
+          variant="body2"
+          color="secondary"
+        >
           <Tooltip title={action.tooltip} placement="top">
             <Icon>edit</Icon>
           </Tooltip>
@@ -108,7 +131,11 @@ function ProfileInfoCard({ title, description, info, social, action }) {
         <SoftBox>
           {renderItems}
           <SoftBox display="flex" py={1} pr={2}>
-            <SoftTypography variant="button" fontWeight="bold" textTransform="capitalize">
+            <SoftTypography
+              variant="button"
+              fontWeight="bold"
+              textTransform="capitalize"
+            >
               social: &nbsp;
             </SoftTypography>
             {renderSocial}

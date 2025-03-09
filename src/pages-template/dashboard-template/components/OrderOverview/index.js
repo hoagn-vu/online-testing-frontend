@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -33,8 +34,17 @@ function OrdersOverview() {
         </SoftTypography>
         <SoftBox mt={1} mb={2}>
           <SoftTypography variant="button" color="text" fontWeight="regular">
-            <SoftTypography display="inline" variant="body2" verticalAlign="middle">
-              <Icon sx={{ fontWeight: "bold", color: ({ palette: { success } }) => success.main }}>
+            <SoftTypography
+              display="inline"
+              variant="body2"
+              verticalAlign="middle"
+            >
+              <Icon
+                sx={{
+                  fontWeight: "bold",
+                  color: ({ palette: { success } }) => success.main,
+                }}
+              >
                 arrow_upward
               </Icon>
             </SoftTypography>
@@ -77,7 +87,12 @@ function OrdersOverview() {
           title="New card added for order #4395133"
           dateTime="18 DEC 4:54 AM"
         />
-        <TimelineItem color="dark" icon="paid" title="New order #9583120" dateTime="17 DEC" />
+        <TimelineItem
+          color="dark"
+          icon="paid"
+          title="New order #9583120"
+          dateTime="17 DEC"
+        />
       </SoftBox>
     </Card>
   );

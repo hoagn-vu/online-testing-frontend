@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // react-router components
 import { Link } from "react-router-dom";
@@ -28,17 +29,36 @@ import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
 import SoftAvatar from "components/SoftAvatar";
 
-function DefaultBlogCard({ image, category, title, description, author, action }) {
+function DefaultBlogCard({
+  image,
+  category,
+  title,
+  description,
+  author,
+  action,
+}) {
   return (
     <Card>
       <SoftBox mt={2} mx={2}>
         {action.type === "internal" ? (
           <Link to={action.route}>
-            <SoftBox component="img" src={image} alt={title} width="100%" borderRadius="lg" />
+            <SoftBox
+              component="img"
+              src={image}
+              alt={title}
+              width="100%"
+              borderRadius="lg"
+            />
           </Link>
         ) : (
           <MuiLink href={action.route} target="_blank" rel="noreferrer">
-            <SoftBox component="img" src={image} alt={title} width="100%" borderRadius="lg" />
+            <SoftBox
+              component="img"
+              src={image}
+              alt={title}
+              width="100%"
+              borderRadius="lg"
+            />
           </MuiLink>
         )}
       </SoftBox>
@@ -84,9 +104,19 @@ function DefaultBlogCard({ image, category, title, description, author, action }
         </SoftTypography>
         {author && (
           <SoftBox display="flex" alignItems="center" mt={3}>
-            <SoftAvatar variant="rounded" src={author.image} alt={author.name} shadow="md" />
+            <SoftAvatar
+              variant="rounded"
+              src={author.image}
+              alt={author.name}
+              shadow="md"
+            />
             <SoftBox pl={2} lineHeight={0}>
-              <SoftTypography component="h6" variant="button" fontWeight="medium" gutterBottom>
+              <SoftTypography
+                component="h6"
+                variant="button"
+                fontWeight="medium"
+                gutterBottom
+              >
                 {author.name}
               </SoftTypography>
               <SoftTypography variant="caption" color="text">

@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // react-routers components
 import { Link } from "react-router-dom";
@@ -29,54 +30,83 @@ import SoftAvatar from "components/SoftAvatar";
 import SoftButton from "components/SoftButton";
 
 function ProfilesList({ title, profiles }) {
-  const renderProfiles = profiles.map(({ image, name, description, action }) => (
-    <SoftBox key={name} component="li" display="flex" alignItems="center" py={1} mb={1}>
-      <SoftBox mr={2}>
-        <SoftAvatar src={image} alt="something here" variant="rounded" shadow="md" />
-      </SoftBox>
+  const renderProfiles = profiles.map(
+    ({ image, name, description, action }) => (
       <SoftBox
+        key={name}
+        component="li"
         display="flex"
-        flexDirection="column"
-        alignItems="flex-start"
-        justifyContent="center"
+        alignItems="center"
+        py={1}
+        mb={1}
       >
-        <SoftTypography variant="button" fontWeight="medium">
-          {name}
-        </SoftTypography>
-        <SoftTypography variant="caption" color="text">
-          {description}
-        </SoftTypography>
+        <SoftBox mr={2}>
+          <SoftAvatar
+            src={image}
+            alt="something here"
+            variant="rounded"
+            shadow="md"
+          />
+        </SoftBox>
+        <SoftBox
+          display="flex"
+          flexDirection="column"
+          alignItems="flex-start"
+          justifyContent="center"
+        >
+          <SoftTypography variant="button" fontWeight="medium">
+            {name}
+          </SoftTypography>
+          <SoftTypography variant="caption" color="text">
+            {description}
+          </SoftTypography>
+        </SoftBox>
+        <SoftBox ml="auto">
+          {action.type === "internal" ? (
+            <SoftButton
+              component={Link}
+              to={action.route}
+              variant="text"
+              color="info"
+            >
+              {action.label}
+            </SoftButton>
+          ) : (
+            <SoftButton
+              component="a"
+              href={action.route}
+              target="_blank"
+              rel="noreferrer"
+              variant="text"
+              color={action.color}
+            >
+              {action.label}
+            </SoftButton>
+          )}
+        </SoftBox>
       </SoftBox>
-      <SoftBox ml="auto">
-        {action.type === "internal" ? (
-          <SoftButton component={Link} to={action.route} variant="text" color="info">
-            {action.label}
-          </SoftButton>
-        ) : (
-          <SoftButton
-            component="a"
-            href={action.route}
-            target="_blank"
-            rel="noreferrer"
-            variant="text"
-            color={action.color}
-          >
-            {action.label}
-          </SoftButton>
-        )}
-      </SoftBox>
-    </SoftBox>
-  ));
+    )
+  );
 
   return (
     <Card sx={{ height: "100%" }}>
       <SoftBox pt={2} px={2}>
-        <SoftTypography variant="h6" fontWeight="medium" textTransform="capitalize">
+        <SoftTypography
+          variant="h6"
+          fontWeight="medium"
+          textTransform="capitalize"
+        >
           {title}
         </SoftTypography>
       </SoftBox>
       <SoftBox p={2}>
-        <SoftBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
+        <SoftBox
+          component="ul"
+          display="flex"
+          flexDirection="column"
+          p={0}
+          m={0}
+        >
           {renderProfiles}
         </SoftBox>
       </SoftBox>

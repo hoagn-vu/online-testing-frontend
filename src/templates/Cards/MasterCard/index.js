@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
@@ -65,13 +66,28 @@ function MasterCard({ color, number, holder, expires }) {
         <SoftBox color="white" p={1} lineHeight={0} display="inline-block">
           <Icon fontSize="default">wifi</Icon>
         </SoftBox>
-        <SoftTypography variant="h5" color="white" fontWeight="medium" sx={{ mt: 3, mb: 5, pb: 1 }}>
-          {num1}&nbsp;&nbsp;&nbsp;{num2}&nbsp;&nbsp;&nbsp;{num3}&nbsp;&nbsp;&nbsp;{num4}
+        <SoftTypography
+          variant="h5"
+          color="white"
+          fontWeight="medium"
+          sx={{ mt: 3, mb: 5, pb: 1 }}
+        >
+          {num1}&nbsp;&nbsp;&nbsp;{num2}&nbsp;&nbsp;&nbsp;{num3}
+          &nbsp;&nbsp;&nbsp;{num4}
         </SoftTypography>
-        <SoftBox display="flex" justifyContent="space-between" alignItems="center">
+        <SoftBox
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+        >
           <SoftBox display="flex" alignItems="center">
             <SoftBox mr={3} lineHeight={1}>
-              <SoftTypography variant="button" color="white" fontWeight="regular" opacity={0.8}>
+              <SoftTypography
+                variant="button"
+                color="white"
+                fontWeight="regular"
+                opacity={0.8}
+              >
                 Card Holder
               </SoftTypography>
               <SoftTypography
@@ -84,7 +100,12 @@ function MasterCard({ color, number, holder, expires }) {
               </SoftTypography>
             </SoftBox>
             <SoftBox lineHeight={1}>
-              <SoftTypography variant="button" color="white" fontWeight="regular" opacity={0.8}>
+              <SoftTypography
+                variant="button"
+                color="white"
+                fontWeight="regular"
+                opacity={0.8}
+              >
                 Expires
               </SoftTypography>
               <SoftTypography variant="h6" color="white" fontWeight="medium">
@@ -93,7 +114,13 @@ function MasterCard({ color, number, holder, expires }) {
             </SoftBox>
           </SoftBox>
           <SoftBox display="flex" justifyContent="flex-end" width="20%">
-            <SoftBox component="img" src={masterCardLogo} alt="master card" width="60%" mt={1} />
+            <SoftBox
+              component="img"
+              src={masterCardLogo}
+              alt="master card"
+              width="60%"
+              mt={1}
+            />
           </SoftBox>
         </SoftBox>
       </SoftBox>
@@ -108,7 +135,15 @@ MasterCard.defaultProps = {
 
 // Typechecking props for the MasterCard
 MasterCard.propTypes = {
-  color: PropTypes.oneOf(["primary", "secondary", "info", "success", "warning", "error", "dark"]),
+  color: PropTypes.oneOf([
+    "primary",
+    "secondary",
+    "info",
+    "success",
+    "warning",
+    "error",
+    "dark",
+  ]),
   number: PropTypes.number.isRequired,
   holder: PropTypes.string.isRequired,
   expires: PropTypes.string.isRequired,

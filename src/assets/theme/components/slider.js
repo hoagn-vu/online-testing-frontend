@@ -47,7 +47,10 @@ const slider = {
     },
 
     track: {
-      backgroundImage: linearGradient(gradients.info.main, gradients.info.state),
+      backgroundImage: linearGradient(
+        gradients.info.main,
+        gradients.info.state
+      ),
       height: pxToRem(6),
       position: "relative",
       top: pxToRem(2),

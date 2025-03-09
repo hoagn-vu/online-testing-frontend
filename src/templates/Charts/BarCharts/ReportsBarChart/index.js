@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 
 // porp-types is a library for typechecking of props
 import PropTypes from "prop-types";
@@ -44,7 +44,10 @@ function ReportsBarChart({ color, title, description, chart, items }) {
         color={color}
         icon={{ color: icon.color, component: icon.component }}
         label={label}
-        progress={{ content: progress.content, percentage: progress.percentage }}
+        progress={{
+          content: progress.content,
+          percentage: progress.percentage,
+        }}
       />
     </Grid>
   ));
@@ -70,10 +73,19 @@ function ReportsBarChart({ color, title, description, chart, items }) {
         )}
         <SoftBox px={1}>
           <SoftBox mb={2}>
-            <SoftTypography variant="h6" fontWeight="medium" textTransform="capitalize">
+            <SoftTypography
+              variant="h6"
+              fontWeight="medium"
+              textTransform="capitalize"
+            >
               {title}
             </SoftTypography>
-            <SoftTypography component="div" variant="button" color="text" fontWeight="regular">
+            <SoftTypography
+              component="div"
+              variant="button"
+              color="text"
+              fontWeight="regular"
+            >
               {description}
             </SoftTypography>
           </SoftBox>
@@ -97,10 +109,20 @@ ReportsBarChart.defaultProps = {
 
 // Typechecking props for the ReportsBarChart
 ReportsBarChart.propTypes = {
-  color: PropTypes.oneOf(["primary", "secondary", "info", "success", "warning", "error", "dark"]),
+  color: PropTypes.oneOf([
+    "primary",
+    "secondary",
+    "info",
+    "success",
+    "warning",
+    "error",
+    "dark",
+  ]),
   title: PropTypes.string.isRequired,
   description: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  chart: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.array, PropTypes.object])).isRequired,
+  chart: PropTypes.objectOf(
+    PropTypes.oneOfType([PropTypes.array, PropTypes.object])
+  ).isRequired,
   items: PropTypes.arrayOf(PropTypes.object),
 };
 

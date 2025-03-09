@@ -83,7 +83,11 @@ const Header = () => {
                             <li><Link className="dropdown-item" id="account-dropdown-item" to="/history">Lịch sử xem</Link></li>
                             <li><hr className="dropdown-divider" /></li> */}
               <li>
-                <Link className="dropdown-item  " id="account-dropdown-item" onClick={handleLogout}>
+                <Link
+                  className="dropdown-item  "
+                  id="account-dropdown-item"
+                  onClick={handleLogout}
+                >
                   <div className="d-flex align-items-center justify-content-between">
                     Đăng xuất
                     <i className="fa-solid fa-right-from-bracket"></i>
@@ -119,7 +123,10 @@ const Header = () => {
                 />
                 <span className="nav-username fs-6">Người dùng</span>
               </Link>
-              <ul className="dropdown-menu bg-dark" aria-labelledby="offcanvasNavbarDropdown">
+              <ul
+                className="dropdown-menu bg-dark"
+                aria-labelledby="offcanvasNavbarDropdown"
+              >
                 <li>
                   <Link
                     className="dropdown-item text-white"

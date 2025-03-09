@@ -32,7 +32,10 @@ function timelineItemIcon(theme, ownerState) {
     fontSize: size.xl,
     fontWeight: fontWeightMedium,
     zIndex: 1,
-    backgroundImage: linearGradient(gradients[color].main, gradients[color].state),
+    backgroundImage: linearGradient(
+      gradients[color].main,
+      gradients[color].state
+    ),
     WebkitBackgroundClip: "text",
     WebkitTextFillColor: transparent.main,
   };

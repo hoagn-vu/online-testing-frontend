@@ -1,4 +1,6 @@
 /* eslint-disable react/prop-types */
+import React from "react";
+
 // @mui material components
 import Icon from "@mui/material/Icon";
 
@@ -22,7 +24,12 @@ function Completion({ value, color }) {
         {value}%&nbsp;
       </SoftTypography>
       <SoftBox width="8rem">
-        <SoftProgress value={value} color={color} variant="gradient" label={false} />
+        <SoftProgress
+          value={value}
+          color={color}
+          variant="gradient"
+          label={false}
+        />
       </SoftBox>
     </SoftBox>
   );

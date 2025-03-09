@@ -19,7 +19,16 @@ import { styled } from "@mui/material/styles";
 
 export default styled(Badge)(({ theme, ownerState }) => {
   const { palette, typography, borders, functions } = theme;
-  const { color, circular, border, size, indicator, variant, container, children } = ownerState;
+  const {
+    color,
+    circular,
+    border,
+    size,
+    indicator,
+    variant,
+    container,
+    children,
+  } = ownerState;
 
   const { white, dark, gradients, badgeColors } = palette;
   const { size: fontSize, fontWeightBold } = typography;
@@ -90,7 +99,9 @@ export default styled(Badge)(({ theme, ownerState }) => {
     const backgroundValue = badgeColors[colorProp]
       ? badgeColors[colorProp].background
       : badgeColors.info.background;
-    let colorValue = badgeColors[colorProp] ? badgeColors[colorProp].text : badgeColors.info.text;
+    let colorValue = badgeColors[colorProp]
+      ? badgeColors[colorProp].text
+      : badgeColors.info.text;
 
     if (colorProp === "light") {
       colorValue = dark.main;

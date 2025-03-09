@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
@@ -25,7 +26,14 @@ import Icon from "@mui/material/Icon";
 import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
 
-function MiniStatisticsCard({ bgColor, title, count, percentage, icon, direction }) {
+function MiniStatisticsCard({
+  bgColor,
+  title,
+  count,
+  percentage,
+  icon,
+  direction,
+}) {
   return (
     <Card>
       <SoftBox bgColor={bgColor} variant="gradient">
@@ -68,7 +76,11 @@ function MiniStatisticsCard({ bgColor, title, count, percentage, icon, direction
                   // color={bgColor === "white" ? "dark" : "white"}
                 >
                   {count}{" "}
-                  <SoftTypography variant="button" color={percentage.color} fontWeight="bold">
+                  <SoftTypography
+                    variant="button"
+                    color={percentage.color}
+                    fontWeight="bold"
+                  >
                     {percentage.text}
                   </SoftTypography>
                 </SoftTypography>
@@ -149,7 +161,15 @@ MiniStatisticsCard.propTypes = {
     text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }),
   icon: PropTypes.shape({
-    color: PropTypes.oneOf(["primary", "secondary", "info", "success", "warning", "error", "dark"]),
+    color: PropTypes.oneOf([
+      "primary",
+      "secondary",
+      "info",
+      "success",
+      "warning",
+      "error",
+      "dark",
+    ]),
     component: PropTypes.node.isRequired,
   }).isRequired,
   direction: PropTypes.oneOf(["right", "left"]),

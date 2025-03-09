@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState } from "react";
+import React, { useState } from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -61,7 +61,12 @@ function Projects() {
 
   return (
     <Card>
-      <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
+      <SoftBox
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        p={3}
+      >
         <SoftBox>
           <SoftTypography variant="h6" gutterBottom>
             Projects
@@ -82,7 +87,11 @@ function Projects() {
           </SoftBox>
         </SoftBox>
         <SoftBox color="text" px={2}>
-          <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
+          <Icon
+            sx={{ cursor: "pointer", fontWeight: "bold" }}
+            fontSize="small"
+            onClick={openMenu}
+          >
             more_vert
           </Icon>
         </SoftBox>

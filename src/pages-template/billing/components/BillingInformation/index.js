@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -32,7 +33,13 @@ function BillingInformation() {
         </SoftTypography>
       </SoftBox>
       <SoftBox pt={1} pb={2} px={2}>
-        <SoftBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
+        <SoftBox
+          component="ul"
+          display="flex"
+          flexDirection="column"
+          p={0}
+          m={0}
+        >
           <Bill
             name="oliver liam"
             company="viking burrito"

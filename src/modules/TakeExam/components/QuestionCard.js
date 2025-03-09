@@ -55,13 +55,17 @@ const QuestionCard = ({
           {options.map((option, index) => (
             <li
               key={index}
-              className={`option ${selectedOptions.includes(option) ? "selected" : ""}`}
+              className={`option ${
+                selectedOptions.includes(option) ? "selected" : ""
+              }`}
             >
               <label className="d-flex pt-1">
                 <div>
                   <input
                     type={allowMultiple ? "checkbox" : "radio"}
-                    name={allowMultiple ? undefined : `question-${questionNumber}`}
+                    name={
+                      allowMultiple ? undefined : `question-${questionNumber}`
+                    }
                     value={option}
                     checked={selectedOptions.includes(option)}
                     onChange={() => handleOptionChange(option)}

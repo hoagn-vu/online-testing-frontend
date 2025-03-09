@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 import { forwardRef } from "react";
 
@@ -27,7 +28,10 @@ import SoftInputIconRoot from "components/SoftInput/SoftInputIconRoot";
 // Soft UI Dashboard React contexts
 import { useSoftUIController } from "context";
 
-const SoftInput = forwardRef(({ size, icon, error, success, disabled, ...rest }, ref) => {
+const SoftInput = forwardRef(function SoftInput(
+  { size, icon, error, success, disabled, ...rest },
+  ref
+) {
   let template;
   const [controller] = useSoftUIController();
   const { direction } = controller;
@@ -35,7 +39,10 @@ const SoftInput = forwardRef(({ size, icon, error, success, disabled, ...rest },
 
   if (icon.component && icon.direction === "left") {
     template = (
-      <SoftInputWithIconRoot ref={ref} ownerState={{ error, success, disabled }}>
+      <SoftInputWithIconRoot
+        ref={ref}
+        ownerState={{ error, success, disabled }}
+      >
         <SoftInputIconBoxRoot ownerState={{ size }}>
           <SoftInputIconRoot fontSize="small" ownerState={{ size }}>
             {icon.component}
@@ -43,16 +50,33 @@ const SoftInput = forwardRef(({ size, icon, error, success, disabled, ...rest },
         </SoftInputIconBoxRoot>
         <SoftInputRoot
           {...rest}
-          ownerState={{ size, error, success, iconDirection, direction, disabled }}
+          ownerState={{
+            size,
+            error,
+            success,
+            iconDirection,
+            direction,
+            disabled,
+          }}
         />
       </SoftInputWithIconRoot>
     );
   } else if (icon.component && icon.direction === "right") {
     template = (
-      <SoftInputWithIconRoot ref={ref} ownerState={{ error, success, disabled }}>
+      <SoftInputWithIconRoot
+        ref={ref}
+        ownerState={{ error, success, disabled }}
+      >
         <SoftInputRoot
           {...rest}
-          ownerState={{ size, error, success, iconDirection, direction, disabled }}
+          ownerState={{
+            size,
+            error,
+            success,
+            iconDirection,
+            direction,
+            disabled,
+          }}
         />
         <SoftInputIconBoxRoot ownerState={{ size }}>
           <SoftInputIconRoot fontSize="small" ownerState={{ size }}>
@@ -63,7 +87,11 @@ const SoftInput = forwardRef(({ size, icon, error, success, disabled, ...rest },
     );
   } else {
     template = (
-      <SoftInputRoot {...rest} ref={ref} ownerState={{ size, error, success, disabled }} />
+      <SoftInputRoot
+        {...rest}
+        ref={ref}
+        ownerState={{ size, error, success, disabled }}
+      />
     );
   }
 

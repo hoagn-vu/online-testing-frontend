@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState } from "react";
+import React, { useState } from "react";
 
 // react-router-dom components
 import { Link } from "react-router-dom";
@@ -94,7 +94,11 @@ function SignUp() {
               </SoftButton>
             </SoftBox>
             <SoftBox mt={3} textAlign="center">
-              <SoftTypography variant="button" color="text" fontWeight="regular">
+              <SoftTypography
+                variant="button"
+                color="text"
+                fontWeight="regular"
+              >
                 Already have an account?&nbsp;
                 <SoftTypography
                   component={Link}

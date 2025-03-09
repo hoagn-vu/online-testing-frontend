@@ -42,7 +42,8 @@ const inputBase = {
       border: `${borderWidth[1]} solid ${inputColors.borderColor.main}`,
       appearance: "none !important",
       borderRadius: borderRadius.md,
-      transition: "box-shadow 150ms ease, border-color 150ms ease, padding 150ms ease !important",
+      transition:
+        "box-shadow 150ms ease, border-color 150ms ease, padding 150ms ease !important",
     },
 
     input: {

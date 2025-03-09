@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
@@ -30,14 +31,23 @@ function Document({ color, size }) {
       xmlnsXlink="http://www.w3.org/1999/xlink"
     >
       <title>document</title>
-      <g id="Basic-Elements" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+      <g
+        id="Basic-Elements"
+        stroke="none"
+        strokeWidth="1"
+        fill="none"
+        fillRule="evenodd"
+      >
         <g
           id="Rounded-Icons"
           transform="translate(-1869.8450, -597.9700)"
           fill={colors[color] ? colors[color].main : colors.dark.main}
           fillRule="nonzero"
         >
-          <g id="Icons-with-opacity" transform="translate(1716.000000, 291.000000)">
+          <g
+            id="Icons-with-opacity"
+            transform="translate(1716.000000, 291.000000)"
+          >
             <g id="document" transform="translate(154.000000, 300.000000)">
               <path
                 d="M30.9090909,7.27272727 L1.81818182,7.27272727 C0.814545455,7.27272727 0,8.08727273 0,9.09090909 L0,41.8181818 C0,42.8218182 0.814545455,43.6363636 1.81818182,43.6363636 L30.9090909,43.6363636 C31.9127273,43.6363636 32.7272727,42.8218182 32.7272727,41.8181818 L32.7272727,9.09090909 C32.7272727,8.08727273 31.9127273,7.27272727 30.9090909,7.27272727 Z M18.1818182,34.5454545 L7.27272727,34.5454545 L7.27272727,30.9090909 L18.1818182,30.9090909 L18.1818182,34.5454545 Z M25.4545455,27.2727273 L7.27272727,27.2727273 L7.27272727,23.6363636 L25.4545455,23.6363636 L25.4545455,27.2727273 Z M25.4545455,20 L7.27272727,20 L7.27272727,16.3636364 L25.4545455,16.3636364 L25.4545455,20 Z"
@@ -50,12 +60,6 @@ function Document({ color, size }) {
     </svg>
   );
 }
-
-// Setting default values for the props of Document
-Document.defaultProps = {
-  color: "dark",
-  size: "16px",
-};
 
 // Typechecking props for the Document
 Document.propTypes = {

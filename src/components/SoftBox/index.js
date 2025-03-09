@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 import { forwardRef } from "react";
 
@@ -22,7 +23,10 @@ import PropTypes from "prop-types";
 import SoftBoxRoot from "components/SoftBox/SoftBoxRoot";
 
 const SoftBox = forwardRef(
-  ({ variant, bgColor, color, opacity, borderRadius, shadow, ...rest }, ref) => (
+  (
+    { variant, bgColor, color, opacity, borderRadius, shadow, ...rest },
+    ref
+  ) => (
     <SoftBoxRoot
       {...rest}
       ref={ref}
@@ -30,6 +34,8 @@ const SoftBox = forwardRef(
     />
   )
 );
+
+SoftBox.displayName = "SoftBox";
 
 // Setting default values for the props of SoftBox
 SoftBox.defaultProps = {

@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
@@ -45,7 +46,11 @@ function Bill({ name, company, email, vat, noGutter }) {
           flexDirection={{ xs: "column", sm: "row" }}
           mb={2}
         >
-          <SoftTypography variant="button" fontWeight="medium" textTransform="capitalize">
+          <SoftTypography
+            variant="button"
+            fontWeight="medium"
+            textTransform="capitalize"
+          >
             {name}
           </SoftTypography>
 
@@ -68,7 +73,11 @@ function Bill({ name, company, email, vat, noGutter }) {
         <SoftBox mb={1} lineHeight={0}>
           <SoftTypography variant="caption" color="text">
             Company Name:&nbsp;&nbsp;&nbsp;
-            <SoftTypography variant="caption" fontWeight="medium" textTransform="capitalize">
+            <SoftTypography
+              variant="caption"
+              fontWeight="medium"
+              textTransform="capitalize"
+            >
               {company}
             </SoftTypography>
           </SoftTypography>

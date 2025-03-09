@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import React , {} from "react";
+import React from "react";
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
@@ -30,9 +30,20 @@ import SoftBadge from "components/SoftBadge";
 import { useTimeline } from "templates/Timeline/context";
 
 // Custom styles for the TimelineItem
-import { timelineItem, timelineItemIcon } from "templates/Timeline/TimelineItem/styles";
+import {
+  timelineItem,
+  timelineItemIcon,
+} from "templates/Timeline/TimelineItem/styles";
 
-function TimelineItem({ color, icon, title, dateTime, description, badges = [], lastItem }) {
+function TimelineItem({
+  color,
+  icon,
+  title,
+  dateTime,
+  description,
+  badges = [],
+  lastItem,
+}) {
   const isDark = useTimeline();
 
   const renderBadges =
@@ -42,14 +53,22 @@ function TimelineItem({ color, icon, title, dateTime, description, badges = [], 
 
           return (
             <SoftBox key={badgeKey} mr={key === badges.length - 1 ? 0 : 0.5}>
-              <SoftBadge color={color} size="xs" badgeContent={badge} container />
+              <SoftBadge
+                color={color}
+                size="xs"
+                badgeContent={badge}
+                container
+              />
             </SoftBox>
           );
         })
       : null;
 
   return (
-    <SoftBox position="relative" sx={(theme) => timelineItem(theme, { lastItem })}>
+    <SoftBox
+      position="relative"
+      sx={(theme) => timelineItem(theme, { lastItem })}
+    >
       <SoftBox
         bgColor={isDark ? "dark" : "white"}
         width="1.625rem"
@@ -62,8 +81,17 @@ function TimelineItem({ color, icon, title, dateTime, description, badges = [], 
       >
         <Icon sx={(theme) => timelineItemIcon(theme, { color })}>{icon}</Icon>
       </SoftBox>
-      <SoftBox ml={5.75} pt={description ? 0.7 : 0.5} lineHeight={0} maxWidth="30rem">
-        <SoftTypography variant="button" fontWeight="medium" color={isDark ? "white" : "dark"}>
+      <SoftBox
+        ml={5.75}
+        pt={description ? 0.7 : 0.5}
+        lineHeight={0}
+        maxWidth="30rem"
+      >
+        <SoftTypography
+          variant="button"
+          fontWeight="medium"
+          color={isDark ? "white" : "dark"}
+        >
           {title}
         </SoftTypography>
         <SoftBox mt={0.5}>
@@ -116,7 +144,9 @@ TimelineItem.propTypes = {
   title: PropTypes.string.isRequired,
   dateTime: PropTypes.string.isRequired,
   description: PropTypes.string,
-  badges: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])),
+  badges: PropTypes.arrayOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  ),
   lastItem: PropTypes.bool,
 };
 

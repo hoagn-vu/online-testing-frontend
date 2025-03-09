@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -44,7 +45,11 @@ function Billing() {
             <Grid item xs={12} lg={8}>
               <Grid container spacing={3}>
                 <Grid item xs={12} xl={6}>
-                  <MasterCard number={4562112245947852} holder="jack peterson" expires="11/22" />
+                  <MasterCard
+                    number={4562112245947852}
+                    holder="jack peterson"
+                    expires="11/22"
+                  />
                 </Grid>
                 <Grid item xs={12} md={6} xl={3}>
                   <DefaultInfoCard

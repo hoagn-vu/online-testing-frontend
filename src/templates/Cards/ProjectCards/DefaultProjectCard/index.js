@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // react-router-dom components
 import { Link } from "react-router-dom";
@@ -30,7 +31,14 @@ import SoftTypography from "components/SoftTypography";
 import SoftButton from "components/SoftButton";
 import SoftAvatar from "components/SoftAvatar";
 
-function DefaultProjectCard({ image, label, title, description, action, authors }) {
+function DefaultProjectCard({
+  image,
+  label,
+  title,
+  description,
+  action,
+  authors,
+}) {
   const renderAuthors = authors.map(({ image: media, name }) => (
     <Tooltip key={name} title={name} placement="bottom">
       <SoftAvatar
@@ -61,7 +69,12 @@ function DefaultProjectCard({ image, label, title, description, action, authors 
         overflow: "visible",
       }}
     >
-      <SoftBox position="relative" width="100.25%" shadow="xl" borderRadius="xl">
+      <SoftBox
+        position="relative"
+        width="100.25%"
+        shadow="xl"
+        borderRadius="xl"
+      >
         <CardMedia
           src={image}
           component="img"
@@ -114,7 +127,11 @@ function DefaultProjectCard({ image, label, title, description, action, authors 
             {description}
           </SoftTypography>
         </SoftBox>
-        <SoftBox display="flex" justifyContent="space-between" alignItems="center">
+        <SoftBox
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+        >
           {action.type === "internal" ? (
             <SoftButton
               component={Link}

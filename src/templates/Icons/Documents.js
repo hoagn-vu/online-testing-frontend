@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React from "react";
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
@@ -30,14 +31,23 @@ function Documents({ color, size }) {
       xmlnsXlink="http://www.w3.org/1999/xlink"
     >
       <title>document</title>
-      <g id="Basic-Elements" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+      <g
+        id="Basic-Elements"
+        stroke="none"
+        strokeWidth="1"
+        fill="none"
+        fillRule="evenodd"
+      >
         <g
           id="Rounded-Icons"
           transform="translate(-1869.000000, -590.850000)"
           fill={colors[color] ? colors[color].main : colors.dark.main}
           fillRule="nonzero"
         >
-          <g id="Icons-with-opacity" transform="translate(1716.000000, 291.000000)">
+          <g
+            id="Icons-with-opacity"
+            transform="translate(1716.000000, 291.000000)"
+          >
             <g id="document" transform="translate(154.000000, 300.000000)">
               <path
                 d="M40,40 L36.3636364,40 L36.3636364,3.63636364 L5.45454545,3.63636364 L5.45454545,0 L38.1818182,0 C39.1854545,0 40,0.814545455 40,1.81818182 L40,40 Z"
@@ -55,12 +65,6 @@ function Documents({ color, size }) {
     </svg>
   );
 }
-
-// Setting default values for the props of Document
-Documents.defaultProps = {
-  color: "dark",
-  size: "16px",
-};
 
 // Typechecking props for the Document
 Documents.propTypes = {
