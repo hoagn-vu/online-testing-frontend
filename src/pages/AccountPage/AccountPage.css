@@ -1,0 +1,277 @@
+.account-page {
+  width: 100%;
+  box-sizing: border-box;
+  overflow-y: auto;
+  padding-left: 230px;
+  padding-right: 15px;
+  padding-top: 15px;
+}
+
+/* Thanh chọn vai trò */
+.role-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.role-tab {
+  padding: 8px 15px;
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.role-tab.active {
+  background-color: #007bff;
+  color: white;
+  border: none;
+}
+
+/* Đảm bảo bảng tài khoản không tràn ra ngoài */
+.account-table-container {
+  width: 100%;
+
+}
+
+/* Định dạng lại bảng để phù hợp với giao diện admin */
+.account-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.breadcrumb-container {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.breadcrumb-link {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.breadcrumb-current {
+  font-weight: bold;
+}
+
+.account-actions {
+  display: flex;
+  align-items: center; /* Căn giữa theo chiều dọc */
+  justify-content: space-between;
+  width: 100%;
+}
+
+.role-selector {
+  display: flex;
+  align-items: center; /* Căn giữa theo chiều dọc */
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.search-box {
+  margin-left: auto;
+  padding: 8px;
+  width: 200px;
+  height: 38px; /* Đặt chiều cao bằng với các nút */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.search-icon {
+  color: #000000;
+  cursor: pointer;
+  margin-left: 6px;
+  padding-bottom: 5px;
+  transform: scale(1.3); /* Cách 2: Phóng to */
+}
+
+.add-btn, .upload-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 5px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.upload-btn {
+  background-color: #28a745;
+}
+
+/* Bảng tài khoản */
+.account-table-container {
+  margin-bottom: 20px;
+}
+
+.account-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.account-table th, .account-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.account-table th {
+  background-color: #f4f4f4;
+}
+
+.edit-btn, .delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.edit-btn {
+  color: #007bff;
+}
+
+.delete-btn {
+  color: red;
+}
+/* Định dạng dropdown */
+.role-selector {
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.role-selector select {
+  padding: 5px;
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+/* Điều chỉnh bảng */
+.account-table-container {
+  margin-top: 0px;
+}
+
+.form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Màn che mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.form-container {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 350px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.form-container h3 {
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+.form-container label {
+  display: block;
+  text-align: left;
+  margin: 10px 0 5px;
+}
+
+.form-container select,
+.form-container input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.form-container button {
+  margin-top: 15px;
+  width: 40%;
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.form-container button[type="submit"] {
+  background: #007bff;
+  color: white;
+}
+
+.form-container button[type="button"] {
+  background: #dc3545;
+  color: white;
+  margin-left: 10px;
+}
+
+.form-container button:hover {
+  opacity: 0.9;
+}
+
+input, select {
+  padding: 2px;
+  margin: 5px 0;
+}
+
+.change-password-btn {
+  background-color: #ff9800;
+  color: white;
+  padding: 5px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Xóa */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.confirm-btn {
+  background: red;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.cancel-btn {
+  background: gray;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+@media (max-width: 760px) {
+  .account-page {
+    width: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+    padding-left: 60px;
+    transition: width 0.3s ease-in-out;
+  }
+}

@@ -1,0 +1,55 @@
+button {
+    height: 40px;
+    margin: 0px;
+    padding: 0px;
+}
+
+.header-question-take-exam {
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.question-take-exam {
+    border-radius: 10px;
+    padding: 0px 25px 10px 25px;
+    box-sizing: border-box;
+    background-color: white;
+    margin-top: 5px;
+}
+
+.options-take-exam {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+    padding-right: 50px;
+}
+
+.options-take-exam li {
+    margin-bottom: 3px;
+    
+}
+
+.options-take-exam input{
+    margin-right: 5px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.header-question-take-exam button {
+    background-color: #ffffff;
+    border: solid 1px #d8d8d8;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #e4e4e6;
+    height: 30px;
+}
+
+.flagged {
+    background-color: orange !important;
+    color: white;
+}
+
+.flag-active {
+    background-color: rgba(244, 220, 186, 0.567) !important; /* Màu xám hoặc cam theo yêu cầu */
+    color: orange !important;
+}

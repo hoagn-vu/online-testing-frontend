@@ -1,0 +1,134 @@
+.sidebar {
+    width: 210px;
+    height: 100vh;
+    background: #f8f9fa;
+    padding-top: 20px;
+    position: fixed;
+    top: 65px;
+    left: 0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: width 0.3s ease-in-out;
+}
+
+.sidebar.closed {
+    width: 80px;
+}
+
+/* Danh sách menu */
+.menu-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Từng mục menu */
+.menu-list li {
+    display: flex;
+    align-items: center;
+    padding: 6px 16px;
+    font-size: 15px;
+    margin: 8px;
+    border-radius: 10px;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    color: #333;
+}
+
+/* Khi mục menu được chọn */
+.menu-list li.active {
+    background: #fffefe;
+    color: white;
+    box-shadow: 1px 2px 6px rgba(21, 22, 22, 0.3);
+}
+
+/* Khi hover vào mục menu */
+.menu-list li:hover {
+    background: #fffefe;
+    box-shadow: 1px 2px 6px rgba(21, 22, 22, 0.3);
+}
+
+/* Icon bên trái menu */
+.icon {
+    margin-right: 12px;
+    font-size: 20px;
+    color: #2b99e8;
+    transition: color 0.3s ease-in-out;
+}
+
+/* Khi sidebar đóng, ẩn tên menu */
+.sidebar.closed .menu-list span {
+    display: none;
+}
+
+/* Khi sidebar thu nhỏ, icon vẫn giữ khoảng cách chuẩn */
+.sidebar.closed .menu-list li {
+    justify-content: center;
+}
+
+/* Hiển thị tooltip khi di chuột vào icon */
+.sidebar.closed .menu-list li {
+    position: relative;
+}
+
+/* Giữ kích thước cố định cho icon */
+.menu-list li .icon {
+    font-size: 18px; /* Kích thước icon */
+    min-width: 18px; /* Đảm bảo không bị thu nhỏ */
+    text-align: center;
+}
+
+/* Tooltip hiển thị khi hover vào icon (ở sidebar thu nhỏ) */
+.sidebar.closed .menu-list li:hover::after {
+    content: attr(data-title);
+    position: absolute;
+    left: 53px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    font-size: 14px;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.2s ease-in-out;
+}
+
+/* Mặc định tooltip bị ẩn */
+.sidebar.closed .menu-list li::after {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* Bỏ gạch chân & chuyển màu chữ sang đen */
+li a {
+    text-decoration: none; /* Bỏ gạch chân */
+    color: black; /* Chuyển màu chữ sang đen */
+}
+
+/* Khi mục được chọn (active) */
+li.active {
+    background-color: #f0f0f0; /* Màu nền nhẹ khi được chọn */
+}
+
+/* Hiệu ứng khi hover */
+li:hover {
+    background-color: #e0e0e0;
+}
+
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 60px;
+    }
+
+    .sidebar.open {
+        width: 210px;
+    }
+
+    .sidebar.closed {
+        width: 60px;
+    }
+
+    .sidebar.closed .menu-list span {
+        display: none;
+    }
+}
