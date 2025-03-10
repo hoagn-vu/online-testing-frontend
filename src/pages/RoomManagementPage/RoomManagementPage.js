@@ -155,7 +155,6 @@ const RoomManagementPage = () => {
       cancelButtonText: "Hủy",
     }).then((result) => {
       if (result.isConfirmed) {
-        // Xóa tài khoản ở đây (ví dụ: gọi API hoặc cập nhật state)
         console.log("Xóa tài khoản có ID:", id);
 
         Swal.fire({
@@ -169,8 +168,7 @@ const RoomManagementPage = () => {
   };
 
   return (
-    <div className="account-page">
-      {/* Breadcrumbs */}
+    <div className="room-page">
       <nav className="breadcrumb-container">
         <Link to="/" className="breadcrumb-link">
           Home
@@ -179,8 +177,7 @@ const RoomManagementPage = () => {
         <span className="breadcrumb-current">Quản lý phòng thi</span>
       </nav>
 
-      {/* Thanh tìm kiếm + Nút thêm mới + Upload */}
-      <div className="account-actions">
+      <div className="room-actions">
         <div className="search-container">
           <SearchBox></SearchBox>
         </div>
@@ -191,7 +188,7 @@ const RoomManagementPage = () => {
         </div>
       </div>
 
-      <div className="account-table-container ">
+      <div className="room-table-container ">
         <Paper sx={{width: "100%" }}>
           <DataGrid
             rows={rows}

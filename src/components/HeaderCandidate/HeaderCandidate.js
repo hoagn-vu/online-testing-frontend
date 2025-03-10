@@ -10,12 +10,9 @@ const HeaderCandidate = ({ username, avatarUrl, logoUrl }) => {
 
   return (
     <div className="header-candidate-container">
-          {/* Logo góc trái */}
       <img src={logoUrl} alt="Logo" className="logo" />
 
-      {/* Avatar + Tên + Nút mở dropdown */}
       <div className="user-info position-relative">
-        {/* Navigation */}
         <nav className="flex space-x-6 history">
           <Link
             to="/thisinh/history"
@@ -35,19 +32,6 @@ const HeaderCandidate = ({ username, avatarUrl, logoUrl }) => {
         {/* Dropdown menu */}
         {isOpen && (
           <ul className="dropdown-menu show position-absolute end-0 mt-2">
-            <li>
-              <a className="dropdown-item" href="#">
-                Thông tin cá nhân
-              </a>
-            </li>
-            <li>
-              <a className="dropdown-item" href="#">
-                Cài đặt
-              </a>
-            </li>
-            <li>
-              <hr className="dropdown-divider" />
-            </li>
             <li>
               <a className="dropdown-item" href="#">
                 Đăng xuất
