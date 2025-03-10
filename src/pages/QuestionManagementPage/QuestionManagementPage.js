@@ -9,18 +9,39 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Search } from "lucide-react";
 import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
-// Dùng Lucide icon
+import ApiService from "../../services/apiService";
 
-const listSubject = [
-    { id: 1, subject: "Giải tích",},
-    { id: 2, subject: "Đại số tuyến tính", },
-    { id: 3, subject: "Yeu cầu phần mềm", },
-    { id: 4, subject: "Giao diện và trải nghiệm người dùng", },
-    { id: 5, subject: "Tư tưởng Hồ Chí Minh", },
-    { id: 6, subject: "Học máy và khai phá dữ liệu", },
-];
+// const listSubject = [
+//     { id: 1, subject: "Giải tích",},
+//     { id: 2, subject: "Đại số tuyến tính", },
+//     { id: 3, subject: "Yeu cầu phần mềm", },
+//     { id: 4, subject: "Giao diện và trải nghiệm người dùng", },
+//     { id: 5, subject: "Tư tưởng Hồ Chí Minh", },
+//     { id: 6, subject: "Học máy và khai phá dữ liệu", },
+// ];
 
 const QuestionManagementPage = () => {
+    const [listSubject, setListSubject] = useState([]);
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await ApiService.get("/subjects");
+          response.data.forEach((subject, index) => {
+            setListSubject((prev) => [
+              ...prev,
+              {
+                id: subject.id,
+                subject: subject.subjectName,
+              },
+            ]);
+          });
+        } catch (error) {
+          console.error("Lỗi lấy dữ liệu:", error);
+        }
+      };
+      fetchData();
+    }, []);
+    
     const [showForm, setShowForm] = useState(false);
     const [editingAccount, setEditingAccount] = useState(null);
     const [rows, setRows] = useState(Object.values(listSubject).flat());

@@ -8,149 +8,198 @@ import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
+import ApiService from "../../services/apiService";
 
-const dummyAccounts = {
-  "Thí sinh": [
-    {
-      id: 1,
-      studentId: "BIT220079",
-      lastname: "Nguyễn Thu",
-      firstname: "An",
-      dob: "01/01/2000",
-      gender: "Nữ",
-      username: "nguyenvana",
-      status: "active",
-    },
-    {
-      id: 2,
-      studentId: "SV002",
-      lastname: "Trần Thị",
-      firstname: "Dương",
-      dob: "15/05/2001",
-      gender: "Nữ",
-      username: "tranthib",
-      status: "disabled",
-    },
-    {
-      id: 3,
-      studentId: "BIT220089",
-      lastname: "Phan Thị Phương",
-      firstname: "Linh",
-      dob: "01/01/2000",
-      gender: "Nữ",
-      username: "nguyenvana",
-      status: "active",
-    },
-    {
-      id: 4,
-      studentId: "SV002",
-      lastname: "Trần Thị",
-      firstname: "Linh",
-      dob: "15/05/2001",
-      gender: "Nữ",
-      username: "tranthib",
-      status: "disabled",
-    },
-    {
-      id: 5,
-      studentId: "BIT220089",
-      lastname: "Phan Thị Phương",
-      firstname: "Linh",
-      dob: "01/01/2000",
-      gender: "Nữ",
-      username: "nguyenvana",
-      status: "active",
-    },
-    {
-      id: 6,
-      studentId: "SV002",
-      lastname: "Trần Thị",
-      firstname: "Linh",
-      dob: "15/05/2001",
-      gender: "Nữ",
-      username: "tranthib",
-      status: "disabled",
-    },
-    {
-      id: 7,
-      studentId: "BIT220089",
-      lastname: "Phan Thị Phương",
-      firstname: "Linh",
-      dob: "01/01/2000",
-      gender: "Nữ",
-      username: "nguyenvana",
-      status: "active",
-    },
-    {
-      id: 8,
-      studentId: "SV002",
-      lastname: "Trần Thị",
-      firstname: "Linh",
-      dob: "15/05/2001",
-      gender: "Nữ",
-      username: "tranthib",
-      status: "disabled",
-    },
-    {
-      id: 9,
-      studentId: "BIT220089",
-      lastname: "Phan Thị Phương",
-      firstname: "Linh",
-      dob: "01/01/2000",
-      gender: "Nữ",
-      username: "nguyenvana",
-      status: "active",
-    },
-    {
-      id: 10,
-      studentId: "SV002",
-      lastname: "Trần Thị",
-      firstname: "Linh",
-      dob: "15/05/2001",
-      gender: "Nữ",
-      username: "tranthib",
-      status: "disabled",
-    },
-  ],
-  "Giám thị": [
-    {
-      id: 11,
-      studentId: "GT001",
-      lastname: "Lê Văn",
-      firstname: "Thuận",
-      dob: "22/09/1990",
-      gender: "Nam",
-      username: "levanc",
-      status: "active",
-    },
-  ],
-  "Quản trị viên": [
-    {
-      id: 12,
-      studentId: "QT001",
-      lastname: "Phạm Thị",
-      firstname: "Linh",
-      dob: "05/06/1985",
-      gender: "Nữ",
-      username: "phamthid",
-      status: "active",
-    },
-  ],
-  "Cán bộ phụ trách kỳ thi": [
-    {
-      id: 13,
-      studentId: "CB001",
-      lastname: "Hoàng Văn",
-      firstname: "Vũ",
-      dob: "12/12/1980",
-      gender: "Nam",
-      username: "hoangvane",
-      status: "active",
-    },
-  ],
-};
+// const dummyAccounts = {
+//   "Thí sinh": [
+//     {
+//       id: 1,
+//       studentId: "BIT220079",
+//       lastname: "Nguyễn Thu",
+//       firstname: "An",
+//       dob: "01/01/2000",
+//       gender: "Nữ",
+//       username: "nguyenvana",
+//       status: "active",
+//     },
+//     {
+//       id: 2,
+//       studentId: "SV002",
+//       lastname: "Trần Thị",
+//       firstname: "Dương",
+//       dob: "15/05/2001",
+//       gender: "Nữ",
+//       username: "tranthib",
+//       status: "disabled",
+//     },
+//     {
+//       id: 3,
+//       studentId: "BIT220089",
+//       lastname: "Phan Thị Phương",
+//       firstname: "Linh",
+//       dob: "01/01/2000",
+//       gender: "Nữ",
+//       username: "nguyenvana",
+//       status: "active",
+//     },
+//     {
+//       id: 4,
+//       studentId: "SV002",
+//       lastname: "Trần Thị",
+//       firstname: "Linh",
+//       dob: "15/05/2001",
+//       gender: "Nữ",
+//       username: "tranthib",
+//       status: "disabled",
+//     },
+//     {
+//       id: 5,
+//       studentId: "BIT220089",
+//       lastname: "Phan Thị Phương",
+//       firstname: "Linh",
+//       dob: "01/01/2000",
+//       gender: "Nữ",
+//       username: "nguyenvana",
+//       status: "active",
+//     },
+//     {
+//       id: 6,
+//       studentId: "SV002",
+//       lastname: "Trần Thị",
+//       firstname: "Linh",
+//       dob: "15/05/2001",
+//       gender: "Nữ",
+//       username: "tranthib",
+//       status: "disabled",
+//     },
+//     {
+//       id: 7,
+//       studentId: "BIT220089",
+//       lastname: "Phan Thị Phương",
+//       firstname: "Linh",
+//       dob: "01/01/2000",
+//       gender: "Nữ",
+//       username: "nguyenvana",
+//       status: "active",
+//     },
+//     {
+//       id: 8,
+//       studentId: "SV002",
+//       lastname: "Trần Thị",
+//       firstname: "Linh",
+//       dob: "15/05/2001",
+//       gender: "Nữ",
+//       username: "tranthib",
+//       status: "disabled",
+//     },
+//     {
+//       id: 9,
+//       studentId: "BIT220089",
+//       lastname: "Phan Thị Phương",
+//       firstname: "Linh",
+//       dob: "01/01/2000",
+//       gender: "Nữ",
+//       username: "nguyenvana",
+//       status: "active",
+//     },
+//     {
+//       id: 10,
+//       studentId: "SV002",
+//       lastname: "Trần Thị",
+//       firstname: "Linh",
+//       dob: "15/05/2001",
+//       gender: "Nữ",
+//       username: "tranthib",
+//       status: "disabled",
+//     },
+//   ],
+//   "Giám thị": [
+//     {
+//       id: 11,
+//       studentId: "GT001",
+//       lastname: "Lê Văn",
+//       firstname: "Thuận",
+//       dob: "22/09/1990",
+//       gender: "Nam",
+//       username: "levanc",
+//       status: "active",
+//     },
+//   ],
+//   "Quản trị viên": [
+//     {
+//       id: 12,
+//       studentId: "QT001",
+//       lastname: "Phạm Thị",
+//       firstname: "Linh",
+//       dob: "05/06/1985",
+//       gender: "Nữ",
+//       username: "phamthid",
+//       status: "active",
+//     },
+//   ],
+//   "Cán bộ phụ trách kỳ thi": [
+//     {
+//       id: 13,
+//       studentId: "CB001",
+//       lastname: "Hoàng Văn",
+//       firstname: "Vũ",
+//       dob: "12/12/1980",
+//       gender: "Nam",
+//       username: "hoangvane",
+//       status: "active",
+//     },
+//   ],
+// };
 
 const AccountPage = () => {
+  const [dummyAccounts, setDummyAccounts] = useState({
+    "Thí sinh": [],
+    "Giám thị": [],
+    "Quản trị viên": [],
+    "Cán bộ phụ trách kỳ thi": [],
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await ApiService.get("/users");
+        response.data.forEach((user) => {
+          if (user.role === "candidate") {
+            setDummyAccounts((prev) => ({
+              ...prev,
+              "Thí sinh": [...prev["Thí sinh"], user],
+            }));
+          }
+          if (user.role === "supervisor") {
+            setDummyAccounts((prev) => ({
+              ...prev,
+              "Giám thị": [...prev["Giám thị"], user],
+            }));
+          }
+          if (user.role === "admin") {
+            setDummyAccounts((prev) => ({
+              ...prev,
+              "Quản trị viên": [...prev["Quản trị viên"], user],
+            }));
+          }
+          if (user.role === "staff") {
+            setDummyAccounts((prev) => ({
+              ...prev,
+              "Cán bộ phụ trách kỳ thi": [
+                ...prev["Cán bộ phụ trách kỳ thi"],
+                user,
+              ],
+            }));
+          }
+        });
+      } catch (error) {
+        console.error("Lỗi lấy dữ liệu tài khoản:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const [selectedRole, setSelectedRole] = useState("Thí sinh");
   const [showForm, setShowForm] = useState(false);
   const [showPasswordForm, setShowPasswordForm] = useState(false);

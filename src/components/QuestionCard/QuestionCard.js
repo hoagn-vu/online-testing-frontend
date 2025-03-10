@@ -3,6 +3,7 @@ import './QuestionCard.css';
 import { FlagIcon } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFlag } from '@fortawesome/free-solid-svg-icons';
+import PropTypes from "prop-types";
 
 const QuestionCard = ({ question, options, questionNumber, allowMultiple, onAnswerSelect, flagged, onToggleFlag }) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -64,6 +65,16 @@ const QuestionCard = ({ question, options, questionNumber, allowMultiple, onAnsw
 
     </div>
   );
+};
+
+QuestionCard.propTypes = {
+  question: PropTypes.string.isRequired,
+  options: PropTypes.arrayOf(PropTypes.string).isRequired,
+  questionNumber: PropTypes.number.isRequired,
+  allowMultiple: PropTypes.bool,
+  onAnswerSelect: PropTypes.func,
+  flagged: PropTypes.bool,
+  onToggleFlag: PropTypes.func,
 };
 
 export default QuestionCard;

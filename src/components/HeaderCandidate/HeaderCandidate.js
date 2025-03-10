@@ -4,6 +4,7 @@ import { FaChevronDown } from "react-icons/fa";
 // Import icon
 import "./HeaderCandidate.css";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const HeaderCandidate = ({ username, avatarUrl, logoUrl }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -58,6 +59,12 @@ const HeaderCandidate = ({ username, avatarUrl, logoUrl }) => {
       </div>
     </div>
   );
+};
+
+HeaderCandidate.propTypes = {
+  username: PropTypes.string,
+  avatarUrl: PropTypes.string,
+  logoUrl: PropTypes.string,
 };
 
 export default HeaderCandidate;

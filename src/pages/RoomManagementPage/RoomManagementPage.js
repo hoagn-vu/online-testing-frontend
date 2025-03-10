@@ -8,37 +8,51 @@ import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
+import ApiService from "../../services/apiService";
 
-const dummyAccounts = [
-    {id: 1, studentId: "BIT220079",
-        roomName: "Nguyễn Thu",
-        location: "An",
-        capacity: "01/01/2000",
-        status: "active",},
-    {id: 2, studentId: "BIT220079",
-        roomName: "Nguyễn Thu",
-        location: "An",
-        capacity: "01/01/2000",
-        status: "active",},
-    {id: 3, studentId: "BIT220079",
-        roomName: "Nguyễn Thu",
-        location: "An",
-        capacity: "01/01/2000",
-        status: "active",},
-    {id: 4, studentId: "BIT220079",
-        roomName: "Nguyễn Thu",
-        location: "An",
-        capacity: "01/01/2000",
-        status: "active",},
-];
+// const dummyAccounts = [
+//     {id: 1, studentId: "BIT220079",
+//         roomName: "Nguyễn Thu",
+//         location: "An",
+//         capacity: "01/01/2000",
+//         status: "active",},
+//     {id: 2, studentId: "BIT220079",
+//         roomName: "Nguyễn Thu",
+//         location: "An",
+//         capacity: "01/01/2000",
+//         status: "active",},
+//     {id: 3, studentId: "BIT220079",
+//         roomName: "Nguyễn Thu",
+//         location: "An",
+//         capacity: "01/01/2000",
+//         status: "active",},
+//     {id: 4, studentId: "BIT220079",
+//         roomName: "Nguyễn Thu",
+//         location: "An",
+//         capacity: "01/01/2000",
+//         status: "active",},
+// ];
 
 const RoomManagementPage = () => {
+  const [dummyAccounts, setDummyAccounts] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [editingAccount, setEditingAccount] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [accountToDelete, setAccountToDelete] = useState(null);
   const [rows, setRows] = useState(Object.values(dummyAccounts).flat());
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await ApiService.get("/room");
+        setDummyAccounts(response.data);
+      } catch (error) {
+        console.error("Lỗi lấy dữ liệu: ", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const columns = [
     { field: "id", headerName: "#", width: 10 },

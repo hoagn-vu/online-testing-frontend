@@ -2,15 +2,7 @@ import React from "react";
 // import { Bar } from "react-chartjs-2";
 // import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 import "./CardDashboard.css";
-
-// const CardDashboard = ({ label, value }) => {
-//     return (
-//         <div className="bg-white shadow-md p-4 rounded-lg text-center">
-//             <h3 className="text-xl font-bold">{value}</h3>
-//             <p className="text-gray-600">{label}</p>
-//         </div>
-//     );
-//  };
+import PropTypes from "prop-types";
 
 const CardDashboard = ({ title, value, icon }) => {
   return (
@@ -27,6 +19,12 @@ const CardDashboard = ({ title, value, icon }) => {
       </div>
     </div>
   );
+};
+
+CardDashboard.propTypes = {
+  title: PropTypes.string,
+  value: PropTypes.string,
+  icon: PropTypes.element,
 };
 
 export default CardDashboard;
