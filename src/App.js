@@ -14,6 +14,7 @@ import TakeExamPage from "./pages/TakeExamPage/TakeExamPage";
 import WelcomePage from "./pages/WelcomePage/WelcomePage";
 import ResultCandidatePage from "./pages/ResultCandidatePage/ResultCandidatePage";
 import QuestionManagementPage from "./pages/QuestionManagementPage/QuestionManagementPage";
+import QuestionBankNamePage from "./pages/QuestionBankNamePage/QuestionBankNamePage";
 
 function App() {
   return (
@@ -30,7 +31,8 @@ function App() {
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="accountmanage" element={<AccountPage />} />
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="question" element={<QuestionManagementPage />} />
+          <Route path="question" element={<QuestionManagementPage />}/>
+          <Route path="question/:subject" element={<QuestionBankNamePage />} />
           <Route path="log" element={<LogPage />} />
         </Route>
       </Routes>

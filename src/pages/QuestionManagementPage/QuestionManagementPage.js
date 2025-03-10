@@ -11,48 +11,34 @@ import Swal from "sweetalert2";
 
 // Dùng Lucide icon
 
-const dummyAccounts = {
-  "Thí sinh": [
-    {
-      id: 1,
-      subject: "Giải tích",
-    },
-    {
-      id: 2,
-      subject: "Đại số tuyến tính",
-    },
-    {
-      id: 3,
-      subject: "Yeu cầu phần mềm",
-    },
-    {
-      id: 4,
-      subject: "Giao diện và trải nghiệm người dùng",
-    },
-    {
-      id: 5,
-      subject: "Tư tưởng Hồ Chí Minh",
-    },
-    {
-      id: 6,
-      subject: "Học máy và khai phá dữ liệu",
-    },
-  ],
-};
+const listSubject = [
+    { id: 1, subject: "Giải tích",},
+    { id: 2, subject: "Đại số tuyến tính", },
+    { id: 3, subject: "Yeu cầu phần mềm", },
+    { id: 4, subject: "Giao diện và trải nghiệm người dùng", },
+    { id: 5, subject: "Tư tưởng Hồ Chí Minh", },
+    { id: 6, subject: "Học máy và khai phá dữ liệu", },
+];
 
 const QuestionManagementPage = () => {
-    const [selectedRole, setSelectedRole] = useState("Thí sinh");
     const [showForm, setShowForm] = useState(false);
     const [editingAccount, setEditingAccount] = useState(null);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [accountToDelete, setAccountToDelete] = useState(null);
-    const [rows, setRows] = useState(Object.values(dummyAccounts).flat());
+    const [rows, setRows] = useState(Object.values(listSubject).flat());
     // Lọc danh sách tài khoản theo vai trò được chọn
-    const filteredRows = dummyAccounts[selectedRole] || [];
 
     const columns = [
         { field: "id", headerName: "#", width: 10, align: "center",headerAlign: "center", },
-        { field: "subject", headerName: "Tên phân môn", width: 1090 },
+        { 
+        field: "subject", headerName: "Tên phân môn", width: 1090,
+        renderCell: (params) => (
+            <Link 
+              to={`/admin/question/${encodeURIComponent(params.row.subject)}`} 
+              style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
+            >
+              {params.row.subject}
+            </Link>
+          )
+        },
         {
         field: "actions",
         headerName: "Thao tác",
@@ -111,18 +97,7 @@ const QuestionManagementPage = () => {
         setEditingAccount(account);
         setShowForm(true);
     };
-
-    const handleDeleteClick = (account) => {
-        setAccountToDelete(account);
-        setShowDeleteModal(true);
-    };
-
-    const confirmDelete = () => {
-        console.log(`Đã xóa tài khoản có ID: ${accountToDelete.id}`);
-        // Thêm logic xóa tài khoản tại đây (gọi API hoặc cập nhật state)
-        setShowDeleteModal(false); // Đóng modal sau khi xóa
-    };
-
+    
     const handleDelete = (id) => {
         Swal.fire({
         title: "Bạn có chắc chắn xóa?",
@@ -149,10 +124,10 @@ const QuestionManagementPage = () => {
     };
 
     return (
-        <div className="question-bank-page">
+        <div className="subject-page">
         {/* Breadcrumbs */}
         <nav className="breadcrumb-container">
-            <Link to="/" className="breadcrumb-link">
+            <Link to="/admin" className="breadcrumb-link">
             Home
             </Link>
             <span> / </span>
@@ -173,11 +148,11 @@ const QuestionManagementPage = () => {
         </div>
 
         {/* Hiển thị bảng theo vai trò đã chọn */}
-        <div className="question-bank-table-container">
+        <div className="subject-table-container">
             <h5>Danh sách phân môn</h5>
             <Paper sx={{ width: "100%" }}>
             <DataGrid
-                rows={filteredRows}
+                rows={rows}
                 columns={columns}
                 initialState={{
                 pagination: { paginationModel: { page: 0, pageSize: 5 } },
