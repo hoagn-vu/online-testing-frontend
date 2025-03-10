@@ -1,25 +1,17 @@
 import React, { useState, useEffect } from "react";
-import {
-  FaBars,
-  FaUserCog,
-  FaQuestionCircle,
-  FaThLarge,
-  FaFileAlt,
-  FaBuilding,
-} from "react-icons/fa";
+import {FaUserCog, FaQuestionCircle, FaThLarge, FaFileAlt, FaBuilding, } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Sidebar.css";
 import { Link, useLocation } from "react-router-dom";
 
 const Sidebar = () => {
-  const location = useLocation(); // Lấy URL hiện tại
+  const location = useLocation(); 
   const [isOpen, setIsOpen] = useState(window.innerWidth > 768);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
-  // Theo dõi thay đổi kích thước màn hình
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 768) {
@@ -35,7 +27,6 @@ const Sidebar = () => {
 
   return (
     <div className={`sidebar ${isOpen ? "open" : "closed"}`}>
-      {/* Danh sách menu */}
       <ul className="menu-list">
         <li
           className={location.pathname === "/admin/dashboard" ? "active" : ""}

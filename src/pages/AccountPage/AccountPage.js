@@ -163,9 +163,9 @@ const AccountPage = () => {
 
   const columns = [
     { field: "id", headerName: "#", width: 10 },
-    { field: "studentId", headerName: "Mã", width: 130 },
-    { field: "lastname", headerName: "Họ và tên đệm", width: 180 },
-    { field: "firstname", headerName: "Tên", width: 100 },
+    { field: "studentId", headerName: "Mã", minWidth: 130, flex: 0.1 },
+    { field: "lastname", headerName: "Họ và tên đệm", minWidth: 150, flex: 0.1 },
+    { field: "firstname", headerName: "Tên", minWidth: 100, flex: 0.1 },
     { field: "dob", headerName: "Ngày sinh", type: "datetime", width: 115 },
     {
       field: "gender",
@@ -174,8 +174,7 @@ const AccountPage = () => {
       align: "center", // ✅ Căn giữa tiêu đề cột
       headerAlign: "center", // ✅ Căn giữa nội dung trong cột
     },
-    { field: "username", headerName: "username", width: 120 },
-    { field: "password", headerName: "password", width: 120 },
+    { field: "username", headerName: "username", minWidth: 120, flex: 0.1 },
     {
       field: "status",
       headerName: "Trạng thái",
@@ -184,11 +183,11 @@ const AccountPage = () => {
         <Select
           value={params.row.status}
           onChange={(e) => handleStatusChange(params.row.id, e.target.value)}
-          size="small" // ✅ Làm nhỏ dropdown
+          size="small"
           sx={{
-            minWidth: 120, // ✅ Giới hạn chiều rộng
-            fontSize: "15px", // ✅ Chữ nhỏ hơn
-            padding: "0px", // ✅ Giảm padding
+            minWidth: 120, 
+            fontSize: "15px", 
+            padding: "0px", 
           }}
         >
           <MenuItem value="active">Active</MenuItem>
