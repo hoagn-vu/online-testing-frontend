@@ -57,12 +57,23 @@ const Sidebar = () => {
             <span>Quản lý tài khoản</span>
           </Link>
         </li>
+
         <li data-title="Quản lý kỳ thi">
           <FaThLarge className="icon" /> <span>Quản lý kỳ thi</span>
         </li>
-        <li data-title="Ngân hàng câu hỏi">
-          <FaQuestionCircle className="icon" /> <span>Ngân hàng câu hỏi</span>
+
+        <li
+          className={
+            location.pathname === "/admin/question" ? "active" : ""
+          }
+          data-title="Ngân hàng câu hỏi"
+        >
+          <FaQuestionCircle className="icon" />
+          <Link to="/admin/question">
+            <span>Ngân hàng câu hỏi</span>
+          </Link>
         </li>
+
         <li data-title="Quản lý ma trận đề">
           <FaThLarge className="icon" /> <span>Quản lý ma trận đề</span>
         </li>

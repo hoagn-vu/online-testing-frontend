@@ -434,7 +434,7 @@ const AccountPage = () => {
       {/* Hiển thị bảng theo vai trò đã chọn */}
       <div className="account-table-container">
         <h5>Danh sách tài khoản {selectedRole}</h5>
-        <Paper sx={{ height: 600, width: "100%" }}>
+        <Paper sx={{width: "100%" }}>
           <DataGrid
             rows={filteredRows}
             columns={columns}
