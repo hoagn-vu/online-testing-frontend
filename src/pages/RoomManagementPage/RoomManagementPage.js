@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import "./AccountPage.css";
+import "./RoomManagementPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel,} from "@mui/material";
@@ -9,173 +9,42 @@ import { DataGrid } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
 
-const dummyAccounts = {
-  "Thí sinh": [
-    {
-      id: 1,
-      studentId: "BIT220079",
-      lastname: "Nguyễn Thu",
-      firstname: "An",
-      dob: "01/01/2000",
-      gender: "Nữ",
-      username: "nguyenvana",
-      status: "active",
-    },
-    {
-      id: 2,
-      studentId: "SV002",
-      lastname: "Trần Thị",
-      firstname: "Dương",
-      dob: "15/05/2001",
-      gender: "Nữ",
-      username: "tranthib",
-      status: "disabled",
-    },
-    {
-      id: 3,
-      studentId: "BIT220089",
-      lastname: "Phan Thị Phương",
-      firstname: "Linh",
-      dob: "01/01/2000",
-      gender: "Nữ",
-      username: "nguyenvana",
-      status: "active",
-    },
-    {
-      id: 4,
-      studentId: "SV002",
-      lastname: "Trần Thị",
-      firstname: "Linh",
-      dob: "15/05/2001",
-      gender: "Nữ",
-      username: "tranthib",
-      status: "disabled",
-    },
-    {
-      id: 5,
-      studentId: "BIT220089",
-      lastname: "Phan Thị Phương",
-      firstname: "Linh",
-      dob: "01/01/2000",
-      gender: "Nữ",
-      username: "nguyenvana",
-      status: "active",
-    },
-    {
-      id: 6,
-      studentId: "SV002",
-      lastname: "Trần Thị",
-      firstname: "Linh",
-      dob: "15/05/2001",
-      gender: "Nữ",
-      username: "tranthib",
-      status: "disabled",
-    },
-    {
-      id: 7,
-      studentId: "BIT220089",
-      lastname: "Phan Thị Phương",
-      firstname: "Linh",
-      dob: "01/01/2000",
-      gender: "Nữ",
-      username: "nguyenvana",
-      status: "active",
-    },
-    {
-      id: 8,
-      studentId: "SV002",
-      lastname: "Trần Thị",
-      firstname: "Linh",
-      dob: "15/05/2001",
-      gender: "Nữ",
-      username: "tranthib",
-      status: "disabled",
-    },
-    {
-      id: 9,
-      studentId: "BIT220089",
-      lastname: "Phan Thị Phương",
-      firstname: "Linh",
-      dob: "01/01/2000",
-      gender: "Nữ",
-      username: "nguyenvana",
-      status: "active",
-    },
-    {
-      id: 10,
-      studentId: "SV002",
-      lastname: "Trần Thị",
-      firstname: "Linh",
-      dob: "15/05/2001",
-      gender: "Nữ",
-      username: "tranthib",
-      status: "disabled",
-    },
-  ],
-  "Giám thị": [
-    {
-      id: 11,
-      studentId: "GT001",
-      lastname: "Lê Văn",
-      firstname: "Thuận",
-      dob: "22/09/1990",
-      gender: "Nam",
-      username: "levanc",
-      status: "active",
-    },
-  ],
-  "Quản trị viên": [
-    {
-      id: 12,
-      studentId: "QT001",
-      lastname: "Phạm Thị",
-      firstname: "Linh",
-      dob: "05/06/1985",
-      gender: "Nữ",
-      username: "phamthid",
-      status: "active",
-    },
-  ],
-  "Cán bộ phụ trách kỳ thi": [
-    {
-      id: 13,
-      studentId: "CB001",
-      lastname: "Hoàng Văn",
-      firstname: "Vũ",
-      dob: "12/12/1980",
-      gender: "Nam",
-      username: "hoangvane",
-      status: "active",
-    },
-  ],
-};
+const dummyAccounts = [
+    {id: 1, studentId: "BIT220079",
+        roomName: "Nguyễn Thu",
+        location: "An",
+        capacity: "01/01/2000",
+        status: "active",},
+    {id: 2, studentId: "BIT220079",
+        roomName: "Nguyễn Thu",
+        location: "An",
+        capacity: "01/01/2000",
+        status: "active",},
+    {id: 3, studentId: "BIT220079",
+        roomName: "Nguyễn Thu",
+        location: "An",
+        capacity: "01/01/2000",
+        status: "active",},
+    {id: 4, studentId: "BIT220079",
+        roomName: "Nguyễn Thu",
+        location: "An",
+        capacity: "01/01/2000",
+        status: "active",},
+];
 
-const AccountPage = () => {
-  const [selectedRole, setSelectedRole] = useState("Thí sinh");
+const RoomManagementPage = () => {
   const [showForm, setShowForm] = useState(false);
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [editingAccount, setEditingAccount] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [accountToDelete, setAccountToDelete] = useState(null);
   const [rows, setRows] = useState(Object.values(dummyAccounts).flat());
-  // Lọc danh sách tài khoản theo vai trò được chọn
-  const filteredRows = dummyAccounts[selectedRole] || [];
 
   const columns = [
     { field: "id", headerName: "#", width: 10 },
-    { field: "studentId", headerName: "Mã", width: 130 },
-    { field: "lastname", headerName: "Họ và tên đệm", width: 180 },
-    { field: "firstname", headerName: "Tên", width: 100 },
-    { field: "dob", headerName: "Ngày sinh", type: "datetime", width: 115 },
-    {
-      field: "gender",
-      headerName: "Giới tính",
-      width: 100,
-      align: "center", // ✅ Căn giữa tiêu đề cột
-      headerAlign: "center", // ✅ Căn giữa nội dung trong cột
-    },
-    { field: "username", headerName: "username", width: 120 },
-    { field: "password", headerName: "password", width: 120 },
+    { field: "roomName", headerName: "Tên phòng", width: 440 },
+    { field: "location", headerName: "Địa điểm", width: 300 },
+    { field: "capacity", headerName: "Số lượng", width: 150 },
     {
       field: "status",
       headerName: "Trạng thái",
@@ -242,7 +111,6 @@ const AccountPage = () => {
     gender: "Nam",
     username: "",
     password: "",
-    role: selectedRole,
     status: "active",
     permissions: [],
   });
@@ -256,7 +124,6 @@ const AccountPage = () => {
       gender: "Nam",
       username: "",
       password: "",
-      role: selectedRole,
       status: "active",
       permissions: [],
     });
@@ -303,7 +170,6 @@ const AccountPage = () => {
       gender: account.gender,
       username: account.username,
       password: "", // Không hiển thị mật khẩu
-      role: selectedRole,
       status: account.status,
       permissions: account.permissions || [],
     });
@@ -369,10 +235,6 @@ const AccountPage = () => {
     }
   };
 
-  const handleRoleChange = (role) => {
-    setSelectedRole(role);
-  };
-
   return (
     <div className="account-page">
       {/* Breadcrumbs */}
@@ -381,7 +243,7 @@ const AccountPage = () => {
           Home
         </Link>
         <span> / </span>
-        <span className="breadcrumb-current">Quản lý tài khoản</span>
+        <span className="breadcrumb-current">Quản lý phòng thi</span>
       </nav>
 
       {/* Thanh tìm kiếm + Nút thêm mới + Upload */}
@@ -405,28 +267,10 @@ const AccountPage = () => {
         </div>
       </div>
 
-      {/* Tabs để chọn loại tài khoản */}
-      <ul className="nav nav-tabs">
-        {Object.keys(dummyAccounts).map((role) => (
-          <li className="nav-item" key={role}>
-            <a
-              className={`nav-link ${selectedRole === role ? "active" : ""}`}
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                handleRoleChange(role);
-              }}
-            >
-              {role}
-            </a>
-          </li>
-        ))}
-      </ul>
-
       <div className="account-table-container mt-3">
         <Paper sx={{width: "100%" }}>
           <DataGrid
-            rows={filteredRows}
+            rows={rows}
             columns={columns}
             initialState={{
               pagination: { paginationModel: { page: 0, pageSize: 5 } },
@@ -769,21 +613,8 @@ const AccountPage = () => {
           </div>
         </div>
       )}
-
-      {/* {showDeleteModal && (
-            <div className="modal-overlay">
-                <div className="modal-content">
-                    <h3>Xác nhận xóa</h3>
-                    <p>Bạn có chắc chắn muốn xóa tài khoản <strong>{accountToDelete?.name}</strong> không?</p>
-                    <div className="modal-actions">
-                        <button className="confirm-btn" onClick={confirmDelete}>Xác nhận</button>
-                        <button className="cancel-btn" onClick={() => setShowDeleteModal(false)}>Hủy</button>
-                    </div>
-                </div>
-            </div>
-        )} */}
     </div>
   );
 };
 
-export default AccountPage;
+export default RoomManagementPage;

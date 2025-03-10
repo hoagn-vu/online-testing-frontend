@@ -137,7 +137,7 @@ const QuestionBankNamePage = () => {
             </div>
 
             {/* Hiển thị bảng theo vai trò đã chọn */}
-            <div className="subject-table-container mt-4">
+            <div className="subject-table-container mt-3">
                 <Paper sx={{ width: "100%" }}>
                 <DataGrid
                     rows={rows}

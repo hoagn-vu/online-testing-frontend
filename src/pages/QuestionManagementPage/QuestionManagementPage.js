@@ -135,7 +135,7 @@ const QuestionManagementPage = () => {
         </nav>
 
         {/* Thanh tìm kiếm + Nút thêm mới + Upload */}
-        <div className="account-actions pt-3 mb-4">
+        <div className="account-actions pt-3 mb-1">
             <div className="search-container">
                 <SearchBox></SearchBox>
             </div>

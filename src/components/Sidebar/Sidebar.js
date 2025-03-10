@@ -80,8 +80,17 @@ const Sidebar = () => {
         <li data-title="Quản lý đề thi">
           <FaFileAlt className="icon" /> <span>Quản lý đề thi</span>
         </li>
-        <li data-title="Quản lý phòng thi">
-          <FaBuilding className="icon" /> <span>Quản lý phòng thi</span>
+
+        <li
+          className={
+            location.pathname === "/admin/room" ? "active" : ""
+          }
+          data-title="Quản lý phòng thi"
+        >
+          <FaQuestionCircle className="icon" />
+          <Link to="/admin/room">
+            <span>Quản lý phòng thi</span>
+          </Link>
         </li>
 
         <li
