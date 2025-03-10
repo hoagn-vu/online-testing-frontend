@@ -8,7 +8,7 @@ import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import { Search } from "lucide-react";
 import Swal from "sweetalert2";
-
+import SearchBox from "../../components/SearchBox/SearchBox";
 // Dùng Lucide icon
 
 const listSubject = [
@@ -135,21 +135,17 @@ const QuestionManagementPage = () => {
         </nav>
 
         {/* Thanh tìm kiếm + Nút thêm mới + Upload */}
-        <div className="account-actions">
+        <div className="account-actions pt-3 mb-4">
+            <div className="search-container">
+                <SearchBox></SearchBox>
+            </div>
             <button className="add-btn" onClick={handleAddNew}>
                 Thêm mới
             </button>
-
-            {/* Ô tìm kiếm + icon */}
-            <div className="search-container">
-            <input type="text" placeholder="Tìm kiếm..." className="search-box" />
-            <Search className="search-icon" size={20} />
-            </div>
         </div>
 
         {/* Hiển thị bảng theo vai trò đã chọn */}
-        <div className="subject-table-container">
-            <h5>Danh sách phân môn</h5>
+        <div className="subject-table-container pt-2">
             <Paper sx={{ width: "100%" }}>
             <DataGrid
                 rows={rows}

@@ -8,6 +8,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { DataGrid } from "@mui/x-data-grid";
 import { Search } from "lucide-react";
 import Swal from "sweetalert2";
+import SearchBox from "../../components/SearchBox/SearchBox";
 
 const listQuestionBank = [
     { id: 1, question_bank_name: "Giải tích 1",},
@@ -125,22 +126,18 @@ const QuestionBankNamePage = () => {
             <Link to="/admin/question">Ngân hàng câu hỏi</Link> / 
             <span className="breadcrumb-current">{decodeURIComponent(subject)}</span>
         </nav>
-            {/* Thanh tìm kiếm + Nút thêm mới + Upload */}
-            <div className="account-actions">
+
+            <div className="account-actions mt-4">
+                <div className="search-container">
+                    <SearchBox></SearchBox>
+                </div>
                 <button className="add-btn" onClick={handleAddNew}>
                     Thêm mới
                 </button>
-
-                {/* Ô tìm kiếm + icon */}
-                <div className="search-container">
-                <input type="text" placeholder="Tìm kiếm..." className="search-box" />
-                <Search className="search-icon" size={20} />
-                </div>
             </div>
 
             {/* Hiển thị bảng theo vai trò đã chọn */}
-            <div className="subject-table-container">
-                <h5>Danh sách ngân hàng câu hỏi - {decodeURIComponent(subject)}</h5>                
+            <div className="subject-table-container mt-4">
                 <Paper sx={{ width: "100%" }}>
                 <DataGrid
                     rows={rows}

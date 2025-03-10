@@ -3,25 +3,12 @@ import { Link } from "react-router-dom";
 import "./AccountPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import {
-  Box,
-  Button,
-  Grid,
-  MenuItem,
-  Select,
-  IconButton,
-  TextField,
-  Checkbox,
-  FormControl,
-  InputLabel,
-  FormGroup,
-  FormControlLabel,
-} from "@mui/material";
+import { Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel,} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import { Search } from "lucide-react";
 import Swal from "sweetalert2";
-
+import SearchBox from "../../components/SearchBox/SearchBox";
 // Dùng Lucide icon
 
 const dummyAccounts = {
@@ -424,16 +411,12 @@ const AccountPage = () => {
           </button>
         </div>
 
-        {/* Ô tìm kiếm + icon */}
         <div className="search-container">
-          <input type="text" placeholder="Tìm kiếm..." className="search-box" />
-          <Search className="search-icon" size={20} />
+          <SearchBox></SearchBox>
         </div>
       </div>
 
-      {/* Hiển thị bảng theo vai trò đã chọn */}
-      <div className="account-table-container">
-        <h5>Danh sách tài khoản {selectedRole}</h5>
+      <div className="account-table-container mt-3">
         <Paper sx={{width: "100%" }}>
           <DataGrid
             rows={filteredRows}
