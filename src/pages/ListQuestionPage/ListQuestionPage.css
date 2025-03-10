@@ -1,0 +1,17 @@
+.list-question-container {
+    width: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+    padding-left: 25px;
+    padding-right: 15px;
+    padding-top: 15px;
+    font-size: 14px;
+}
+
+.list-question-container button {
+    font-size: 14px;
+}
+
+.modal-dialog {
+    min-width: 800px !important;
+}
