@@ -15,6 +15,7 @@ import WelcomePage from "./pages/WelcomePage/WelcomePage";
 import ResultCandidatePage from "./pages/ResultCandidatePage/ResultCandidatePage";
 import QuestionManagementPage from "./pages/QuestionManagementPage/QuestionManagementPage";
 import QuestionBankNamePage from "./pages/QuestionBankNamePage/QuestionBankNamePage";
+import ListQuestionPage from "./pages/ListQuestionPage/ListQuestionPage";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="question" element={<QuestionManagementPage />}/>
           <Route path="question/:subject" element={<QuestionBankNamePage />} />
+          <Route path="listquestion" element={<ListQuestionPage />} />
           <Route path="log" element={<LogPage />} />
         </Route>
       </Routes>

@@ -6,10 +6,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import { Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel,} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
-import { Search } from "lucide-react";
 import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
-// Dùng Lucide icon
 
 const dummyAccounts = {
   "Thí sinh": [
