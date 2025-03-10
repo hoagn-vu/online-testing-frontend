@@ -130,11 +130,13 @@ const LogPage = () => {
       {/* Thanh tìm kiếm + Nút thêm mới + Upload */}
       <div className="log-actions">
         <div className="action-selector">
-          <select>
-            <option>Thêm mới</option>
-            <option>Sửa</option>
-            <option>Xóa</option>
-          </select>
+        <select class="form-select" aria-label="Default select example">
+          <option disabled>Hành động</option>
+          <option value="Login">Login</option>
+          <option value="Thêm mới">Thêm mới</option>
+          <option value="Sửa">Sửa</option>
+          <option value="Xóa">Xóa</option>
+        </select>
           <input type="date" placeholder="" className="search-box" />
           <button className="add-btn">Lọc</button>
         </div>
@@ -142,7 +144,7 @@ const LogPage = () => {
 
       {/* Hiển thị bảng theo vai trò đã chọn */}
       <div className="log-table-container">
-        <Paper sx={{ height: 600, width: "100%" }}>
+        <Paper sx={{width: "100%" }}>
           <DataGrid
             rows={rows}
             columns={columns}

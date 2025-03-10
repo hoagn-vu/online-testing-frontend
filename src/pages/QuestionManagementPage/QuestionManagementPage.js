@@ -14,7 +14,7 @@ import SearchBox from "../../components/SearchBox/SearchBox";
 const listSubject = [
     { id: 1, subject: "Giải tích",},
     { id: 2, subject: "Đại số tuyến tính", },
-    { id: 3, subject: "Yeu cầu phần mềm", },
+    { id: 3, subject: "Yêu cầu phần mềm", },
     { id: 4, subject: "Giao diện và trải nghiệm người dùng", },
     { id: 5, subject: "Tư tưởng Hồ Chí Minh", },
     { id: 6, subject: "Học máy và khai phá dữ liệu", },
@@ -24,7 +24,6 @@ const QuestionManagementPage = () => {
     const [showForm, setShowForm] = useState(false);
     const [editingAccount, setEditingAccount] = useState(null);
     const [rows, setRows] = useState(Object.values(listSubject).flat());
-    // Lọc danh sách tài khoản theo vai trò được chọn
 
     const columns = [
         { field: "id", headerName: "#", width: 10, align: "center",headerAlign: "center", },
