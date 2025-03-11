@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./ListQuestionPage.css";
 import Swal from "sweetalert2";
-import { CheckBox } from "@mui/icons-material";
+import SearchBox from "../../components/SearchBox/SearchBox";
 
 const ListQuestionPage = () => {
     const { subjectId } = useParams();
@@ -104,114 +104,118 @@ const ListQuestionPage = () => {
 
     return (
         <div className="container list-question-container me-0">
-        <h5 className="text-center mb-3">Questions for Subject: {subjectName}</h5>
-
-        <div className="d-flex">
-            <button
-            className="btn btn-success mb-3"
-            data-bs-toggle="modal"
-            data-bs-target="#questionModal"
-            onClick={() => {
-                setEditQuestionId(null); 
-                setNewQuestion({ questionText: "", options: [{ optionText: "", isCorrectOption: false }, { optionText: "", isCorrectOption: false }] });
-            }}
-            >
-            Thêm câu hỏi mới
-            </button>
-            <button className="upload-btn ms-2" onClick={handleUploadClick}>
-                Upload File
-            </button>
-        </div>
-
-        {questions.map((question) => (
-            <div key={question.id} className="card mb-2">
-                <div className="card-header d-flex justify-content-between">
-                    <h6>{question.questionText}</h6>
-                    <div className="d-flex" style={{ marginLeft: "50px" }}>
-                    <button className="btn btn-primary me-2" onClick={() => handleEditQuestion(question)}>Edit</button>
-                    <button className="btn btn-danger">Delete</button>
-                    </div>
+            <h5 className="text-center mb-3">Questions for Subject: {subjectName}</h5>
+            <div className="d-flex">
+                <div className="search-container">
+                    <SearchBox></SearchBox>
                 </div>
-                <ul className="list-group">
-                    {question.options.map((option, index) => (
-                    <li key={index} className={option.isCorrectOption ? "list-group-item list-group-item-success" : "list-group-item"}>
-                        {option.optionText}
-                    </li>
-                    ))}
-                </ul>
-            </div>
-        ))}
-
-        {/* Modal Bootstrap thuần */}
-        <div className="modal fade" id="questionModal" tabIndex="-1" aria-hidden="true">
-            <div className="modal-dialog modal-dialog-centered">
-                <div className="modal-content">
-                    <div className="modal-header">
-                    <h5 className="modal-title">{editQuestionId ? "Chỉnh sửa câu hỏi" : "Thêm câu hỏi mới"}</h5>
-                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div className="modal-body">
-                    <textarea
-                        type="text"
-                        className="form-control mb-3 "
-                        placeholder="Nhập câu hỏi"
-                        value={newQuestion.questionText}
-                        onChange={(e) => setNewQuestion({ ...newQuestion, questionText: e.target.value })}
-                    />
-                    {newQuestion.options.map((option, index) => (
-                        <div key={index} className="input-group mb-2">
-                        <div className="input-group-text">
-                            <input
-                            type="checkbox"
-                            checked={option.isCorrectOption}
-                            onChange={() => {
-                                const newOptions = [...newQuestion.options];
-                                newOptions[index].isCorrectOption = !newOptions[index].isCorrectOption;
-                                setNewQuestion({ ...newQuestion, options: newOptions });
-                            }}
-                            />
-                        </div>
-                        <input
-                            type="text"
-                            className="form-control m-0"
-                            placeholder="Nhập đáp án"
-                            value={option.optionText}
-                            onChange={(e) => {
-                            const newOptions = [...newQuestion.options];
-                            newOptions[index].optionText = e.target.value;
-                            setNewQuestion({ ...newQuestion, options: newOptions });
-                            }}
-                        />
-                        <button className="btn btn-danger" onClick={() => handleRemoveOption(index)}>X</button>
-                        </div>
-                    ))}
-                    <button className="btn btn-outline-secondary me-2 mt-2" onClick={handleAddOption}>
-                        Thêm đáp án
+                <div className="d-flex justify-content-end ms-auto">
+                    <button
+                    className="btn btn-success mb-3"
+                    data-bs-toggle="modal"
+                    data-bs-target="#questionModal"
+                    onClick={() => {
+                        setEditQuestionId(null); 
+                        setNewQuestion({ questionText: "", options: [{ optionText: "", isCorrectOption: false }, { optionText: "", isCorrectOption: false }] });
+                    }}
+                    >
+                    Thêm câu hỏi mới
                     </button>
-                    <div className="form-check mt-3">
-                        <input
-                            type="checkbox"
-                            className="form-check-input"
-                            id="shuffleQuestion"
-                            checked={shuffleQuestion}
-                            onChange={() => setShuffleQuestion(!shuffleQuestion)}
-                        />
-                        <label className="form-check-label" htmlFor="shuffleQuestion">
-                            Đảo thứ tự đáp án
-                        </label>
+                    <button className="upload-btn ms-2" onClick={handleUploadClick}>
+                        Upload File
+                    </button>
+                </div>
+            </div>
+
+            {questions.map((question) => (
+                <div key={question.id} className="card mb-2">
+                    <div className="card-header d-flex justify-content-between">
+                        <h6>{question.questionText}</h6>
+                        <div className="d-flex" style={{ marginLeft: "50px" }}>
+                        <button className="btn btn-primary me-2" onClick={() => handleEditQuestion(question)}>Edit</button>
+                        <button className="btn btn-danger">Delete</button>
                         </div>
                     </div>
-                    <div className="modal-footer">
-                        <button className="btn btn-success" onClick={handleSaveQuestion}>
-                            {editQuestionId ? "Cập nhật" : "Lưu"}
+                    <ul className="list-group">
+                        {question.options.map((option, index) => (
+                        <li key={index} className={option.isCorrectOption ? "list-group-item list-group-item-success" : "list-group-item"}>
+                            {option.optionText}
+                        </li>
+                        ))}
+                    </ul>
+                </div>
+            ))}
+
+            {/* Modal Bootstrap thuần */}
+            <div className="modal fade" id="questionModal" tabIndex="-1" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                        <h5 className="modal-title">{editQuestionId ? "Chỉnh sửa câu hỏi" : "Thêm câu hỏi mới"}</h5>
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                        <textarea
+                            type="text"
+                            className="form-control mb-3 "
+                            placeholder="Nhập câu hỏi"
+                            value={newQuestion.questionText}
+                            onChange={(e) => setNewQuestion({ ...newQuestion, questionText: e.target.value })}
+                        />
+                        {newQuestion.options.map((option, index) => (
+                            <div key={index} className="input-group mb-2">
+                            <div className="input-group-text">
+                                <input
+                                type="checkbox"
+                                checked={option.isCorrectOption}
+                                onChange={() => {
+                                    const newOptions = [...newQuestion.options];
+                                    newOptions[index].isCorrectOption = !newOptions[index].isCorrectOption;
+                                    setNewQuestion({ ...newQuestion, options: newOptions });
+                                }}
+                                />
+                            </div>
+                            <input
+                                type="text"
+                                className="form-control m-0"
+                                placeholder="Nhập đáp án"
+                                value={option.optionText}
+                                onChange={(e) => {
+                                const newOptions = [...newQuestion.options];
+                                newOptions[index].optionText = e.target.value;
+                                setNewQuestion({ ...newQuestion, options: newOptions });
+                                }}
+                            />
+                            <button className="btn btn-danger" onClick={() => handleRemoveOption(index)}>X</button>
+                            </div>
+                        ))}
+                        <button className="btn btn-outline-secondary me-2 mt-2" onClick={handleAddOption}>
+                            Thêm đáp án
                         </button>
-                        <button id="closeModalBtn" className="btn btn-secondary" data-bs-dismiss="modal">
-                            Hủy
-                        </button>
+                        <div className="form-check mt-3">
+                            <input
+                                type="checkbox"
+                                className="form-check-input"
+                                id="shuffleQuestion"
+                                checked={shuffleQuestion}
+                                onChange={() => setShuffleQuestion(!shuffleQuestion)}
+                            />
+                            <label className="form-check-label" htmlFor="shuffleQuestion">
+                                Đảo thứ tự đáp án
+                            </label>
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button className="btn btn-success" onClick={handleSaveQuestion}>
+                                {editQuestionId ? "Cập nhật" : "Lưu"}
+                            </button>
+                            <button id="closeModalBtn" className="btn btn-secondary" data-bs-dismiss="modal">
+                                Hủy
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         </div>
     );
 };

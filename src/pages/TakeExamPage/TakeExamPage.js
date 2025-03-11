@@ -127,6 +127,7 @@ const TakeExamPage = () => {
                             <p className="studentID m-0 p-0">{studentID}</p>
                         </div>
                     </div>
+                    <h5 className='d-flex align-items-center justify-content-between m-0 fw-bold'>Kỳ thi hết học phần môn</h5>
                     <button className='btn btn-primary btn-sm btn-submit' onClick={handleSubmitExam}>Nộp bài</button>
                 </div>
             </div>
