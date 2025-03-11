@@ -27,7 +27,7 @@ const ResultCandidatePage = () => {
                 <p><strong>Điểm thi:</strong> {examResult.score}</p>
                 <p><strong>Số lần rời khỏi màn hình:</strong> {examResult.leaveCount}</p>
                 <div className="justify-content-center d-flex pt-2">
-                    <a href="/" className="btn-home ">Về trang chủ</a>
+                    <a href="/candidate/home" className="btn-home ">Về trang chủ</a>
                 </div>
             </div>
         </div>

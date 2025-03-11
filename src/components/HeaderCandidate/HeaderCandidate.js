@@ -15,7 +15,7 @@ const HeaderCandidate = ({ username, avatarUrl, logoUrl }) => {
       <div className="user-info position-relative">
       <nav className="flex space-x-6 history">
           <Link
-            to="/thisinh/home"
+            to="/candidate/home"
             className="text-black hover:text-blue-500 his-under"
           >
             Trang chủ
@@ -23,7 +23,7 @@ const HeaderCandidate = ({ username, avatarUrl, logoUrl }) => {
         </nav>
         <nav className="flex space-x-6 history">
           <Link
-            to="/thisinh/history"
+            to="/candidate/history"
             className="text-black hover:text-blue-500 his-under"
           >
             Lịch sử thi
