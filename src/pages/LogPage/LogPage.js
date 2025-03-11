@@ -128,7 +128,7 @@ const LogPage = () => {
       </nav>
 
       {/* Thanh tìm kiếm + Nút thêm mới + Upload */}
-      <div className="log-actions">
+      <div className="log-actions mt-3">
         <div className="action-selector">
         <select class="form-select" aria-label="Default select example">
           <option disabled>Hành động</option>

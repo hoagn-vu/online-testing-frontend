@@ -41,7 +41,7 @@ function App() {
         </Route>
       </Routes>
       <Routes>
-        <Route path="/thisinh" element={<DefaultLayout />}>
+        <Route path="/candidate" element={<DefaultLayout />}>
           <Route path="home" element={<HomeCandidate />} />
           <Route path="history" element={<HistoryCandidatePage />} />
           <Route path="result" element={<ResultCandidatePage />} />

@@ -13,6 +13,14 @@ const HeaderCandidate = ({ username, avatarUrl, logoUrl }) => {
       <img src={logoUrl} alt="Logo" className="logo" />
 
       <div className="user-info position-relative">
+      <nav className="flex space-x-6 history">
+          <Link
+            to="/thisinh/home"
+            className="text-black hover:text-blue-500 his-under"
+          >
+            Trang chủ
+          </Link>
+        </nav>
         <nav className="flex space-x-6 history">
           <Link
             to="/thisinh/history"
