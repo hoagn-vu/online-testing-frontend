@@ -84,14 +84,14 @@ const LogPage = () => {
   const [rows, setRows] = useState(Object.values(dummyLogs).flat());
   // Lọc danh sách tài khoản theo vai trò được chọn
   const columns = [
-    { field: "id", headerName: "#", width: 30 },
+    { field: "id", headerName: "#", width: 10 },
     {
       field: "studentId",
       headerName: "Thời điểm",
       type: "datetime",
       width: 260,
     },
-    { field: "lastname", headerName: "Người thực hiện", width: 200 },
+    { field: "lastname", headerName: "Người thực hiện", minWidth: 150, flex: 0.05},
     {
       field: "gender",
       headerName: "Hành động",
@@ -103,7 +103,7 @@ const LogPage = () => {
       field: "dob",
       headerName: "Mô tả",
       type: "datetime",
-      width: 600,
+      width: 600, flex: 0.1,
       headerAlign: "center",
     },
   ];
