@@ -9,6 +9,7 @@ import {
 } from "chart.js";
 import React from "react";
 import { Bar } from "react-chartjs-2";
+import PropTypes from "prop-types";
 
 // Đăng ký các thành phần Chart.js
 ChartJS.register(
@@ -75,6 +76,14 @@ const BarChart = ({ title, labels, dataPoints, width, height }) => {
       <Bar data={data} options={options} />
     </div>
   );
+};
+
+BarChart.propTypes = {
+  title: PropTypes.string.isRequired,
+  labels: PropTypes.arrayOf(PropTypes.string).isRequired,
+  dataPoints: PropTypes.arrayOf(PropTypes.number).isRequired,
+  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 export default BarChart;

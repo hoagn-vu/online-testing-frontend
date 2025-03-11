@@ -10,6 +10,7 @@ import {
 } from "chart.js";
 import React from "react";
 import { Line } from "react-chartjs-2";
+import PropTypes from "prop-types";
 
 // Đăng ký các thành phần của Chart.js
 ChartJS.register(
@@ -86,6 +87,13 @@ const LineChart = ({
       <Line data={data} options={options} />
     </div>
   );
+};
+
+LineChart.propTypes = {
+  title: PropTypes.string.isRequired,
+  labels: PropTypes.array.isRequired,
+  dataPoints: PropTypes.array.isRequired,
+  color: PropTypes.string,
 };
 
 export default LineChart;

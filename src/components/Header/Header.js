@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { FaChevronDown } from "react-icons/fa";
 // Import icon
 import "./Header.css";
+import PropTypes from "prop-types";
 
 const Header = ({ username, avatarUrl, logoUrl }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,6 +32,12 @@ const Header = ({ username, avatarUrl, logoUrl }) => {
       </div>
     </div>
   );
+};
+
+Header.propTypes = {
+  username: PropTypes.string,
+  avatarUrl: PropTypes.string,
+  logoUrl: PropTypes.string,
 };
 
 export default Header;

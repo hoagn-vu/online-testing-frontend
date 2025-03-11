@@ -7,8 +7,30 @@ import { Box, Button, Grid, IconButton, TextField, Paper } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
+import ApiService from "../../services/apiService";
 
 const QuestionManagementPage = () => {
+    const [listSubject, setListSubject] = useState([]);
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await ApiService.get("/subjects");
+          response.data.forEach((subject, index) => {
+            setListSubject((prev) => [
+              ...prev,
+              {
+                id: subject.id,
+                subject: subject.subjectName,
+              },
+            ]);
+          });
+        } catch (error) {
+          console.error("Lỗi lấy dữ liệu:", error);
+        }
+      };
+      fetchData();
+    }, []);
+    
     const [showForm, setShowForm] = useState(false);
     const [editingAccount, setEditingAccount] = useState(null);
     const [rows, setRows] = useState([]);

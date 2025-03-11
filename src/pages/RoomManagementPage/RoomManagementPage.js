@@ -9,36 +9,49 @@ import { DataGrid } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import { AlignCenter } from "lucide-react";
-
-const dummyAccounts = [
-    {id: 1,
-        roomName: "VP201",
-        location: "CS1",
-        capacity: "50",
-        status: "active",},
-    {id: 2,
-        roomName: "V4201",
-        location: "CS1",
-        capacity: "30",
-        status: "active",},
-    {id: 3,
-        roomName: "VP301",
-        location: "CS2",
-        capacity: "30",
-        status: "active",},
-    {id: 4,
-        roomName: "VP202",
-        location: "CS2",
-        capacity: "20",
-        status: "active",},
-];
+import ApiService from "../../services/apiService";
 
 const RoomManagementPage = () => {
+// const dummyAccounts = [
+//     {id: 1,
+//         roomName: "VP201",
+//         location: "CS1",
+//         capacity: "50",
+//         status: "active",},
+//     {id: 2,
+//         roomName: "V4201",
+//         location: "CS1",
+//         capacity: "30",
+//         status: "active",},
+//     {id: 3,
+//         roomName: "VP301",
+//         location: "CS2",
+//         capacity: "30",
+//         status: "active",},
+//     {id: 4,
+//         roomName: "VP202",
+//         location: "CS2",
+//         capacity: "20",
+//         status: "active",},
+// ];
+  const [dummyAccounts, setDummyAccounts] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editingAccount, setEditingAccount] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [accountToDelete, setAccountToDelete] = useState(null);
   const [rows, setRows] = useState(Object.values(dummyAccounts).flat());
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await ApiService.get("/room");
+        setDummyAccounts(response.data);
+      } catch (error) {
+        console.error("Lỗi lấy dữ liệu: ", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const columns = [
     { field: "id", headerName: "#", width: 10, align: "center",headerAlign: "center", },
