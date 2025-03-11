@@ -11,9 +11,44 @@ import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
 
 const listQuestionBank = [
-    { id: 1, question_bank_name: "Giải tích 1",},
-    { id: 2, question_bank_name: "Giải tích 2", },
-    { id: 3, question_bank_name: "Giải tích 3", },
+    {
+        id: "67cf6cee1d44d62edf5de90b",
+        subjectName: "Math",
+        subjectStatus: null,
+        questionBanks: [
+            {
+                questionBankId: "67cf702d1d44d62edf5de913",
+                questionBankName: "Giải tích 1",
+                questionBankStatus: null,
+                list: [],
+            },
+            {
+                questionBankId: "67cf70341d44d62edf5de916",
+                questionBankName: "Giải tích 2",
+                questionBankStatus: null,
+                list: [],
+            }
+        ]
+    },
+    {
+        id: "67cf6d191d44d62edf5de90d",
+        subjectName: "History",
+        subjectStatus: null,
+        questionBanks: [
+            {
+                questionBankId: "67cf702d1d44d62edf5de913",
+                questionBankName: "His 1",
+                questionBankStatus: null,
+                list: [],
+            },
+            {
+                questionBankId: "67cf70341d44d62edf5de916",
+                questionBankName: "His 2",
+                questionBankStatus: null,
+                list: [],
+            }
+        ]
+    }
 ];
 
 const QuestionBankNamePage = () => {
@@ -24,37 +59,55 @@ const QuestionBankNamePage = () => {
     const [rows, setRows] = useState(Object.values(listQuestionBank).flat());
 
     const columns = [
-        { field: "id", headerName: "#", width: 10, align: "center",headerAlign: "center", },
+        { field: "stt", headerName: "#", width: 15, align: "center", headerAlign: "center" },
         { 
-        field: "question_bank_name", headerName: "Ngân hàng câu hỏi", width: 1090,
-        renderCell: (params) => (
-            <Link  
-              style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
-            >
-              {params.row.question_bank_name}
-            </Link>
-          )
+            field: "questionBankName", 
+            headerName: "Ngân hàng câu hỏi", 
+            width: 1090, flex: 0.1, 
+            renderCell: (params) => (
+                <Link style={{ textDecoration: "none", color: "black", cursor: "pointer" }}>
+                    {params.row.questionBankName}
+                </Link>
+            )
         },
         {
-        field: "actions",
-        headerName: "Thao tác",
-        width: 130,
-        sortable: false,
-        renderCell: (params) => (
-            <>
-            <IconButton color="primary" onClick={() => handleEdit(params.row)}>
-                <EditIcon />
-            </IconButton>
-            <IconButton color="error" onClick={() => handleDelete(params.row.id)}>
-                <DeleteIcon />
-            </IconButton>
-            </>
-        ),
+            field: "actions",
+            headerName: "Thao tác",
+            width: 130,
+            sortable: false,
+            renderCell: (params) => (
+                <>
+                    <IconButton color="primary" onClick={() => handleEdit(params.row)}>
+                        <EditIcon />
+                    </IconButton>
+                    <IconButton color="error" onClick={() => handleDelete(params.row.id)}>
+                        <DeleteIcon />
+                    </IconButton>
+                </>
+            ),
         },
     ];
+    
 
     const paginationModel = { page: 0, pageSize: 5 };
     const inputRef = useRef(null);
+
+    useEffect(() => {
+        if (!subject) return; // Tránh lỗi nếu subject chưa có
+    
+        const formattedData = listQuestionBank
+            .filter((item) => item.subjectName.toLowerCase() === subject.toLowerCase()) // Lọc theo subjectName
+            .flatMap((filteredSubject) =>
+                filteredSubject.questionBanks.map((bank, index) => ({
+                    stt: index + 1, // Số thứ tự
+                    id: bank.questionBankId, // ID ngân hàng câu hỏi
+                    questionBankName: bank.questionBankName, // Tên ngân hàng câu hỏi
+                }))
+            );
+    
+        setRows(formattedData);
+    }, [subject]);
+    
 
     useEffect(() => {
     if (showForm && inputRef.current) {

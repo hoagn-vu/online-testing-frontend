@@ -18,7 +18,7 @@ const QuestionManagementPage = () => {
     useEffect(() => {
         setTimeout(() => {
             const apiData = [
-                { id: "67cf6cee1d44d62edf5de90b", subjectName: "Yêu cầu phần mềm", subjectStatus: null, questionBanks: [] },
+                { id: "67cf6cee1d44d62edf5de90b", subjectName: "Math", subjectStatus: null, questionBanks: [] },
                 { id: "67cf6d191d44d62edf5de90d", subjectName: "Giao diện và trải nghiệm người dùng", subjectStatus: null, questionBanks: [] },
             ];
             const dataWithIndex = apiData.map((item, index) => ({ ...item, stt: index + 1 })); // Gán số thứ tự
