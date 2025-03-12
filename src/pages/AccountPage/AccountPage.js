@@ -3,12 +3,13 @@ import { Link } from "react-router-dom";
 import "./AccountPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel,} from "@mui/material";
+import {Chip, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel,} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import ApiService from "../../services/apiService";
+import CreatableSelect from "react-select/creatable";
 
 const AccountPage = () => {
   const [dummyAccounts, setDummyAccounts] = useState({
@@ -64,14 +65,13 @@ const AccountPage = () => {
   const [showForm, setShowForm] = useState(false);
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [editingAccount, setEditingAccount] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [accountToDelete, setAccountToDelete] = useState(null);
   const [rows, setRows] = useState(Object.values(dummyAccounts).flat());
   const filteredRows = dummyAccounts[selectedRole] || [];
 
   const columns = [
     { field: "id", headerName: "#", width: 10 },
-    { field: "userCode", headerName: "Mã", minWidth: 130, flex: 0.1 },
+    { field: "userCode", headerName: "Mã", minWidth: 130, flex: 0.02 },
     { field: "fullName", headerName: "Họ tên", minWidth: 150, flex: 0.1 },
     { field: "dateOfBirth", headerName: "Ngày sinh", type: "datetime", width: 115 },
     {
@@ -81,9 +81,9 @@ const AccountPage = () => {
       align: "center", 
       headerAlign: "center",
     },
-    { field: "userName", headerName: "username", minWidth: 120, flex: 0.1 },
+    { field: "userName", headerName: "username", minWidth: 120 },
     {
-      field: "status",
+      field: "accountStatus",
       headerName: "Trạng thái",
       width: 160,
       renderCell: (params) => (
@@ -103,10 +103,33 @@ const AccountPage = () => {
       ),
     },
     {
+      field: "groupName",
+      headerName: "Nhóm",
+      width: 180,
+      flex: 0.1,
+      headerAlign: "center",
+      renderCell: (params) => (
+        <Box sx={{ 
+          display: "flex",
+          gap: 0.5,
+          flexWrap: "wrap",
+          alignItems: "center", 
+          justifyContent: "center", 
+          height: "100%", 
+        }}>
+          {params.value?.map((group, index) => (
+            <Chip key={index} label={group} size="small" color="primary" />
+          ))}
+        </Box>
+      ),
+    },    
+    {
       field: "actions",
       headerName: "Thao tác",
       width: 130,
       sortable: false,
+      align: "center", 
+      headerAlign: "center",
       renderCell: (params) => (
         <>
           <IconButton color="primary" onClick={() => handleEdit(params.row)}>
@@ -142,11 +165,11 @@ const AccountPage = () => {
   };
 
   const [formData, setFormData] = useState({
-    studentId: "",
+    userCode: "",
     fullName: "",
-    dob: "",
+    dateOfBirth: "",
     gender: "Nam",
-    username: "",
+    userName: "",
     password: "",
     role: selectedRole,
     status: "active",
@@ -156,11 +179,11 @@ const AccountPage = () => {
   const handleAddNew = () => {
     setEditingAccount(null);
     setFormData({
-      studentId: "",
+      userCode: "",
       fullName: "",
-      dob: "",
+      dateOfBirth: "",
       gender: "Nam",
-      username: "",
+      userName: "",
       password: "",
       role: selectedRole,
       status: "active",
@@ -203,11 +226,11 @@ const AccountPage = () => {
 
   const handleEdit = (account) => {
     setFormData({
-      studentId: account.studentId,
+      userCode: account.userCode,
       fullName: account.fullName,
-      dob: account.dob,
+      dateOfBirth: account.dateOfBirth,
       gender: account.gender,
-      username: account.username,
+      userName: account.userName,
       password: "", // Không hiển thị mật khẩu
       role: selectedRole,
       status: account.status,
@@ -277,6 +300,15 @@ const AccountPage = () => {
     setSelectedRole(role);
   };
 
+  const colourOptions = [
+    { value: "22IT1", label: "22IT1" },
+    { value: "22IT2", label: "22IT2" },
+    { value: "22IT3", label: "22IT3" },
+  ];
+  const [showGroupForm, setShowGroupForm] = useState(false);
+
+  const [selectedGroups, setSelectedGroups] = useState([]);
+
   return (
     <div className="account-page">
       {/* Breadcrumbs */}
@@ -305,6 +337,12 @@ const AccountPage = () => {
           </button>
           <button className="upload-btn" onClick={handleUploadClick}>
             Upload File
+          </button>
+          <button className="btn btn-primary" onClick={() => setShowGroupForm(true)}>
+            Thêm nhóm
+          </button>
+          <button className="btn btn-primary" >
+            Xóa nhóm
           </button>
         </div>
       </div>
@@ -387,9 +425,9 @@ const AccountPage = () => {
                   fullWidth
                   label="Mã"
                   required
-                  value={formData.studentId}
+                  value={formData.userCode}
                   onChange={(e) =>
-                    setFormData({ ...formData, studentId: e.target.value })
+                    setFormData({ ...formData, userCode: e.target.value })
                   }
                   sx={{
                     "& .MuiInputBase-input": {
@@ -426,9 +464,9 @@ const AccountPage = () => {
                   label="Ngày Sinh"
                   type="date"
                   InputLabelProps={{ shrink: true }}
-                  value={formData.dob}
+                  value={formData.dateOfBirth}
                   onChange={(e) =>
-                    setFormData({ ...formData, dob: e.target.value })
+                    setFormData({ ...formData, dateOfBirth: e.target.value })
                   }
                   sx={{
                     "& .MuiInputBase-input": {
@@ -466,9 +504,9 @@ const AccountPage = () => {
                 <TextField
                   fullWidth
                   label="Username"
-                  value={formData.username}
+                  value={formData.userName}
                   onChange={(e) =>
-                    setFormData({ ...formData, username: e.target.value })
+                    setFormData({ ...formData, userName: e.target.value })
                   }
                   sx={{
                     "& .MuiInputBase-input": {
@@ -673,6 +711,27 @@ const AccountPage = () => {
           </div>
         </div>
       )}
+      {/* Form Chọn nhóm */}
+      {showGroupForm && (
+        <div className="form-overlay">
+          <div className="form-container">
+            <h3>Chọn nhóm</h3>
+            <CreatableSelect
+              isMulti
+              options={colourOptions}
+              value={selectedGroups}
+              onChange={setSelectedGroups}
+            />
+
+            {/* Nút Đóng */}
+            <button type="submit">Lưu</button>
+            <button type="button" onClick={() => setShowGroupForm(false)}>
+              Hủy
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

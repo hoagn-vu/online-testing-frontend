@@ -34,7 +34,7 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="question" element={<QuestionManagementPage />}/>
           <Route path="question/:subject" element={<QuestionBankNamePage />} />
-          <Route path="listquestion" element={<ListQuestionPage />} />
+          <Route path="question/:subject/:questionBankId" element={<ListQuestionPage />} />
           <Route path="room" element={<RoomManagementPage />} />
           <Route path="log" element={<LogPage />} />
         </Route>
