@@ -10,147 +10,6 @@ import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import ApiService from "../../services/apiService";
 
-// const dummyAccounts = {
-//   "Thí sinh": [
-//     {
-//       id: 1,
-//       studentId: "BIT220079",
-//       lastname: "Nguyễn Thu",
-//       firstname: "An",
-//       dob: "01/01/2000",
-//       gender: "Nữ",
-//       username: "nguyenvana",
-//       status: "active",
-//     },
-//     {
-//       id: 2,
-//       studentId: "SV002",
-//       lastname: "Trần Thị",
-//       firstname: "Dương",
-//       dob: "15/05/2001",
-//       gender: "Nữ",
-//       username: "tranthib",
-//       status: "disabled",
-//     },
-//     {
-//       id: 3,
-//       studentId: "BIT220089",
-//       lastname: "Phan Thị Phương",
-//       firstname: "Linh",
-//       dob: "01/01/2000",
-//       gender: "Nữ",
-//       username: "nguyenvana",
-//       status: "active",
-//     },
-//     {
-//       id: 4,
-//       studentId: "SV002",
-//       lastname: "Trần Thị",
-//       firstname: "Linh",
-//       dob: "15/05/2001",
-//       gender: "Nữ",
-//       username: "tranthib",
-//       status: "disabled",
-//     },
-//     {
-//       id: 5,
-//       studentId: "BIT220089",
-//       lastname: "Phan Thị Phương",
-//       firstname: "Linh",
-//       dob: "01/01/2000",
-//       gender: "Nữ",
-//       username: "nguyenvana",
-//       status: "active",
-//     },
-//     {
-//       id: 6,
-//       studentId: "SV002",
-//       lastname: "Trần Thị",
-//       firstname: "Linh",
-//       dob: "15/05/2001",
-//       gender: "Nữ",
-//       username: "tranthib",
-//       status: "disabled",
-//     },
-//     {
-//       id: 7,
-//       studentId: "BIT220089",
-//       lastname: "Phan Thị Phương",
-//       firstname: "Linh",
-//       dob: "01/01/2000",
-//       gender: "Nữ",
-//       username: "nguyenvana",
-//       status: "active",
-//     },
-//     {
-//       id: 8,
-//       studentId: "SV002",
-//       lastname: "Trần Thị",
-//       firstname: "Linh",
-//       dob: "15/05/2001",
-//       gender: "Nữ",
-//       username: "tranthib",
-//       status: "disabled",
-//     },
-//     {
-//       id: 9,
-//       studentId: "BIT220089",
-//       lastname: "Phan Thị Phương",
-//       firstname: "Linh",
-//       dob: "01/01/2000",
-//       gender: "Nữ",
-//       username: "nguyenvana",
-//       status: "active",
-//     },
-//     {
-//       id: 10,
-//       studentId: "SV002",
-//       lastname: "Trần Thị",
-//       firstname: "Linh",
-//       dob: "15/05/2001",
-//       gender: "Nữ",
-//       username: "tranthib",
-//       status: "disabled",
-//     },
-//   ],
-//   "Giám thị": [
-//     {
-//       id: 11,
-//       studentId: "GT001",
-//       lastname: "Lê Văn",
-//       firstname: "Thuận",
-//       dob: "22/09/1990",
-//       gender: "Nam",
-//       username: "levanc",
-//       status: "active",
-//     },
-//   ],
-//   "Quản trị viên": [
-//     {
-//       id: 12,
-//       studentId: "QT001",
-//       lastname: "Phạm Thị",
-//       firstname: "Linh",
-//       dob: "05/06/1985",
-//       gender: "Nữ",
-//       username: "phamthid",
-//       status: "active",
-//     },
-//   ],
-//   "Cán bộ phụ trách kỳ thi": [
-//     {
-//       id: 13,
-//       studentId: "CB001",
-//       lastname: "Hoàng Văn",
-//       firstname: "Vũ",
-//       dob: "12/12/1980",
-//       gender: "Nam",
-//       username: "hoangvane",
-//       status: "active",
-//     },
-//   ],
-// };
-
 const AccountPage = () => {
   const [dummyAccounts, setDummyAccounts] = useState({
     "Thí sinh": [],
@@ -164,6 +23,7 @@ const AccountPage = () => {
       try {
         const response = await ApiService.get("/users");
         response.data.forEach((user) => {
+          if (!user.status) user = { ...user, status: "active" };
           if (user.role === "candidate") {
             setDummyAccounts((prev) => ({
               ...prev,
@@ -207,30 +67,28 @@ const AccountPage = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [accountToDelete, setAccountToDelete] = useState(null);
   const [rows, setRows] = useState(Object.values(dummyAccounts).flat());
-  // Lọc danh sách tài khoản theo vai trò được chọn
   const filteredRows = dummyAccounts[selectedRole] || [];
 
   const columns = [
     { field: "id", headerName: "#", width: 10 },
-    { field: "studentId", headerName: "Mã", minWidth: 130, flex: 0.1 },
-    { field: "lastname", headerName: "Họ và tên đệm", minWidth: 150, flex: 0.1 },
-    { field: "firstname", headerName: "Tên", minWidth: 100, flex: 0.1 },
-    { field: "dob", headerName: "Ngày sinh", type: "datetime", width: 115 },
+    { field: "userCode", headerName: "Mã", minWidth: 130, flex: 0.1 },
+    { field: "fullName", headerName: "Họ tên", minWidth: 150, flex: 0.1 },
+    { field: "dateOfBirth", headerName: "Ngày sinh", type: "datetime", width: 115 },
     {
       field: "gender",
       headerName: "Giới tính",
       width: 100,
-      align: "center", // ✅ Căn giữa tiêu đề cột
-      headerAlign: "center", // ✅ Căn giữa nội dung trong cột
+      align: "center", 
+      headerAlign: "center",
     },
-    { field: "username", headerName: "username", minWidth: 120, flex: 0.1 },
+    { field: "userName", headerName: "username", minWidth: 120, flex: 0.1 },
     {
       field: "status",
       headerName: "Trạng thái",
       width: 160,
       renderCell: (params) => (
         <Select
-          value={params.row.status}
+          value={params.row.status || "active"}
           onChange={(e) => handleStatusChange(params.row.id, e.target.value)}
           size="small"
           sx={{
@@ -285,7 +143,7 @@ const AccountPage = () => {
 
   const [formData, setFormData] = useState({
     studentId: "",
-    name: "",
+    fullName: "",
     dob: "",
     gender: "Nam",
     username: "",
@@ -296,10 +154,10 @@ const AccountPage = () => {
   });
 
   const handleAddNew = () => {
-    setEditingAccount(null); // Đảm bảo không ở chế độ chỉnh sửa
+    setEditingAccount(null);
     setFormData({
       studentId: "",
-      name: "",
+      fullName: "",
       dob: "",
       gender: "Nam",
       username: "",
@@ -308,7 +166,7 @@ const AccountPage = () => {
       status: "active",
       permissions: [],
     });
-    setTimeout(() => setShowForm(true), 0); // Đợi React cập nhật state rồi mới hiển thị form
+    setTimeout(() => setShowForm(true), 0);
   };
 
   const [passwordData, setPasswordData] = useState({
@@ -346,7 +204,7 @@ const AccountPage = () => {
   const handleEdit = (account) => {
     setFormData({
       studentId: account.studentId,
-      name: account.name,
+      fullName: account.fullName,
       dob: account.dob,
       gender: account.gender,
       username: account.username,
@@ -366,8 +224,7 @@ const AccountPage = () => {
 
   const confirmDelete = () => {
     console.log(`Đã xóa tài khoản có ID: ${accountToDelete.id}`);
-    // Thêm logic xóa tài khoản tại đây (gọi API hoặc cập nhật state)
-    setShowDeleteModal(false); // Đóng modal sau khi xóa
+    setShowDeleteModal(false); 
   };
 
   const handleDelete = (id) => {
@@ -382,7 +239,6 @@ const AccountPage = () => {
       cancelButtonText: "Hủy",
     }).then((result) => {
       if (result.isConfirmed) {
-        // Xóa tài khoản ở đây (ví dụ: gọi API hoặc cập nhật state)
         console.log("Xóa tài khoản có ID:", id);
 
         Swal.fire({
@@ -549,9 +405,9 @@ const AccountPage = () => {
                   fullWidth
                   label="Họ và tên"
                   required
-                  value={formData.name}
+                  value={formData.fullName}
                   onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
+                    setFormData({ ...formData, fullName: e.target.value })
                   }
                   sx={{
                     "& .MuiInputBase-input": {
@@ -817,19 +673,6 @@ const AccountPage = () => {
           </div>
         </div>
       )}
-
-      {/* {showDeleteModal && (
-            <div className="modal-overlay">
-                <div className="modal-content">
-                    <h3>Xác nhận xóa</h3>
-                    <p>Bạn có chắc chắn muốn xóa tài khoản <strong>{accountToDelete?.name}</strong> không?</p>
-                    <div className="modal-actions">
-                        <button className="confirm-btn" onClick={confirmDelete}>Xác nhận</button>
-                        <button className="cancel-btn" onClick={() => setShowDeleteModal(false)}>Hủy</button>
-                    </div>
-                </div>
-            </div>
-        )} */}
     </div>
   );
 };
