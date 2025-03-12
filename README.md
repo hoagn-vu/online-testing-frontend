@@ -12,8 +12,8 @@ Hệ thống thi trắc nghiệm trực tuyến là một nền tảng giúp t�
 - Frontend: [https://github.com/hoagn-vu/frontend_online_testing](https://github.com/hoagn-vu/frontend_online_testing)
 - Backend: [https://github.com/hoagn-vu/backend_online_testing](https://github.com/hoagn-vu/backend_online_testing)
 - Jira: https://hoangvu.atlassian.net/jira/software/projects/OT/boards/2
-- SRS:
-- SDD:
+- SRS: [https://drive.google.com/file/d/18MgZO05q5spFkm1nl5XTzG44cIXQuw5z/view?usp=sharing](https://drive.google.com/file/d/18MgZO05q5spFkm1nl5XTzG44cIXQuw5z/view?usp=sharing)
+- SDD: [https://drive.google.com/file/d/1b6FI4Wu5JBZITMxKBzFLI8gMC1p7lrrw/view?usp=sharing](https://drive.google.com/file/d/1b6FI4Wu5JBZITMxKBzFLI8gMC1p7lrrw/view?usp=sharing)
 
 ## Công nghệ sử dụng
 - Backend:
