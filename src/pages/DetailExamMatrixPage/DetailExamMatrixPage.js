@@ -271,6 +271,7 @@ const DetailExamMatrixPage = () => {
                     disableColumnResize
                     disableExtendRowFullWidth
                     disableColumnSorting
+                    hideFooter={true} 
                     sx={{
                         "& .MuiDataGrid-columnHeaders": {
                             borderBottom: "2px solid #ccc", // Đường phân cách dưới tiêu đề cột
