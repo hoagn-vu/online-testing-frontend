@@ -174,16 +174,13 @@ const columns = [
                             onChange={(e) => {
                                 const newValue = e.target.value;
                                 console.log(`New score: ${newValue}`);
-                                // Thêm logic cập nhật dữ liệu ở đây nếu cần
                             }}
                         />
                     )}
                 </Box>
             );
         },
-    },
-    
-        
+    },     
 ];
 
 const rawData  = [
@@ -194,6 +191,12 @@ const rawData  = [
     { id: 5, topic: "Các nước Á, Phi, và Mĩ La Tinh giai đoạn 1945-2000", difficulty: "Thông hiểu", selected: "2", totalQuestion: "15", unit: "Câu"},
     { id: 6, topic: "Liên Xô và các nước Đông Âu giai đoạn 1945-1991", difficulty: "Vận dụng cao", selected: "2", totalQuestion: "5", unit: "Câu" },
 ];
+
+const difficultyData = [
+    { level: "Dễ", count: 10 },
+    { level: "Trung bình", count: 15 },
+    { level: "Khó", count: 5 },
+  ];
 
 // Xử lý gộp chuyên đề
 const processData = (data) => {
@@ -241,7 +244,7 @@ const DetailExamMatrixPage = () => {
                     <TextField
                         required
                         id="outlined-required"
-                        label="Ma trận đề thi"
+                        label="Tên ma trận đề thi"
                     />
                     <Select
                         className="basic-single"
@@ -264,30 +267,62 @@ const DetailExamMatrixPage = () => {
                     </button>
                 </div>
             </div>
-            <Box sx={{ width: "100%" }}>
-                <DataGrid
-                    rows={[...processedData, footerRow]}  // 🟢 Đảm bảo footer ở cuối bảng
-                    columns={columns}
-                    disableColumnResize
-                    disableExtendRowFullWidth
-                    disableColumnSorting
-                    hideFooter={true} 
-                    sx={{
-                        "& .MuiDataGrid-columnHeaders": {
-                            borderBottom: "2px solid #ccc", // Đường phân cách dưới tiêu đề cột
-                        },
-                        "& .MuiDataGrid-cell": {
-                            borderRight: "1px solid #ddd", // Đường phân cách giữa các cột
-                        },
-                        "& .footer-row": {
-                            fontWeight: "bold",
-                            backgroundColor: "#f5f5f5",
-                            textAlign: "center",
-                        },
-                    }}
-                />
-            </Box>
+            <Box display="flex" gap={2}>
 
+                    <Box sx={{ width: "100%" }}>
+                        <DataGrid
+                            rows={[...processedData, footerRow]}  // 🟢 Đảm bảo footer ở cuối bảng
+                            columns={columns}
+                            disableColumnResize
+                            disableExtendRowFullWidth
+                            disableColumnSorting
+                            hideFooter={true} 
+                            sx={{
+                                "& .MuiDataGrid-columnHeaders": {
+                                    borderBottom: "2px solid #ccc", // Đường phân cách dưới tiêu đề cột
+                                },
+                                "& .MuiDataGrid-cell": {
+                                    borderRight: "1px solid #ddd", // Đường phân cách giữa các cột
+                                },
+                                "& .footer-row": {
+                                    fontWeight: "bold",
+                                    backgroundColor: "#f5f5f5",
+                                    textAlign: "center",
+                                },
+                            }}
+                        />
+                    </Box>
+    
+                    <Paper sx={{ flex: 1, padding: 2 }}>
+                        <Typography variant="h6" gutterBottom>
+                        Thống kê
+                        </Typography>
+                        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                            <thead>
+                                <tr>
+                                <th style={{ borderBottom: "2px solid #ddd", textAlign: "left", minWidth: "50px" }}>
+                                    Mức độ
+                                </th>
+                                <th style={{ borderBottom: "2px solid #ddd", textAlign: "left" }}>
+                                    Số lượng câu
+                                </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {difficultyData.map((row, index) => (
+                                <tr key={index}>
+                                    <td style={{ padding: "8px", borderBottom: "1px solid #eee" }}>
+                                    {row.level}
+                                    </td>
+                                    <td style={{ padding: "8px", borderBottom: "1px solid #eee" }}>
+                                    {row.count}
+                                    </td>
+                                </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </Paper>
+            </Box>
         </div>
     );
 };
