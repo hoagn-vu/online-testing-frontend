@@ -125,9 +125,9 @@ const ExamMatrixPage = () => {
                 <div className="search-container">
                     <SearchBox></SearchBox>
                 </div>
-                <button className="add-btn" >
+                <Link className="add-btn btn" to="/admin/detail-matrix">
                     Thêm mới
-                </button>
+                </Link>
             </div>
 
             {/* Hiển thị bảng theo vai trò đã chọn */}

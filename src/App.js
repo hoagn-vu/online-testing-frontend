@@ -17,6 +17,7 @@ import QuestionBankNamePage from "./pages/QuestionBankNamePage/QuestionBankNameP
 import ListQuestionPage from "./pages/ListQuestionPage/ListQuestionPage";
 import RoomManagementPage from "./pages/RoomManagementPage/RoomManagementPage";
 import ExamMatrixPage from "./pages/ExamMatrixPage/ExamMatrixPage";
+import DetailExamMatrixPage from "./pages/DetailExamMatrixPage/DetailExamMatrixPage";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
           <Route path="question/:subject" element={<QuestionBankNamePage />} />
           <Route path="question/:subject/:questionBankId" element={<ListQuestionPage />} />
           <Route path="exam-matrix" element={<ExamMatrixPage />} />
+          <Route path="detail-matrix" element={<DetailExamMatrixPage />} />
           <Route path="room" element={<RoomManagementPage />} />
           <Route path="log" element={<LogPage />} />
         </Route>
