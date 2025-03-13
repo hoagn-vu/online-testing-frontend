@@ -130,7 +130,7 @@ const LogPage = () => {
       {/* Thanh tìm kiếm + Nút thêm mới + Upload */}
       <div className="log-actions mt-3">
         <div className="action-selector">
-        <select class="form-select" aria-label="Default select example">
+        <select className="form-select" aria-label="Default select example">
           <option disabled>Hành động</option>
           <option value="Login">Login</option>
           <option value="Thêm mới">Thêm mới</option>

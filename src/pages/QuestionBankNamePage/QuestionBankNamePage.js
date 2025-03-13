@@ -65,7 +65,10 @@ const QuestionBankNamePage = () => {
             headerName: "Ngân hàng câu hỏi", 
             width: 1090, flex: 0.1, 
             renderCell: (params) => (
-                <Link style={{ textDecoration: "none", color: "black", cursor: "pointer" }}>
+                <Link 
+                    to={`/admin/question/${subject}/${params.row.id}`} 
+                    style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
+                >
                     {params.row.questionBankName}
                 </Link>
             )
