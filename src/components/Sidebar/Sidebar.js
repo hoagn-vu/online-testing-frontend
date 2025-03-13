@@ -63,9 +63,16 @@ const Sidebar = () => {
           </NavLink >
         </li>
 
-        <li data-title="Quản lý ma trận đề">
-          <FaThLarge className="icon" /> <span>Quản lý ma trận đề</span>
+        <li
+          className= {location.pathname.startsWith("/admin/exam-matrix") ? "active" : ""}
+          data-title="Quản lý ma trận đề"
+        >
+          <FaThLarge className="icon" />
+          <NavLink  to="/admin/exam-matrix">
+            <span>Quản lý ma trận đề</span>
+          </NavLink >
         </li>
+
         <li data-title="Quản lý đề thi">
           <FaFileAlt className="icon" /> <span>Quản lý đề thi</span>
         </li>
