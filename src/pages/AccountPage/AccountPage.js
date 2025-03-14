@@ -23,36 +23,59 @@ const AccountPage = () => {
     const fetchData = async () => {
       try {
         const response = await ApiService.get("/users");
-        response.data.forEach((user) => {
-          if (!user.status) user = { ...user, status: "active" };
+        // response.data.users.forEach((user) => {
+        //   if (user.role === "candidate") {
+        //     setDummyAccounts((prev) => ({
+        //       ...prev,
+        //       "Thí sinh": [...prev["Thí sinh"], user],
+        //     }));
+        //   }
+        //   if (user.role === "supervisor") {
+        //     setDummyAccounts((prev) => ({
+        //       ...prev,
+        //       "Giám thị": [...prev["Giám thị"], user],
+        //     }));
+        //   }
+        //   if (user.role === "admin") {
+        //     setDummyAccounts((prev) => ({
+        //       ...prev,
+        //       "Quản trị viên": [...prev["Quản trị viên"], user],
+        //     }));
+        //   }
+        //   if (user.role === "staff") {
+        //     setDummyAccounts((prev) => ({
+        //       ...prev,
+        //       "Cán bộ phụ trách kỳ thi": [
+        //         ...prev["Cán bộ phụ trách kỳ thi"],
+        //         user,
+        //       ],
+        //     }));
+        //   }
+        // });
+
+        const newAccounts = {
+          "Thí sinh": [],
+          "Giám thị": [],
+          "Quản trị viên": [],
+          "Cán bộ phụ trách kỳ thi": [],
+        };
+
+        response.data.users.forEach((user) => {
           if (user.role === "candidate") {
-            setDummyAccounts((prev) => ({
-              ...prev,
-              "Thí sinh": [...prev["Thí sinh"], user],
-            }));
+            newAccounts["Thí sinh"].push(user);
           }
           if (user.role === "supervisor") {
-            setDummyAccounts((prev) => ({
-              ...prev,
-              "Giám thị": [...prev["Giám thị"], user],
-            }));
+            newAccounts["Giám thị"].push(user);
           }
           if (user.role === "admin") {
-            setDummyAccounts((prev) => ({
-              ...prev,
-              "Quản trị viên": [...prev["Quản trị viên"], user],
-            }));
+            newAccounts["Quản trị viên"].push(user);
           }
           if (user.role === "staff") {
-            setDummyAccounts((prev) => ({
-              ...prev,
-              "Cán bộ phụ trách kỳ thi": [
-                ...prev["Cán bộ phụ trách kỳ thi"],
-                user,
-              ],
-            }));
+            newAccounts["Cán bộ phụ trách kỳ thi"].push(user);
           }
         });
+
+        setDummyAccounts(newAccounts);
       } catch (error) {
         console.error("Lỗi lấy dữ liệu tài khoản:", error);
       }

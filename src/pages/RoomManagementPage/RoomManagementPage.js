@@ -8,44 +8,18 @@ import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
-import { AlignCenter } from "lucide-react";
 import ApiService from "../../services/apiService";
 
 const RoomManagementPage = () => {
-// const dummyAccounts = [
-//     {id: 1,
-//         roomName: "VP201",
-//         location: "CS1",
-//         capacity: "50",
-//         status: "active",},
-//     {id: 2,
-//         roomName: "V4201",
-//         location: "CS1",
-//         capacity: "30",
-//         status: "active",},
-//     {id: 3,
-//         roomName: "VP301",
-//         location: "CS2",
-//         capacity: "30",
-//         status: "active",},
-//     {id: 4,
-//         roomName: "VP202",
-//         location: "CS2",
-//         capacity: "20",
-//         status: "active",},
-// ];
-  const [dummyAccounts, setDummyAccounts] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-  const [editingAccount, setEditingAccount] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [accountToDelete, setAccountToDelete] = useState(null);
-  const [rows, setRows] = useState(Object.values(dummyAccounts).flat());
+  const [dummyRooms, setDummyRooms] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await ApiService.get("/room");
-        setDummyAccounts(response.data);
+        const response = await ApiService.get("/rooms");
+        console.log("Dữ liệu phòng thi: ", response.data.rooms);
+
+        setDummyRooms(response.data.rooms);
       } catch (error) {
         console.error("Lỗi lấy dữ liệu: ", error);
       }
@@ -53,18 +27,29 @@ const RoomManagementPage = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    setRows(dummyRooms);
+  }, [dummyRooms]);
+
+  const [showForm, setShowForm] = useState(false);
+  const [editingAccount, setEditingAccount] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [accountToDelete, setAccountToDelete] = useState(null);
+  // const [rows, setRows] = useState(Object.values(dummyRooms).flat());
+  const [rows, setRows] = useState([]);
+
   const columns = [
     { field: "id", headerName: "#", width: 10, align: "center",headerAlign: "center", },
     { field: "roomName", headerName: "Tên phòng", width: 440 },
-    { field: "location", headerName: "Địa điểm", width: 300 },
-    { field: "capacity", headerName: "Số lượng", width: 150, align: "center",headerAlign: "center", },
+    { field: "roomLocation", headerName: "Địa điểm", width: 300 },
+    { field: "roomCapacity", headerName: "Số lượng", width: 150, align: "center",headerAlign: "center", },
     {
-      field: "status",align: "center",headerAlign: "center",
+      field: "roomStatus",align: "center", headerAlign: "center",
       headerName: "Trạng thái",
       width: 180,
       renderCell: (params) => (
         <Select
-          value={params.row.status}
+          value={params.row.roomStatus}
           onChange={(e) => handleStatusChange(params.row.id, e.target.value)}
           size="small"
           sx={{
@@ -107,24 +92,24 @@ const RoomManagementPage = () => {
 
   const handleStatusChange = (id, newStatus) => {
     setRows(
-      rows.map((row) => (row.id === id ? { ...row, status: newStatus } : row))
+      rows.map((row) => (row.id === id ? { ...row, roomStatus: newStatus } : row))
     );
   };
 
   const [formData, setFormData] = useState({
     roomName: "",
-    location: "",
-    capacity: "",
-    status: "active",
+    roomLocation: "",
+    roomCapacity: "",
+    roomStatus: "active",
   });
 
   const handleAddNew = () => {
     setEditingAccount(null); // Đảm bảo không ở chế độ chỉnh sửa
     setFormData({
       roomName: "",
-      location: "",
-      capacity: "",
-      status: "active",
+      roomLocation: "",
+      roomCapacity: "",
+      roomStatus: "active",
     });
     setTimeout(() => setShowForm(true), 0); // Đợi React cập nhật state rồi mới hiển thị form
   };
@@ -148,9 +133,9 @@ const RoomManagementPage = () => {
   const handleEdit = (account) => {
     setFormData({
       roomName: account.roomName,
-      location: account.location,
-      capacity: account.capacity,
-      status: account.status,
+      roomLocation: account.roomLocation,
+      roomCapacity: account.roomCapacity,
+      roomStatus: account.roomStatus,
     });
     setEditingAccount(account);
     setShowForm(true);
@@ -281,7 +266,7 @@ const RoomManagementPage = () => {
                   fullWidth
                   label="Địa điểm"
                   required
-                  value={formData.location}
+                  value={formData.roomLocation}
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
@@ -299,7 +284,7 @@ const RoomManagementPage = () => {
                 <TextField
                   fullWidth
                   label="Số lượng"
-                  value={formData.capacity}
+                  value={formData.roomCapacity}
                   onChange={(e) =>
                     setFormData({ ...formData, dob: e.target.value })
                   }
@@ -319,9 +304,9 @@ const RoomManagementPage = () => {
                   select
                   label="Trạng thái"
                   required
-                  value={formData.status}
+                  value={formData.roomStatus}
                   onChange={(e) =>
-                    setFormData({ ...formData, status: e.target.value })
+                    setFormData({ ...formData, roomStatus: e.target.value })
                   }
                   sx={{
                     "& .MuiInputBase-input": {
