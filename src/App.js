@@ -18,7 +18,7 @@ import ListQuestionPage from "./pages/ListQuestionPage/ListQuestionPage";
 import RoomManagementPage from "./pages/RoomManagementPage/RoomManagementPage";
 import ExamMatrixPage from "./pages/ExamMatrixPage/ExamMatrixPage";
 import DetailExamMatrixPage from "./pages/DetailExamMatrixPage/DetailExamMatrixPage";
-import ExamManagementPage from "./pages/ExamManagementPage.js/ExamManagementPage";
+import ExamManagementPage from "./pages/ExamManagementPage/ExamManagementPage";
 
 function App() {
   return (

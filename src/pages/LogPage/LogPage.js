@@ -155,6 +155,9 @@ const LogPage = () => {
             disableColumnResize // ✅ Ngăn kéo giãn cột
             disableExtendRowFullWidth
             disableRowSelectionOnClick
+            localeText={{
+              noRowsLabel: "Không có dữ liệu", // ✅ Đổi text mặc định của DataGrid
+            }}
             sx={{
               "& .MuiDataGrid-cell": {
                 whiteSpace: "normal", // ✅ Cho phép xuống dòng khi nội dung dài

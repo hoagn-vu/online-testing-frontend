@@ -12,23 +12,23 @@ import SearchBox from "../../components/SearchBox/SearchBox";
 import Select from 'react-select';
 
 const listQuestionBank = [
-    {
-        id: "67cf6cee1d44d62edf5de90b",
-        examCode: "MTH01",
-        examName: "Giữa kỳ Giải tích 1",
-        subjectId: "67cf6cee1d44d62edf5de90b",
-        questionBankId: "67cf6cee1d44d62edf5de90b",
-        examStatus: null,
-    },
-    {
-        id: "67cf6cee1d44d62edf5de902",
-        examCode: "MTH01",
-        examName: "Giữa kỳ Giải tích 1",
-        subjectId: "67cf6cee1d44d62edf5de905",
-        questionBankId: "67cf6cee1d44d62edf5de909",
-        examStatus: null,
-    },
-    
+	{
+		id: "67cf6cee1d44d62edf5de90b",
+		examCode: "MTH01",
+		examName: "Giữa kỳ Giải tích 1",
+		subjectId: "67cf6cee1d44d62edf5de90b",
+		questionBankId: "67cf6cee1d44d62edf5de90b",
+		examStatus: null,
+	},
+	{
+		id: "67cf6cee1d44d62edf5de902",
+		examCode: "MTH01",
+		examName: "Giữa kỳ Giải tích 1",
+		subjectId: "67cf6cee1d44d62edf5de905",
+		questionBankId: "67cf6cee1d44d62edf5de909",
+		examStatus: null,
+	},
+	
 ];
 const colourOptions = [
 	{ value: 'red', label: 'Tư tưởng Hồ Chí Minh Tư tưởng Hồ Chí Minh Tư ' },
@@ -39,11 +39,11 @@ const colourOptions = [
 ];
 
 const ExamManagementPage = () => {
-    const [showForm, setShowForm] = useState(false);
-    const [editingAccount, setEditingAccount] = useState(null);
-    const [rows, setRows] = useState(Object.values(listQuestionBank).flat());
-    
-    const columns = [
+	const [showForm, setShowForm] = useState(false);
+	const [editingAccount, setEditingAccount] = useState(null);
+	const [rows, setRows] = useState(Object.values(listQuestionBank).flat());
+	
+	const columns = [
 			{ field: "stt", headerName: "#", width: 15, align: "center", headerAlign: "center" },
 			{ 
 				field: "examCode", 
@@ -86,143 +86,146 @@ const ExamManagementPage = () => {
 					</>
 				),
 			},
-    ];
+	];
 
-    const paginationModel = { page: 0, pageSize: 5 };
-      const inputRef = useRef(null);
-    
-      useEffect(() => {
-      if (showForm && inputRef.current) {
-          inputRef.current.focus();
-        }
-      }, [showForm]);
-    
-      const handleStatusChange = (id, newStatus) => {
-        setRows(
-          rows.map((row) => (row.id === id ? { ...row, status: newStatus } : row))
-        );
-      };
-    
-      const [formData, setFormData] = useState({
-        roomName: "",
-        location: "",
-        capacity: "",
-        status: "active",
-      });
-    
-      const handleAddNew = () => {
-        setEditingAccount(null); // Đảm bảo không ở chế độ chỉnh sửa
-        setFormData({
-          roomName: "",
-          location: "",
-          capacity: "",
-          status: "active",
-        });
-        setTimeout(() => setShowForm(true), 0); // Đợi React cập nhật state rồi mới hiển thị form
-      };
-    
-      const handlePermissionChange = (permission) => {
-        setFormData((prevData) => {
-          const updatedPermissions = prevData.permissions.includes(permission)
-            ? prevData.permissions.filter((p) => p !== permission)
-            : [...prevData.permissions, permission];
-    
-          return { ...prevData, permissions: updatedPermissions };
-        });
-      };
-    
-      const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log("Dữ liệu thêm mới:", formData);
-        setShowForm(false);
-      };
-    
-      const handleEdit = (account) => {
-        setFormData({
-          roomName: account.roomName,
-          location: account.location,
-          capacity: account.capacity,
-          status: account.status,
-        });
-        setEditingAccount(account);
-        setShowForm(true);
-      };
-    
-      const handleDelete = (id) => {
-        Swal.fire({
-          title: "Bạn có chắc chắn xóa?",
-          text: "Bạn sẽ không thể hoàn tác hành động này!",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Xóa",
-          cancelButtonText: "Hủy",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            console.log("Xóa tài khoản có ID:", id);
-    
-            Swal.fire({
-              title: "Đã xóa!",
-              text: "Tài khoản đã bị xóa.",
-              icon: "success",
-            });
-            setRows(rows.filter((row) => row.id !== id));
-          }
-        });
-      };
+	const paginationModel = { page: 0, pageSize: 5 };
+	  const inputRef = useRef(null);
+	
+	  useEffect(() => {
+	  if (showForm && inputRef.current) {
+		  inputRef.current.focus();
+		}
+	  }, [showForm]);
+	
+	  const handleStatusChange = (id, newStatus) => {
+		setRows(
+		  rows.map((row) => (row.id === id ? { ...row, status: newStatus } : row))
+		);
+	  };
+	
+	  const [formData, setFormData] = useState({
+		examCode: "",
+		location: "",
+		capacity: "",
+		status: "active",
+	  });
+	
+	  const handleAddNew = () => {
+		setEditingAccount(null); // Đảm bảo không ở chế độ chỉnh sửa
+		setFormData({
+		  roomName: "",
+		  location: "",
+		  capacity: "",
+		  status: "active",
+		});
+		setTimeout(() => setShowForm(true), 0); // Đợi React cập nhật state rồi mới hiển thị form
+	  };
+	
+	  const handlePermissionChange = (permission) => {
+		setFormData((prevData) => {
+		  const updatedPermissions = prevData.permissions.includes(permission)
+			? prevData.permissions.filter((p) => p !== permission)
+			: [...prevData.permissions, permission];
+	
+		  return { ...prevData, permissions: updatedPermissions };
+		});
+	  };
+	
+	  const handleSubmit = (e) => {
+		e.preventDefault();
+		console.log("Dữ liệu thêm mới:", formData);
+		setShowForm(false);
+	  };
+	
+	  const handleEdit = (account) => {
+		setFormData({
+		  roomName: account.roomName,
+		  location: account.location,
+		  capacity: account.capacity,
+		  status: account.status,
+		});
+		setEditingAccount(account);
+		setShowForm(true);
+	  };
+	
+	  const handleDelete = (id) => {
+		Swal.fire({
+		  title: "Bạn có chắc chắn xóa?",
+		  text: "Bạn sẽ không thể hoàn tác hành động này!",
+		  icon: "warning",
+		  showCancelButton: true,
+		  confirmButtonColor: "#3085d6",
+		  cancelButtonColor: "#d33",
+		  confirmButtonText: "Xóa",
+		  cancelButtonText: "Hủy",
+		}).then((result) => {
+		  if (result.isConfirmed) {
+			console.log("Xóa tài khoản có ID:", id);
+	
+			Swal.fire({
+			  title: "Đã xóa!",
+			  text: "Tài khoản đã bị xóa.",
+			  icon: "success",
+			});
+			setRows(rows.filter((row) => row.id !== id));
+		  }
+		});
+	  };
 
-    return (
-        <div className="exam-management-page">
-            {/* Breadcrumb */}
-            <nav>
-                <Link to="/admin">Home</Link> / 
-                <span className="breadcrumb-current">Quản lý đề thi</span>
-            </nav>
+	return (
+		<div className="exam-management-page">
+			{/* Breadcrumb */}
+			<nav>
+				<Link to="/admin">Home</Link> / 
+				<span className="breadcrumb-current">Quản lý đề thi</span>
+			</nav>
 
-            <div className="account-actions mt-4">
-                <div className="search-container">
-                    <SearchBox></SearchBox>
-                </div>
-                <Link className="add-btn btn" onClick={handleAddNew}>
-                    Thêm mới
-                </Link>
-            </div>
+			<div className="account-actions mt-4">
+				<div className="search-container">
+					<SearchBox></SearchBox>
+				</div>
+				<Link className="add-btn btn" onClick={handleAddNew}>
+					Thêm mới
+				</Link>
+			</div>
 
-            {/* Hiển thị bảng theo vai trò đã chọn */}
-            <div className="subject-table-container mt-3">
-                <Paper sx={{ width: "100%" }}>
-                <DataGrid
-                    rows={rows}
-                    columns={columns}
-                    initialState={{
-                    pagination: { paginationModel: { page: 0, pageSize: 5 } },
-                    }}
-                    pageSizeOptions={[5, 10]}
-                    disableColumnResize // ✅ Ngăn kéo giãn cột
-                    disableExtendRowFullWidth
-                    disableRowSelectionOnClick
-                    sx={{
-                    "& .MuiDataGrid-cell": {
-                        whiteSpace: "normal", // ✅ Cho phép xuống dòng khi nội dung dài
-                        wordWrap: "break-word", // ✅ Xuống dòng tự động
-                        lineHeight: "1.2", // ✅ Giảm khoảng cách giữa các dòng nếu nội dung quá dài
-                        padding: "8px", // ✅ Thêm padding cho đẹp hơn
-                    },
-                    "& .MuiDataGrid-columnHeaders": {
-                        borderBottom: "2px solid #ccc", // Đường phân cách dưới tiêu đề cột
-                    },
-                    "& .MuiDataGrid-cell": {
-                        borderRight: "1px solid #ddd", // Đường phân cách giữa các cột
-                    },
-                    "& .MuiDataGrid-row:last-child .MuiDataGrid-cell": {
-                        borderBottom: "none", // Loại bỏ viền dưới cùng của hàng cuối
-                    },
-                    }}
-                />
-                </Paper>
-            </div>
-            {/* Form thêm tài khoản */}
+			{/* Hiển thị bảng theo vai trò đã chọn */}
+			<div className="subject-table-container mt-3">
+				<Paper sx={{ width: "100%" }}>
+				<DataGrid
+					rows={rows}
+					columns={columns}
+					initialState={{
+					pagination: { paginationModel: { page: 0, pageSize: 5 } },
+					}}
+					pageSizeOptions={[5, 10]}
+					disableColumnResize // ✅ Ngăn kéo giãn cột
+					disableExtendRowFullWidth
+					disableRowSelectionOnClick
+					localeText={{
+						noRowsLabel: "Không có dữ liệu", // ✅ Đổi text mặc định của DataGrid
+					  }}
+					sx={{
+					"& .MuiDataGrid-cell": {
+						whiteSpace: "normal", // ✅ Cho phép xuống dòng khi nội dung dài
+						wordWrap: "break-word", // ✅ Xuống dòng tự động
+						lineHeight: "1.2", // ✅ Giảm khoảng cách giữa các dòng nếu nội dung quá dài
+						padding: "8px", // ✅ Thêm padding cho đẹp hơn
+					},
+					"& .MuiDataGrid-columnHeaders": {
+						borderBottom: "2px solid #ccc", // Đường phân cách dưới tiêu đề cột
+					},
+					"& .MuiDataGrid-cell": {
+						borderRight: "1px solid #ddd", // Đường phân cách giữa các cột
+					},
+					"& .MuiDataGrid-row:last-child .MuiDataGrid-cell": {
+						borderBottom: "none", // Loại bỏ viền dưới cùng của hàng cuối
+					},
+					}}
+				/>
+				</Paper>
+			</div>
+			{/* Form thêm tài khoản */}
 						{showForm && (
 							<div className="form-overlay">
 								<Box
@@ -361,8 +364,8 @@ const ExamManagementPage = () => {
 								</Box>
 							</div>
 						)}
-        </div>
-    );
+		</div>
+	);
 };
 
 export default ExamManagementPage;
