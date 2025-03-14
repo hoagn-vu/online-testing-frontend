@@ -74,7 +74,9 @@ const Sidebar = () => {
         </li>
 
         <li
-          className= {location.pathname.startsWith("/admin/exam") ? "active" : ""}
+          className={
+            location.pathname === "/admin/exam" ? "active" : ""
+          }
           data-title="Quản lý đề thi"
         >
           <FaFileAlt className="icon" />
