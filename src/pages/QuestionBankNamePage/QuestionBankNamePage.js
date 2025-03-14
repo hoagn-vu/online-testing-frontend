@@ -184,12 +184,12 @@ const QuestionBankNamePage = () => {
         </nav>
 
             <div className="account-actions mt-4">
-                <div className="search-container">
-                    <SearchBox></SearchBox>
-                </div>
-                <button className="add-btn" onClick={handleAddNew}>
-                    Thêm mới
-                </button>
+              <div className="search-container">
+                  <SearchBox></SearchBox>
+              </div>
+              <button className="add-btn" onClick={handleAddNew}>
+                Thêm mới
+              </button>
             </div>
 
             {/* Hiển thị bảng theo vai trò đã chọn */}
