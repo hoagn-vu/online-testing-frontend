@@ -1,15 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Select from 'react-select';
 import './DetailExamMatrixPage.css'
 import { Box, Button, Grid, IconButton, Input, TextField, MenuItem, Typography } from "@mui/material";
 import Paper from "@mui/material/Paper";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import { DataGrid } from "@mui/x-data-grid";
-import { Search } from "lucide-react";
-import Swal from "sweetalert2";
-import SearchBox from "../../components/SearchBox/SearchBox";
+import "bootstrap/dist/css/bootstrap.min.css";
+
 
 const listQuestionBank = [
     {
@@ -60,29 +57,31 @@ const colourOptions = [
     { value: 'yellow', label: 'Yellow' },
     { value: 'purple', label: 'Purple' },
   ];
-
-const columns = [
-    { field: "id", headerName: "#", width: 50, headerAlign: "center", align: "center", },
+  const columns = [
+    { field: "id", headerName: "#", width: 50, headerAlign: "center", align: "center" },
     {
         field: "topic",
         headerName: "Chuyên đề kiến thức",
-        minwidth: 200, flex: 0.05,
+        minWidth: 200,
+        flex: 0.05,
         renderCell: (params) => {
             return params.row.isFirst ? (
-            <Box sx={{ display: "flex", alignItems: "center", height: "100%",
-                whiteSpace: "normal",   // Cho phép xuống dòng
-                wordBreak: "break-word" // Cắt từ nếu quá dài
-            }}>
-                <Typography variant="body1" fontWeight="bold">
-                    {params.value}
-                </Typography>
-            </Box>
-            ) : (
-            ""
-            );
+                <div 
+                    className="d-flex align-items-center text-break"
+                    style={{
+                        whiteSpace: "normal",  
+                        wordBreak: "break-word",  
+                        lineHeight: "1.2",  
+                        padding: "5px",  
+                        height: "100%",  
+                    }}
+                >
+                    <strong>{params.value}</strong>
+                </div>
+            ) : "";
         },
     },
-    { field: "difficulty", headerName: "Độ khó", minWidth: 100, flex:0.01, },
+    { field: "difficulty", headerName: "Độ khó", width: 140, headerAlign: "center" },
     {
         field: "selected",
         headerAlign: "center",
@@ -91,60 +90,33 @@ const columns = [
         align: "center",
         renderCell: (params) => {
             const isFooterRow = params.row.topic === "Tổng số câu đã chọn";
-    
+            const [value, setValue] = useState(params.row.selected || 0);
+
             if (isFooterRow) {
                 return (
-                    <Typography
-                        fontWeight="bold"
-                        sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            textAlign: "center",
-                            height: "100%",
-                            width: "100%",
-                        }}
-                    >
+                    <div className="d-flex align-items-center justify-content-center fw-bold w-100 h-100 text-center">
                         {params.row.selected}
-                    </Typography>
-
+                    </div>
                 );
             }
-    
+
             return (
-                <Box
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: "100%",
-                        height: "100%",
-                    }}
-                >
-                    <TextField
+                <div className="d-flex align-items-center justify-content-center w-100 h-100">
+                    <input
                         type="number"
-                        size="small"
-                        variant="outlined"
-                        value={params.row.selected}
-                        onChange={(e) => {
-                            const newValue = e.target.value;
-                            console.log(`Updated selected value for row ${params.row.id}:`, newValue);
-                        }}
-                        inputProps={{
-                            min: 0,
-                            max: params.row.totalQuestion, 
-                            style: { textAlign: "center", width: "50px", padding: "5px", height: "30px" }
-                        }}
-                        sx={{
-                            mr: 1,
-                            "& .MuiInputBase-root": { height: "30px", display: "flex", alignItems: "center" }
-                        }}
+                        className="form-control text-center"
+                        style={{ width: "80px", padding: "5px" }}
+                        value={value}
+                        min="0"
+                        max={params.row.totalQuestion}
+                        onChange={(e) => setValue(e.target.value)} // Cập nhật giá trị khi nhập
                     />
-                    <Typography sx={{ fontSize: "14px" }}>/ {params.row.totalQuestion}</Typography>
-                </Box>
+                    <span className="ms-1">/ {params.row.totalQuestion}</span>
+                </div>
             );
         },
     },
+    { field: "unit", headerName: "Đơn vị", width: 65, align: "center", headerAlign: "center" },
     {
         field: "score",
         headerName: "Điểm / Câu",
@@ -153,41 +125,31 @@ const columns = [
         headerAlign: "center",
         renderCell: (params) => {
             const isFooterRow = params.row.topic === "Tổng số câu đã chọn";
-    
+            const [value, setValue] = useState(params.row.score || 0);
+
             return (
-                <Box
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: "100%",
-                        height: "100%",
-                    }}
-                >
+                <div className="d-flex align-items-center justify-content-center w-100 h-100">
                     {isFooterRow ? (
-                        <Typography fontWeight="bold">{params.value || ""}</Typography> // Chỉ hiển thị văn bản nếu là dòng tổng
+                        <strong>{params.value || ""}</strong>
                     ) : (
-                        <TextField
+                        <input
                             type="number"
-                            value={params.value}
-                            size="small"
-                            variant="outlined"
-                            inputProps={{ min: 0, style: { textAlign: "center" } }}
-                            sx={{ width: "100%" }}
-                            onChange={(e) => {
-                                const newValue = e.target.value;
-                                console.log(`New score: ${newValue}`);
-                            }}
+                            className="form-control text-center"
+                            style={{ width: "100%" }}
+                            value={value}
+                            min="0"
+                            onChange={(e) => setValue(e.target.value)} // Cập nhật giá trị khi nhập
                         />
                     )}
-                </Box>
+                </div>
             );
         },
-    },     
+    },
 ];
 
+
 const rawData  = [
-    { id: 1, topic: "Bối cảnh quốc tế từ sau chiến tranh thế giới thứ hai", difficulty: "Nhận biết", selected: "2", totalQuestion: "5", unit: "Câu"},
+    { id: 1, topic: "Bối cảnh quốc tế từ sau chiến tranh thế giới thứ hai", difficulty: "Nhận biết", selected: "5", totalQuestion: "5", unit: "Câu", score: "1"},
     { id: 2, topic: "Bối cảnh quốc tế từ sau chiến tranh thế giới thứ hai", difficulty: "Thông hiểu", selected: "2", totalQuestion: "10", unit: "Câu"},
     { id: 3, topic: "Bối cảnh quốc tế từ sau chiến tranh thế giới thứ hai", difficulty: "Vận dụng cao", selected: "2", totalQuestion: "5", unit: "Câu"},
     { id: 4, topic: "Các nước Á, Phi, và Mĩ La Tinh giai đoạn 1945-2000", difficulty: "Nhận biết", selected: "2", totalQuestion: "9", unit: "Câu"},
@@ -200,39 +162,40 @@ const difficultyData = [
     { level: "Thông hiểu", count: 15 },
     { level: "Vận dụng cao", count: 5 },
   ];
-
-// Xử lý gộp chuyên đề
-const processData = (data) => {
-    let groupedData = [];
-    let lastTopic = null;
-    data.forEach((item, index) => {
-      let isFirst = item.topic !== lastTopic;
-      groupedData.push({ ...item, id: index + 1, isFirst });
-      lastTopic = item.topic;
-    });
-    return groupedData;
-  };
-
-  // Tính tổng số câu đã chọn
-  const calculateTotalSelected = (data) => {
-    return data.reduce((sum, item) => sum + Number(item.selected), 0); // Chuyển selected về dạng số
-};
-
 const DetailExamMatrixPage = () => {
+    
+    
+    // Xử lý gộp chuyên đề
+    const processData = (data) => {
+        let groupedData = [];
+        let lastTopic = null;
+        data.forEach((item, index) => {
+          let isFirst = item.topic !== lastTopic;
+          groupedData.push({ ...item, id: index + 1, isFirst });
+          lastTopic = item.topic;
+        });
+        return groupedData;
+      };
+    
+      // Tính tổng số câu đã chọn
+      const calculateTotalSelected = (data) => {
+        return data.reduce((sum, item) => sum + Number(item.selected), 0); 
+    };
     const processedData = processData(rawData);
     const totalSelected = calculateTotalSelected(rawData);
+    const [rows, setRows] = useState([]);
+    // const [totalSelected, setTotalSelected] = useState(0);
     
     const footerRow = {
         id: "", 
-        topic: "Tổng số câu đã chọn",  // Chỉ hiện dòng tổng
+        topic: "Tổng số câu đã chọn",  
         difficulty: "",
-        selected: `${totalSelected}`,  // 🟢 Chỉ hiện số tổng, không có "/"
+        selected: `${totalSelected}`,  
         totalQuestion: "",
         unit: "Câu",
-        isFirst: true, // Không phải dòng đầu của nhóm
+        isFirst: true,
     };
     
-
     return (
         <div className="detail-matrix-page">
             {/* Breadcrumb */}
