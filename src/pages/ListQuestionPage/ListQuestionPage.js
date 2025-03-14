@@ -5,6 +5,8 @@ import "./ListQuestionPage.css";
 import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import CreatableSelect from "react-select/creatable";
+import Icon from '@mui/material/Icon';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 const subjectData  = 
 {
@@ -281,7 +283,7 @@ const ListQuestionPage = () => {
 				</div>
 				<div className="d-flex justify-content-end ms-auto">
 					<button
-					className="btn btn-success mb-3"
+					className="btn btn-success mb-1"
 					data-bs-toggle="modal"
 					data-bs-target="#questionModal"
 					onClick={() => {
@@ -322,31 +324,45 @@ const ListQuestionPage = () => {
 			))} */}
 			{Object.entries(groupedQuestions).map(([chapter, levels]) => (
 				<div key={chapter}>
-					<h4>{chapter}</h4>
+					<h4 className="mt-4 mb-3">{chapter}</h4>
 					{Object.entries(levels).map(([level, questions]) => (
 						<div key={level}>
-							<div className="mb-4 mt-3">
+							<div>
 								{questions.map((question) => (
 									<div key={question.id} className="card mb-2">
-										<div className="card-header d-flex justify-content-between">
-											<div>
-												<h6 className="d-flex align-items-center">{question.questionText}</h6>
+										<div className="card-header d-flex justify-content-between ps-2">
+											<div className="d-flex ">
+											<button 
+												className="btn btn-link text-decoration-none d-flex p-0 pe-1"
+												style={{color: "black"}}
+												data-bs-toggle="collapse" 
+												data-bs-target={`#collapse-${question.id}`}
+												aria-expanded="false"
+												aria-controls={`collapse-${question.id}`}
+											>			
+												<ArrowDropDownIcon />
+											</button>
+												<div>
+													<h6 className="d-flex align-items-center">{question.questionText}</h6>
 													{question.tags.slice(1).map((tag, index) => (
 														<p className="m-0 tag-level" key={index}>{tag}</p>
 													))}
+												</div>
 											</div>
 											<div className="d-flex" style={{ marginLeft: "50px" }}>
 												<button className="btn btn-primary me-2" onClick={() => handleEditQuestion(question)}>Edit</button>
 												<button className="btn btn-danger" onClick={() => handleDelete()}>Delete</button>
 											</div>
 										</div>
-										<ul className="list-group">
-											{question.options.map((option, index) => (
-												<li key={index} className={option.isCorrect ? "list-group-item list-group-item-success" : "list-group-item"}>
-													{option.optionText}
-												</li>
-											))}
-										</ul>
+										<div id={`collapse-${question.id}`} className="collapse show">
+											<ul className="list-group">
+												{question.options.map((option, index) => (
+													<li key={index} className={option.isCorrect ? "list-group-item list-group-item-success" : "list-group-item"}>
+														{option.optionText}
+													</li>
+												))}
+											</ul>
+										</div>
 									</div>
 								))}
 							</div>
