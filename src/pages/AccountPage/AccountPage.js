@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "./AccountPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import {Chip, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel,} from "@mui/material";
+import {Chip, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
@@ -328,8 +328,8 @@ const AccountPage = () => {
     { value: "22IT2", label: "22IT2" },
     { value: "22IT3", label: "22IT3" },
   ];
+  
   const [showGroupForm, setShowGroupForm] = useState(false);
-
   const [selectedGroups, setSelectedGroups] = useState([]);
 
   return (
@@ -401,6 +401,9 @@ const AccountPage = () => {
             disableColumnResize // ✅ Ngăn kéo giãn cột
             disableExtendRowFullWidth
             disableRowSelectionOnClick
+            localeText={{
+              noRowsLabel: "Không có dữ liệu", // ✅ Đổi text mặc định của DataGrid
+            }}
             sx={{
               "& .MuiDataGrid-cell": {
                 whiteSpace: "normal", // ✅ Cho phép xuống dòng khi nội dung dài

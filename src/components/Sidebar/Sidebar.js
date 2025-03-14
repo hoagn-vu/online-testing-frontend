@@ -73,8 +73,16 @@ const Sidebar = () => {
           </NavLink >
         </li>
 
-        <li data-title="Quản lý đề thi">
-          <FaFileAlt className="icon" /> <span>Quản lý đề thi</span>
+        <li
+          className={
+            location.pathname === "/admin/exam" ? "active" : ""
+          }
+          data-title="Quản lý đề thi"
+        >
+          <FaFileAlt className="icon" />
+          <NavLink  to="/admin/exam">
+            <span>Quản lý đề thi</span>
+          </NavLink >
         </li>
 
         <li

@@ -184,12 +184,12 @@ const QuestionBankNamePage = () => {
         </nav>
 
             <div className="account-actions mt-4">
-                <div className="search-container">
-                    <SearchBox></SearchBox>
-                </div>
-                <button className="add-btn" onClick={handleAddNew}>
-                    Thêm mới
-                </button>
+              <div className="search-container">
+                  <SearchBox></SearchBox>
+              </div>
+              <button className="add-btn" onClick={handleAddNew}>
+                Thêm mới
+              </button>
             </div>
 
             {/* Hiển thị bảng theo vai trò đã chọn */}
@@ -205,6 +205,9 @@ const QuestionBankNamePage = () => {
                     disableColumnResize // ✅ Ngăn kéo giãn cột
                     disableExtendRowFullWidth
                     disableRowSelectionOnClick
+                    localeText={{
+											noRowsLabel: "Không có dữ liệu", // ✅ Đổi text mặc định của DataGrid
+										}}
                     sx={{
                     "& .MuiDataGrid-cell": {
                         whiteSpace: "normal", // ✅ Cho phép xuống dòng khi nội dung dài
