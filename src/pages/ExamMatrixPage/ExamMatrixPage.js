@@ -203,7 +203,7 @@ const ExamMatrixPage = () => {
               <div className="search-container">
                   <SearchBox></SearchBox>
               </div>
-              <Link className="add-btn btn link-btn" to="/admin/detail-matrix">
+              <Link className="add-btn btn link-btn d-flex align-items-center" to="/admin/detail-matrix">
                   Thêm mới
               </Link>
           </div>
@@ -239,7 +239,7 @@ const ExamMatrixPage = () => {
                       borderBottom: "none", 
                   },
                   "& .MuiTablePagination-displayedRows": {
-                    textAlign: "center",        // Căn giữa chữ "1-1 of 1"
+                    textAlign: "center",    
                     marginTop: "16px",
                     marginLeft: "0px"
                   },
