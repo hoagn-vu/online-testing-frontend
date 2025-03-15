@@ -232,6 +232,18 @@ const RoomManagementPage = () => {
               "& .MuiDataGrid-row:last-child .MuiDataGrid-cell": {
                 borderBottom: "none", // Loại bỏ viền dưới cùng của hàng cuối
               },
+              "& .MuiTablePagination-displayedRows": {
+                textAlign: "center",        // Căn giữa chữ "1-1 of 1"
+                marginTop: "16px",
+                marginLeft: "0px"
+              },
+              "& .MuiTablePagination-selectLabel": {
+                marginTop: "13px",
+                marginLeft: "0px"
+              },
+              "& .MuiTablePagination-select": {
+                marginLeft: "0px",
+              } 
             }}
           />
         </Paper>

@@ -206,21 +206,33 @@ const ExamManagementPage = () => {
 						noRowsLabel: "Không có dữ liệu", // ✅ Đổi text mặc định của DataGrid
 					  }}
 					sx={{
-					"& .MuiDataGrid-cell": {
-						whiteSpace: "normal", // ✅ Cho phép xuống dòng khi nội dung dài
-						wordWrap: "break-word", // ✅ Xuống dòng tự động
-						lineHeight: "1.2", // ✅ Giảm khoảng cách giữa các dòng nếu nội dung quá dài
-						padding: "8px", // ✅ Thêm padding cho đẹp hơn
-					},
-					"& .MuiDataGrid-columnHeaders": {
-						borderBottom: "2px solid #ccc", // Đường phân cách dưới tiêu đề cột
-					},
-					"& .MuiDataGrid-cell": {
-						borderRight: "1px solid #ddd", // Đường phân cách giữa các cột
-					},
-					"& .MuiDataGrid-row:last-child .MuiDataGrid-cell": {
-						borderBottom: "none", // Loại bỏ viền dưới cùng của hàng cuối
-					},
+            "& .MuiDataGrid-cell": {
+              whiteSpace: "normal", // ✅ Cho phép xuống dòng khi nội dung dài
+              wordWrap: "break-word", // ✅ Xuống dòng tự động
+              lineHeight: "1.2", // ✅ Giảm khoảng cách giữa các dòng nếu nội dung quá dài
+              padding: "8px", // ✅ Thêm padding cho đẹp hơn
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              borderBottom: "2px solid #ccc", // Đường phân cách dưới tiêu đề cột
+            },
+            "& .MuiDataGrid-cell": {
+              borderRight: "1px solid #ddd", // Đường phân cách giữa các cột
+            },
+            "& .MuiDataGrid-row:last-child .MuiDataGrid-cell": {
+              borderBottom: "none", // Loại bỏ viền dưới cùng của hàng cuối
+            },
+            "& .MuiTablePagination-displayedRows": {
+              textAlign: "center",        // Căn giữa chữ "1-1 of 1"
+              marginTop: "16px",
+              marginLeft: "0px"
+            },
+            "& .MuiTablePagination-selectLabel": {
+              marginTop: "13px",
+              marginLeft: "0px"
+            },
+            "& .MuiTablePagination-select": {
+              marginLeft: "0px",
+            } 
 					}}
 				/>
 				</Paper>
