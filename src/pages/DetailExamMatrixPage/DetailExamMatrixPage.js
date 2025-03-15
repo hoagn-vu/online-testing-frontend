@@ -201,7 +201,7 @@ const DetailExamMatrixPage = () => {
             {/* Breadcrumb */}
             <nav>
                 <Link to="/admin">Home</Link> / 
-                <Link to="/admin/question">Quản lý ma trận đề thi</Link> / 
+                <Link to="/admin/exam-matrix">Quản lý ma trận đề</Link> / 
                 <span className="breadcrumb-current"></span>
             </nav>
 

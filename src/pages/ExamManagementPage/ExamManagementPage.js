@@ -89,88 +89,88 @@ const ExamManagementPage = () => {
 	];
 
 	const paginationModel = { page: 0, pageSize: 5 };
-	  const inputRef = useRef(null);
-	
-	  useEffect(() => {
-	  if (showForm && inputRef.current) {
-		  inputRef.current.focus();
-		}
-	  }, [showForm]);
-	
-	  const handleStatusChange = (id, newStatus) => {
-		setRows(
-		  rows.map((row) => (row.id === id ? { ...row, status: newStatus } : row))
-		);
-	  };
-	
-	  const [formData, setFormData] = useState({
-		examCode: "",
-		location: "",
-		capacity: "",
-		status: "active",
-	  });
-	
-	  const handleAddNew = () => {
-		setEditingAccount(null); // Đảm bảo không ở chế độ chỉnh sửa
-		setFormData({
-		  roomName: "",
-		  location: "",
-		  capacity: "",
-		  status: "active",
-		});
-		setTimeout(() => setShowForm(true), 0); // Đợi React cập nhật state rồi mới hiển thị form
-	  };
-	
-	  const handlePermissionChange = (permission) => {
-		setFormData((prevData) => {
-		  const updatedPermissions = prevData.permissions.includes(permission)
-			? prevData.permissions.filter((p) => p !== permission)
-			: [...prevData.permissions, permission];
-	
-		  return { ...prevData, permissions: updatedPermissions };
-		});
-	  };
-	
-	  const handleSubmit = (e) => {
-		e.preventDefault();
-		console.log("Dữ liệu thêm mới:", formData);
-		setShowForm(false);
-	  };
-	
-	  const handleEdit = (account) => {
-		setFormData({
-		  roomName: account.roomName,
-		  location: account.location,
-		  capacity: account.capacity,
-		  status: account.status,
-		});
-		setEditingAccount(account);
-		setShowForm(true);
-	  };
-	
-	  const handleDelete = (id) => {
-		Swal.fire({
-		  title: "Bạn có chắc chắn xóa?",
-		  text: "Bạn sẽ không thể hoàn tác hành động này!",
-		  icon: "warning",
-		  showCancelButton: true,
-		  confirmButtonColor: "#3085d6",
-		  cancelButtonColor: "#d33",
-		  confirmButtonText: "Xóa",
-		  cancelButtonText: "Hủy",
-		}).then((result) => {
-		  if (result.isConfirmed) {
-			console.log("Xóa tài khoản có ID:", id);
-	
-			Swal.fire({
-			  title: "Đã xóa!",
-			  text: "Tài khoản đã bị xóa.",
-			  icon: "success",
-			});
-			setRows(rows.filter((row) => row.id !== id));
-		  }
-		});
-	  };
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (showForm && inputRef.current) {
+      inputRef.current.focus();
+    }
+    }, [showForm]);
+
+  const handleStatusChange = (id, newStatus) => {
+    setRows(
+      rows.map((row) => (row.id === id ? { ...row, status: newStatus } : row))
+    );
+  };
+
+  const [formData, setFormData] = useState({
+  examCode: "",
+  location: "",
+  capacity: "",
+  status: "active",
+  });
+
+  const handleAddNew = () => {
+  setEditingAccount(null); // Đảm bảo không ở chế độ chỉnh sửa
+  setFormData({
+    roomName: "",
+    location: "",
+    capacity: "",
+    status: "active",
+  });
+  setTimeout(() => setShowForm(true), 0); // Đợi React cập nhật state rồi mới hiển thị form
+  };
+
+  const handlePermissionChange = (permission) => {
+  setFormData((prevData) => {
+    const updatedPermissions = prevData.permissions.includes(permission)
+    ? prevData.permissions.filter((p) => p !== permission)
+    : [...prevData.permissions, permission];
+
+    return { ...prevData, permissions: updatedPermissions };
+  });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Dữ liệu thêm mới:", formData);
+    setShowForm(false);
+  };
+
+  const handleEdit = (account) => {
+    setFormData({
+      roomName: account.roomName,
+      location: account.location,
+      capacity: account.capacity,
+      status: account.status,
+    });
+    setEditingAccount(account);
+    setShowForm(true);
+  };
+
+  const handleDelete = (id) => {
+  Swal.fire({
+    title: "Bạn có chắc chắn xóa?",
+    text: "Bạn sẽ không thể hoàn tác hành động này!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Xóa",
+    cancelButtonText: "Hủy",
+  }).then((result) => {
+    if (result.isConfirmed) {
+    console.log("Xóa tài khoản có ID:", id);
+
+    Swal.fire({
+      title: "Đã xóa!",
+      text: "Tài khoản đã bị xóa.",
+      icon: "success",
+    });
+    setRows(rows.filter((row) => row.id !== id));
+    }
+  });
+  };
 
 	return (
 		<div className="exam-management-page">
