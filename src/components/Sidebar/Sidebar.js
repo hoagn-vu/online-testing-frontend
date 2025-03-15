@@ -49,8 +49,14 @@ const Sidebar = () => {
           </NavLink >
         </li>
 
-        <li data-title="Quản lý kỳ thi">
-          <FaThLarge className="icon" /> <span>Quản lý kỳ thi</span>
+        <li
+          className= {location.pathname.startsWith("/admin/organize") ? "active" : ""}
+          data-title="Quản lý kỳ thi"
+        >
+          <FaThLarge className="icon" />
+          <NavLink  to="/admin/organize">
+            <span>Quản lý kỳ thi</span>
+          </NavLink >
         </li>
 
         <li
@@ -64,19 +70,17 @@ const Sidebar = () => {
         </li>
 
         <li
-          className= {location.pathname.startsWith("/admin/exam-matrix") ? "active" : ""}
+          className= {location.pathname.startsWith("/admin/matrix") ? "active" : ""}
           data-title="Quản lý ma trận đề"
         >
           <FaThLarge className="icon" />
-          <NavLink  to="/admin/exam-matrix">
+          <NavLink  to="/admin/matrix-exam">
             <span>Quản lý ma trận đề</span>
           </NavLink >
         </li>
 
         <li
-          className={
-            location.pathname === "/admin/exam" ? "active" : ""
-          }
+          className={location.pathname.startsWith("/admin/exam") ? "active" : ""}
           data-title="Quản lý đề thi"
         >
           <FaFileAlt className="icon" />

@@ -36,13 +36,13 @@ const listQuestionBank = [
         subjectStatus: null,
         questionBanks: [
             {
-                questionBankId: "67cf702d1d44d62edf5de913",
+                questionBankId: "67cf702d1d44d62edf5de919",
                 questionBankName: "His 1",
                 questionBankStatus: null,
                 list: [],
             },
             {
-                questionBankId: "67cf70341d44d62edf5de916",
+                questionBankId: "67cf70341d44d62edf5de917",
                 questionBankName: "His 2",
                 questionBankStatus: null,
                 list: [],
@@ -207,13 +207,13 @@ const QuestionBankNamePage = () => {
                     disableRowSelectionOnClick
                     localeText={{
 											noRowsLabel: "Không có dữ liệu", // ✅ Đổi text mặc định của DataGrid
-										}}
+                    }}
                     sx={{
                     "& .MuiDataGrid-cell": {
-                        whiteSpace: "normal", // ✅ Cho phép xuống dòng khi nội dung dài
-                        wordWrap: "break-word", // ✅ Xuống dòng tự động
-                        lineHeight: "1.2", // ✅ Giảm khoảng cách giữa các dòng nếu nội dung quá dài
-                        padding: "8px", // ✅ Thêm padding cho đẹp hơn
+											whiteSpace: "normal", // ✅ Cho phép xuống dòng khi nội dung dài
+											wordWrap: "break-word", // ✅ Xuống dòng tự động
+											lineHeight: "1.2", // ✅ Giảm khoảng cách giữa các dòng nếu nội dung quá dài
+											padding: "8px", // ✅ Thêm padding cho đẹp hơn
                     },
                     "& .MuiDataGrid-columnHeaders": {
                         borderBottom: "2px solid #ccc", // Đường phân cách dưới tiêu đề cột
@@ -224,6 +224,18 @@ const QuestionBankNamePage = () => {
                     "& .MuiDataGrid-row:last-child .MuiDataGrid-cell": {
                         borderBottom: "none", // Loại bỏ viền dưới cùng của hàng cuối
                     },
+                    "& .MuiTablePagination-displayedRows": {
+                    textAlign: "center",        // Căn giữa chữ "1-1 of 1"
+                    marginTop: "16px",
+                    marginLeft: "0px"
+                    },
+                    "& .MuiTablePagination-selectLabel": {
+                        marginTop: "13px",
+                        marginLeft: "0px"
+                    },
+                    "& .MuiTablePagination-select": {
+                        marginLeft: "0px",
+                    } 
                     }}
                 />
                 </Paper>
