@@ -73,7 +73,7 @@ const AccountPage = () => {
     { field: "id", headerName: "#", width: 10 },
     { field: "userCode", headerName: "Mã", minWidth: 130, flex: 0.02 },
     { field: "fullName", headerName: "Họ tên", minWidth: 150, flex: 0.1 },
-    { field: "dateOfBirth", headerName: "Ngày sinh", type: "datetime", width: 115 },
+    { field: "dateOfBirth", headerName: "Ngày sinh", type: "datetime", width: 120, headerAlign: "center",},
     {
       field: "gender",
       headerName: "Giới tính",
@@ -102,27 +102,32 @@ const AccountPage = () => {
         </Select>
       ),
     },
-    {
-      field: "groupName",
-      headerName: "Nhóm",
-      width: 180,
-      flex: 0.1,
-      headerAlign: "center",
-      renderCell: (params) => (
-        <Box sx={{ 
-          display: "flex",
-          gap: 0.5,
-          flexWrap: "wrap",
-          alignItems: "center", 
-          justifyContent: "center", 
-          height: "100%", 
-        }}>
-          {params.value?.map((group, index) => (
-            <Chip key={index} label={group} size="small" color="primary" />
-          ))}
-        </Box>
-      ),
-    },    
+    // Chỉ hiển thị cột "Nhóm" nếu vai trò là "Thí sinh"
+    ...(selectedRole === "Thí sinh"
+      ? [
+          {
+            field: "groupName",
+            headerName: "Nhóm",
+            width: 180,
+            flex: 0.1,
+            headerAlign: "center",
+            renderCell: (params) => (
+              <Box sx={{ 
+                display: "flex",
+                gap: 0.5,
+                flexWrap: "wrap",
+                alignItems: "center", 
+                justifyContent: "center", 
+                height: "100%", 
+              }}>
+                {params.value?.map((group, index) => (
+                  <Chip key={index} label={group} size="small" color="primary" />
+                ))}
+              </Box>
+            ),
+          },
+        ]
+      : []),
     {
       field: "actions",
       headerName: "Thao tác",
@@ -231,7 +236,7 @@ const AccountPage = () => {
       dateOfBirth: account.dateOfBirth,
       gender: account.gender,
       userName: account.userName,
-      password: "", // Không hiển thị mật khẩu
+      password: "", 
       role: selectedRole,
       status: account.status,
       permissions: account.permissions || [],
@@ -375,30 +380,30 @@ const AccountPage = () => {
             }}
             pageSizeOptions={[5, 10]}
             checkboxSelection
-            disableColumnResize // ✅ Ngăn kéo giãn cột
+            disableColumnResize 
             disableExtendRowFullWidth
             disableRowSelectionOnClick
             localeText={{
-              noRowsLabel: "Không có dữ liệu", // ✅ Đổi text mặc định của DataGrid
+              noRowsLabel: "Không có dữ liệu", 
             }}
             sx={{
               "& .MuiDataGrid-cell": {
-                whiteSpace: "normal", // ✅ Cho phép xuống dòng khi nội dung dài
-                wordWrap: "break-word", // ✅ Xuống dòng tự động
-                lineHeight: "1.2", // ✅ Giảm khoảng cách giữa các dòng nếu nội dung quá dài
-                padding: "8px", // ✅ Thêm padding cho đẹp hơn
+                whiteSpace: "normal", 
+                wordWrap: "break-word", 
+                lineHeight: "1.2", 
+                padding: "8px", 
               },
               "& .MuiDataGrid-columnHeaders": {
-                borderBottom: "2px solid #ccc", // Đường phân cách dưới tiêu đề cột
+                borderBottom: "2px solid #ccc", 
               },
               "& .MuiDataGrid-cell": {
-                borderRight: "1px solid #ddd", // Đường phân cách giữa các cột
+                borderRight: "1px solid #ddd", 
               },
               "& .MuiDataGrid-row:last-child .MuiDataGrid-cell": {
-                borderBottom: "none", // Loại bỏ viền dưới cùng của hàng cuối
+                borderBottom: "none", 
               },
               "& .MuiTablePagination-displayedRows": {
-                textAlign: "center",        // Căn giữa chữ "1-1 of 1"
+                textAlign: "center",        
                 marginTop: "16px",
                 marginLeft: "0px"
               },
