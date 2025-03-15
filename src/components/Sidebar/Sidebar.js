@@ -49,8 +49,14 @@ const Sidebar = () => {
           </NavLink >
         </li>
 
-        <li data-title="Quản lý kỳ thi">
-          <FaThLarge className="icon" /> <span>Quản lý kỳ thi</span>
+        <li
+          className= {location.pathname.startsWith("/admin/organize") ? "active" : ""}
+          data-title="Quản lý kỳ thi"
+        >
+          <FaThLarge className="icon" />
+          <NavLink  to="/admin/organize">
+            <span>Quản lý kỳ thi</span>
+          </NavLink >
         </li>
 
         <li

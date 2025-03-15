@@ -120,7 +120,7 @@ const ExamManagementPage = () => {
 	];
 
 	const paginationModel = { page: 0, pageSize: 5 };
-  const inputRef = useRef(null);
+  	const inputRef = useRef(null);
 
   useEffect(() => {
     if (showForm && inputRef.current) {

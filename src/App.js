@@ -20,6 +20,7 @@ import ExamMatrixPage from "./pages/ExamMatrixPage/ExamMatrixPage";
 import DetailExamMatrixPage from "./pages/DetailExamMatrixPage/DetailExamMatrixPage";
 import ExamManagementPage from "./pages/ExamManagementPage/ExamManagementPage";
 import DetailExamPage from "./pages/DetailExamPage/DetailExamPage";
+import OrganizeExamPage from "./pages/OrganizeExamPage/OrganizeExamPage";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="accountmanage" element={<AccountPage />} />
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="organize" element={<OrganizeExamPage />} />
           <Route path="question" element={<QuestionManagementPage />}/>
           <Route path="question/:subject" element={<QuestionBankNamePage />} />
           <Route path="question/:subject/:questionBankId" element={<ListQuestionPage />} />
