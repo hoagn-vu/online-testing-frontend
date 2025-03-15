@@ -7,6 +7,7 @@ import SearchBox from "../../components/SearchBox/SearchBox";
 import CreatableSelect from "react-select/creatable";
 import Icon from '@mui/material/Icon';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import Select from 'react-select';
 
 const examData  = 
 [
@@ -92,15 +93,19 @@ const examData  =
 	},
 		
 ];
-
+const colourOptions = [
+  { value: 'red', label: 'Tư tưởng Hồ Chí Minh Tư tưởng Hồ Chí Minh Tư ' },
+  { value: 'blue', label: 'Blue' },
+  { value: 'green', label: 'Green' },
+  { value: 'yellow', label: 'Yellow' },
+  { value: 'purple', label: 'Purple' },
+];
 const DetailExamPage = () => {
 	const [editQuestionId, setEditQuestionId] = useState(null);
 	const [shuffleQuestion, setShuffleQuestion] = useState(false);
-	const [selectedQuestionBankId, setSelectedQuestionBankId] = useState(null);
 	const [questions, setQuestions] = useState();
 	const {examId } = useParams();
 	const [selectedGroups, setSelectedGroups] = useState([]);
-  console.log("Exam ID từ URL:", examId);
   const [exam, setExam] = useState(null);
 
   useEffect(() => {
@@ -110,38 +115,38 @@ const DetailExamPage = () => {
     console.log("Dữ liệu tìm thấy:", foundExam);
   }, [examId]);
 	const [newQuestion, setNewQuestion] = useState({
-			questionText: "",
-			options: [{ optionText: "", isCorrect: false }, { optionText: "", isCorrect: false }],
+    questionText: "",
+    options: [{ optionText: "", isCorrect: false }, { optionText: "", isCorrect: false }],
 	});
 
 	const handleAddOption = () => {
-			setNewQuestion({ ...newQuestion, options: [...newQuestion.options, { optionText: "", isCorrect: false }] });
+    setNewQuestion({ ...newQuestion, options: [...newQuestion.options, { optionText: "", isCorrect: false }] });
 	};
 
 	const handleRemoveOption = (index) => {
-			const updatedOptions = newQuestion.options.filter((_, i) => i !== index);
-			setNewQuestion({ ...newQuestion, options: updatedOptions });
+    const updatedOptions = newQuestion.options.filter((_, i) => i !== index);
+    setNewQuestion({ ...newQuestion, options: updatedOptions });
 	};
 
 	const handleSaveQuestion = () => {
-			if (newQuestion.questionText.trim() === "" || newQuestion.options.some(opt => opt.optionText.trim() === "")) {
-			Swal.fire("Lỗi", "Vui lòng nhập đầy đủ câu hỏi và đáp án!", "error");
-			return;
-			}
+    if (newQuestion.questionText.trim() === "" || newQuestion.options.some(opt => opt.optionText.trim() === "")) {
+    Swal.fire("Lỗi", "Vui lòng nhập đầy đủ câu hỏi và đáp án!", "error");
+    return;
+    }
 
-			if (editQuestionId !== null) {
-			// Cập nhật câu hỏi
-			setQuestions(
-					questions.map(q => (q.id === editQuestionId ? { ...newQuestion, id: editQuestionId } : q))
-			);
-			setEditQuestionId(null);
-			} else {
-			// Thêm câu hỏi mới
-			const newId = questions.length + 1;
-			setQuestions([...questions, { ...newQuestion, id: newId }]);
-			}
-			setNewQuestion({ questionText: "", options: [{ optionText: "", isCorrect: false }, { optionText: "", isCorrect: false }] });
-			document.getElementById("closeModalBtn").click();
+    if (editQuestionId !== null) {
+    // Cập nhật câu hỏi
+    setQuestions(
+        questions.map(q => (q.id === editQuestionId ? { ...newQuestion, id: editQuestionId } : q))
+    );
+    setEditQuestionId(null);
+    } else {
+    // Thêm câu hỏi mới
+    const newId = questions.length + 1;
+    setQuestions([...questions, { ...newQuestion, id: newId }]);
+    }
+    setNewQuestion({ questionText: "", options: [{ optionText: "", isCorrect: false }, { optionText: "", isCorrect: false }] });
+    document.getElementById("closeModalBtn").click();
 	};
 
 	const handleAddQuestion = () => {
@@ -158,8 +163,8 @@ const DetailExamPage = () => {
 		const formattedTags = question.tags ? question.tags.map(tag => ({ label: tag, value: tag })) : [];
 
 		setNewQuestion({ 
-				questionText: question.questionText, 
-				options: question.options 
+      questionText: question.questionText, 
+      options: question.options 
 		});
 
 		setSelectedGroups(formattedTags); // Cập nhật selectedGroups với các tag của câu hỏi
@@ -171,45 +176,53 @@ const DetailExamPage = () => {
 	const selectedQuestions = examData.find(qb => qb.id === examId)?.questionSet || [];
 	
 	selectedQuestions.forEach((question) => {
-			const chapter = question.tags[0] || "";
-			const level = question.tags[1] || "";
-	
-			if (!groupedQuestions[chapter]) {
-					groupedQuestions[chapter] = {};
-			}
-			if (!groupedQuestions[chapter][level]) {
-					groupedQuestions[chapter][level] = [];
-			}
-	
-			groupedQuestions[chapter][level].push(question);
+    const chapter = question.tags[0] || "";
+    const level = question.tags[1] || "";
+
+    if (!groupedQuestions[chapter]) {
+      groupedQuestions[chapter] = {};
+    }
+    if (!groupedQuestions[chapter][level]) {
+      groupedQuestions[chapter][level] = [];
+    }
+
+    groupedQuestions[chapter][level].push(question);
 	});
 
 	const handleDelete = (id) => {
-			Swal.fire({
-					title: "Bạn có chắc chắn xóa?",
-					text: "Bạn sẽ không thể hoàn tác hành động này!",
-					icon: "warning",
-					showCancelButton: true,
-					confirmButtonColor: "#3085d6",
-					cancelButtonColor: "#d33",
-					confirmButtonText: "Xóa",
-					cancelButtonText: "Hủy",
-			}).then((result) => {
-					if (result.isConfirmed) {
-							console.log("Xóa tài khoản có ID:", id);
-							Swal.fire({
-							title: "Đã xóa!",
-							text: "Câu hỏi đã bị xóa.",
-							icon: "success",
-							});
-					}
-			});
+    Swal.fire({
+      title: "Bạn có chắc chắn xóa?",
+      text: "Bạn sẽ không thể hoàn tác hành động này!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Xóa",
+      cancelButtonText: "Hủy",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        console.log("Xóa tài khoản có ID:", id);
+        Swal.fire({
+        title: "Đã xóa!",
+        text: "Câu hỏi đã bị xóa.",
+        icon: "success",
+        });
+      }
+    });
 	};
 
 	const currentQuestionBank = examData.find(qb => qb.id === examId);
 	const questionBankName = currentQuestionBank ? currentQuestionBank.examId : "Ngân hàng câu hỏi";
     
-
+  // Lấy tất cả các tags từ subjectData và loại bỏ trùng lặp
+  const allTags = [
+    ...new Set(
+      examData
+        .filter(qb => qb.questionSet) 
+        .flatMap(qb => qb.questionSet.flatMap(q => q.tags || []))
+    )
+  ].map(tag => ({ label: tag, value: tag }));
+  
 	return (
 		<div className="container list-question-container me-0">
 			{/* Breadcrumb */}
@@ -227,7 +240,7 @@ const DetailExamPage = () => {
 					<button
 					className="btn btn-success mb-1"
 					data-bs-toggle="modal"
-					data-bs-target="#questionModal"
+					data-bs-target="#addQuestionModal"
 					onClick={() => {
 						setEditQuestionId(null); 
 						setNewQuestion({ 
@@ -236,10 +249,7 @@ const DetailExamPage = () => {
 							{ optionText: "", isCorrect: false }],tags: []
 						});
 						setSelectedGroups([]);
-					}}
-					>
-					Thêm câu hỏi mới
-					</button>
+					}}> Thêm câu hỏi mới </button>
 				</div>
 			</div>
 
@@ -301,7 +311,14 @@ const DetailExamPage = () => {
 								<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div className="modal-body">
-							
+              <CreatableSelect
+								isMulti
+								options={allTags}
+								value={selectedGroups}
+								onChange={setSelectedGroups}
+								menuPortalTarget={document.body} 
+								styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+							/>
 							<textarea
 								type="text"
 								className="form-control mb-3 mt-3"
@@ -351,6 +368,43 @@ const DetailExamPage = () => {
 									Đảo thứ tự đáp án
 								</label>
 							</div>
+						</div>
+						<div className="modal-footer">
+							<button className="btn btn-success" onClick={handleSaveQuestion}>
+								{editQuestionId ? "Cập nhật" : "Lưu"}
+							</button>
+							<button id="closeModalBtn" className="btn btn-secondary" data-bs-dismiss="modal">
+								Hủy
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+      {/* Modal Bootstrap thuần */}
+			<div className="modal fade" id="addQuestionModal" tabIndex="-1" aria-hidden="true">
+				<div className="modal-dialog modal-dialog-centered">
+					<div className="modal-content">
+						<div className="modal-header">
+              <h5 className="modal-title">Thêm câu hỏi mới</h5>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div className="modal-body">
+              <Select
+                className="basic-single ms-2 me-2"
+                classNamePrefix="select"
+                placeholder="Nhập câu hỏi"
+                options={colourOptions}
+                styles={{
+                  control: (base) => ({
+                      ...base,
+                      minHeight: "50px",
+                  }),
+                  placeholder: (base) => ({
+                    ...base,
+                    fontSize: "14px", // Cỡ chữ của placeholder (label)
+                  }),
+                }}
+              />
 						</div>
 						<div className="modal-footer">
 							<button className="btn btn-success" onClick={handleSaveQuestion}>
