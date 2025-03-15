@@ -19,6 +19,7 @@ import RoomManagementPage from "./pages/RoomManagementPage/RoomManagementPage";
 import ExamMatrixPage from "./pages/ExamMatrixPage/ExamMatrixPage";
 import DetailExamMatrixPage from "./pages/DetailExamMatrixPage/DetailExamMatrixPage";
 import ExamManagementPage from "./pages/ExamManagementPage/ExamManagementPage";
+import DetailExamPage from "./pages/DetailExamPage/DetailExamPage";
 
 function App() {
   return (
@@ -38,9 +39,10 @@ function App() {
           <Route path="question" element={<QuestionManagementPage />}/>
           <Route path="question/:subject" element={<QuestionBankNamePage />} />
           <Route path="question/:subject/:questionBankId" element={<ListQuestionPage />} />
-          <Route path="exam-matrix" element={<ExamMatrixPage />} />
-          <Route path="detail-matrix" element={<DetailExamMatrixPage />} />
+          <Route path="matrix-exam" element={<ExamMatrixPage />} />
+          <Route path="matrix-detail" element={<DetailExamMatrixPage />} />
           <Route path="exam" element={<ExamManagementPage />} />
+          <Route path="exam/:examId" element={<DetailExamPage />} />
           <Route path="room" element={<RoomManagementPage />} />
           <Route path="log" element={<LogPage />} />
         </Route>

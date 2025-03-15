@@ -64,19 +64,17 @@ const Sidebar = () => {
         </li>
 
         <li
-          className= {location.pathname.startsWith("/admin/exam-matrix") ? "active" : ""}
+          className= {location.pathname.startsWith("/admin/matrix") ? "active" : ""}
           data-title="Quản lý ma trận đề"
         >
           <FaThLarge className="icon" />
-          <NavLink  to="/admin/exam-matrix">
+          <NavLink  to="/admin/matrix-exam">
             <span>Quản lý ma trận đề</span>
           </NavLink >
         </li>
 
         <li
-          className={
-            location.pathname === "/admin/exam" ? "active" : ""
-          }
+          className={location.pathname.startsWith("/admin/exam") ? "active" : ""}
           data-title="Quản lý đề thi"
         >
           <FaFileAlt className="icon" />

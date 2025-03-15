@@ -203,7 +203,7 @@ const ExamMatrixPage = () => {
               <div className="search-container">
                   <SearchBox></SearchBox>
               </div>
-              <Link className="add-btn btn link-btn d-flex align-items-center" to="/admin/detail-matrix">
+              <Link className="add-btn btn link-btn d-flex align-items-center" to="/admin/matrix-detail">
                   Thêm mới
               </Link>
           </div>

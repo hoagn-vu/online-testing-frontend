@@ -1,0 +1,370 @@
+import React, { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./DetailExamPage.css";
+import Swal from "sweetalert2";
+import SearchBox from "../../components/SearchBox/SearchBox";
+import CreatableSelect from "react-select/creatable";
+import Icon from '@mui/material/Icon';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+
+const examData  = 
+[
+  {
+		id: "67cf6cee1d44d62edf5de90b",
+		examCode: "MTH01",
+		examName: "Giữa kỳ Giải tích 1",
+		subjectId: "67cf6cee1d44d62edf5de905",
+		questionBankId: "67cf6cee1d44d62edf5de904",
+    questionSet: [
+      {
+        id: 1,
+        questionText: "Linh?",
+        options: [
+            { optionId: "1", optionText: "Berlin", isCorrect: false },
+            { optionId: "2", optionText: "Madrid", isCorrect: false },
+            { optionId: "3", optionText: "Paris", isCorrect: true },
+            { optionId: "4", optionText: "Rome", isCorrect: false },
+        ],
+        isRandomOrder: false,
+        tags: ["Chương 1", "Nhận biết", "Vận dụng cao"]
+
+      },
+      {
+        id: 2,
+        questionText: "What is the capital of France?",
+        options: [
+            { optionId: "1", optionText: "Berlin", isCorrect: false },
+            { optionId: "2", optionText: "Madrid", isCorrect: false },
+            { optionId: "3", optionText: "Paris", isCorrect: true },
+            { optionId: "4", optionText: "Rome", isCorrect: false },
+        ],
+        isRandomOrder: false,
+        tags: ["Chương 1", "Nhận biết"]
+
+      },
+      {
+        id: 3,
+        questionText: "Linh 1?",
+        options: [
+            { optionId: "1", optionText: "Berlin", isCorrect: false },
+            { optionId: "2", optionText: "Madrid", isCorrect: false },
+            { optionId: "3", optionText: "Paris", isCorrect: true },
+            { optionId: "4", optionText: "Rome", isCorrect: false },
+        ],
+        isRandomOrder: false,
+        tags: ["Chương 1", "Thông hiểu"]
+      },
+      {
+        id: 4,
+        questionText: "Hôm nay là thứ mấy?",
+        options: [
+            { optionId: "1", optionText: "Berlin", isCorrect: false },
+            { optionId: "2", optionText: "Madrid", isCorrect: false },
+            { optionId: "3", optionText: "Paris", isCorrect: true },
+            { optionId: "4", optionText: "Rome", isCorrect: false },
+        ],
+        isRandomOrder: false,
+        tags: ["Chương 2", "Nhận biết"]
+
+      },
+      {
+        id: 5,
+        questionText: "Which planet is known as the Red Planet?",
+        options: [
+            { optionId: "1", optionText: "Berlin", isCorrect: false },
+            { optionId: "2", optionText: "Madrid", isCorrect: false },
+            { optionId: "3", optionText: "Paris", isCorrect: true },
+            { optionId: "4", optionText: "Rome", isCorrect: false },
+        ],
+        isRandomOrder: false,
+        tags: ["Chương 2", "Thông hiểu"]
+      },
+  ],
+	},
+	{
+		id: "67cf6cee1d44d62edf5de902",
+		examCode: "MTH02",
+		examName: "Giữa kỳ Giải tích 2",
+		subjectId: "67cf6cee1d44d62edf5de905",
+		questionBankId: "67cf6cee1d44d62edf5de909",
+		examStatus: "Disabled",
+	},
+		
+];
+
+const DetailExamPage = () => {
+	const [editQuestionId, setEditQuestionId] = useState(null);
+	const [shuffleQuestion, setShuffleQuestion] = useState(false);
+	const [selectedQuestionBankId, setSelectedQuestionBankId] = useState(null);
+	const [questions, setQuestions] = useState();
+	const {examId } = useParams();
+	const [selectedGroups, setSelectedGroups] = useState([]);
+  console.log("Exam ID từ URL:", examId);
+  const [exam, setExam] = useState(null);
+
+  useEffect(() => {
+    // Tìm đề thi theo `examId`
+    const foundExam = examData.find((exam) => exam.id === examId);
+    setExam(foundExam);
+    console.log("Dữ liệu tìm thấy:", foundExam);
+  }, [examId]);
+	const [newQuestion, setNewQuestion] = useState({
+			questionText: "",
+			options: [{ optionText: "", isCorrect: false }, { optionText: "", isCorrect: false }],
+	});
+
+	const handleAddOption = () => {
+			setNewQuestion({ ...newQuestion, options: [...newQuestion.options, { optionText: "", isCorrect: false }] });
+	};
+
+	const handleRemoveOption = (index) => {
+			const updatedOptions = newQuestion.options.filter((_, i) => i !== index);
+			setNewQuestion({ ...newQuestion, options: updatedOptions });
+	};
+
+	const handleSaveQuestion = () => {
+			if (newQuestion.questionText.trim() === "" || newQuestion.options.some(opt => opt.optionText.trim() === "")) {
+			Swal.fire("Lỗi", "Vui lòng nhập đầy đủ câu hỏi và đáp án!", "error");
+			return;
+			}
+
+			if (editQuestionId !== null) {
+			// Cập nhật câu hỏi
+			setQuestions(
+					questions.map(q => (q.id === editQuestionId ? { ...newQuestion, id: editQuestionId } : q))
+			);
+			setEditQuestionId(null);
+			} else {
+			// Thêm câu hỏi mới
+			const newId = questions.length + 1;
+			setQuestions([...questions, { ...newQuestion, id: newId }]);
+			}
+			setNewQuestion({ questionText: "", options: [{ optionText: "", isCorrect: false }, { optionText: "", isCorrect: false }] });
+			document.getElementById("closeModalBtn").click();
+	};
+
+	const handleAddQuestion = () => {
+    setEditQuestionId(null); // Không có ID nghĩa là thêm mới
+    setNewQuestion({ questionText: "", options: [] }); // Reset dữ liệu
+    setSelectedGroups([]); // Khi thêm mới, CreatableSelect sẽ trống
+    new window.bootstrap.Modal(document.getElementById("questionModal")).show();
+	};
+
+	const handleEditQuestion = (question) => {
+		setEditQuestionId(question.id);
+
+		// Chuyển đổi tags thành { label, value }
+		const formattedTags = question.tags ? question.tags.map(tag => ({ label: tag, value: tag })) : [];
+
+		setNewQuestion({ 
+				questionText: question.questionText, 
+				options: question.options 
+		});
+
+		setSelectedGroups(formattedTags); // Cập nhật selectedGroups với các tag của câu hỏi
+
+		new window.bootstrap.Modal(document.getElementById("questionModal")).show();
+	};
+
+	const groupedQuestions = {};
+	const selectedQuestions = examData.find(qb => qb.id === examId)?.questionSet || [];
+	
+	selectedQuestions.forEach((question) => {
+			const chapter = question.tags[0] || "";
+			const level = question.tags[1] || "";
+	
+			if (!groupedQuestions[chapter]) {
+					groupedQuestions[chapter] = {};
+			}
+			if (!groupedQuestions[chapter][level]) {
+					groupedQuestions[chapter][level] = [];
+			}
+	
+			groupedQuestions[chapter][level].push(question);
+	});
+
+	const handleDelete = (id) => {
+			Swal.fire({
+					title: "Bạn có chắc chắn xóa?",
+					text: "Bạn sẽ không thể hoàn tác hành động này!",
+					icon: "warning",
+					showCancelButton: true,
+					confirmButtonColor: "#3085d6",
+					cancelButtonColor: "#d33",
+					confirmButtonText: "Xóa",
+					cancelButtonText: "Hủy",
+			}).then((result) => {
+					if (result.isConfirmed) {
+							console.log("Xóa tài khoản có ID:", id);
+							Swal.fire({
+							title: "Đã xóa!",
+							text: "Câu hỏi đã bị xóa.",
+							icon: "success",
+							});
+					}
+			});
+	};
+
+	const currentQuestionBank = examData.find(qb => qb.id === examId);
+	const questionBankName = currentQuestionBank ? currentQuestionBank.examId : "Ngân hàng câu hỏi";
+    
+
+	return (
+		<div className="container list-question-container me-0">
+			{/* Breadcrumb */}
+			<nav className="breadcrumb">
+				<Link to="/admin">Home</Link> / 
+				<Link to="/admin/exam">Quản lý đề thi</Link> / 
+				<span className="breadcrumb-current">{examId}</span>
+			</nav>
+	
+			<div className="d-flex">
+				<div className="search-container">
+					<SearchBox></SearchBox>
+				</div>
+				<div className="d-flex justify-content-end ms-auto">
+					<button
+					className="btn btn-success mb-1"
+					data-bs-toggle="modal"
+					data-bs-target="#questionModal"
+					onClick={() => {
+						setEditQuestionId(null); 
+						setNewQuestion({ 
+							questionText: "", 
+							options: [{ optionText: "", isCorrect: false }, 
+							{ optionText: "", isCorrect: false }],tags: []
+						});
+						setSelectedGroups([]);
+					}}
+					>
+					Thêm câu hỏi mới
+					</button>
+				</div>
+			</div>
+
+			{Object.entries(groupedQuestions).map(([chapter, levels]) => (
+				<div key={chapter}>
+					<h4 className="mt-4 mb-3">{chapter}</h4>
+					{Object.entries(levels).map(([level, questions]) => (
+						<div key={level}>
+							<div>
+								{questions.map((question) => (
+									<div key={question.id} className="card mb-2">
+										<div className="card-header d-flex justify-content-between ps-2">
+											<div className="d-flex ">
+											<button 
+												className="btn btn-link text-decoration-none d-flex p-0 pe-1"
+												style={{color: "black"}}
+												data-bs-toggle="collapse" 
+												data-bs-target={`#collapse-${question.id}`}
+												aria-expanded="false"
+												aria-controls={`collapse-${question.id}`}
+											>			
+												<ArrowDropDownIcon />
+											</button>
+												<div>
+													<h6 className="d-flex align-items-center">{question.questionText}</h6>
+													{question.tags.slice(1).map((tag, index) => (
+														<p className="m-0 tag-level" key={index}>{tag}</p>
+													))}
+												</div>
+											</div>
+											<div className="d-flex" style={{ marginLeft: "50px" }}>
+												<button className="btn btn-primary me-2" onClick={() => handleEditQuestion(question)}>Edit</button>
+												<button className="btn btn-danger" onClick={() => handleDelete()}>Delete</button>
+											</div>
+										</div>
+										<div id={`collapse-${question.id}`} className="collapse show">
+											<ul className="list-group">
+												{question.options.map((option, index) => (
+													<li key={index} className={option.isCorrect ? "list-group-item list-group-item-success" : "list-group-item"}>
+														{option.optionText}
+													</li>
+												))}
+											</ul>
+										</div>
+									</div>
+								))}
+							</div>
+						</div>
+					))}
+				</div>
+			))}
+
+			{/* Modal Bootstrap thuần */}
+			<div className="modal fade" id="questionModal" tabIndex="-1" aria-hidden="true">
+				<div className="modal-dialog modal-dialog-centered">
+					<div className="modal-content">
+						<div className="modal-header">
+								<h5 className="modal-title">{editQuestionId ? "Chỉnh sửa câu hỏi" : "Thêm câu hỏi mới"}</h5>
+								<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div className="modal-body">
+							
+							<textarea
+								type="text"
+								className="form-control mb-3 mt-3"
+								placeholder="Nhập câu hỏi"
+								value={newQuestion.questionText}
+								onChange={(e) => setNewQuestion({ ...newQuestion, questionText: e.target.value })}
+							/>
+							{newQuestion.options.map((option, index) => (
+								<div key={index} className="input-group mb-2">
+									<div className="input-group-text">
+										<input
+											type="checkbox"
+											checked={option.isCorrect}
+											onChange={() => {
+												const newOptions = [...newQuestion.options];
+												newOptions[index].isCorrect = !newOptions[index].isCorrect;
+												setNewQuestion({ ...newQuestion, options: newOptions });
+											}}
+										/>
+									</div>
+									<input
+										type="text"
+										className="form-control m-0"
+										placeholder="Nhập đáp án"
+										value={option.optionText}
+										onChange={(e) => {
+										const newOptions = [...newQuestion.options];
+										newOptions[index].optionText = e.target.value;
+										setNewQuestion({ ...newQuestion, options: newOptions });
+										}}
+									/>
+									<button className="btn btn-danger" onClick={() => handleRemoveOption(index)}>X</button>
+								</div>
+							))}
+							<button className="btn btn-outline-secondary me-2 mt-2" onClick={handleAddOption}>
+								Thêm đáp án
+							</button>
+							<div className="form-check mt-3">
+								<input
+									type="checkbox"
+									className="form-check-input"
+									id="shuffleQuestion"
+									checked={shuffleQuestion}
+									onChange={() => setShuffleQuestion(!shuffleQuestion)}
+								/>
+								<label className="form-check-label" htmlFor="shuffleQuestion">
+									Đảo thứ tự đáp án
+								</label>
+							</div>
+						</div>
+						<div className="modal-footer">
+							<button className="btn btn-success" onClick={handleSaveQuestion}>
+								{editQuestionId ? "Cập nhật" : "Lưu"}
+							</button>
+							<button id="closeModalBtn" className="btn btn-secondary" data-bs-dismiss="modal">
+								Hủy
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+};
+
+export default DetailExamPage;

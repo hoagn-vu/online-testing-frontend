@@ -16,14 +16,14 @@ const listQuestionBank = [
 		id: "67cf6cee1d44d62edf5de90b",
 		examCode: "MTH01",
 		examName: "Giữa kỳ Giải tích 1",
-		subjectId: "67cf6cee1d44d62edf5de90b",
-		questionBankId: "67cf6cee1d44d62edf5de90b",
+		subjectId: "67cf6cee1d44d62edf5de905",
+		questionBankId: "67cf6cee1d44d62edf5de904",
 		examStatus: "Active",
 	},
 	{
 		id: "67cf6cee1d44d62edf5de902",
-		examCode: "MTH01",
-		examName: "Giữa kỳ Giải tích 1",
+		examCode: "MTH02",
+		examName: "Giữa kỳ Giải tích 2",
 		subjectId: "67cf6cee1d44d62edf5de905",
 		questionBankId: "67cf6cee1d44d62edf5de909",
 		examStatus: "Disabled",
@@ -57,6 +57,14 @@ const ExamManagementPage = () => {
 				field: "examCode", 
 				headerName: "Mã đề thi", 
 				width: 1090, flex: 0.1, 
+        renderCell: (params) => (
+          <Link 
+            to={`/admin/exam/${encodeURIComponent(params.row.id)}`} 
+            style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
+          >
+            {params.row.examCode}
+          </Link>
+        )
 			},
 			{ 
 				field: "examName", 

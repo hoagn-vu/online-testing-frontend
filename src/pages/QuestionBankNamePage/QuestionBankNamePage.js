@@ -36,13 +36,13 @@ const listQuestionBank = [
         subjectStatus: null,
         questionBanks: [
             {
-                questionBankId: "67cf702d1d44d62edf5de913",
+                questionBankId: "67cf702d1d44d62edf5de919",
                 questionBankName: "His 1",
                 questionBankStatus: null,
                 list: [],
             },
             {
-                questionBankId: "67cf70341d44d62edf5de916",
+                questionBankId: "67cf70341d44d62edf5de917",
                 questionBankName: "His 2",
                 questionBankStatus: null,
                 list: [],
