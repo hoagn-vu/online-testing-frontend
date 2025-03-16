@@ -101,6 +101,19 @@ const SesstionPage = () => {
 				</Select>
 			),
 		},
+		{ 
+			field: "monitor", 
+			headerName: "Giám sát", 
+			width: 150, flex: 0.05,
+			renderCell: (params) => (
+				<Link 
+					to={`/admin/organize/monitor/${organizeId}/${params.row.sessionId}`} 
+					style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
+				>
+					Giám sát
+				</Link>
+			)
+		},
 		{
 			field: "actions",
 			headerName: "Thao tác", align: "center",headerAlign: "center",
