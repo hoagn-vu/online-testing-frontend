@@ -42,8 +42,8 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="organize" element={<OrganizeExamPage />} />
           <Route path="organize/:id" element={<SesstionPage />} />
-          <Route path="organize/:id/:sessionId" element={<RoomOrganizePage />} />
-          <Route path="organize/:id/:sessionId/:roomId" element={<CandidateOrganizePage />} />
+          <Route path="organize/:organizeId/:sessionId" element={<RoomOrganizePage />} />
+          <Route path="organize/:organizeId/:sessionId/:roomId" element={<CandidateOrganizePage />} />
           <Route path="question" element={<QuestionManagementPage />}/>
           <Route path="question/:subject" element={<QuestionBankNamePage />} />
           <Route path="question/:subject/:questionBankId" element={<ListQuestionPage />} />

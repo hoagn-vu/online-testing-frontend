@@ -1,0 +1,37 @@
+.custom-table td, .custom-table th {
+  padding: 5px; 
+  font-size: 14px; 
+  white-space: nowrap;
+  align-items: center;
+}
+
+.custom-table td {
+  align-items: center;
+  justify-content: center;
+  padding: 0px;
+  margin: 0px;
+}
+
+.custom-table th, .custom-table td {
+  vertical-align: middle; 
+  text-align: center; 
+}
+
+.custom-table th:nth-child(3), 
+.custom-table th:nth-child(4) {
+  text-align: left !important; 
+  padding: 0px;
+}
+
+.custom-table td:nth-child(3),
+.custom-table td:nth-child(4) {
+  text-align: left !important; 
+}
+
+.custom-table th {
+  color: black;
+}
+
+.custom-table {
+  margin: auto; 
+}
