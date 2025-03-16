@@ -18,52 +18,39 @@ const listQuestionBank = [
     organizeExamName: "Kỳ thi giữa kỳ Toán lớp 12",
     organizeExamStatus: "Scheduled",
     duration: 90,
-    examType: "Ngẫu nhiên",
+    examType: "Ma trận",
     matrixId: "MATRIX123",
     maxScore: 100,
     subjectId: "MATH12",
     totalQuestion: 50,
-    examSet: ["Ma12", "Ma13"],
-    sesstion: [
-      {
-        sessionId: "SESSION001",
-        activeAt: "2025-04-10T08:00:00Z",
-        sesstionStatus: "Active",
-        rooms: [ ]
-      },
-      {
-        sessionId: "SESSION002",
-        activeAt: "2025-04-10T13:00:00Z",
-        sesstionStatus: "Scheduled",
-        rooms: []
-      }
-    ]
+    examSet: null,
+    sesstion: []
   },
   {
     id: "55f1a3b4c8e4a2d5b6f7e8d9",
     organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
     organizeExamStatus: "Scheduled",
     duration: 90,
-    examType: "Ngẫu nhiên",
-    matrixId: "MATRIX123",
+    examType: "Dề thi",
+    matrixId: null,
     maxScore: 100,
     subjectId: "MATH11",
     totalQuestion: 50,
     examSet: ["Ma12", "Ma13"],
-    sesstion: [
-      {
-        sessionId: "SESSION003",
-        activeAt: "2025-04-10T08:00:00Z",
-        sesstionStatus: "Active",
-        rooms: [ ]
-      },
-      {
-        sessionId: "SESSION004",
-        activeAt: "2025-04-10T13:00:00Z",
-        sesstionStatus: "Scheduled",
-        rooms: []
-      }
-    ]
+    sesstion: []
+  },
+  {
+    id: "55f1a3b4c8e4a2d5b6f7e8d0",
+    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 1",
+    organizeExamStatus: "Scheduled",
+    duration: 90,
+    examType: "Ngẫu nhiên",
+    matrixId: null,
+    maxScore: 100,
+    subjectId: "MATH10",
+    totalQuestion: 50,
+    examSet: null,
+    sesstion: []
   }
 ];
 
@@ -123,20 +110,59 @@ const OrganizeExamPage = () => {
       headerName: "Loại", 
       width: 130, flex: 0.05  
     },
-    { 
-      field: "examSet", 
-      headerName: "Đề thi", 
-      width: 130
-    },
+    {
+      field: "examSet",
+      headerName: "Đề thi",
+      width: 130, headerAlign: "center",
+      renderCell: (params) => {
+        const isNA = params.row.examType === "Ma trận" || params.row.examType === "Ngẫu nhiên";
+    
+        return isNA || !params.row.examSet ? (
+          <Box
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center", // Căn giữa ngang
+              alignItems: "center", // Căn giữa dọc
+            }}
+          >
+            <Typography variant="body2" color="textSecondary" sx={{ fontWeight: "bold" }}> N/A </Typography>
+          </Box>
+        ) : (
+          params.row.examSet.join(", ") // Hiển thị danh sách đề thi nếu có
+        );
+      }
+    }
+    ,
+    
     { 
       field: "matrixId", 
       headerName: "Ma trận", 
-      width: 100,
-    },
+      width: 100, headerAlign: "center",
+      renderCell: (params) => {
+        const isNA = params.row.examType === "Đề thi" || params.row.examType === "Ngẫu nhiên";
+        return isNA || !params.row.matrixId ? (
+          <Box
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center", // Căn giữa ngang
+              alignItems: "center", // Căn giữa dọc
+            }}
+          >
+            <Typography variant="body2" color="textSecondary" sx={{ fontWeight: "bold" }}> N/A </Typography>
+          </Box>
+        ) : (
+          params.row.matrixId
+        );
+      }
+    }, 
     { 
       field: "duration", 
       headerName: "Thời gian", 
-      width: 80, 
+      width: 80, align: "center",
     },
     { 
       field: "maxScore", 
@@ -162,6 +188,27 @@ const OrganizeExamPage = () => {
           <MenuItem value="disabled">Disabled</MenuItem>
         </Select>
       ),
+    },
+    { 
+      field: "report", 
+      headerName: "Chi tiết", 
+      width: 75,
+      // renderCell: (params) => (
+      //   <Link 
+      //     to={`/admin/organize/${encodeURIComponent(params.row.id)}`} 
+      //     style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
+      //   >
+      //     {params.row.organizeExamName}
+      //   </Link>
+      // )
+      renderCell: (params) => (
+        <Link 
+          to={`/admin/organize/`} 
+          style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
+        >
+          Chi tiết
+        </Link>
+      )
     },
     {
       field: "actions",
