@@ -87,12 +87,34 @@ const processData = (data) => {
 								<td>{row.dateOfBirth}</td>
 								<td></td>
 								<td>{row.dateOfBirth}</td>
-								<td><Link>Dừng thi</Link></td>
+								<td><Link data-bs-toggle="modal" data-bs-target="#violationModal">Dừng thi</Link></td>
 							</tr>
 						))}
 					</tbody>
 				</table>
 			</div>
+
+			{/* Modal Bootstrap */}
+      <div className="modal fade mt-4" id="violationModal" tabIndex="-1" aria-labelledby="violationModalLabel" aria-hidden="true">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="violationModalLabel">Xử lý vi phạm</h5>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div className="modal-body">
+              <h4>Thí sinh: </h4>
+              <p>Lý do:</p>
+              <textarea className="form-control" rows="3" placeholder="Nhập lý do..."></textarea>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+              <button type="button" className="btn btn-primary">Xác nhận</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 };
