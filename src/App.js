@@ -26,6 +26,7 @@ import RoomOrganizePage from "./pages/RoomOrganizePage/RoomOrganizePage";
 import CandidateOrganizePage from "./pages/CandidateOrganizePage/CandidateOrganizePage";
 import SupervisorLayout from "./layouts/SupervisorLayout/SupervisorLayout";
 import SupervisorHomePage from "./pages/SupervisorHomePage/SupervisorHomePage";
+import MonitoringPage from "./pages/MonitoringPage/MonitoringPage";
 
 function App() {
   return (
@@ -70,6 +71,7 @@ function App() {
       <Routes>
         <Route path="/supervisor" element={<SupervisorLayout />}>
           <Route path="home" element={<SupervisorHomePage />} /> 
+          <Route path="monitor" element={<MonitoringPage />} /> 
         </Route>
       </Routes>
     </Router>

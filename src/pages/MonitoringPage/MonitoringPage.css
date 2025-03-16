@@ -1,0 +1,40 @@
+.home-super-page {
+    padding-top: 100px;
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: #f4f6f9;
+    min-height: 100vh;
+}
+  
+.custom-table td {
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0px 10px 0px;
+    margin: 0px;
+}
+
+.custom-table th, .custom-table td {
+    vertical-align: middle; 
+    text-align: center; 
+}
+
+.custom-table th:nth-child(3), 
+.custom-table th:nth-child(4) {
+    text-align: left !important; 
+    padding-left: 10px;
+}
+
+.custom-table td:nth-child(3),
+.custom-table td:nth-child(4) {
+    text-align: left !important; 
+    padding-right: 8px;
+    padding-left: 10px;
+}
+
+.custom-table th {
+    color: black;
+}
+
+.custom-table {
+    margin: auto; 
+}
