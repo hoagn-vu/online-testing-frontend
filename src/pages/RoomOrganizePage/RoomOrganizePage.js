@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import "./RoomOrganizePage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -10,61 +10,34 @@ import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import ReactSelect  from 'react-select';
 
-const listQuestionBank = [{
-	sessionId: "SESSION001",
-	activeAt: "2025-04-10T08:00:00Z",
-	sessionStatus: "Active",
-	rooms: [
-		{
-			roomId: "ROOM101",
-			supervisorId: "SUP123",
-			candidates: [
-				{
-						candidateId: "CAND001",
-						examId: "EXAM123"
-				},
-				{
-						candidateId: "CAND002",
-						examId: "EXAM124"
-				}
-			]
-		},
-		{
-			roomId: "ROOM102",
-			supervisorId: "SUP124",
-			candidates: [
-				{
-					candidateId: "CAND003",
-					examId: "EXAM125"
-				},
-				{
-					candidateId: "CAND004",
-					examId: "EXAM126"
-				}
-			]
-		}
-	]
-},
-{
-	sessionId: "SESSION002",
-	activeAt: "2025-04-10T13:00:00Z",
-	sessionStatus: "Disabled",
-	rooms: [
-		{
-			roomId: "ROOM201",
-			supervisorId: "SUP125",
-			candidates: [
-				{
-					candidateId: "CAND005",
-					examId: "EXAM127"
-				},
-				{
-					candidateId: "CAND006",
-					examId: "EXAM128"
-				}
-			]
-		}
-	]
+const listQuestionBank = [
+	{
+		roomId: "ROOM101",
+		supervisorId: "SUP123",
+		candidates: [
+			{
+					candidateId: "CAND001",
+					examId: "EXAM123"
+			},
+			{
+					candidateId: "CAND002",
+					examId: "EXAM124"
+			}
+		]
+	},
+	{
+		roomId: "ROOM102",
+		supervisorId: "SUP124",
+		candidates: [
+			{
+				candidateId: "CAND003",
+				examId: "EXAM125"
+			},
+			{
+				candidateId: "CAND004",
+				examId: "EXAM126"
+			}
+		]
 	}
 ];
 
@@ -79,30 +52,19 @@ const RoomOrganizePage = () => {
 	const [editingAccount, setEditingAccount] = useState(null);
 	const paginationModel = { page: 0, pageSize: 5 };
 	const inputRef = useRef(null);
+	const [rows, setRows] = useState();
+	const {sessionId} = useParams();
+	const { id: organizeId } = useParams();
 
-	const [rows, setRows] = useState(() =>
-		listQuestionBank.flatMap(session =>
-			session.rooms.map(room => ({
-				...room,
-				sessionId: session.sessionId,
-				activeAt: session.activeAt,
-				sessionStatus: session.sessionStatus
-			}))
-		)
-	);	
-	
+	console.error("organizeId:", organizeId);
 	useEffect(() => {
 		setRows(
-			listQuestionBank.flatMap(session =>
-				session.rooms.map(room => ({
-					...room,
-					sessionId: session.sessionId,
-					activeAt: session.activeAt,
-					sessionStatus: session.sessionStatus
-				}))
-			)
+		  listQuestionBank.map(room => ({
+			...room, // Giữ nguyên dữ liệu của room
+		  }))
 		);
-	}, [listQuestionBank]);
+	  }, []);
+	  
 
 	
 	const columns = [
@@ -136,7 +98,7 @@ const RoomOrganizePage = () => {
 			width: 150, flex: 0.05,
 			renderCell: (params) => (
 				<Link 
-					to={`/admin/organize/rooms/${params.row.sessionId}/${params.row.roomId}`} 
+					to={`/admin/organize/${organizeId}/${sessionId}/${params.row.roomId}`} 
 					style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
 				>
 					Danh sách thí sinh

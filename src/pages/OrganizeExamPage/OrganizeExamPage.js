@@ -12,76 +12,60 @@ import ApiService from "../../services/apiService";
 import CreatableSelect from "react-select/creatable";
 import ReactSelect  from 'react-select';
 
-const listQuestionBank = [{
-  id: "65f1a3b4c8e4a2d5b6f7e8d9",
-  organizeExamName: "Kỳ thi giữa kỳ Toán lớp 12",
-  organizeExamStatus: "Scheduled",
-  duration: 90,
-  examType: "Ngẫu nhiên",
-  matrixId: "MATRIX123",
-  maxScore: 100,
-  subjectId: "MATH12",
-  totalQuestion: 50,
-  examSet: ["Ma12", "Ma13"],
-  sesstion: [
-    {
-      sesstionId: "SESSION001",
-      activeAt: "2025-04-10T08:00:00Z",
-      sesstionStatus: "Active",
-      rooms: [
-        {
-          roomId: "ROOM101",
-          supervisorId: "SUP123",
-          candidates: [
-            {
-              candidateId: "CAND001",
-              examId: "EXAM123"
-            },
-            {
-              candidateId: "CAND002",
-              examId: "EXAM124"
-            }
-          ]
-        },
-        {
-          roomId: "ROOM102",
-          supervisorId: "SUP124",
-          candidates: [
-            {
-              candidateId: "CAND003",
-              examId: "EXAM125"
-            },
-            {
-              candidateId: "CAND004",
-              examId: "EXAM126"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      sesstionId: "SESSION002",
-      activeAt: "2025-04-10T13:00:00Z",
-      sesstionStatus: "Scheduled",
-      rooms: [
-        {
-          roomId: "ROOM201",
-          supervisorId: "SUP125",
-          candidates: [
-            {
-              candidateId: "CAND005",
-              examId: "EXAM127"
-            },
-            {
-              candidateId: "CAND006",
-              examId: "EXAM128"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}];
+const listQuestionBank = [
+  {
+    id: "65f1a3b4c8e4a2d5b6f7e8d9",
+    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 12",
+    organizeExamStatus: "Scheduled",
+    duration: 90,
+    examType: "Ngẫu nhiên",
+    matrixId: "MATRIX123",
+    maxScore: 100,
+    subjectId: "MATH12",
+    totalQuestion: 50,
+    examSet: ["Ma12", "Ma13"],
+    sesstion: [
+      {
+        sessionId: "SESSION001",
+        activeAt: "2025-04-10T08:00:00Z",
+        sesstionStatus: "Active",
+        rooms: [ ]
+      },
+      {
+        sessionId: "SESSION002",
+        activeAt: "2025-04-10T13:00:00Z",
+        sesstionStatus: "Scheduled",
+        rooms: []
+      }
+    ]
+  },
+  {
+    id: "55f1a3b4c8e4a2d5b6f7e8d9",
+    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
+    organizeExamStatus: "Scheduled",
+    duration: 90,
+    examType: "Ngẫu nhiên",
+    matrixId: "MATRIX123",
+    maxScore: 100,
+    subjectId: "MATH11",
+    totalQuestion: 50,
+    examSet: ["Ma12", "Ma13"],
+    sesstion: [
+      {
+        sessionId: "SESSION003",
+        activeAt: "2025-04-10T08:00:00Z",
+        sesstionStatus: "Active",
+        rooms: [ ]
+      },
+      {
+        sessionId: "SESSION004",
+        activeAt: "2025-04-10T13:00:00Z",
+        sesstionStatus: "Scheduled",
+        rooms: []
+      }
+    ]
+  }
+];
 
 const typeOptions = [
 	{ value: 'Ma trận', label: 'Ma trận' },
@@ -112,15 +96,21 @@ const OrganizeExamPage = () => {
       headerName: "Kỳ thi", 
       width: 1090, flex: 0.1, 
       renderCell: (params) => (
-        <span 
-          style={{ 
-            color: "blue", 
-            cursor: "pointer" 
-          }}
-          onClick={() => navigate(`/admin/organize/${params.row.id}`)}
+        <Link 
+          to={`/admin/organize/${encodeURIComponent(params.row.id)}`} 
+          style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
         >
           {params.row.organizeExamName}
-        </span>
+        </Link>
+        // <span 
+        //   style={{ 
+        //     color: "blue", 
+        //     cursor: "pointer" 
+        //   }}
+        //   onClick={() => navigate(`/admin/organize/${params.row.id}`)}
+        // >
+        //   {params.row.organizeExamName}
+        // </span>
       )
     },
     { 

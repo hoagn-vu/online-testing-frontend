@@ -23,6 +23,7 @@ import DetailExamPage from "./pages/DetailExamPage/DetailExamPage";
 import OrganizeExamPage from "./pages/OrganizeExamPage/OrganizeExamPage";
 import SesstionPage from "./pages/SesstionPage/SesstionPage";
 import RoomOrganizePage from "./pages/RoomOrganizePage/RoomOrganizePage";
+import CandidateOrganizePage from "./pages/CandidateOrganizePage/CandidateOrganizePage";
 
 function App() {
   return (
@@ -41,7 +42,8 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="organize" element={<OrganizeExamPage />} />
           <Route path="organize/:id" element={<SesstionPage />} />
-          <Route path="organize/rooms/:sessionId" element={<RoomOrganizePage />} />
+          <Route path="organize/:id/:sessionId" element={<RoomOrganizePage />} />
+          <Route path="organize/:id/:sessionId/:roomId" element={<CandidateOrganizePage />} />
           <Route path="question" element={<QuestionManagementPage />}/>
           <Route path="question/:subject" element={<QuestionBankNamePage />} />
           <Route path="question/:subject/:questionBankId" element={<ListQuestionPage />} />
