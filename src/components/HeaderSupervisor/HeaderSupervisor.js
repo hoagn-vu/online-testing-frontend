@@ -16,7 +16,7 @@ const HeaderSupervisor = ({ username, avatarUrl, logoUrl }) => {
       <div className="user-info position-relative">
       <nav className="flex space-x-6 history">
           <Link
-            to="/candidate/home"
+            to="/supervisor/home"
             className="text-black hover:text-blue-500 his-under"
           >
             Trang chủ
