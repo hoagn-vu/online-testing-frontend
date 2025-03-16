@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate  } from "react-router-dom";
 import "./OrganizeExamPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -103,6 +103,7 @@ const OrganizeExamPage = () => {
   const paginationModel = { page: 0, pageSize: 5 };
   const inputRef = useRef(null);
   const [selectedType, setSelectedType] = useState(null); 
+  const navigate = useNavigate(); // Hook để điều hướng
 
   const columns = [
     { field: "stt", headerName: "#", width: 15, align: "center", headerAlign: "center" },
@@ -110,14 +111,17 @@ const OrganizeExamPage = () => {
       field: "organizeExamName", 
       headerName: "Kỳ thi", 
       width: 1090, flex: 0.1, 
-  // renderCell: (params) => (
-  //   <Link 
-  //   to={`/admin/exam/${encodeURIComponent(params.row.id)}`} 
-  //   style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
-  //   >
-  //   {params.row.examCode}
-  //   </Link>
-  // )
+      renderCell: (params) => (
+        <span 
+          style={{ 
+            color: "blue", 
+            cursor: "pointer" 
+          }}
+          onClick={() => navigate(`/admin/organize/${params.row.id}`)}
+        >
+          {params.row.organizeExamName}
+        </span>
+      )
     },
     { 
       field: "subjectId", 

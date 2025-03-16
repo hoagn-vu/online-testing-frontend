@@ -104,7 +104,7 @@ const SesstionPage = () => {
 			width: 150, flex: 0.05,
 			renderCell: (params) => (
 				<Link 
-					to={`/admin/exam/rooms/${params.row.sessionId}`} 
+					to={`/admin/organize/rooms/${params.row.sessionId}`} 
 					style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
 				>
 					Danh sách phòng thi
