@@ -68,7 +68,8 @@ const processData = (data) => {
 							<th className="text-wrap" style={{ maxWidth: "100px" }}>Họ và tên đệm</th>
 							<th>Tên</th>
 							<th>Trạng thái</th>
-							<th>Bắt đầu làm bài</th>
+							<th>Bắt đầu</th>
+							<th>Kết thúc</th>
 							<th>Tiến độ</th>
 							<th>Nộp bài</th>
 							<th>Điểm số</th>
@@ -83,6 +84,7 @@ const processData = (data) => {
 								<td className="text-wrap">{row.lastName}</td>
 								<td>{row.firstName}</td>
 								<td>{row.gender}</td>
+								<td>{row.dateOfBirth}</td>
 								<td>{row.dateOfBirth}</td>
 								<td>{row.dateOfBirth}</td>
 								<td></td>
