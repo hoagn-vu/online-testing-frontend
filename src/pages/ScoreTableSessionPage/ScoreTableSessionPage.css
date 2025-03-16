@@ -1,0 +1,31 @@
+.table-custom-score td, .table-custom-score th {
+    padding: 5px; 
+    font-size: 14px; 
+    white-space: nowrap;
+    align-items: center;
+    background-color: white;
+    border: 1px solid black !important;
+  }
+  
+.table-custom-score td {
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px 5px 10px;
+}
+
+.table-custom-score th, .table-custom-score td {
+    vertical-align: middle; 
+    text-align: center; 
+}
+
+.table-custom-score td:nth-child(2) {
+    text-align: left !important; 
+}
+
+.table-custom-score th {
+    color: black;
+}
+
+.table-custom-score {
+    margin: auto; 
+}

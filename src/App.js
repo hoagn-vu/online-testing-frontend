@@ -28,6 +28,7 @@ import SupervisorLayout from "./layouts/SupervisorLayout/SupervisorLayout";
 import SupervisorHomePage from "./pages/SupervisorHomePage/SupervisorHomePage";
 import MonitoringPage from "./pages/MonitoringPage/MonitoringPage";
 import MonitorOrganizePage from "./pages/MonitorOrganizePage/MonitorOrganizePage";
+import ScoreTableSessionPage from "./pages/ScoreTableSessionPage/ScoreTableSessionPage";
 
 function App() {
   return (
@@ -48,6 +49,7 @@ function App() {
           <Route path="organize/:id" element={<SesstionPage />} />
           <Route path="organize/:organizeId/:sessionId" element={<RoomOrganizePage />} />
           <Route path="organize/monitor/:organizeId/:sessionId" element={<MonitorOrganizePage />} />
+          <Route path="organize/score/:organizeId/:sessionId" element={<ScoreTableSessionPage />} />
           <Route path="organize/:organizeId/:sessionId/:roomId" element={<CandidateOrganizePage />} />
           <Route path="question" element={<QuestionManagementPage />}/>
           <Route path="question/:subject" element={<QuestionBankNamePage />} />

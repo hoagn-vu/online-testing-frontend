@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Modal, Button } from "react-bootstrap";
-import { FaFileAlt, FaUserCircle } from "react-icons/fa";
+import { Link, useParams } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./MonitorOrganizePage.css";
-import { Link, useNavigate  } from "react-router-dom";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 
 const MonitorOrganizePage = () => {
@@ -28,7 +26,8 @@ const MonitorOrganizePage = () => {
 
   const [selectedExam, setSelectedExam] = useState(null);
   const [showModal, setShowModal] = useState(false);
-
+	const { id: organizeId, sessionId } = useParams();
+	
   // Xử lý khi nhấn vào bài thi
   const handleExamClick = (exam) => {
     setSelectedExam(exam);
@@ -70,7 +69,7 @@ const MonitorOrganizePage = () => {
 									<td>{row.dateOfBirth}</td>
 									<td></td>
 									<td>{row.dateOfBirth}</td>
-									<td><Link>In bảng điểm</Link></td>
+									<td><Link to={`/admin/organize/score/${organizeId}/${sessionId}`}>In bảng điểm</Link></td>
 								</tr>
 							))}
 						</tbody>
