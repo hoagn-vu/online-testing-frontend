@@ -24,6 +24,7 @@ import OrganizeExamPage from "./pages/OrganizeExamPage/OrganizeExamPage";
 import SesstionPage from "./pages/SesstionPage/SesstionPage";
 import RoomOrganizePage from "./pages/RoomOrganizePage/RoomOrganizePage";
 import CandidateOrganizePage from "./pages/CandidateOrganizePage/CandidateOrganizePage";
+import SupervisorLayout from "./layouts/SupervisorLayout/SupervisorLayout";
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
           <Route path="log" element={<LogPage />} />
         </Route>
       </Routes>
+
       <Routes>
         <Route path="/candidate" element={<DefaultLayout />}>
           <Route path="home" element={<HomeCandidate />} />
@@ -63,8 +65,10 @@ function App() {
           <Route path="takexam" element={<TakeExamPage />} />
         </Route>
       </Routes>
+
       <Routes>
-        
+        <Route path="/supervisor" element={<SupervisorLayout />}>
+        </Route>
       </Routes>
     </Router>
   );
