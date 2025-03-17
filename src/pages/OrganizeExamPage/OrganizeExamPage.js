@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate  } from "react-router-dom";
+import { Link, useNavigate, useParams  } from "react-router-dom";
 import "./OrganizeExamPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -75,6 +75,7 @@ const OrganizeExamPage = () => {
   const inputRef = useRef(null);
   const [selectedType, setSelectedType] = useState(null); 
   const navigate = useNavigate(); // Hook để điều hướng
+  const {id:organizeId} = useParams();
 
   const columns = [
     { field: "stt", headerName: "#", width: 15, align: "center", headerAlign: "center" },
@@ -202,9 +203,8 @@ const OrganizeExamPage = () => {
       //   </Link>
       // )
       renderCell: (params) => (
-        <Link 
-          to={`/admin/organize/`} 
-          style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
+        <Link to={`/admin/organize/report/${organizeId}`}     
+            style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
         >
           Chi tiết
         </Link>

@@ -29,6 +29,7 @@ import SupervisorHomePage from "./pages/SupervisorHomePage/SupervisorHomePage";
 import MonitoringPage from "./pages/MonitoringPage/MonitoringPage";
 import MonitorOrganizePage from "./pages/MonitorOrganizePage/MonitorOrganizePage";
 import ScoreTableSessionPage from "./pages/ScoreTableSessionPage/ScoreTableSessionPage";
+import ReportEachOrganizePage from "./pages/ReportEachOrganizePage/ReportEachOrganizePage";
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
           <Route path="accountmanage" element={<AccountPage />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="organize" element={<OrganizeExamPage />} />
+          <Route path="organize/report/:organizeId" element={<ReportEachOrganizePage />} />
           <Route path="organize/:id" element={<SesstionPage />} />
           <Route path="organize/:organizeId/:sessionId" element={<RoomOrganizePage />} />
           <Route path="organize/monitor/:organizeId/:sessionId" element={<MonitorOrganizePage />} />

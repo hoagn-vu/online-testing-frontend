@@ -21,14 +21,14 @@ ChartJS.register(
   Legend
 );
 
-const BarChart = ({ title, labels, dataPoints, width, height }) => {
+const BarChart = ({ title, labels, dataPoints, width, height, isShowLegend=true }) => {
   const data = {
     labels: labels,
     datasets: [
       {
         label: title,
         data: dataPoints,
-        backgroundColor: "rgba(54, 162, 235, 0.5)",
+        backgroundColor: "rgba(54, 162, 235)",
         borderColor: "rgba(54, 162, 235, 1)",
         borderWidth: 1,
       },
@@ -40,7 +40,7 @@ const BarChart = ({ title, labels, dataPoints, width, height }) => {
     maintainAspectRatio: false, // Cho phép điều chỉnh kích thước tự do
     plugins: {
       legend: {
-        display: true,
+        display: isShowLegend,
         position: "top",
       },
       title: {
@@ -84,6 +84,7 @@ BarChart.propTypes = {
   dataPoints: PropTypes.arrayOf(PropTypes.number).isRequired,
   width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  isShowLegend: PropTypes.bool,
 };
 
 export default BarChart;
