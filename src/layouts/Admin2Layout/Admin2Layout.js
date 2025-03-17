@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -22,19 +22,20 @@ import MailIcon from '@mui/icons-material/Mail';
 import logo from '../../assets/logo/logo.png';
 import { FaChevronDown } from "react-icons/fa";
 import avatar from "../../assets/images/avar.jpg";
-import BreadcrumbComponent from '../../components/Breadcrumbs/Breadcrumbs';
+import './Admin2Layout.css'
+import Tooltip from '@mui/material/Tooltip';
 
-const drawerWidth = 280;
+const drawerWidth = 250;
 
 const menuItems = [
-  { title: "Trang chủ", icon: <InboxIcon />, path: "/admin/dashboard", role: ["user", "admin"] },
-  { title: "Quản lý tài khoản", icon: <MailIcon />, path: "/admin/accountmanage", role: ["user"] },
-  { title: "Quản lý kỳ thi", icon: <InboxIcon />, path: "/admin/organize", role: ["user", "admin"] },
-  { title: "Ngân hàng câu hỏi", icon: <MailIcon />, path: "/admin/question", role: ["user"] },
-  { title: "Quản lý ma trận đề", icon: <InboxIcon />, path: "/admin/matrix-exam", role: ["user", "admin"] },
-  { title: "Quản lý đề thi", icon: <MailIcon />, path: "/admin/exam", role: ["user"] },
-  { title: "Quản lý phòng thi", icon: <InboxIcon />, path: "/admin/room", role: ["user", "admin"] },
-  { title: "Nhật ký sử dụng", icon: <MailIcon />, path: "/admin/log", role: ["user"] },
+  { title: "Trang chủ", icon: <InboxIcon className='icon-color'/>, path: "/admin/dashboard", role: ["user", "admin"] },
+  { title: "Quản lý tài khoản", icon: <MailIcon className='icon-color'/>, path: "/admin/accountmanage", role: ["user"] },
+  { title: "Quản lý kỳ thi", icon: <InboxIcon className='icon-color'/>, path: "/admin/organize", role: ["user", "admin"] },
+  { title: "Ngân hàng câu hỏi", icon: <MailIcon className='icon-color'/>, path: "/admin/question", role: ["user"] },
+  { title: "Quản lý ma trận đề", icon: <InboxIcon className='icon-color'/>, path: "/admin/matrix-exam", role: ["user", "admin"] },
+  { title: "Quản lý đề thi", icon: <MailIcon className='icon-color'/>, path: "/admin/exam", role: ["user"] },
+  { title: "Quản lý phòng thi", icon: <InboxIcon className='icon-color'/>, path: "/admin/room", role: ["user", "admin"] },
+  { title: "Nhật ký sử dụng", icon: <MailIcon className='icon-color'/>, path: "/admin/log", role: ["user"] },
 ];
 
 const openedMixin = (theme) => ({
@@ -54,7 +55,7 @@ const closedMixin = (theme) => ({
   overflowX: 'hidden',
   width: `calc(${theme.spacing(7)} + 1px)`,
   [theme.breakpoints.up('sm')]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
+    width: `calc(${theme.spacing(7)} + 1px)`,
   },
 });
 
@@ -110,6 +111,22 @@ export default function Admin2Layout() {
   const handleDrawerOpen = () => setOpen(true);
   const handleDrawerClose = () => setOpen(false);
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 960) {
+        setOpen(false);
+      } else {
+        setOpen(true);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); 
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -151,20 +168,44 @@ export default function Admin2Layout() {
         </DrawerHeader>
         <Divider />
         <List>
-          {menuItems.map((item) => (
-            <ListItem key={item.title} disablePadding>
+        {menuItems.map((item) => (
+          <ListItem key={item.title} disablePadding>
+            <Tooltip title={!open ? item.title : ""} placement="right"
+              PopperProps={{
+                modifiers: [
+                  {
+                    name: "offset",
+                    options: {
+                    offset: [0, -13],
+                    },
+                  },
+                ],
+              }}
+            >
               <ListItemButton 
                 onClick={() => navigate(item.path)} 
                 selected={location.pathname === item.path}
               >
                 <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.title} />
+                {open && <ListItemText primary={item.title} />}
               </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
+            </Tooltip>
+          </ListItem>
+        ))}
+      </List>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 2, backgroundColor: "#F8F9FA", minHeight: "100vh" }}>
+      <Box 
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 2,
+          backgroundColor: "#F8F9FA",
+          minHeight: "100vh",
+          transition: "margin 0.3s ease, width 0.3s ease",
+          marginLeft: open ? `${drawerWidth - 250}px` : `calc(${theme.spacing(0)} + 1px)`,
+          width: open ? `calc(100% - ${drawerWidth}px)` : `calc(100% - calc(${theme.spacing(0)} + 1px))`,
+        }}
+      >        
         <DrawerHeader />
         <Outlet />
       </Box>
