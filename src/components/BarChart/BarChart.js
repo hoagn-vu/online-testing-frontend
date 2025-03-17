@@ -21,24 +21,29 @@ ChartJS.register(
   Legend
 );
 
-const BarChart = ({ title, labels, dataPoints, width, height, isShowLegend=true, onImageGenerated }) => {
+const BarChart = ({ title, labels, dataPoints, width, height, isShowLegend=true, onImageGenerated, convertToImage = false }) => {
   const chartRef = useRef(null);
   const [chartImage, setChartImage] = useState(null);
 
   useEffect(() => {
-    if (chartRef.current) {
-      try {
-        const chartInstance = chartRef.current;
-        const chartImage = chartInstance.toBase64Image(); // Chuyển biểu đồ thành hình ảnh
-        if (onImageGenerated) {
-          onImageGenerated(chartImage); // Gửi hình ảnh về component cha
+    if (convertToImage && chartRef.current && chartRef.current.chart) {
+      setTimeout(() => {
+        try {
+          const chartInstance = chartRef.current.chart;
+          const chartImage = chartInstance.toBase64Image();
+          if (onImageGenerated && typeof onImageGenerated === "function") {
+            onImageGenerated(chartImage);
+          }
+        } catch (error) {
+          console.error("Lỗi khi tạo ảnh từ biểu đồ:", error);
         }
-      } catch (error) {
-        console.error("Lỗi khi tạo ảnh từ biểu đồ:", error);
-      }
+      }, 500);
     }
-  }, [labels, dataPoints]);
-
+  }, [convertToImage]);
+  
+  
+  
+  
   const data = {
     labels: labels,
     datasets: [
@@ -51,10 +56,18 @@ const BarChart = ({ title, labels, dataPoints, width, height, isShowLegend=true,
       },
     ],
   };
-
+  
   const options = {
     responsive: true,
     maintainAspectRatio: false, // Cho phép điều chỉnh kích thước tự do
+    animation: {
+      onComplete: () => {
+        if (chartRef.current && chartRef.current.canvas && typeof onImageGenerated === "function") {
+          const chartImage = chartRef.current.canvas.toDataURL("image/png");
+          onImageGenerated(chartImage);
+        }
+      },
+    },
     plugins: {
       legend: {
         display: isShowLegend,
@@ -103,7 +116,12 @@ BarChart.propTypes = {
   height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   isShowLegend: PropTypes.bool,
   onImageGenerated: PropTypes.func,
+  convertToImage: PropTypes.bool,
 
+};
+
+BarChart.defaultProps = {
+  onImageGenerated: () => {}, // Thêm giá trị mặc định để tránh lỗi
 };
 
 export default BarChart;

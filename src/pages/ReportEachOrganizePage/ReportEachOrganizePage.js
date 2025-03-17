@@ -106,18 +106,20 @@ const ReportEachOrganizePage = () => {
         {/* Biểu đồ phổ điểm */}
         <h6 className="mt-2">2.2 Phổ điểm</h6>
         {chartImage ? (
-          <img src={chartImage} alt="Biểu đồ phổ điểm" style={{ width: "100%" }} />
-        ) : (
-          <BarChart
-            title="Tỷ lệ phân bố điểm"
-            labels={labels}
-            dataPoints={dataPoints}
-            width="100%"
-            height="300px"
-            isShowLegend={false}
-            onImageGenerated={setChartImage}
-          />
-        )}
+        <img src={chartImage} alt="Biểu đồ phổ điểm" style={{ width: "100%" }} />
+      ) : (
+        <BarChart
+          title="Tỷ lệ phân bố điểm"
+          labels={labels}
+          dataPoints={dataPoints}
+          width="100%"
+          height="300px"
+          isShowLegend={false}
+          onImageGenerated={setChartImage}
+          convertToImage={true} 
+        />
+      )}
+
 
         {/* Chỉ số thống kê cơ bản */}
         <h6 className="mt-2">2.3 Một số chỉ số thống kê cơ bản</h6>
