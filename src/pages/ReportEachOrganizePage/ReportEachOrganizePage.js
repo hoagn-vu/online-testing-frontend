@@ -8,7 +8,7 @@ const ReportEachOrganizePage = () => {
   const [chartImage, setChartImage] = useState(null);
 
   const handlePrint = () => {
-    const printContent = document.getElementById("printable-score-table").innerHTML;
+    const printContent = document.getElementById("printable-report-table").innerHTML;
     const originalContent = document.body.innerHTML;
 
     document.body.innerHTML = printContent;
@@ -31,12 +31,16 @@ const ReportEachOrganizePage = () => {
   
   return (
     <div className="container-report-organize">
-      {/* Quốc hiệu - Trường học */}
-      <div className="mt-3 text-center">
-        <button className="btn btn-primary" onClick={handlePrint}>In bảng điểm</button>
+      <nav className="mb-2">
+        <a href="/admin">Home</a> / <span className="breadcrumb-current">Quản lý kỳ thi</span>
+      </nav>
+
+      <div className="mb-3 d-flex ms-auto justify-content-end">
+        {/* <Print onClick={handlePrint}></Print> */}
+        <button className="btn btn-primary" onClick={handlePrint}>In báo cáo</button>
       </div>
 
-      <div className="border container" id="printable-score-table" 
+      <div className="border container" id="printable-report-table" 
         style={{ 
           width: "21cm", 
           minHeight: "29.7cm", 
@@ -47,11 +51,13 @@ const ReportEachOrganizePage = () => {
         <div className="report-header" style={{fontSize: "14px"}}>
             <div>
             <h6>TRƯỜNG ĐẠI HỌC CMC</h6>
-            <p>Phòng đảm bảo chất lượng</p>
+            <p>PHÒNG ĐẢM BẢO CHẤT LƯỢNG</p>
+            <hr className="underline-report container"></hr>
             </div>
             <div>
             <h6>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</h6>
             <p>Độc lập - Tự do - Hạnh phúc</p>
+            <hr className="underline-report container"></hr>
             </div>
         </div>
 

@@ -1,6 +1,8 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./ScoreTableSessionPage.css";
+import Print from "@mui/icons-material/Print";
+
 
 const ScoreTableSessionPage = () => {
   const listCandidate = [
@@ -38,22 +40,29 @@ const ScoreTableSessionPage = () => {
   };
 
   return (
-    <div className="exam-management-page">
+    <div className="container-score-room">
       <nav className="mb-4">
         <a href="/admin">Home</a> / <span className="breadcrumb-current">Quản lý kỳ thi</span>
       </nav>
 
+      {/* Nút in bảng điểm */}
+      <div className="mt-2 mb-3 d-flex ms-auto justify-content-end">
+        {/* <Print onClick={handlePrint}></Print> */}
+        <button className="btn btn-primary" onClick={handlePrint}>In bảng điểm</button>
+      </div>
+
       {/* Bảng điểm hiển thị luôn trên trang */}
-      <div className="score-table-container p-4 border" id="printable-score-table">
-        {/* Quốc hiệu - Trường học */}
-        <div className="d-flex justify-content-between text-center mb-3">
+      <div className="score-table-container p-4 border container" id="printable-score-table">
+        <div className="d-flex justify-content-between text-center mb-3" style={{fontSize: "14px"}}>
           <div>
             <h6 className="fw-bold">TRƯỜNG ĐẠI HỌC CMC</h6>
-            <p>Phòng đảm bảo chất lượng</p>
+            <p>PHÒNG ĐẢM BẢO CHẤT LƯỢNG</p>
+            <hr className="underline-report container"></hr>
           </div>
           <div>
             <h6 className="fw-bold">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</h6>
             <p>Độc lập - Tự do - Hạnh phúc</p>
+            <hr className="underline-report container"></hr>
           </div>
         </div>
 
@@ -98,11 +107,6 @@ const ScoreTableSessionPage = () => {
           <p className="me-5 mb-1"><strong>Giám thị</strong></p>
           <p>(Ký và ghi rõ họ tên)</p>
         </div>
-      </div>
-
-      {/* Nút in bảng điểm */}
-      <div className="mt-3 text-center">
-        <button className="btn btn-primary" onClick={handlePrint}>In bảng điểm</button>
       </div>
     </div>
   );

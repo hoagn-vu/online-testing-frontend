@@ -22,6 +22,26 @@
   margin-bottom: 20px;
 }
 
+/* .table-custom-score td, .table-custom-score th {
+  padding: 5px; 
+  font-size: 14px; 
+  white-space: nowrap;
+  align-items: center;
+  background-color: white;
+  border: 1px solid black !important;
+}
+
+.table-custom-score td {
+  align-items: center;
+  justify-content: center;
+  padding: 5px 10px 5px 10px;
+}
+
+.table-custom-score th, .table-custom-score td {
+  vertical-align: middle; 
+  text-align: center; 
+} */
+
 /* Định dạng bảng */
 .custom-table-general th, 
 .custom-table-general td {
@@ -58,7 +78,7 @@
     margin: 1.5cm !important;
   }
 
-  #printable-score-table {
+  #printable-report-table {
     width: 21cm !important;
     min-height: 29.7cm !important;
     padding: 1.5cm !important;
@@ -66,12 +86,12 @@
     box-sizing: border-box !important;
   }
 
-  .table {
+  .container-report-organize .table {
     width: 100% !important;
     border-collapse: collapse !important;
   }
 
-  .table th, .table td {
+  .container-report-organize .table th, .container-report-organize .table td {
     border: 1px solid black !important;
     padding: 5px !important;
     text-align: left !important;
@@ -87,3 +107,6 @@
 
 }
 
+.underline-report {
+  width: 180px;
+}
