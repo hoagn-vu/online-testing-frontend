@@ -30,6 +30,7 @@ import MonitoringPage from "./pages/MonitoringPage/MonitoringPage";
 import MonitorOrganizePage from "./pages/MonitorOrganizePage/MonitorOrganizePage";
 import ScoreTableSessionPage from "./pages/ScoreTableSessionPage/ScoreTableSessionPage";
 import ReportEachOrganizePage from "./pages/ReportEachOrganizePage/ReportEachOrganizePage";
+import Admin2Layout from "./layouts/Admin2Layout/Admin2Layout";
 
 function App() {
   return (
@@ -43,7 +44,7 @@ function App() {
         <Route path="/welcome" element={<WelcomePage />} />
       </Routes>
       <Routes>
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route path="/admin" element={<Admin2Layout />}>
           <Route path="accountmanage" element={<AccountPage />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="organize" element={<OrganizeExamPage />} />

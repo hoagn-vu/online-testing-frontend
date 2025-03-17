@@ -94,6 +94,7 @@ const ReportEachOrganizePage = () => {
           width="100%"
           height="300px"
           isShowLegend= {false}
+          
         />
 
         {/* Chỉ số thống kê cơ bản */}
