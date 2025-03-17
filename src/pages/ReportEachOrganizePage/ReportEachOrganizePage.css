@@ -1,10 +1,4 @@
 .container-report-organize {
-  width: 100%;
-  box-sizing: border-box;
-  overflow-y: auto;
-  padding-left: 230px;
-  padding-right: 15px;
-  padding-top: 15px; 
   color: black;
   font-family: 'Times New Roman', Times, serif;
 }
@@ -57,3 +51,39 @@
   background-color: #343a40;
   color: white;
 }
+
+@media print {
+  body {
+    font-family: "Times New Roman", Times, serif !important;
+    margin: 1.5cm !important;
+  }
+
+  #printable-score-table {
+    width: 21cm !important;
+    min-height: 29.7cm !important;
+    padding: 1.5cm !important;
+    background-color: white !important;
+    box-sizing: border-box !important;
+  }
+
+  .table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  .table th, .table td {
+    border: 1px solid black !important;
+    padding: 5px !important;
+    text-align: left !important;
+  }
+
+  canvas {
+    display: none !important;
+  }
+  
+  img {
+    display: block !important;
+  }
+
+}
+

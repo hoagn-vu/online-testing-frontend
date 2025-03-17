@@ -1,9 +1,12 @@
-import React from "react";
+import React, {useRef, useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./ReportEachOrganizePage.css";
 import BarChart from "../../components/BarChart/BarChart";
+import { useReactToPrint } from "react-to-print"; // Import thư viện
 
 const ReportEachOrganizePage = () => {
+  const [chartImage, setChartImage] = useState(null);
+
   const handlePrint = () => {
     const printContent = document.getElementById("printable-score-table").innerHTML;
     const originalContent = document.body.innerHTML;
@@ -18,6 +21,14 @@ const ReportEachOrganizePage = () => {
   const labels = ["0 đến <1", "1 đến <2", "2 đến <3", "3 đến <4", "4 đến <5", "5 đến <6", "6 đến <7", "7 đến <8", "8 đến <9", "9 đến <10"];
   const dataPoints = [10, 20, 30, 25, 15, 35,10, 20, 50, 25];
 
+//   const componentRef = useRef();
+//   const printRef = useRef<HTMLDivElement>(null);    
+//   const handlePrint = useReactToPrint({
+//     documentTitle: 'Title',
+//     contentRef: componentRef,
+//  })
+//   console.log(componentRef.current);
+  
   return (
     <div className="container-report-organize">
       {/* Quốc hiệu - Trường học */}
@@ -25,7 +36,14 @@ const ReportEachOrganizePage = () => {
         <button className="btn btn-primary" onClick={handlePrint}>In bảng điểm</button>
       </div>
 
-      <div className="border" id="printable-score-table" style={{padding: "2cm"}}>
+      <div className="border container" id="printable-score-table" 
+        style={{ 
+          width: "21cm", 
+          minHeight: "29.7cm", 
+          padding: "2cm", 
+          backgroundColor: "white",
+          boxSizing: "border-box" 
+        }}>
         <div className="report-header" style={{fontSize: "14px"}}>
             <div>
             <h6>TRƯỜNG ĐẠI HỌC CMC</h6>
@@ -87,15 +105,19 @@ const ReportEachOrganizePage = () => {
 
         {/* Biểu đồ phổ điểm */}
         <h6 className="mt-2">2.2 Phổ điểm</h6>
-        <BarChart
-          title="Tỷ lệ phân bố điểm"
-          labels={labels}
-          dataPoints={dataPoints}
-          width="100%"
-          height="300px"
-          isShowLegend= {false}
-          
-        />
+        {chartImage ? (
+          <img src={chartImage} alt="Biểu đồ phổ điểm" style={{ width: "100%" }} />
+        ) : (
+          <BarChart
+            title="Tỷ lệ phân bố điểm"
+            labels={labels}
+            dataPoints={dataPoints}
+            width="100%"
+            height="300px"
+            isShowLegend={false}
+            onImageGenerated={setChartImage}
+          />
+        )}
 
         {/* Chỉ số thống kê cơ bản */}
         <h6 className="mt-2">2.3 Một số chỉ số thống kê cơ bản</h6>

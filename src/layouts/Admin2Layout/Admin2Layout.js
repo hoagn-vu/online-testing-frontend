@@ -164,7 +164,7 @@ export default function Admin2Layout() {
           ))}
         </List>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 2, backgroundColor: "#F8F9FA", height: "100vh" }}>
+      <Box component="main" sx={{ flexGrow: 1, p: 2, backgroundColor: "#F8F9FA", minHeight: "100vh" }}>
         <DrawerHeader />
         <Outlet />
       </Box>

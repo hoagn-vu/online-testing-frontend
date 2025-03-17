@@ -7,9 +7,9 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import React from "react";
 import { Bar } from "react-chartjs-2";
 import PropTypes from "prop-types";
+import React, {useRef, useState, useEffect } from "react";
 
 // Đăng ký các thành phần Chart.js
 ChartJS.register(
@@ -21,7 +21,24 @@ ChartJS.register(
   Legend
 );
 
-const BarChart = ({ title, labels, dataPoints, width, height, isShowLegend=true }) => {
+const BarChart = ({ title, labels, dataPoints, width, height, isShowLegend=true, onImageGenerated }) => {
+  const chartRef = useRef(null);
+  const [chartImage, setChartImage] = useState(null);
+
+  useEffect(() => {
+    if (chartRef.current) {
+      try {
+        const chartInstance = chartRef.current;
+        const chartImage = chartInstance.toBase64Image(); // Chuyển biểu đồ thành hình ảnh
+        if (onImageGenerated) {
+          onImageGenerated(chartImage); // Gửi hình ảnh về component cha
+        }
+      } catch (error) {
+        console.error("Lỗi khi tạo ảnh từ biểu đồ:", error);
+      }
+    }
+  }, [labels, dataPoints]);
+
   const data = {
     labels: labels,
     datasets: [
@@ -73,7 +90,7 @@ const BarChart = ({ title, labels, dataPoints, width, height, isShowLegend=true 
         boxShadow: "0px 1px 15px rgba(107, 106, 106, 0.1)",
       }}
     >
-      <Bar data={data} options={options} />
+      {chartImage ? <img src={chartImage} alt="Biểu đồ" style={{ width: "100%" }} /> : <Bar ref={chartRef} data={data} options={options} />}
     </div>
   );
 };
@@ -85,6 +102,8 @@ BarChart.propTypes = {
   width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   isShowLegend: PropTypes.bool,
+  onImageGenerated: PropTypes.func,
+
 };
 
 export default BarChart;

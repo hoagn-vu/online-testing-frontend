@@ -192,7 +192,7 @@ const OrganizeExamPage = () => {
     },
     { 
       field: "report", 
-      headerName: "Chi tiết", 
+      headerName: "Báo cáo", 
       width: 75,
       // renderCell: (params) => (
       //   <Link 
