@@ -51,7 +51,7 @@ const HistoryCandidatePage = () => {
         <div className="container container-history justify-content-center d-flex">
             <div className="table-responsive tbl-history">
                 <h2 className="text-center mb-4">Lịch sử thi</h2>
-                <table className="table table-striped" >
+                <table className="exam-history-table table table-striped" >
                     <thead className="bg-light">
                         <tr>
                             <th style={{ minWidth: "0px" }}>STT</th>

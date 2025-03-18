@@ -201,6 +201,7 @@ const RoomManagementPage = () => {
             localeText={{
               noRowsLabel: "Không có dữ liệu", // ✅ Đổi text mặc định của DataGrid
             }}
+            hideFooter={true}
             sx={{
               "& .MuiDataGrid-cell": {
                 whiteSpace: "normal", // ✅ Cho phép xuống dòng khi nội dung dài

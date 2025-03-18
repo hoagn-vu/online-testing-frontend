@@ -1,58 +1,54 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./LoginForm.css";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, } from "react-redux";
+import { useLoginMutation, } from '../../services/authApi';
+import { setCredentials, } from '../../redux/authSlice';
 
 const LoginForm = () => {
+
+  const [showPassword, setShowPassword] = useState(false);
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
+  const [login, { isLoading }] = useLoginMutation();
+  const [errMsg, setErrMsg] = useState("");
+  
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!username && !password) {
-      setError("");
-    }
-  }, [username, password]);
-
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setError(null);
-
-    // console.log("Dữ liệu gửi đi:", { username, password });
+    setErrMsg("");
 
     if (!username || !password) {
-      setError("Vui lòng nhập tài khoản và mật khẩu");
+      setErrMsg("Vui lòng nhập tên đăng nhập và mật khẩu");
       return;
     }
 
     if (username.length < 6 || password.length < 6) {
-      setError("Tài khoản và mật khẩu phải có ít nhất 6 ký tự");
+      setErrMsg("Tài khoản và mật khẩu phải có ít nhất 6 ký tự");
       return;
     }
 
-    setLoading(true);
-
     try {
-      const response = await axios.post(
-        "http://localhost:5146/api/auth/login",
-        { username, password },
-        { headers: { "Content-Type": "application/json" } }
-      );
-      sessionStorage.setItem("userId", response.data.userId);
-      sessionStorage.setItem("userFullname", response.data.userFullname);
-      setLoading(false);
-      navigate("/welcome");
+      const response = await login({ username, password }).unwrap();
+      dispatch(setCredentials(response));
+
+      if (response.role === 'admin') {
+        navigate("/staff/dashboard");
+      } else if (response.role === 'candidate') {
+        navigate("/candidate/home");
+      } else if (response.role === 'staff') {
+        navigate("/staff/dashboard");
+      } else if (response.role === 'supervisor') {
+        navigate("/staff/supervisor");
+      }
+
+      // navigate("/welcome");
     } catch (err) {
-      console.error("Lỗi đăng nhập:", err.response ? err.response.data : err);
-      setError(
-        err.response?.data?.message || "Đã xảy ra lỗi, vui lòng thử lại!"
-      );
-      setLoading(false);
+      setErrMsg('Login failed:', err.data?.message);
     }
   };
 
@@ -60,12 +56,12 @@ const LoginForm = () => {
     <div className="d-flex justify-content-center align-items-center vh-100">
       <form
         className="p-4 shadow-lg login-form bgr-color"
-        onSubmit={handleSubmit}
+        onSubmit={handleLogin}
       >
         <h2 className="text-center mb-3 fw-bold text-blue-holo">Đăng nhập</h2>
 
-        {error && (
-          <div className="alert alert-danger text-center p-2">{error}</div>
+        {errMsg && (
+          <div className="alert alert-danger text-center p-2">{errMsg}</div>
         )}
 
         <div className="mb-3 text-start">
@@ -98,9 +94,9 @@ const LoginForm = () => {
         <button
           type="submit"
           className="btn w-100 fw-bold css-btn"
-          disabled={loading}
+          disabled={isLoading}
         >
-          {loading ? (
+          {isLoading ? (
             <div
               className="spinner-border spinner-border-sm"
               role="status"
