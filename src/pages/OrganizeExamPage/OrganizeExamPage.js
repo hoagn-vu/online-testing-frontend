@@ -482,7 +482,7 @@ const OrganizeExamPage = () => {
 										fullWidth
 										className="basic-single "
 										classNamePrefix="select"
-										placeholder="Đề thi"
+										placeholder="Chọn đề thi"
 										name="color"
 										options={subjectOptions}
 										isDisabled={editingAccount}
@@ -517,7 +517,7 @@ const OrganizeExamPage = () => {
 										fullWidth
 										className="basic-single "
 										classNamePrefix="select"
-										placeholder="Ma trận"
+										placeholder="Chọn ma trận"
 										name="color"
 										options={subjectOptions}
 										isDisabled={editingAccount}
@@ -543,6 +543,27 @@ const OrganizeExamPage = () => {
 											}),
 										}}
 									/>
+								</Grid>
+                )}
+                {selectedType === "Ngẫu nhiên" && (
+                <Grid item xs={12}>
+                  <TextField
+										fullWidth
+										label="Số lượng câu hỏi"
+										required
+										value={formData.totalQuestion}
+										onChange={(e) =>
+											setFormData({ ...formData, totalQuestion: e.target.value })
+										}
+										sx={{
+											"& .MuiInputBase-input": {
+												fontSize: "14px",
+												paddingBottom: "11px",
+											},
+											"& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+										}}
+									/>
+									
 								</Grid>
                 )}
 							</Grid>		
