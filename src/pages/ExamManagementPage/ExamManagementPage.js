@@ -59,7 +59,7 @@ const ExamManagementPage = () => {
 				width: 1090, flex: 0.1, 
         renderCell: (params) => (
           <Link 
-            to={`/admin/exam/${encodeURIComponent(params.row.id)}`} 
+            to={`/staff/exam/${encodeURIComponent(params.row.id)}`} 
             style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
           >
             {params.row.examCode}
@@ -225,7 +225,7 @@ const ExamManagementPage = () => {
 		<div className="exam-management-page">
 			{/* Breadcrumb */}
 			<nav>
-				<Link to="/admin">Home</Link> / 
+				<Link to="/staff">Home</Link> / 
 				<span className="breadcrumb-current">Quản lý đề thi</span>
 			</nav>
 
