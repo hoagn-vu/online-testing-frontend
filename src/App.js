@@ -1,6 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { Navigate, useNavigate } from "react-router-dom";
+
+import { setUser } from "./redux/authSlice";
+import { useGetProfileQuery } from "./services/authApi";
+
 import "bootstrap/dist/css/bootstrap.min.css";
+
 import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 import DefaultLayout from "./layouts/DefaultLayout/DefaultLayout";
 import AccountPage from "./pages/AccountPage/AccountPage";
@@ -32,19 +39,77 @@ import ScoreTableSessionPage from "./pages/ScoreTableSessionPage/ScoreTableSessi
 import ReportEachOrganizePage from "./pages/ReportEachOrganizePage/ReportEachOrganizePage";
 import Admin2Layout from "./layouts/Admin2Layout/Admin2Layout";
 
+import NotFound from "./pages/NotFound/NotFound";
+
 function App() {
+  const accessToken = useSelector((state) => state.auth.accessToken) || localStorage.getItem("accessToken");
+  const dispatch = useDispatch();
+
+  const { data, isSuccess, isLoading } = useGetProfileQuery(undefined, {
+    skip: !accessToken,
+  });
+
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(setUser(data));
+    }  
+  }, [isSuccess, data, dispatch]);
+
+  const ProtectedRoute = ({ children }) => {
+    if (!accessToken) return <Navigate to="/" />;
+    if (!isSuccess || isLoading) return <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
+      <div className="spinner-border text-primary" role="status">
+        <span className="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  
+    return children;
+  };
+
+  const AdminRoute = ({ children }) => {
+    if (!isSuccess || isLoading) return <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
+      <div className="spinner-border text-primary" role="status">
+        <span className="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    if (accessToken && data?.role === "admin") {
+      return children;
+    }
+    return <Navigate to="/not-found" />;
+  };
+
+  const CandidateRoute = ({ children }) => {
+    if (!isSuccess || isLoading) return <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
+      <div className="spinner-border text-primary" role="status">
+        <span className="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    
+    if (accessToken && data?.role !== "candidate") {
+      return children;
+    }
+    return <Navigate to="/not-found" />;
+  };
+
   return (
     <Router>
-      {" "}
-      {/* Thêm BrowserRouter */}
       <Routes>
         <Route path="/" element={<LoginPage />} />
-      </Routes>
-      <Routes>
         <Route path="/welcome" element={<WelcomePage />} />
+        <Route path="/not-found" element={<NotFound />} />
       </Routes>
       <Routes>
-        <Route path="/admin" element={<Admin2Layout />}>
+        <Route 
+          path="/staff" 
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <Admin2Layout />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        >
           <Route path="accountmanage" element={<AccountPage />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="organize" element={<OrganizeExamPage />} />
@@ -67,7 +132,16 @@ function App() {
       </Routes>
 
       <Routes>
-        <Route path="/candidate" element={<DefaultLayout />}>
+        <Route 
+          path="/candidate" 
+          element={
+            <ProtectedRoute>
+              <CandidateRoute>
+                <DefaultLayout />
+              </CandidateRoute>
+            </ProtectedRoute>
+          }
+        >
           <Route path="home" element={<HomeCandidate />} />
           <Route path="history" element={<HistoryCandidatePage />} />
           <Route path="result" element={<ResultCandidatePage />} />
