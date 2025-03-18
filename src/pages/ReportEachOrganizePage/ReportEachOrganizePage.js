@@ -17,17 +17,38 @@ const ReportEachOrganizePage = () => {
     window.location.reload(); 
   };
 
-  // Thông tin linechart gian lận
-  const labels = ["0 đến <1", "1 đến <2", "2 đến <3", "3 đến <4", "4 đến <5", "5 đến <6", "6 đến <7", "7 đến <8", "8 đến <9", "9 đến <10"];
-  const dataPoints = [10, 20, 30, 25, 15, 35,10, 20, 50, 25];
-
-//   const componentRef = useRef();
-//   const printRef = useRef<HTMLDivElement>(null);    
-//   const handlePrint = useReactToPrint({
-//     documentTitle: 'Title',
-//     contentRef: componentRef,
-//  })
-//   console.log(componentRef.current);
+  // const labels = ["0 đến <1", "1 đến <2", "2 đến <3", "3 đến <4", "4 đến <5", "5 đến <6", "6 đến <7", "7 đến <8", "8 đến <9", "9 đến <10"];
+  // const dataPoints = [10, 20, 30, 25, 15, 35,10, 20, 50, 25];
+  
+  const sampleReportData = {
+    organizeExamName: "Kỳ thi cuối kỳ",
+    subjectName: "Giải tích",
+    totalRoom: 8,
+    scoreDistribution: [
+      { range: "0 đến <1", count: 5 },
+      { range: "1 đến <2", count: 10 },
+      { range: "2 đến <3", count: 15 },
+      { range: "3 đến <4", count: 25 },
+      { range: "4 đến <5", count: 30 },
+      { range: "5 đến <6", count: 20 },
+      { range: "6 đến <7", count: 18 },
+      { range: "7 đến <8", count: 12 },
+      { range: "8 đến <9", count: 8 },
+      { range: "9 đến <10", count: 7 },
+    ],
+    totalStudents: 150,
+    avgScore: 5.8,
+    maxScore: 9.5,
+    minScore: 0.5,
+    mostCommonScore: 5,
+    belowFiveCount: 45,
+  };
+  
+  // Tính tỷ lệ phần trăm dựa trên tổng số sinh viên
+  const calculatePercentage = (count, total) => ((count / total) * 100).toFixed(2) + "%";
+  
+  const labels = sampleReportData.scoreDistribution.map(item => item.range);
+  const dataPoints = sampleReportData.scoreDistribution.map(item => item.count);
   
   return (
     <div className="container-report-organize">
@@ -65,40 +86,37 @@ const ReportEachOrganizePage = () => {
         <h4 className="report-title">BÁO CÁO KẾT QUẢ PHÂN TÍCH PHỔ ĐIỂM</h4>
 
         {/* Thông tin chung */}
-        <h6>1. Thông tin chung</h6>
-        <div className="mb-1 ms-3" style={{fontSize: "14px"}}>
-          <p className="mb-0"><strong>- Kỳ thi: </strong>Cuối kỳ</p>
-          <p className="mb-0"><strong>- Môn học: </strong>Yêu cầu phần mềm</p>
-          <p className="mb-0"><strong>- Tổng số lớp: </strong>8</p>
+        <h6 style={{ fontSize: "14px" }}>1. Thông tin chung</h6>
+        <div className="mb-1 ms-3" style={{ fontSize: "14px" }}>
+          <p className="mb-0"><strong>- Kỳ thi: </strong>{sampleReportData.organizeExamName}</p>
+          <p className="mb-0"><strong>- Môn học: </strong>{sampleReportData.subjectName}</p>
+          <p className="mb-0"><strong>- Tổng số lớp: </strong>{sampleReportData.totalRoom}</p>
         </div>
 
         {/* Bảng tần số */}
-        <h6>2. Báo cáo chung kết quả phân tích phổ điểm</h6>
-        <h6>2.1 Bảng tần số</h6>
+        <p style={{ fontSize: "14px" }} className="mb-1">2. Báo cáo chung kết quả phân tích phổ điểm</p>
+        <p style={{ fontSize: "14px" }} className="mb-2">2.1 Bảng tần số</p>
         <table className="table table-bordered table-custom-score table-custom-freq">
             <thead>
                 <tr>
                     <th>Phổ điểm</th>
-                    <th>Số lượng</th>
-                    <th>Tỷ lệ</th>
+                    <th className="text-center">Số lượng</th>
+                    <th className="text-center">Tỷ lệ</th>
                 </tr>
             </thead>
             <tbody>
-                <tr><td>0 đến &lt;1</td><td> </td><td>  </td></tr>
-                <tr><td>1 đến &lt;2</td><td>  </td><td>  </td></tr>
-                <tr><td>2 đến &lt;3</td><td>  </td><td>  </td></tr>
-                <tr><td>3 đến &lt;4</td><td>  </td><td>  </td></tr>
-                <tr><td>4 đến &lt;5</td><td>  </td><td>  </td></tr>
-                <tr><td>5 đến &lt;6</td><td>  </td><td>  </td></tr>
-                <tr><td>6 đến &lt;7</td><td>  </td><td>  </td></tr>
-                <tr><td>7 đến &lt;8</td><td>  </td><td>  </td></tr>
-                <tr><td>8 đến &lt;9</td><td>  </td><td>  </td></tr>
-                <tr><td>9 đến &lt;10</td><td>  </td><td> </td></tr>
+              {sampleReportData.scoreDistribution.map((item, index) => (
+                <tr key={index}>
+                  <td>{item.range}</td>
+                  <td className="text-center">{item.count}</td>
+                  <td className="text-center">{calculatePercentage(item.count, sampleReportData.totalStudents)}</td>
+                </tr>
+              ))}
             </tbody>
         </table>
 
         {/* Biểu đồ phổ điểm */}
-        <h6 className="mt-2">2.2 Phổ điểm</h6>
+        <h6 className="mt-3 mb-0" style={{ fontSize: "14px" }} >2.2 Phổ điểm</h6>
         {chartImage ? (
         <img src={chartImage} alt="Biểu đồ phổ điểm" style={{ width: "100%" }} />
       ) : (
@@ -116,7 +134,7 @@ const ReportEachOrganizePage = () => {
 
 
         {/* Chỉ số thống kê cơ bản */}
-        <h6 className="mt-2">2.3 Một số chỉ số thống kê cơ bản</h6>
+        <h6 className="mt-3 mb-2" style={{ fontSize: "14px" }} >2.3 Một số chỉ số thống kê cơ bản</h6>
         <table className="table table-bordered table-custom-score tbl-analyse">
             <thead>
             <tr>
@@ -126,12 +144,12 @@ const ReportEachOrganizePage = () => {
             </tr>
             </thead>
             <tbody>
-              <tr><td>Tổng số sinh viên dự thi</td><td> </td><td> </td></tr>
-              <tr><td>Điểm trung bình</td><td>  </td><td> </td></tr>
-              <tr><td>Điểm cao nhất</td><td> </td><td> </td></tr>
-              <tr><td>Điểm thấp nhất</td><td> </td><td> </td></tr>
-              <tr><td>Điểm số nhiều thí sinh đạt nhất</td><td> </td><td> </td></tr>
-              <tr><td>Số sinh viên đạt &lt;5</td><td> </td><td> </td></tr>
+              <tr className="text-center"><td>Tổng số sinh viên dự thi</td><td>{sampleReportData.totalStudents}</td><td>100%</td></tr>
+              <tr className="text-center"><td>Điểm trung bình</td><td>{sampleReportData.avgScore}</td><td>-</td></tr>
+              <tr className="text-center"><td>Điểm cao nhất</td><td>{sampleReportData.maxScore}</td><td>-</td></tr>
+              <tr className="text-center"><td>Điểm thấp nhất</td><td>{sampleReportData.minScore}</td><td>-</td></tr>
+              <tr className="text-center"><td>Điểm số nhiều thí sinh đạt nhất</td><td>{sampleReportData.mostCommonScore}</td><td>-</td></tr>
+              <tr className="text-center"><td>Số sinh viên đạt &lt;5</td><td>{sampleReportData.belowFiveCount}</td><td>{calculatePercentage(sampleReportData.belowFiveCount, sampleReportData.totalStudents)}</td></tr>
             </tbody>
         </table>
       </div>

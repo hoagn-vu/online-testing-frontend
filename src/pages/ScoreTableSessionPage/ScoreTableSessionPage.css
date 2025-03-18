@@ -51,10 +51,11 @@
 @media print {
     body {
       font-family: "Times New Roman", Times, serif !important;
+      color: black;
     }
     
-    .table-custom-score td:nth-child(2),
-    .table-custom-score td:nth-child(3) {
+    .score-table-container .table-custom-score td:nth-child(2),
+    .score-table-container .table-custom-score td:nth-child(3) {
         text-align: left !important;
     }
 

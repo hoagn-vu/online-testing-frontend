@@ -16,9 +16,17 @@ const listCandidate = [
     dateOfBirth: "21/05/2003",
     examId: "EXAM123"
   },
-  {
+	{
     candidateId: "CAND002",
-    userCode: "BIT220172",
+    userCode: "BIT220089",
+    fullName: "Phan Thị Phương Linh",
+    gender: "Nữ",
+    dateOfBirth: "08/01/2004",
+    examId: "EXAM124"
+  },
+  {
+    candidateId: "CAND003",
+    userCode: "BIT220149",
     fullName: "Ngô Đức Thuận",
     gender: "Nam",
     dateOfBirth: "21/05/2004",
