@@ -7,6 +7,7 @@ import SearchBox from "../../components/SearchBox/SearchBox";
 import CreatableSelect from "react-select/creatable";
 import Icon from '@mui/material/Icon';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
 
 const subjectData  = 
 {
@@ -333,7 +334,7 @@ const ListQuestionPage = () => {
 										<div className="card-header d-flex justify-content-between ps-2">
 											<div className="d-flex ">
 											<button 
-												className="btn btn-link text-decoration-none d-flex p-0 pe-1"
+												className="btn btn-link text-decoration-none d-flex align-items-center p-0 pe-1"
 												style={{color: "black"}}
 												data-bs-toggle="collapse" 
 												data-bs-target={`#collapse-${question.id}`}
@@ -342,16 +343,20 @@ const ListQuestionPage = () => {
 											>			
 												<ArrowDropDownIcon />
 											</button>
-												<div>
-													<h6 className="d-flex align-items-center">{question.questionText}</h6>
+												<div className="d-flex align-items-center">
+													<h6 className="d-flex align-items-center mb-0">{question.questionText}</h6>
 													{question.tags.slice(1).map((tag, index) => (
 														<p className="m-0 tag-level" key={index}>{tag}</p>
 													))}
 												</div>
 											</div>
 											<div className="d-flex" style={{ marginLeft: "50px" }}>
-												<button className="btn btn-primary me-2" onClick={() => handleEditQuestion(question)}>Edit</button>
-												<button className="btn btn-danger" onClick={() => handleDelete()}>Delete</button>
+												<button className="btn btn-primary me-2" onClick={() => handleEditQuestion(question)}>
+													Edit
+												</button>
+												<button className="btn btn-danger" onClick={() => handleDelete()}>
+													Delete
+												</button>
 											</div>
 										</div>
 										<div id={`collapse-${question.id}`} className="collapse show">

@@ -111,7 +111,7 @@ li.active {
 }
 
 /* Hiệu ứng khi hover */
-li:hover {
+.sidebar li:hover {
     background-color: #e0e0e0;
 }
 

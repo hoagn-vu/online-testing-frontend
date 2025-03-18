@@ -215,7 +215,7 @@
   opacity: 0.9;
 }
 
-input, select {
+.account-page input, select {
   padding: 2px;
   margin: 5px 0;
 }

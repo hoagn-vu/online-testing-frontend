@@ -178,9 +178,11 @@ const QuestionBankNamePage = () => {
         <div className="question-bank-page">
         {/* Breadcrumb */}
         <nav>
-            <Link to="/admin">Home</Link> / 
-            <Link to="/admin/question">Ngân hàng câu hỏi</Link> / 
-            <span className="breadcrumb-current">{decodeURIComponent(subject)}</span>
+          <Link to="/staff/dashboard">Home</Link>
+          <span> / </span>
+          <Link to="/staff/question">Ngân hàng câu hỏi</Link>
+          <span> / </span>
+          <span className="breadcrumb-current">{decodeURIComponent(subject)}</span>
         </nav>
 
             <div className="account-actions mt-4">

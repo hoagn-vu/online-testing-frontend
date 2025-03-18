@@ -8,16 +8,16 @@
     border-radius: 10px;
 }
 
-.table th {
+.exam-history-table .table th {
     text-align: center;
     background-color: #bad2ec;
     font-weight: bold;
 }
 
-.table td {
+.exam-history-table .table td {
     text-align: center;
 }
 
-h2 {
+.container-history h2 {
     font-weight: bold;
 }

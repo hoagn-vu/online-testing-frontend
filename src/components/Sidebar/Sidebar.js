@@ -29,84 +29,84 @@ const Sidebar = () => {
     <div className={`sidebar ${isOpen ? "open" : "closed"}`}>
       <ul className="menu-list">
         <li
-          className={location.pathname === "/admin/dashboard" ? "active" : ""}
+          className={location.pathname === "/staff/dashboard" ? "active" : ""}
           data-title="Dashboard"
         >
           <FaThLarge className="icon" />
-          <NavLink  to="/admin/dashboard">
+          <NavLink  to="/staff/dashboard">
             <span>Dashboard</span>
           </NavLink >
         </li>
         <li
           className={
-            location.pathname === "/admin/accountmanage" ? "active" : ""
+            location.pathname === "/staff/accountmanage" ? "active" : ""
           }
           data-title="Quản lý tài khoản"
         >
           <FaUserCog className="icon" />
-          <NavLink  to="/admin/accountmanage">
+          <NavLink  to="/staff/accountmanage">
             <span>Quản lý tài khoản</span>
           </NavLink >
         </li>
 
         <li
-          className= {location.pathname.startsWith("/admin/organize") ? "active" : ""}
+          className= {location.pathname.startsWith("/staff/organize") ? "active" : ""}
           data-title="Quản lý kỳ thi"
         >
           <FaThLarge className="icon" />
-          <NavLink  to="/admin/organize">
+          <NavLink  to="/staff/organize">
             <span>Quản lý kỳ thi</span>
           </NavLink >
         </li>
 
         <li
-          className= {location.pathname.startsWith("/admin/question") ? "active" : ""}
+          className= {location.pathname.startsWith("/staff/question") ? "active" : ""}
           data-title="Ngân hàng câu hỏi"
         >
           <FaQuestionCircle className="icon" />
-          <NavLink  to="/admin/question">
+          <NavLink  to="/staff/question">
             <span>Ngân hàng câu hỏi</span>
           </NavLink >
         </li>
 
         <li
-          className= {location.pathname.startsWith("/admin/matrix") ? "active" : ""}
+          className= {location.pathname.startsWith("/staff/matrix") ? "active" : ""}
           data-title="Quản lý ma trận đề"
         >
           <FaThLarge className="icon" />
-          <NavLink  to="/admin/matrix-exam">
+          <NavLink  to="/staff/matrix-exam">
             <span>Quản lý ma trận đề</span>
           </NavLink >
         </li>
 
         <li
-          className={location.pathname.startsWith("/admin/exam") ? "active" : ""}
+          className={location.pathname.startsWith("/staff/exam") ? "active" : ""}
           data-title="Quản lý đề thi"
         >
           <FaFileAlt className="icon" />
-          <NavLink  to="/admin/exam">
+          <NavLink  to="/staff/exam">
             <span>Quản lý đề thi</span>
           </NavLink >
         </li>
 
         <li
           className={
-            location.pathname === "/admin/room" ? "active" : ""
+            location.pathname === "/staff/room" ? "active" : ""
           }
           data-title="Quản lý phòng thi"
         >
           <FaQuestionCircle className="icon" />
-          <NavLink  to="/admin/room">
+          <NavLink  to="/staff/room">
             <span>Quản lý phòng thi</span>
           </NavLink >
         </li>
 
         <li
-          className={location.pathname === "/admin/log" ? "active" : ""}
+          className={location.pathname === "/staff/log" ? "active" : ""}
           data-title="Nhật ký sử dụng"
         >
           <FaBuilding className="icon" />
-          <NavLink  to="/admin/log">
+          <NavLink  to="/staff/log">
             <span>Nhật ký sử dụng</span>
           </NavLink >
         </li>
