@@ -180,7 +180,8 @@ const RoomManagementPage = () => {
           <SearchBox></SearchBox>
         </div>
         <div className="role-selector">
-          <button className="add-btn" onClick={handleAddNew}>
+          <button className="btn btn-primary me-0" style={{fontSize: "14px"}} onClick={handleAddNew}>
+            <i className="fas fa-plus me-2"></i>
             Thêm mới
           </button>
         </div>

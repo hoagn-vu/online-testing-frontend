@@ -22,7 +22,7 @@ const listQuestionBank = [
     matrixId: "MATRIX123",
     maxScore: 100,
     subjectId: "MATH12",
-    totalQuestion: 50,
+    totalQuestion: null,
     examSet: null,
     sesstion: []
   },
@@ -35,7 +35,7 @@ const listQuestionBank = [
     matrixId: null,
     maxScore: 100,
     subjectId: "MATH11",
-    totalQuestion: 50,
+    totalQuestion: null,
     examSet: ["Ma12", "Ma13"],
     sesstion: []
   },
@@ -246,7 +246,8 @@ const OrganizeExamPage = () => {
         <div className="search-container">
           <SearchBox></SearchBox>
         </div>
-        <button className="add-btn" onClick={handleAddNew}>
+        <button className="btn btn-primary me-2" style={{fontSize: "14px"}} onClick={handleAddNew}>
+          <i className="fas fa-plus me-2"></i>
           Thêm mới
         </button>
       </div>
@@ -263,7 +264,7 @@ const OrganizeExamPage = () => {
               <th scope="col" className="title-row">Loại</th>
               <th scope="col" className="title-row">Đề thi</th>
               <th scope="col" className="title-row">Ma trận</th>
-              <th scope="col" className="title-row text-center">Thời gian</th>
+              <th scope="col" className="title-row text-center">Thời gian (Phút)</th>
               <th scope="col" className="title-row text-center">Điểm</th>
               <th scope="col" className="title-row text-center">Trạng thái</th>
               <th scope="col" className="title-row">Báo cáo</th>

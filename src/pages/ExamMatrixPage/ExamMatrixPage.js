@@ -204,7 +204,8 @@ const ExamMatrixPage = () => {
                   <SearchBox></SearchBox>
               </div>
               <Link className="add-btn btn link-btn d-flex align-items-center" to="/staff/matrix-detail">
-                  Thêm mới
+                <i className="fas fa-plus me-2"></i>
+                Thêm mới
               </Link>
           </div>
 
