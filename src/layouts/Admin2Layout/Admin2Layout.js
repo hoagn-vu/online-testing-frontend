@@ -28,14 +28,14 @@ import Tooltip from '@mui/material/Tooltip';
 const drawerWidth = 250;
 
 const menuItems = [
-  { title: "Trang chủ", icon: <InboxIcon className='icon-color'/>, path: "/admin/dashboard", role: ["user", "admin"] },
-  { title: "Quản lý tài khoản", icon: <MailIcon className='icon-color'/>, path: "/admin/accountmanage", role: ["user"] },
-  { title: "Quản lý kỳ thi", icon: <InboxIcon className='icon-color'/>, path: "/admin/organize", role: ["user", "admin"] },
-  { title: "Ngân hàng câu hỏi", icon: <MailIcon className='icon-color'/>, path: "/admin/question", role: ["user"] },
-  { title: "Quản lý ma trận đề", icon: <InboxIcon className='icon-color'/>, path: "/admin/matrix-exam", role: ["user", "admin"] },
-  { title: "Quản lý đề thi", icon: <MailIcon className='icon-color'/>, path: "/admin/exam", role: ["user"] },
-  { title: "Quản lý phòng thi", icon: <InboxIcon className='icon-color'/>, path: "/admin/room", role: ["user", "admin"] },
-  { title: "Nhật ký sử dụng", icon: <MailIcon className='icon-color'/>, path: "/admin/log", role: ["user"] },
+  { title: "Trang chủ", icon: <InboxIcon className='icon-color'/>, path: "/staff/dashboard", role: ["user", "admin"] },
+  { title: "Quản lý tài khoản", icon: <MailIcon className='icon-color'/>, path: "/staff/accountmanage", role: ["user"] },
+  { title: "Quản lý kỳ thi", icon: <InboxIcon className='icon-color'/>, path: "/staff/organize", role: ["user", "admin"] },
+  { title: "Ngân hàng câu hỏi", icon: <MailIcon className='icon-color'/>, path: "/staff/question", role: ["user"] },
+  { title: "Quản lý ma trận đề", icon: <InboxIcon className='icon-color'/>, path: "/staff/matrix-exam", role: ["user", "admin"] },
+  { title: "Quản lý đề thi", icon: <MailIcon className='icon-color'/>, path: "/staff/exam", role: ["user"] },
+  { title: "Quản lý phòng thi", icon: <InboxIcon className='icon-color'/>, path: "/staff/room", role: ["user", "admin"] },
+  { title: "Nhật ký sử dụng", icon: <MailIcon className='icon-color'/>, path: "/staff/log", role: ["user"] },
 ];
 
 const openedMixin = (theme) => ({

@@ -195,7 +195,7 @@ const ExamMatrixPage = () => {
       <div className="question-bank-page">
           {/* Breadcrumb */}
           <nav>
-              <Link to="/admin">Home</Link> / 
+              <Link to="/staff">Home</Link> / 
               <span className="breadcrumb-current">Quản lý ma trận đề</span>
           </nav>
 
@@ -203,7 +203,7 @@ const ExamMatrixPage = () => {
               <div className="search-container">
                   <SearchBox></SearchBox>
               </div>
-              <Link className="add-btn btn link-btn d-flex align-items-center" to="/admin/matrix-detail">
+              <Link className="add-btn btn link-btn d-flex align-items-center" to="/staff/matrix-detail">
                   Thêm mới
               </Link>
           </div>

@@ -103,11 +103,7 @@ function App() {
         <Route 
           path="/staff" 
           element={
-            <ProtectedRoute>
-              <AdminRoute>
                 <Admin2Layout />
-              </AdminRoute>
-            </ProtectedRoute>
           }
         >
           <Route path="accountmanage" element={<AccountPage />} />
@@ -135,11 +131,7 @@ function App() {
         <Route 
           path="/candidate" 
           element={
-            <ProtectedRoute>
-              <CandidateRoute>
                 <DefaultLayout />
-              </CandidateRoute>
-            </ProtectedRoute>
           }
         >
           <Route path="home" element={<HomeCandidate />} />

@@ -3,9 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import "./RoomOrganizePage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import {Chip, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
-import Paper from "@mui/material/Paper";
-import { DataGrid } from "@mui/x-data-grid";
+import {Pagination, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
 import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import ReactSelect  from 'react-select';
@@ -13,31 +11,17 @@ import ReactSelect  from 'react-select';
 const listQuestionBank = [
 	{
 		roomId: "ROOM101",
+		roomName: "401",
 		supervisorId: "SUP123",
-		candidates: [
-			{
-					candidateId: "CAND001",
-					examId: "EXAM123"
-			},
-			{
-					candidateId: "CAND002",
-					examId: "EXAM124"
-			}
-		]
+		roomStatus: "Active",
+		candidates: []
 	},
 	{
 		roomId: "ROOM102",
+		roomName: "402",
 		supervisorId: "SUP124",
-		candidates: [
-			{
-				candidateId: "CAND003",
-				examId: "EXAM125"
-			},
-			{
-				candidateId: "CAND004",
-				examId: "EXAM126"
-			}
-		]
+		roomStatus: "Active",
+		candidates: []
 	}
 ];
 
@@ -64,66 +48,6 @@ const RoomOrganizePage = () => {
 		  }))
 		);
 	  }, []);
-	  
-
-	
-	const columns = [
-		{ field: "stt", headerName: "#", width: 15, align: "center", headerAlign: "center" },
-		{ 
-				field: "roomId", 
-				headerName: "Mã phòng thi", 
-				width: 300, flex: 0.05, 
-	// renderCell: (params) => (
-	//   <Link 
-	//   to={`/admin/exam/${encodeURIComponent(params.row.id)}`} 
-	//   style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
-	//   >
-	//   {params.row.examCode}
-	//   </Link>
-	// )
-		},
-		{ 
-				field: "roomName", 
-				headerName: "Phòng thi", 
-				width: 200, flex: 0.1,
-		},
-		{ 
-			field: "supervisorId", 
-			headerName: "Giám thị", 
-			width: 200, flex: 0.06,
-		},
-		{ 
-			field: "candidateList", 
-			headerName: "Danh sách thí sinh", 
-			width: 150, flex: 0.05,
-			renderCell: (params) => (
-				<Link 
-					to={`/admin/organize/${organizeId}/${sessionId}/${params.row.roomId}`} 
-					style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
-				>
-					Danh sách thí sinh
-				</Link>
-		
-			)
-		},
-		{
-			field: "actions",
-			headerName: "Thao tác", align: "center",headerAlign: "center",
-			width: 150,
-			sortable: false,
-			renderCell: (params) => (
-				<>
-					<IconButton color="primary" onClick={() => handleEdit(params.row)}>
-						<EditIcon />
-					</IconButton>
-					<IconButton color="error" onClick={() => handleDelete(params.row.roomId)}>
-						<DeleteIcon />
-					</IconButton>
-				</>
-			),
-		},
-	];
-	
 	
 	useEffect(() => {
 		if (showForm && inputRef.current) {
@@ -194,13 +118,41 @@ const RoomOrganizePage = () => {
 		});
 	};
 	
-	
+	const handleToggleStatus = (id, currentStatus) => {
+		Swal.fire({
+			title: "Bạn có chắc muốn thay đổi trạng thái?",
+			text: "Trạng thái sẽ được cập nhật ngay sau khi xác nhận!",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "Xác nhận",
+			cancelButtonText: "Hủy",
+		}).then((result) => {
+			if (result.isConfirmed) {
+				const newStatus = currentStatus === "Active" ? "Disabled" : "Active";
+
+				// Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
+				setRows((prevRows) =>
+					prevRows.map((row) =>
+						row.id === id ? { ...row, roomStatus: newStatus } : row
+					)
+				);
+				console.log("roomId được đổi status:", id)
+				Swal.fire({
+					title: "Cập nhật thành công!",
+					text: `Trạng thái đã chuyển sang "${newStatus}".`,
+					icon: "success",
+				});
+			}
+		});
+	};
 
 	return (
-		<div className="exam-management-page">
+		<div>
 			{/* Breadcrumb */}
 			<nav>
-				<Link to="/admin">Home</Link> / 
+				<Link to="/staff">Home</Link> / 
 				<span className="breadcrumb-current">Quản lý kỳ thi</span>
 			</nav>
 			<div className="account-actions mt-4">
@@ -212,55 +164,65 @@ const RoomOrganizePage = () => {
 				</button>
 			</div>
 
-			{/* Hiển thị bảng theo vai trò đã chọn */}
-			<div className="subject-table-container mt-3">
-				<Paper sx={{ width: "100%" }}>
-				<DataGrid
-						rows={rows}
-						columns={columns}
-						initialState={{
-						pagination: { paginationModel: { page: 0, pageSize: 5 } },
-						}}
-						pageSizeOptions={[5, 10]}
-						disableColumnResize 
-						disableExtendRowFullWidth
-						disableRowSelectionOnClick
-						getRowId={(row) => row.roomId} 
-						localeText={{
-								noRowsLabel: "Không có dữ liệu", 
-								}}
-						sx={{
-								"& .MuiDataGrid-cell": {
-										whiteSpace: "normal", 
-										wordWrap: "break-word", 
-										lineHeight: "1.2", 
-										padding: "8px", 
-								},
-								"& .MuiDataGrid-columnHeaders": {
-										borderBottom: "2px solid #ccc", 
-								},
-								"& .MuiDataGrid-cell": {
-										borderRight: "1px solid #ddd", 
-								},
-								"& .MuiDataGrid-row:last-child .MuiDataGrid-cell": {
-										borderBottom: "none", 
-								},
-								"& .MuiTablePagination-displayedRows": {
-										textAlign: "center",      
-										marginTop: "16px",
-										marginLeft: "0px"
-								},
-								"& .MuiTablePagination-selectLabel": {
-										marginTop: "13px",
-										marginLeft: "0px"
-								},
-								"& .MuiTablePagination-select": {
-										marginLeft: "0px",
-								} 
-						}}
-				/>
-				</Paper>
-			</div>
+			<div className="room-organize-table-container mt-3">
+				<div className="table-responsive">
+					<table className="table sample-table tbl-organize">
+						<thead style={{fontSize: "14px"}}>
+							<tr className="align-middle fw-medium">
+								<th scope="col" className="title-row text-center">STT</th> 
+								<th scope="col" className="title-row">Mã phòng</th>
+								<th scope="col" className="title-row">Phòng</th>
+								<th scope="col" className="title-row">Giám thị</th>
+								<th scope="col" className="title-row">Thí sinh</th>
+								<th scope="col" className="title-row text-center">Trạng thái</th>
+								<th scope="col" className="title-row">Thao tác</th>
+							</tr>
+						</thead>
+						<tbody style={{fontSize: "14px"}}>
+							{listQuestionBank.map((item, index) => (
+								<tr key={item.roomId} className="align-middle">
+									<td className="text-center">{index + 1}</td>
+									<td>{item.roomId}</td>
+									<td>{item.roomName}</td>
+									<td>{item.supervisorId}</td>
+									<td>
+										<Link className="text-hover-primary"
+											to={`/staff/organize/${organizeId}/${sessionId}/${item.roomId}`}
+											style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
+										>
+											Danh sách thí sinh
+										</Link>
+									</td>
+									<td>
+										<div className="form-check form-switch d-flex justify-content-center">
+											<input
+												className="form-check-input"
+												type="checkbox"
+												role="switch"
+												checked={item.roomStatus.toLowerCase() === "active"}
+												onChange={() =>
+													handleToggleStatus(item.roomId, item.roomStatus)
+												}
+											/>
+										</div>
+									</td>
+									<td>
+										<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}  onClick={() => handleEdit(item)}>
+											<i className="fas fa-edit text-white "></i>
+										</button>
+										<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}  onClick={() => handleDelete(item.roomId)}>
+											<i className="fas fa-trash-alt"></i>
+										</button>
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
+				<div className="d-flex justify-content-end">
+					<Pagination count={10}></Pagination>
+				</div>
+			</div>	
 
 			{/* Form thêm tài khoản */}
 			{showForm && (

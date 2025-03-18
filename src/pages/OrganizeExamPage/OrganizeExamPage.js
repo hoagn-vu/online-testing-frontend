@@ -283,6 +283,7 @@ const OrganizeExamPage = () => {
                   checked={selectedItems.length === listQuestionBank.length}
                 />
               </th>
+              <th scope="col" className="title-row text-center">STT</th> 
               <th scope="col" className="title-row">Kỳ thi</th>
               <th scope="col" className="title-row">Phân môn</th>
               <th scope="col" className="title-row">Loại</th>
@@ -306,9 +307,10 @@ const OrganizeExamPage = () => {
                     checked={selectedItems.includes(item.id)}
                   />
                 </td>
+                <td className="text-center">{index + 1}</td>
                 <td>
                   <Link className="text-hover-primary"
-                    to={`/admin/organize/${encodeURIComponent(item.id)}`} 
+                    to={`/staff/organize/${encodeURIComponent(item.id)}`} 
                     style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
                   >
                     {item.organizeExamName}
@@ -326,7 +328,7 @@ const OrganizeExamPage = () => {
                       className="form-check-input"
                       type="checkbox"
                       role="switch"
-                      checked={item.organizeExamStatus === "active"}
+                      checked={item.organizeExamStatus.toLowerCase() === "active"}
                       onChange={() =>
                         handleToggleStatus(item.id, item.organizeExamStatus)
                       }
@@ -335,7 +337,7 @@ const OrganizeExamPage = () => {
                 </td>
                 <td>
                   <Link
-                    to={`/admin/organize/report/${item.id}`}     
+                    to={`/staff/organize/report/${item.id}`}     
                     style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
                   >
                     Chi tiết

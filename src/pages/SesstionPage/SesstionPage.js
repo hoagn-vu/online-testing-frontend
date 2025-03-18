@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import "./SesstionPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import {Chip, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
+import {Pagination, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
@@ -16,28 +16,32 @@ import dayjs from "dayjs";
 const listQuestionBank = [
 	{
 		sessionId: "SESSION001",
+		sessionName: "SESSION001",
 		activeAt: "2025-04-10T08:00:00Z",
 		sessionStatus: "Active",
 		rooms: []
 	},
 	{
 		sessionId: "SESSION002",
+		sessionName: "SESSION001",
 		activeAt: "2025-04-10T13:00:00Z",
 		sessionStatus: "Disabled",
 		rooms: []
 	},
 	{
-        sessionId: "SESSION003",
-        activeAt: "2025-04-10T08:00:00Z",
-        sesstionStatus: "Active",
-        rooms: [ ]
-      },
-      {
-        sessionId: "SESSION004",
-        activeAt: "2025-04-10T13:00:00Z",
-        sesstionStatus: "Scheduled",
-        rooms: []
-      }
+		sessionId: "SESSION003",
+		sessionName: "SESSION001",
+		activeAt: "2025-04-10T08:00:00Z",
+		sessionStatus: "Active",
+		rooms: [ ]
+	},
+	{
+		sessionId: "SESSION004",
+		sessionName: "SESSION001",
+		activeAt: "2025-04-10T13:00:00Z",
+		sessionStatus: "Active",
+		rooms: []
+	}
 ];
 
 const SesstionPage = () => {
@@ -49,71 +53,6 @@ const SesstionPage = () => {
 	const { id: organizeId } = useParams();
 	
 	const columns = [
-		{ field: "stt", headerName: "#", width: 15, align: "center", headerAlign: "center" },
-		{ 
-			field: "sessionId", 
-			headerName: "Ca thi", 
-			width: 1090, flex: 0.1, 
-	// renderCell: (params) => (
-	//   <Link 
-	//   to={`/admin/exam/${encodeURIComponent(params.row.id)}`} 
-	//   style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
-	//   >
-	//   {params.row.examCode}
-	//   </Link>
-	// )
-		},
-		{ 
-			field: "activeAt", 
-			headerName: "activeAt", 
-			width: 160, flex: 0.05,
-		},
-		{ 
-			field: "roomList", 
-			headerName: "Phòng thi", 
-			width: 150, flex: 0.05,
-			renderCell: (params) => (
-				<Link 
-					to={`/admin/organize/${organizeId}/${params.row.sessionId}`} 
-					style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
-				>
-					Danh sách phòng thi
-				</Link>
-			)
-		},
-		{ 
-			field: "sessionStatus", 
-			headerName: "Trạng thái", 
-			width: 145,
-			renderCell: (params) => (
-				<Select
-				value={(params.row.sessionStatus || "Active").toLowerCase()}  
-				onChange={(e) => handleStatusChange(params.row.sessionId, e.target.value)}
-					size="small"
-					sx={{
-					minWidth: 120, 
-					fontSize: "15px", 
-					padding: "0px", 
-					}}
-				>
-					<MenuItem value="active">Active</MenuItem>
-					<MenuItem value="disabled">Disabled</MenuItem>
-				</Select>
-			),
-		},
-		{ 
-			field: "monitor", 
-			headerName: "Giám sát", 
-			width: 150, flex: 0.05,
-			renderCell: (params) => (
-				<Link 
-					to={`/admin/organize/monitor/${organizeId}/${params.row.sessionId}`} 
-					style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
-				>
-					Giám sát
-				</Link>
-			)
-		},
 		{
 			field: "actions",
 			headerName: "Thao tác", align: "center",headerAlign: "center",
@@ -217,11 +156,59 @@ const SesstionPage = () => {
 		});
 	};
 
+	const [selectedItems, setSelectedItems] = useState([]);
+	
+	const handleSelectItem = (e, id) => {
+		if (e.target.checked) {
+			setSelectedItems([...selectedItems, id]);
+		} else {
+			setSelectedItems(selectedItems.filter((item) => item !== id));
+		}
+	};
+
+	const handleSelectAll = (e) => {
+		if (e.target.checked) {
+			setSelectedItems(listQuestionBank.map((item) => item.id));
+		} else {
+			setSelectedItems([]);
+		}
+	};
+
+	const handleToggleStatus = (id, currentStatus) => {
+		Swal.fire({
+			title: "Bạn có chắc muốn thay đổi trạng thái?",
+			text: "Trạng thái sẽ được cập nhật ngay sau khi xác nhận!",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "Xác nhận",
+			cancelButtonText: "Hủy",
+		}).then((result) => {
+			if (result.isConfirmed) {
+				const newStatus = currentStatus === "Active" ? "Disabled" : "Active";
+
+				// Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
+				setRows((prevRows) =>
+					prevRows.map((row) =>
+						row.id === id ? { ...row, sessionStatus: newStatus } : row
+					)
+				);
+				console.log("sessionId được đổi status:", id)
+				Swal.fire({
+					title: "Cập nhật thành công!",
+					text: `Trạng thái đã chuyển sang "${newStatus}".`,
+					icon: "success",
+				});
+			}
+		});
+	};
+
 	return (
 		<div className="exam-management-page">
 			{/* Breadcrumb */}
 			<nav>
-				<Link to="/admin">Home</Link> / 
+				<Link to="/staff">Home</Link> / 
 				<span className="breadcrumb-current">Quản lý kỳ thi</span>
 			</nav>
 			<div className="account-actions mt-4">
@@ -233,55 +220,79 @@ const SesstionPage = () => {
 				</button>
 			</div>
 
-			{/* Hiển thị bảng theo vai trò đã chọn */}
-			<div className="subject-table-container mt-3">
-				<Paper sx={{ width: "100%" }}>
-				<DataGrid
-					rows={rows}
-					columns={columns}
-					initialState={{
-					pagination: { paginationModel: { page: 0, pageSize: 5 } },
-					}}
-					pageSizeOptions={[5, 10]}
-					disableColumnResize 
-					disableExtendRowFullWidth
-					disableRowSelectionOnClick
-					getRowId={(row) => row.sessionId} 
-					localeText={{
-						noRowsLabel: "Không có dữ liệu", 
-						}}
-					sx={{
-						"& .MuiDataGrid-cell": {
-							whiteSpace: "normal", 
-							wordWrap: "break-word", 
-							lineHeight: "1.2", 
-							padding: "8px", 
-						},
-						"& .MuiDataGrid-columnHeaders": {
-							borderBottom: "2px solid #ccc", 
-						},
-						"& .MuiDataGrid-cell": {
-							borderRight: "1px solid #ddd", 
-						},
-						"& .MuiDataGrid-row:last-child .MuiDataGrid-cell": {
-							borderBottom: "none", 
-						},
-						"& .MuiTablePagination-displayedRows": {
-							textAlign: "center",      
-							marginTop: "16px",
-							marginLeft: "0px"
-						},
-						"& .MuiTablePagination-selectLabel": {
-							marginTop: "13px",
-							marginLeft: "0px"
-						},
-						"& .MuiTablePagination-select": {
-							marginLeft: "0px",
-						} 
-					}}
-				/>
-				</Paper>
+			<div className="session-table-container mt-3">
+			<div className="table-responsive">
+				<table className="table sample-table tbl-organize">
+					<thead style={{fontSize: "14px"}}>
+						<tr className="align-middle fw-medium">
+							<th scope="col" className="text-center title-row">
+								<input
+									className="form-check-input"
+									type="checkbox"
+									onChange={handleSelectAll}
+									checked={selectedItems.length === listQuestionBank.length}
+								/>
+							</th>
+							<th scope="col" className="title-row text-center">STT</th> 
+							<th scope="col" className="title-row">Ca thi</th>
+							<th scope="col" className="title-row">Active At</th>
+							<th scope="col" className="title-row">Phòng thi</th>
+							<th scope="col" className="title-row text-center">Trạng thái</th>
+							<th scope="col" className="title-row">Thao tác</th>
+						</tr>
+					</thead>
+					<tbody style={{fontSize: "14px"}}>
+						{listQuestionBank.map((item, index) => (
+							<tr key={item.id} className="align-middle">
+								<td className=" text-center" style={{ width: "50px" }}>
+									<input
+										className="form-check-input"
+										type="checkbox"
+										onChange={(e) => handleSelectItem(e, item.id)}
+										checked={selectedItems.includes(item.id)}
+									/>
+								</td>
+								<td className="text-center">{index + 1}</td>
+								<td>{item.sessionName}</td>
+								<td>{item.activeAt}</td>
+								<td>
+									<Link className="text-hover-primary"
+										to={`/staff/organize/${organizeId}/${item.sessionId}`} 
+										style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
+									>
+										Danh sách phòng thi
+									</Link>
+								</td>
+								<td>
+									<div className="form-check form-switch d-flex justify-content-center">
+										<input
+											className="form-check-input"
+											type="checkbox"
+											role="switch"
+											checked={item.sessionStatus.toLowerCase() === "active"}
+											onChange={() =>
+												handleToggleStatus(item.sessionId, item.sessionStatus)
+											}
+										/>
+									</div>
+								</td>
+								<td>
+									<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}  onClick={() => handleEdit(item)}>
+										<i className="fas fa-edit text-white "></i>
+									</button>
+									<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}  onClick={() => handleDelete(item.sessionId)}>
+										<i className="fas fa-trash-alt"></i>
+									</button>
+								</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
 			</div>
+			<div className="d-flex justify-content-end">
+				<Pagination count={10}></Pagination>
+			</div>
+			</div>	
 
 			{/* Form thêm tài khoản */}
 			{showForm && (
