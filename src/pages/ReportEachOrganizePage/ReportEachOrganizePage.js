@@ -58,7 +58,7 @@ const ReportEachOrganizePage = () => {
 
       <div className="mb-3 d-flex ms-auto justify-content-end">
         {/* <Print onClick={handlePrint}></Print> */}
-        <button className="btn btn-primary" onClick={handlePrint}>In báo cáo</button>
+        <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={handlePrint}>In báo cáo</button>
       </div>
 
       <div className="border container" id="printable-report-table" 
