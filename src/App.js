@@ -41,6 +41,8 @@ import Admin2Layout from "./layouts/Admin2Layout/Admin2Layout";
 
 import NotFound from "./pages/NotFound/NotFound";
 
+import { selectIsAuthenticated, selectCurrentRole } from "./services/authSelectors";
+
 function App() {
   const accessToken = useSelector((state) => state.auth.accessToken) || localStorage.getItem("accessToken");
   const dispatch = useDispatch();
@@ -49,47 +51,67 @@ function App() {
     skip: !accessToken,
   });
 
+  const role = useSelector(selectCurrentRole);
+
   useEffect(() => {
     if (isSuccess) {
       dispatch(setUser(data));
-    }  
+    }
   }, [isSuccess, data, dispatch]);
 
-  const ProtectedRoute = ({ children }) => {
-    if (!accessToken) return <Navigate to="/" />;
-    if (!isSuccess || isLoading) return <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
-      <div className="spinner-border text-primary" role="status">
-        <span className="visually-hidden">Loading...</span>
-      </div>
-    </div>
+
+  // const ProtectedRoute = ({ children }) => {
+  //   if (!accessToken) return <Navigate to="/" />;
+  //   if (!isSuccess || isLoading) return <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
+  //     <div className="spinner-border text-primary" role="status">
+  //       <span className="visually-hidden">Loading...</span>
+  //     </div>
+  //   </div>
+  
+  //   return children;
+  // };
+
+  // const AdminRoute = ({ children }) => {
+  //   if (!isSuccess || isLoading) return <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
+  //     <div className="spinner-border text-primary" role="status">
+  //       <span className="visually-hidden">Loading...</span>
+  //     </div>
+  //   </div>
+
+  //   if (accessToken && role === "admin") {
+  //     return children;
+  //   } else {
+  //     return <Navigate to="/not-found" />;
+  //   }
+  // };
+
+  // const CandidateRoute = ({ children }) => {
+  //   if (!isSuccess || isLoading) return <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
+  //     <div className="spinner-border text-primary" role="status">
+  //       <span className="visually-hidden">Loading...</span>
+  //     </div>
+  //   </div>
+    
+  //   if (accessToken && role === "candidate") {
+  //     return children;
+  //   } else {
+  //     return <Navigate to="/not-found" />;
+  //   }
+  // };
+
+  const ProtectedRoute = ({ allowedRoles, children }) => {
+    const isAuthenticated = useSelector(selectIsAuthenticated);
+    const userRole = useSelector(selectCurrentRole);
+  
+    if (!isAuthenticated) {
+      return <Navigate to="/" replace />;
+    }
+  
+    if (!allowedRoles.includes(userRole)) {
+      return <Navigate to="/not-found" replace />;
+    }
   
     return children;
-  };
-
-  const AdminRoute = ({ children }) => {
-    if (!isSuccess || isLoading) return <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
-      <div className="spinner-border text-primary" role="status">
-        <span className="visually-hidden">Loading...</span>
-      </div>
-    </div>
-
-    if (accessToken && data?.role === "admin") {
-      return children;
-    }
-    return <Navigate to="/not-found" />;
-  };
-
-  const CandidateRoute = ({ children }) => {
-    if (!isSuccess || isLoading) return <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
-      <div className="spinner-border text-primary" role="status">
-        <span className="visually-hidden">Loading...</span>
-      </div>
-    </div>
-    
-    if (accessToken && data?.role !== "candidate") {
-      return children;
-    }
-    return <Navigate to="/not-found" />;
   };
 
   return (
@@ -103,10 +125,8 @@ function App() {
         <Route 
           path="/staff" 
           element={
-            <ProtectedRoute>
-              <AdminRoute>
+              <ProtectedRoute allowedRoles={["admin"]}>
                 <Admin2Layout />
-              </AdminRoute>
             </ProtectedRoute>
           }
         >
@@ -135,10 +155,8 @@ function App() {
         <Route 
           path="/candidate" 
           element={
-            <ProtectedRoute>
-              <CandidateRoute>
-                <DefaultLayout />
-              </CandidateRoute>
+            <ProtectedRoute allowedRoles={["candidate"]}>
+              <DefaultLayout />
             </ProtectedRoute>
           }
         >

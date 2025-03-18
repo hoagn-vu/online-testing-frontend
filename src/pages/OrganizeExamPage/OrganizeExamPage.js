@@ -85,7 +85,7 @@ const OrganizeExamPage = () => {
       width: 1090, flex: 0.1, 
       renderCell: (params) => (
         <Link 
-          to={`/admin/organize/${encodeURIComponent(params.row.id)}`} 
+          to={`/staff/organize/${encodeURIComponent(params.row.id)}`} 
           style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
         >
           {params.row.organizeExamName}
@@ -95,7 +95,7 @@ const OrganizeExamPage = () => {
         //     color: "blue", 
         //     cursor: "pointer" 
         //   }}
-        //   onClick={() => navigate(`/admin/organize/${params.row.id}`)}
+        //   onClick={() => navigate(`/staff/organize/${params.row.id}`)}
         // >
         //   {params.row.organizeExamName}
         // </span>
@@ -196,14 +196,14 @@ const OrganizeExamPage = () => {
       width: 75,
       // renderCell: (params) => (
       //   <Link 
-      //     to={`/admin/organize/${encodeURIComponent(params.row.id)}`} 
+      //     to={`/staff/organize/${encodeURIComponent(params.row.id)}`} 
       //     style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
       //   >
       //     {params.row.organizeExamName}
       //   </Link>
       // )
       renderCell: (params) => (
-        <Link to={`/admin/organize/report/${organizeId}`}     
+        <Link to={`/staff/organize/report/${organizeId}`}     
             style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
         >
           Chi tiết
@@ -346,9 +346,8 @@ const OrganizeExamPage = () => {
 
   return (
     <div className="exam-management-page">
-      {/* Breadcrumb */}
       <nav>
-        <Link to="/admin">Home</Link> / 
+        <Link to="/staff">Home</Link> / 
         <span className="breadcrumb-current">Quản lý kỳ thi</span>
       </nav>
       <div className="account-actions mt-4">
@@ -399,7 +398,7 @@ const OrganizeExamPage = () => {
                 </td>
                 <td>
                   <Link className="text-hover-primary"
-                    to={`/admin/organize/${encodeURIComponent(item.id)}`} 
+                    to={`/staff/organize/${encodeURIComponent(item.id)}`} 
                     style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
                   >
                     {item.organizeExamName}
@@ -414,7 +413,7 @@ const OrganizeExamPage = () => {
                 <td>{item.organizeExamStatus}</td>
                 <td>
                   <Link
-                    to={`/admin/organize/report/${item.id}`}     
+                    to={`/staff/organize/report/${item.id}`}     
                     style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
                   >
                     Chi tiết

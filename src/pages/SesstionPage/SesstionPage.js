@@ -56,7 +56,7 @@ const SesstionPage = () => {
 			width: 1090, flex: 0.1, 
 	// renderCell: (params) => (
 	//   <Link 
-	//   to={`/admin/exam/${encodeURIComponent(params.row.id)}`} 
+	//   to={`/staff/exam/${encodeURIComponent(params.row.id)}`} 
 	//   style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
 	//   >
 	//   {params.row.examCode}
@@ -74,7 +74,7 @@ const SesstionPage = () => {
 			width: 150, flex: 0.05,
 			renderCell: (params) => (
 				<Link 
-					to={`/admin/organize/${organizeId}/${params.row.sessionId}`} 
+					to={`/staff/organize/${organizeId}/${params.row.sessionId}`} 
 					style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
 				>
 					Danh sách phòng thi
@@ -107,7 +107,7 @@ const SesstionPage = () => {
 			width: 150, flex: 0.05,
 			renderCell: (params) => (
 				<Link 
-					to={`/admin/organize/monitor/${organizeId}/${params.row.sessionId}`} 
+					to={`/staff/organize/monitor/${organizeId}/${params.row.sessionId}`} 
 					style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
 				>
 					Giám sát
@@ -221,7 +221,7 @@ const SesstionPage = () => {
 		<div className="exam-management-page">
 			{/* Breadcrumb */}
 			<nav>
-				<Link to="/admin">Home</Link> / 
+				<Link to="/staff">Home</Link> / 
 				<span className="breadcrumb-current">Quản lý kỳ thi</span>
 			</nav>
 			<div className="account-actions mt-4">

@@ -6,7 +6,7 @@
   "extends": ["plugin:react/recommended", "prettier"],
   "parserOptions": {
     "ecmaFeatures": {
-      "jsx": false
+      "jsx": true
     },
     "ecmaVersion": 12,
     "sourceType": "module"
@@ -28,6 +28,6 @@
     "import/resolver": { "node": { "moduleDirectory": ["node_modules", "src/"] } }
   },
   "globals": {
-    "JSX": false
+    "JSX": true
   }
 }

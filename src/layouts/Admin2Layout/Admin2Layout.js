@@ -25,17 +25,20 @@ import avatar from "../../assets/images/avar.jpg";
 import './Admin2Layout.css'
 import Tooltip from '@mui/material/Tooltip';
 
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../../redux/authSlice";
+
 const drawerWidth = 250;
 
 const menuItems = [
-  { title: "Trang chủ", icon: <InboxIcon className='icon-color'/>, path: "/admin/dashboard", role: ["user", "admin"] },
-  { title: "Quản lý tài khoản", icon: <MailIcon className='icon-color'/>, path: "/admin/accountmanage", role: ["user"] },
-  { title: "Quản lý kỳ thi", icon: <InboxIcon className='icon-color'/>, path: "/admin/organize", role: ["user", "admin"] },
-  { title: "Ngân hàng câu hỏi", icon: <MailIcon className='icon-color'/>, path: "/admin/question", role: ["user"] },
-  { title: "Quản lý ma trận đề", icon: <InboxIcon className='icon-color'/>, path: "/admin/matrix-exam", role: ["user", "admin"] },
-  { title: "Quản lý đề thi", icon: <MailIcon className='icon-color'/>, path: "/admin/exam", role: ["user"] },
-  { title: "Quản lý phòng thi", icon: <InboxIcon className='icon-color'/>, path: "/admin/room", role: ["user", "admin"] },
-  { title: "Nhật ký sử dụng", icon: <MailIcon className='icon-color'/>, path: "/admin/log", role: ["user"] },
+  { title: "Trang chủ", icon: <InboxIcon className='icon-color'/>, path: "/staff/dashboard", role: ["user", "admin"] },
+  { title: "Quản lý tài khoản", icon: <MailIcon className='icon-color'/>, path: "/staff/accountmanage", role: ["user"] },
+  { title: "Quản lý kỳ thi", icon: <InboxIcon className='icon-color'/>, path: "/staff/organize", role: ["user", "admin"] },
+  { title: "Ngân hàng câu hỏi", icon: <MailIcon className='icon-color'/>, path: "/staff/question", role: ["user"] },
+  { title: "Quản lý ma trận đề", icon: <InboxIcon className='icon-color'/>, path: "/staff/matrix-exam", role: ["user", "admin"] },
+  { title: "Quản lý đề thi", icon: <MailIcon className='icon-color'/>, path: "/staff/exam", role: ["user"] },
+  { title: "Quản lý phòng thi", icon: <InboxIcon className='icon-color'/>, path: "/staff/room", role: ["user", "admin"] },
+  { title: "Nhật ký sử dụng", icon: <MailIcon className='icon-color'/>, path: "/staff/log", role: ["user"] },
 ];
 
 const openedMixin = (theme) => ({
@@ -127,6 +130,17 @@ export default function Admin2Layout() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const dispatch = useDispatch();
+  
+  const user = useSelector((state) => state.auth.user);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    navigate("/");
+  };
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -136,19 +150,18 @@ export default function Admin2Layout() {
             <IconButton color="inherit" onClick={handleDrawerOpen} edge="start" sx={{ marginRight: 5, ...(open && { display: 'none' }) }}>
               <MenuIcon />
             </IconButton>
-
           </div>
 
           <div className="user-info position-relative d-flex align-items-center">
             <img src={avatar} alt="Avatar" className="avatar" />
-            <span className="username text-white">Phương Linh</span>
+            <span className="username text-white">{user?.username}</span>
             <button className="dropdown-btn text-white" onClick={() => setIsOpen(!isOpen)}>
               <FaChevronDown />
             </button>
             {isOpen && (
               <ul className="dropdown-menu show position-absolute end-0 mt-2">
                 <li>
-                  <a className="dropdown-item" href="#">
+                  <a className="dropdown-item" href="#" onClick={handleLogout}>
                     Đăng xuất
                   </a>
                 </li>

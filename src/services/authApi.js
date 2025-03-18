@@ -6,7 +6,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 const baseQuery = fetchBaseQuery({
   baseUrl: BASE_URL + '/auth',
   prepareHeaders: (headers, { getState }) => {
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem('accessToken') || getState().auth.accessToken;
     // console.log("sending token: ", token);
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
