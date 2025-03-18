@@ -6,26 +6,25 @@ import Print from "@mui/icons-material/Print";
 
 const ScoreTableSessionPage = () => {
   const listCandidate = [
-    { candidateId: "CAND001", fullName: "Hoàng Nguyên Vũ", firstName: "Vũ", score: 9.0, signature: "", note: "" },
-    { candidateId: "CAND002", fullName: "Ngô Đức Thuận", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", fullName: "Ngô Đức Thuận", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", fullName: "Ngô Đức Thuận", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", fullName: "Ngô Đức Thuận", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", fullName: "Ngô Đức Thuận", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", fullName: "Ngô Đức Thuận", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", fullName: "Ngô Đức Thuận", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", fullName: "Ngô Đức Thuận", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", fullName: "Ngô Đức Thuận", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", fullName: "Ngô Đức Thuận", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", fullName: "Ngô Đức Thuận", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", fullName: "Ngô Đức Thuận", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", fullName: "Ngô Đức Thuận", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", fullName: "Ngô Đức Thuận", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", fullName: "Ngô Đức Thuận", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", fullName: "Ngô Đức Thuận", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", fullName: "Ngô Đức Thuận", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", fullName: "Ngô Đức Thuận", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", fullName: "Ngô Đức Thuận", firstName: "Thuận", score: 8.5, signature: "", note: "" },
+    { candidateId: "CAND001", userCode: "BIT220172", fullName: "Hoàng Nguyên Vũ", firstName: "Vũ", score: 9.0, signature: "", note: "" },
+    { candidateId: "CAND002", userCode: "BIT220089", fullName: "Ngô Đức Thuận", firstName: "Thuận", score: 8.5, signature: "", note: "" },
+    { candidateId: "CAND002", userCode: "BIT220025", fullName: "Phan Thị Phương", firstName: "Linh", score: 8.5, signature: "", note: "" },
+    { candidateId: "CAND002", userCode: "BIT220005", fullName: "Hoàng", firstName: "Mai", score: 8.5, signature: "", note: "" },
+    { candidateId: "CAND002", userCode: "BIT220002", fullName: "Ngô Đức Minh", firstName: "Thuận", score: 8.5, signature: "", note: "" },
+    { candidateId: "CAND002", userCode: "BIT220001", fullName: "Nguyễn Mai", firstName: "Anh", score: 8.5, signature: "", note: "" },
+    { candidateId: "CAND002", userCode: "BIT220080", fullName: "Mai Đức", firstName: "Thuận", score: 8.5, signature: "", note: "" },
+    { candidateId: "CAND002", userCode: "BIT220081", fullName: "Ngô Đức", firstName: "Thuận", score: 8.5, signature: "", note: "" },
+    { candidateId: "CAND002", userCode: "BIT220085", fullName: "Phùng Đức", firstName: "Thuận", score: 8.5, signature: "", note: "" },
+    { candidateId: "CAND002", userCode: "BIT220096", fullName: "Ngô Đức", firstName: "Thuận", score: 8.5, signature: "", note: "" },
+    { candidateId: "CAND002", userCode: "BIT220115", fullName: "Nguyễn Đức", firstName: "Thuận", score: 8.5, signature: "", note: "" },
+    { candidateId: "CAND002", userCode: "BIT220125", fullName: "Phạm Đức", firstName: "Vũ", score: 8.5, signature: "", note: "" },
+    { candidateId: "CAND002", userCode: "BIT220147", fullName: "Ngô Đức", firstName: "Thuận", score: 8.5, signature: "", note: "" },
+    { candidateId: "CAND002", userCode: "BIT220135", fullName: "Hoàng Đức", firstName: "Thuận", score: 8.5, signature: "", note: "" },
+    { candidateId: "CAND002", userCode: "BIT220144", fullName: "Ngô Đức", firstName: "Thuận", score: 8.5, signature: "", note: "" },
+    { candidateId: "CAND002", userCode: "BIT220202", fullName: "Lê Đức", firstName: "Hoàng", score: 8.5, signature: "", note: "" },
+    { candidateId: "CAND002", userCode: "BIT220222", fullName: "Ngô Đức", firstName: "Thuận", score: 8.5, signature: "", note: "" },
+    { candidateId: "CAND002", userCode: "BIT220258", fullName: "Lê Đức", firstName: "Minh", score: 8.5, signature: "", note: "" },
+    
   ];
 
   // Hàm chỉ in nội dung bảng điểm
@@ -66,8 +65,11 @@ const ScoreTableSessionPage = () => {
           </div>
         </div>
 
+        <div className="d-flex justify-content-end mb-3">
+          <span>Ngày</span><span className="ms-4 me-4">tháng</span><span>năm</span>
+        </div>
         {/* Thông tin kỳ thi */}
-        <div className="text-center mb-4">
+        <div className="text-center mb-3">
           <h5 className="fw-bold">KẾT QUẢ THI</h5>
         </div>
         <div >
@@ -80,21 +82,23 @@ const ScoreTableSessionPage = () => {
         <table className="table table-bordered table-custom-score">
           <thead className="table-dark">
             <tr>
-              <th>STT</th>
+              <th className="text-center">STT</th>
+              <th>MSSV</th>
               <th>Họ và tên đệm</th>
               <th>Tên</th>
-              <th>Điểm số</th>
-              <th>Chữ ký</th>
-              <th>Ghi chú</th>
+              <th className="text-center">Điểm số</th>
+              <th className="text-center">Chữ ký</th>
+              <th className="text-center">Ghi chú</th>
             </tr>
           </thead>
           <tbody>
             {listCandidate.map((student, index) => (
               <tr key={student.candidateId}>
-                <td>{index + 1}</td>
+                <td className="text-center">{index + 1}</td>
+                <td>{student.userCode}</td>
                 <td>{student.fullName}</td>
                 <td>{student.firstName}</td>
-                <td>{student.score}</td>
+                <td className="text-center">{student.score}</td>
                 <td>{student.signature}</td>
                 <td>{student.note}</td>
               </tr>

@@ -66,22 +66,10 @@ const ReportEachOrganizePage = () => {
 
         {/* Thông tin chung */}
         <h6>1. Thông tin chung</h6>
-        <div className="mb-3" style={{fontSize: "14px"}}>
-            <table className="table table-bordered custom-table-general">
-                <tbody>
-                    <tr>
-                    <td><strong>Học kỳ:</strong> Xuân Năm học 2024-2025</td>
-                    <td style={{minWidth: "180px"}}><strong>Ngành:</strong> CNTT&TT</td>
-                    </tr>
-                    <tr>
-                    <td><strong>Tên học phần:</strong> Lập trình Game</td>
-                    <td><strong>Tổng số lớp:</strong> 10</td>
-                    </tr>
-                    <tr>
-                    <td colSpan="2"><strong>Kỳ thi:</strong> Kết thúc học phần</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div className="mb-1 ms-3" style={{fontSize: "14px"}}>
+          <p className="mb-0"><strong>- Kỳ thi: </strong>Cuối kỳ</p>
+          <p className="mb-0"><strong>- Môn học: </strong>Yêu cầu phần mềm</p>
+          <p className="mb-0"><strong>- Tổng số lớp: </strong>8</p>
         </div>
 
         {/* Bảng tần số */}
@@ -96,16 +84,16 @@ const ReportEachOrganizePage = () => {
                 </tr>
             </thead>
             <tbody>
-                <tr><td>0 đến &lt;1</td><td> 10 </td><td> 12% </td></tr>
-                <tr><td>1 đến &lt;2</td><td> 10 </td><td> 12% </td></tr>
-                <tr><td>2 đến &lt;3</td><td> 10 </td><td> 12% </td></tr>
-                <tr><td>3 đến &lt;4</td><td> 10 </td><td> 12% </td></tr>
-                <tr><td>4 đến &lt;5</td><td> 10 </td><td> 12% </td></tr>
-                <tr><td>5 đến &lt;6</td><td> 10 </td><td> 12% </td></tr>
-                <tr><td>6 đến &lt;7</td><td> 10 </td><td> 12% </td></tr>
-                <tr><td>7 đến &lt;8</td><td> 10 </td><td> 12% </td></tr>
-                <tr><td>8 đến &lt;9</td><td> 10 </td><td> 12% </td></tr>
-                <tr><td>9 đến &lt;10</td><td> 10 </td><td> 12% </td></tr>
+                <tr><td>0 đến &lt;1</td><td> </td><td>  </td></tr>
+                <tr><td>1 đến &lt;2</td><td>  </td><td>  </td></tr>
+                <tr><td>2 đến &lt;3</td><td>  </td><td>  </td></tr>
+                <tr><td>3 đến &lt;4</td><td>  </td><td>  </td></tr>
+                <tr><td>4 đến &lt;5</td><td>  </td><td>  </td></tr>
+                <tr><td>5 đến &lt;6</td><td>  </td><td>  </td></tr>
+                <tr><td>6 đến &lt;7</td><td>  </td><td>  </td></tr>
+                <tr><td>7 đến &lt;8</td><td>  </td><td>  </td></tr>
+                <tr><td>8 đến &lt;9</td><td>  </td><td>  </td></tr>
+                <tr><td>9 đến &lt;10</td><td>  </td><td> </td></tr>
             </tbody>
         </table>
 
@@ -133,17 +121,17 @@ const ReportEachOrganizePage = () => {
             <thead>
             <tr>
                 <th>Tiêu chí</th>
-                <th>Giá trị</th>
-                <th>Phần trăm</th>
+                <th className="text-center">Giá trị</th>
+                <th className="text-center">Phần trăm</th>
             </tr>
             </thead>
             <tbody>
-              <tr><td>Tổng số sinh viên dự thi</td><td>--</td><td>--</td></tr>
-              <tr><td>Điểm trung bình</td><td>--</td><td>--</td></tr>
-              <tr><td>Điểm cao nhất</td><td>--</td><td>--</td></tr>
-              <tr><td>Điểm thấp nhất</td><td>--</td><td>--</td></tr>
-              <tr><td>Điểm số nhiều thí sinh đạt nhất</td><td>--</td><td>--</td></tr>
-              <tr><td>Số sinh viên đạt &lt;5</td><td>--</td><td>--</td></tr>
+              <tr><td>Tổng số sinh viên dự thi</td><td> </td><td> </td></tr>
+              <tr><td>Điểm trung bình</td><td>  </td><td> </td></tr>
+              <tr><td>Điểm cao nhất</td><td> </td><td> </td></tr>
+              <tr><td>Điểm thấp nhất</td><td> </td><td> </td></tr>
+              <tr><td>Điểm số nhiều thí sinh đạt nhất</td><td> </td><td> </td></tr>
+              <tr><td>Số sinh viên đạt &lt;5</td><td> </td><td> </td></tr>
             </tbody>
         </table>
       </div>
