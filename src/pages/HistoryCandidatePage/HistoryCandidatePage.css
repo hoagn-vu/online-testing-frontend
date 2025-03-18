@@ -8,7 +8,7 @@
     border-radius: 10px;
 }
 
-.table th {
+.tbl-history .table th {
     text-align: center;
     background-color: #bad2ec;
     font-weight: bold;

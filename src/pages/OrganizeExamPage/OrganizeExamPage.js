@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams  } from "react-router-dom";
 import "./OrganizeExamPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import {Chip, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
+import {Pagination, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
@@ -326,6 +326,24 @@ const OrganizeExamPage = () => {
     });
   };
 
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const handleSelectItem = (e, id) => {
+    if (e.target.checked) {
+      setSelectedItems([...selectedItems, id]);
+    } else {
+      setSelectedItems(selectedItems.filter((item) => item !== id));
+    }
+  };
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedItems(listQuestionBank.map((item) => item.id));
+    } else {
+      setSelectedItems([]);
+    }
+  };
+
   return (
     <div className="exam-management-page">
       {/* Breadcrumb */}
@@ -344,51 +362,80 @@ const OrganizeExamPage = () => {
 
       {/* Hiển thị bảng theo vai trò đã chọn */}
       <div className="subject-table-container mt-3">
-        <Paper sx={{ width: "100%" }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          initialState={{
-          pagination: { paginationModel: { page: 0, pageSize: 5 } },
-          }}
-          pageSizeOptions={[5, 10]}
-          disableColumnResize 
-          disableExtendRowFullWidth
-          disableRowSelectionOnClick
-          localeText={{
-            noRowsLabel: "Không có dữ liệu", 
-            }}
-          sx={{
-            "& .MuiDataGrid-cell": {
-              whiteSpace: "normal", 
-              wordWrap: "break-word", 
-              lineHeight: "1.2", 
-              padding: "8px", 
-            },
-            "& .MuiDataGrid-columnHeaders": {
-              borderBottom: "2px solid #ccc", 
-            },
-            "& .MuiDataGrid-cell": {
-              borderRight: "1px solid #ddd", 
-            },
-            "& .MuiDataGrid-row:last-child .MuiDataGrid-cell": {
-              borderBottom: "none", 
-            },
-            "& .MuiTablePagination-displayedRows": {
-              textAlign: "center",      
-              marginTop: "16px",
-              marginLeft: "0px"
-            },
-            "& .MuiTablePagination-selectLabel": {
-              marginTop: "13px",
-              marginLeft: "0px"
-            },
-            "& .MuiTablePagination-select": {
-              marginLeft: "0px",
-            } 
-          }}
-        />
-        </Paper>
+      <div className="table-responsive">
+        <table className="table sample-table table-hover">
+          <thead>
+            <tr className="align-middle fw-medium">
+              <th scope="col" className="text-center title-row">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  onChange={handleSelectAll}
+                  checked={selectedItems.length === listQuestionBank.length}
+                />
+              </th>
+              <th scope="col" className="title-row">Kỳ thi</th>
+              <th scope="col" className="title-row">Phân môn</th>
+              <th scope="col" className="title-row">Loại</th>
+              <th scope="col" className="title-row">Đề thi</th>
+              <th scope="col" className="title-row">Ma trận</th>
+              <th scope="col" className="title-row">Thời gian</th>
+              <th scope="col" className="title-row">Điểm</th>
+              <th scope="col" className="title-row">Trạng thái</th>
+              <th scope="col" className="title-row">Báo cáo</th>
+              <th scope="col" className="title-row">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            {listQuestionBank.map((item, index) => (
+              <tr key={item.id} className="align-middle">
+                <td className=" text-center" style={{ width: "50px" }}>
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    onChange={(e) => handleSelectItem(e, item.id)}
+                    checked={selectedItems.includes(item.id)}
+                  />
+                </td>
+                <td>
+                  <Link className="text-hover-primary"
+                    to={`/admin/organize/${encodeURIComponent(item.id)}`} 
+                    style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
+                  >
+                    {item.organizeExamName}
+                  </Link>
+                </td>
+                <td>{item.subjectId}</td>
+                <td>{item.examType}</td>
+                <td>{item.examSet}</td>
+                <td>{item.matrixId}</td>
+                <td>{item.duration}</td>
+                <td>{item.maxScore}</td>
+                <td>{item.organizeExamStatus}</td>
+                <td>
+                  <Link
+                    to={`/admin/organize/report/${item.id}`}     
+                    style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
+                  >
+                    Chi tiết
+                  </Link>
+                </td>
+                <td>
+                  <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
+                    <i className="fas fa-edit text-white "></i>
+                  </button>
+                  <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
+                    <i className="fas fa-trash-alt"></i>
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="d-flex justify-content-end">
+        <Pagination count={10}></Pagination>
+      </div>
       </div>
 
       {/* Form thêm tài khoản */}
