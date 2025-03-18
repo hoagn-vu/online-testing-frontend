@@ -156,24 +156,6 @@ const SesstionPage = () => {
 		});
 	};
 
-	const [selectedItems, setSelectedItems] = useState([]);
-	
-	const handleSelectItem = (e, id) => {
-		if (e.target.checked) {
-			setSelectedItems([...selectedItems, id]);
-		} else {
-			setSelectedItems(selectedItems.filter((item) => item !== id));
-		}
-	};
-
-	const handleSelectAll = (e) => {
-		if (e.target.checked) {
-			setSelectedItems(listQuestionBank.map((item) => item.id));
-		} else {
-			setSelectedItems([]);
-		}
-	};
-
 	const handleToggleStatus = (id, currentStatus) => {
 		Swal.fire({
 			title: "Bạn có chắc muốn thay đổi trạng thái?",
@@ -225,14 +207,6 @@ const SesstionPage = () => {
 				<table className="table sample-table tbl-organize">
 					<thead style={{fontSize: "14px"}}>
 						<tr className="align-middle fw-medium">
-							<th scope="col" className="text-center title-row">
-								<input
-									className="form-check-input"
-									type="checkbox"
-									onChange={handleSelectAll}
-									checked={selectedItems.length === listQuestionBank.length}
-								/>
-							</th>
 							<th scope="col" className="title-row text-center">STT</th> 
 							<th scope="col" className="title-row">Ca thi</th>
 							<th scope="col" className="title-row">Active At</th>
@@ -244,14 +218,6 @@ const SesstionPage = () => {
 					<tbody style={{fontSize: "14px"}}>
 						{listQuestionBank.map((item, index) => (
 							<tr key={item.id} className="align-middle">
-								<td className=" text-center" style={{ width: "50px" }}>
-									<input
-										className="form-check-input"
-										type="checkbox"
-										onChange={(e) => handleSelectItem(e, item.id)}
-										checked={selectedItems.includes(item.id)}
-									/>
-								</td>
 								<td className="text-center">{index + 1}</td>
 								<td>{item.sessionName}</td>
 								<td>{item.activeAt}</td>
