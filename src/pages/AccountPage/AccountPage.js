@@ -354,22 +354,22 @@ const AccountPage = () => {
           <SearchBox></SearchBox>
         </div>
         <div className="role-selector">
-          <button className="add-btn" onClick={handleAddNew}>
+          <button className="add-btn btn-size align-items-center d-flex" onClick={handleAddNew}>
             Thêm mới
           </button>
           <button
-            className="change-password-btn"
+            className="change-password-btn btn-size align-items-center d-flex"
             onClick={() => setShowPasswordForm(true)}
           >
             Đổi mật khẩu
           </button>
-          <button className="upload-btn" onClick={handleUploadClick}>
+          <button className="upload-btn btn-size align-items-center d-flex" onClick={handleUploadClick}>
             Upload File
           </button>
-          <button className="btn btn-primary" onClick={() => setShowGroupForm(true)}>
+          <button className="btn btn-primary btn-size align-items-center d-flex" onClick={() => setShowGroupForm(true)}>
             Thêm nhóm
           </button>
-          <button className="btn btn-primary" >
+          <button className="btn btn-primary btn-size align-items-center d-flex" >
             Xóa nhóm
           </button>
         </div>

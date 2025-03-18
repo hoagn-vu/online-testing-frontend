@@ -125,13 +125,13 @@ const QuestionBankNamePage = () => {
     };
 
     const [formData, setFormData] = useState({
-        question_bank_name: "",
+        questionBankName: "",
     });
 
     const handleAddNew = () => {
         setEditingAccount(null); // Đảm bảo không ở chế độ chỉnh sửa
         setFormData({
-        question_bank_name: "",
+            questionBankName: "",
         });
         setTimeout(() => setShowForm(true), 0); // Đợi React cập nhật state rồi mới hiển thị form
     };
@@ -144,7 +144,7 @@ const QuestionBankNamePage = () => {
 
     const handleEdit = (account) => {
         setFormData({
-        question_bank_name: account.question_bank_name,
+            questionBankName: account.questionBankName,
         });
         setEditingAccount(account);
         setShowForm(true);
@@ -268,9 +268,9 @@ const QuestionBankNamePage = () => {
                         fullWidth
                         label="Tên ngân hàng câu hỏi"
                         required
-                        value={formData.question_bank_name}
+                        value={formData.questionBankName}
                         onChange={(e) =>
-                            setFormData({ ...formData, question_bank_name: e.target.value })
+                            setFormData({ ...formData, questionBankName: e.target.value })
                         }
                         inputRef={inputRef}
                         sx={{

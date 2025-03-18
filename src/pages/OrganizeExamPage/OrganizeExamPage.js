@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams  } from "react-router-dom";
 import "./OrganizeExamPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import {Chip, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
+import {Pagination, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
@@ -12,76 +12,47 @@ import ApiService from "../../services/apiService";
 import CreatableSelect from "react-select/creatable";
 import ReactSelect  from 'react-select';
 
-const listQuestionBank = [{
-  id: "65f1a3b4c8e4a2d5b6f7e8d9",
-  organizeExamName: "Kỳ thi giữa kỳ Toán lớp 12",
-  organizeExamStatus: "Scheduled",
-  duration: 90,
-  examType: "Ngẫu nhiên",
-  matrixId: "MATRIX123",
-  maxScore: 100,
-  subjectId: "MATH12",
-  totalQuestion: 50,
-  examSet: ["Ma12", "Ma13"],
-  sesstion: [
-    {
-      sesstionId: "SESSION001",
-      activeAt: "2025-04-10T08:00:00Z",
-      sesstionStatus: "Active",
-      rooms: [
-        {
-          roomId: "ROOM101",
-          supervisorId: "SUP123",
-          candidates: [
-            {
-              candidateId: "CAND001",
-              examId: "EXAM123"
-            },
-            {
-              candidateId: "CAND002",
-              examId: "EXAM124"
-            }
-          ]
-        },
-        {
-          roomId: "ROOM102",
-          supervisorId: "SUP124",
-          candidates: [
-            {
-              candidateId: "CAND003",
-              examId: "EXAM125"
-            },
-            {
-              candidateId: "CAND004",
-              examId: "EXAM126"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      sesstionId: "SESSION002",
-      activeAt: "2025-04-10T13:00:00Z",
-      sesstionStatus: "Scheduled",
-      rooms: [
-        {
-          roomId: "ROOM201",
-          supervisorId: "SUP125",
-          candidates: [
-            {
-              candidateId: "CAND005",
-              examId: "EXAM127"
-            },
-            {
-              candidateId: "CAND006",
-              examId: "EXAM128"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}];
+const listQuestionBank = [
+  {
+    id: "65f1a3b4c8e4a2d5b6f7e8d9",
+    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 12",
+    organizeExamStatus: "Scheduled",
+    duration: 90,
+    examType: "Ma trận",
+    matrixId: "MATRIX123",
+    maxScore: 100,
+    subjectId: "MATH12",
+    totalQuestion: 50,
+    examSet: null,
+    sesstion: []
+  },
+  {
+    id: "55f1a3b4c8e4a2d5b6f7e8d9",
+    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
+    organizeExamStatus: "Scheduled",
+    duration: 90,
+    examType: "Dề thi",
+    matrixId: null,
+    maxScore: 100,
+    subjectId: "MATH11",
+    totalQuestion: 50,
+    examSet: ["Ma12", "Ma13"],
+    sesstion: []
+  },
+  {
+    id: "55f1a3b4c8e4a2d5b6f7e8d0",
+    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 1",
+    organizeExamStatus: "Scheduled",
+    duration: 90,
+    examType: "Ngẫu nhiên",
+    matrixId: null,
+    maxScore: 100,
+    subjectId: "MATH10",
+    totalQuestion: 50,
+    examSet: null,
+    sesstion: []
+  }
+];
 
 const typeOptions = [
 	{ value: 'Ma trận', label: 'Ma trận' },
@@ -103,6 +74,8 @@ const OrganizeExamPage = () => {
   const paginationModel = { page: 0, pageSize: 5 };
   const inputRef = useRef(null);
   const [selectedType, setSelectedType] = useState(null); 
+  const navigate = useNavigate(); // Hook để điều hướng
+  const {id:organizeId} = useParams();
 
   const columns = [
     { field: "stt", headerName: "#", width: 15, align: "center", headerAlign: "center" },
@@ -110,14 +83,23 @@ const OrganizeExamPage = () => {
       field: "organizeExamName", 
       headerName: "Kỳ thi", 
       width: 1090, flex: 0.1, 
-  // renderCell: (params) => (
-  //   <Link 
-  //   to={`/admin/exam/${encodeURIComponent(params.row.id)}`} 
-  //   style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
-  //   >
-  //   {params.row.examCode}
-  //   </Link>
-  // )
+      renderCell: (params) => (
+        <Link 
+          to={`/admin/organize/${encodeURIComponent(params.row.id)}`} 
+          style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
+        >
+          {params.row.organizeExamName}
+        </Link>
+        // <span 
+        //   style={{ 
+        //     color: "blue", 
+        //     cursor: "pointer" 
+        //   }}
+        //   onClick={() => navigate(`/admin/organize/${params.row.id}`)}
+        // >
+        //   {params.row.organizeExamName}
+        // </span>
+      )
     },
     { 
       field: "subjectId", 
@@ -129,20 +111,59 @@ const OrganizeExamPage = () => {
       headerName: "Loại", 
       width: 130, flex: 0.05  
     },
-    { 
-      field: "examSet", 
-      headerName: "Đề thi", 
-      width: 130
-    },
+    {
+      field: "examSet",
+      headerName: "Đề thi",
+      width: 130, headerAlign: "center",
+      renderCell: (params) => {
+        const isNA = params.row.examType === "Ma trận" || params.row.examType === "Ngẫu nhiên";
+    
+        return isNA || !params.row.examSet ? (
+          <Box
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center", // Căn giữa ngang
+              alignItems: "center", // Căn giữa dọc
+            }}
+          >
+            <Typography variant="body2" color="textSecondary" sx={{ fontWeight: "bold" }}> N/A </Typography>
+          </Box>
+        ) : (
+          params.row.examSet.join(", ") // Hiển thị danh sách đề thi nếu có
+        );
+      }
+    }
+    ,
+    
     { 
       field: "matrixId", 
       headerName: "Ma trận", 
-      width: 100,
-    },
+      width: 100, headerAlign: "center",
+      renderCell: (params) => {
+        const isNA = params.row.examType === "Đề thi" || params.row.examType === "Ngẫu nhiên";
+        return isNA || !params.row.matrixId ? (
+          <Box
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center", // Căn giữa ngang
+              alignItems: "center", // Căn giữa dọc
+            }}
+          >
+            <Typography variant="body2" color="textSecondary" sx={{ fontWeight: "bold" }}> N/A </Typography>
+          </Box>
+        ) : (
+          params.row.matrixId
+        );
+      }
+    }, 
     { 
       field: "duration", 
       headerName: "Thời gian", 
-      width: 80, 
+      width: 80, align: "center",
     },
     { 
       field: "maxScore", 
@@ -168,6 +189,26 @@ const OrganizeExamPage = () => {
           <MenuItem value="disabled">Disabled</MenuItem>
         </Select>
       ),
+    },
+    { 
+      field: "report", 
+      headerName: "Báo cáo", 
+      width: 75,
+      // renderCell: (params) => (
+      //   <Link 
+      //     to={`/admin/organize/${encodeURIComponent(params.row.id)}`} 
+      //     style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
+      //   >
+      //     {params.row.organizeExamName}
+      //   </Link>
+      // )
+      renderCell: (params) => (
+        <Link to={`/admin/organize/report/${organizeId}`}     
+            style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
+        >
+          Chi tiết
+        </Link>
+      )
     },
     {
       field: "actions",
@@ -285,6 +326,24 @@ const OrganizeExamPage = () => {
     });
   };
 
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const handleSelectItem = (e, id) => {
+    if (e.target.checked) {
+      setSelectedItems([...selectedItems, id]);
+    } else {
+      setSelectedItems(selectedItems.filter((item) => item !== id));
+    }
+  };
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedItems(listQuestionBank.map((item) => item.id));
+    } else {
+      setSelectedItems([]);
+    }
+  };
+
   return (
     <div className="exam-management-page">
       {/* Breadcrumb */}
@@ -303,51 +362,80 @@ const OrganizeExamPage = () => {
 
       {/* Hiển thị bảng theo vai trò đã chọn */}
       <div className="subject-table-container mt-3">
-        <Paper sx={{ width: "100%" }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          initialState={{
-          pagination: { paginationModel: { page: 0, pageSize: 5 } },
-          }}
-          pageSizeOptions={[5, 10]}
-          disableColumnResize 
-          disableExtendRowFullWidth
-          disableRowSelectionOnClick
-          localeText={{
-            noRowsLabel: "Không có dữ liệu", 
-            }}
-          sx={{
-            "& .MuiDataGrid-cell": {
-              whiteSpace: "normal", 
-              wordWrap: "break-word", 
-              lineHeight: "1.2", 
-              padding: "8px", 
-            },
-            "& .MuiDataGrid-columnHeaders": {
-              borderBottom: "2px solid #ccc", 
-            },
-            "& .MuiDataGrid-cell": {
-              borderRight: "1px solid #ddd", 
-            },
-            "& .MuiDataGrid-row:last-child .MuiDataGrid-cell": {
-              borderBottom: "none", 
-            },
-            "& .MuiTablePagination-displayedRows": {
-              textAlign: "center",      
-              marginTop: "16px",
-              marginLeft: "0px"
-            },
-            "& .MuiTablePagination-selectLabel": {
-              marginTop: "13px",
-              marginLeft: "0px"
-            },
-            "& .MuiTablePagination-select": {
-              marginLeft: "0px",
-            } 
-          }}
-        />
-        </Paper>
+      <div className="table-responsive">
+        <table className="table sample-table table-hover">
+          <thead>
+            <tr className="align-middle fw-medium">
+              <th scope="col" className="text-center title-row">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  onChange={handleSelectAll}
+                  checked={selectedItems.length === listQuestionBank.length}
+                />
+              </th>
+              <th scope="col" className="title-row">Kỳ thi</th>
+              <th scope="col" className="title-row">Phân môn</th>
+              <th scope="col" className="title-row">Loại</th>
+              <th scope="col" className="title-row">Đề thi</th>
+              <th scope="col" className="title-row">Ma trận</th>
+              <th scope="col" className="title-row">Thời gian</th>
+              <th scope="col" className="title-row">Điểm</th>
+              <th scope="col" className="title-row">Trạng thái</th>
+              <th scope="col" className="title-row">Báo cáo</th>
+              <th scope="col" className="title-row">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            {listQuestionBank.map((item, index) => (
+              <tr key={item.id} className="align-middle">
+                <td className=" text-center" style={{ width: "50px" }}>
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    onChange={(e) => handleSelectItem(e, item.id)}
+                    checked={selectedItems.includes(item.id)}
+                  />
+                </td>
+                <td>
+                  <Link className="text-hover-primary"
+                    to={`/admin/organize/${encodeURIComponent(item.id)}`} 
+                    style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
+                  >
+                    {item.organizeExamName}
+                  </Link>
+                </td>
+                <td>{item.subjectId}</td>
+                <td>{item.examType}</td>
+                <td>{item.examSet}</td>
+                <td>{item.matrixId}</td>
+                <td>{item.duration}</td>
+                <td>{item.maxScore}</td>
+                <td>{item.organizeExamStatus}</td>
+                <td>
+                  <Link
+                    to={`/admin/organize/report/${item.id}`}     
+                    style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
+                  >
+                    Chi tiết
+                  </Link>
+                </td>
+                <td>
+                  <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
+                    <i className="fas fa-edit text-white "></i>
+                  </button>
+                  <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
+                    <i className="fas fa-trash-alt"></i>
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="d-flex justify-content-end">
+        <Pagination count={10}></Pagination>
+      </div>
       </div>
 
       {/* Form thêm tài khoản */}

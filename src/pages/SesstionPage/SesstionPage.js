@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import "./SesstionPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -13,63 +13,32 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
 
-const listQuestionBank = [{
-			sessionId: "SESSION001",
-			activeAt: "2025-04-10T08:00:00Z",
-			sessionStatus: "Active",
-			rooms: [
-				{
-					roomId: "ROOM101",
-					supervisorId: "SUP123",
-					candidates: [
-						{
-							candidateId: "CAND001",
-							examId: "EXAM123"
-						},
-						{
-							candidateId: "CAND002",
-							examId: "EXAM124"
-						}
-					]
-				},
-				{
-					roomId: "ROOM102",
-					supervisorId: "SUP124",
-					candidates: [
-						{
-							candidateId: "CAND003",
-							examId: "EXAM125"
-						},
-						{
-							candidateId: "CAND004",
-							examId: "EXAM126"
-						}
-					]
-				}
-			]
-		},
-		{
-			sessionId: "SESSION002",
-			activeAt: "2025-04-10T13:00:00Z",
-			sessionStatus: "Disabled",
-			rooms: [
-				{
-					roomId: "ROOM201",
-					supervisorId: "SUP125",
-					candidates: [
-						{
-							candidateId: "CAND005",
-							examId: "EXAM127"
-						},
-						{
-							candidateId: "CAND006",
-							examId: "EXAM128"
-						}
-					]
-				}
-			]
-		}
-	];
+const listQuestionBank = [
+	{
+		sessionId: "SESSION001",
+		activeAt: "2025-04-10T08:00:00Z",
+		sessionStatus: "Active",
+		rooms: []
+	},
+	{
+		sessionId: "SESSION002",
+		activeAt: "2025-04-10T13:00:00Z",
+		sessionStatus: "Disabled",
+		rooms: []
+	},
+	{
+        sessionId: "SESSION003",
+        activeAt: "2025-04-10T08:00:00Z",
+        sesstionStatus: "Active",
+        rooms: [ ]
+      },
+      {
+        sessionId: "SESSION004",
+        activeAt: "2025-04-10T13:00:00Z",
+        sesstionStatus: "Scheduled",
+        rooms: []
+      }
+];
 
 const SesstionPage = () => {
 	const [showForm, setShowForm] = useState(false);
@@ -77,6 +46,7 @@ const SesstionPage = () => {
 	const paginationModel = { page: 0, pageSize: 5 };
 	const inputRef = useRef(null);
 	const [rows, setRows] = useState(Object.values(listQuestionBank).flat());
+	const { id: organizeId } = useParams();
 	
 	const columns = [
 		{ field: "stt", headerName: "#", width: 15, align: "center", headerAlign: "center" },
@@ -104,7 +74,7 @@ const SesstionPage = () => {
 			width: 150, flex: 0.05,
 			renderCell: (params) => (
 				<Link 
-					to={`/admin/exam/rooms/${params.row.sessionId}`} 
+					to={`/admin/organize/${organizeId}/${params.row.sessionId}`} 
 					style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
 				>
 					Danh sách phòng thi
@@ -130,6 +100,19 @@ const SesstionPage = () => {
 					<MenuItem value="disabled">Disabled</MenuItem>
 				</Select>
 			),
+		},
+		{ 
+			field: "monitor", 
+			headerName: "Giám sát", 
+			width: 150, flex: 0.05,
+			renderCell: (params) => (
+				<Link 
+					to={`/admin/organize/monitor/${organizeId}/${params.row.sessionId}`} 
+					style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
+				>
+					Giám sát
+				</Link>
+			)
 		},
 		{
 			field: "actions",

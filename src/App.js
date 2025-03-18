@@ -29,6 +29,15 @@ import ExamManagementPage from "./pages/ExamManagementPage/ExamManagementPage";
 import DetailExamPage from "./pages/DetailExamPage/DetailExamPage";
 import OrganizeExamPage from "./pages/OrganizeExamPage/OrganizeExamPage";
 import SesstionPage from "./pages/SesstionPage/SesstionPage";
+import RoomOrganizePage from "./pages/RoomOrganizePage/RoomOrganizePage";
+import CandidateOrganizePage from "./pages/CandidateOrganizePage/CandidateOrganizePage";
+import SupervisorLayout from "./layouts/SupervisorLayout/SupervisorLayout";
+import SupervisorHomePage from "./pages/SupervisorHomePage/SupervisorHomePage";
+import MonitoringPage from "./pages/MonitoringPage/MonitoringPage";
+import MonitorOrganizePage from "./pages/MonitorOrganizePage/MonitorOrganizePage";
+import ScoreTableSessionPage from "./pages/ScoreTableSessionPage/ScoreTableSessionPage";
+import ReportEachOrganizePage from "./pages/ReportEachOrganizePage/ReportEachOrganizePage";
+import Admin2Layout from "./layouts/Admin2Layout/Admin2Layout";
 
 import NotFound from "./pages/NotFound/NotFound";
 
@@ -96,7 +105,7 @@ function App() {
           element={
             <ProtectedRoute>
               <AdminRoute>
-                <AdminLayout />
+                <Admin2Layout />
               </AdminRoute>
             </ProtectedRoute>
           }
@@ -104,7 +113,12 @@ function App() {
           <Route path="accountmanage" element={<AccountPage />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="organize" element={<OrganizeExamPage />} />
-          <Route path="session" element={<SesstionPage />} />
+          <Route path="organize/report/:organizeId" element={<ReportEachOrganizePage />} />
+          <Route path="organize/:id" element={<SesstionPage />} />
+          <Route path="organize/:organizeId/:sessionId" element={<RoomOrganizePage />} />
+          <Route path="organize/monitor/:organizeId/:sessionId" element={<MonitorOrganizePage />} />
+          <Route path="organize/score/:organizeId/:sessionId" element={<ScoreTableSessionPage />} />
+          <Route path="organize/:organizeId/:sessionId/:roomId" element={<CandidateOrganizePage />} />
           <Route path="question" element={<QuestionManagementPage />}/>
           <Route path="question/:subject" element={<QuestionBankNamePage />} />
           <Route path="question/:subject/:questionBankId" element={<ListQuestionPage />} />
@@ -116,6 +130,7 @@ function App() {
           <Route path="log" element={<LogPage />} />
         </Route>
       </Routes>
+
       <Routes>
         <Route 
           path="/candidate" 
@@ -133,8 +148,12 @@ function App() {
           <Route path="takexam" element={<TakeExamPage />} />
         </Route>
       </Routes>
+
       <Routes>
-        
+        <Route path="/supervisor" element={<SupervisorLayout />}>
+          <Route path="home" element={<SupervisorHomePage />} /> 
+          <Route path="monitor" element={<MonitoringPage />} /> 
+        </Route>
       </Routes>
     </Router>
   );

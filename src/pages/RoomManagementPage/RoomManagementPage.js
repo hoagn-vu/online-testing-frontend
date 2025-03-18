@@ -40,7 +40,7 @@ const RoomManagementPage = () => {
 
   const columns = [
     { field: "id", headerName: "#", width: 10, align: "center",headerAlign: "center", },
-    { field: "roomName", headerName: "Tên phòng", width: 440 },
+    { field: "roomName", headerName: "Tên phòng", width: 440, flex: 0.1 },
     { field: "roomLocation", headerName: "Địa điểm", width: 300 },
     { field: "roomCapacity", headerName: "Số lượng", width: 150, align: "center",headerAlign: "center", },
     {

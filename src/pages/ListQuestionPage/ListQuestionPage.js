@@ -269,7 +269,7 @@ const ListQuestionPage = () => {
 	].map(tag => ({ label: tag, value: tag }));
 
 	return (
-		<div className="container list-question-container me-0">
+		<div className=" list-question-container">
 			{/* Breadcrumb */}
 			<nav className="breadcrumb">
 				<Link to="/admin">Home</Link> / 

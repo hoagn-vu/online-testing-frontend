@@ -1,0 +1,19 @@
+.custom-table-monitor td {
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0px 10px 0px;
+    margin: 0px;
+}
+
+.custom-table-monitor th, .custom-table-monitor td {
+    vertical-align: middle; 
+    text-align: center; 
+}
+
+.custom-table-monitor th {
+    color: black;
+}
+
+.custom-table-monitor {
+    margin: auto; 
+}

@@ -297,7 +297,6 @@ const DetailExamMatrixPage = () => {
                 </div>
             </div>
             <Box display="flex" gap={2} className="mt-3">
-
                 <Box sx={{ width: "80%" }}>
                     <DataGrid
                         rows={[...processedData, footerRow]}  // 🟢 Đảm bảo footer ở cuối bảng
@@ -307,6 +306,7 @@ const DetailExamMatrixPage = () => {
                         disableColumnSorting
                         hideFooter={true} 
                         sx={{
+                            backgroundColor: "white",
                             "& .MuiDataGrid-columnHeaders": {
                                 borderBottom: "2px solid #ccc", // Đường phân cách dưới tiêu đề cột
                             },
