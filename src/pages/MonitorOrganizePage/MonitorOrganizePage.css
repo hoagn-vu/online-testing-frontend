@@ -17,3 +17,12 @@
 .custom-table-monitor {
     margin: auto; 
 }
+
+.custom-table-monitor-header th{
+    background-color: #ffffff !important; /* Màu xanh Bootstrap */
+    padding: 15px;
+}
+
+.custom-table-monitor, .custom-table-monitor th, .custom-table-monitor td {
+    border: 1px solid black !important; /* Viền đen dày */
+}

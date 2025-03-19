@@ -47,7 +47,7 @@ const ScoreTableSessionPage = () => {
       {/* Nút in bảng điểm */}
       <div className="mt-2 mb-3 d-flex ms-auto justify-content-end">
         {/* <Print onClick={handlePrint}></Print> */}
-        <button className="btn btn-primary" onClick={handlePrint}>In bảng điểm</button>
+        <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={handlePrint}>In bảng điểm</button>
       </div>
 
       {/* Bảng điểm hiển thị luôn trên trang */}

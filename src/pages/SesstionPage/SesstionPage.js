@@ -280,6 +280,7 @@ const SesstionPage = () => {
 							<th scope="col" className="title-row">Active At</th>
 							<th scope="col" className="title-row">Phòng thi</th>
 							<th scope="col" className="title-row text-center">Trạng thái</th>
+							<th scope="col" className="title-row text-center">Giám sát</th>
 							<th scope="col" className="title-row">Thao tác</th>
 						</tr>
 					</thead>
@@ -315,6 +316,13 @@ const SesstionPage = () => {
 													onChange={() => handleToggleStatus(session.sessionId, session.sessionStatus)}
 												/>
 											</div>
+										</td>
+										<td className="text-center">
+											<Link className="text-hover-primary"
+													to={`/staff/organize/monitor/${organizeId}/${session.sessionId}`}
+													style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}>
+												Giám sát
+											</Link>
 										</td>
 										<td>
 											<button className="btn btn-primary btn-sm" style={{ width: "35px", height: "35px" }}
