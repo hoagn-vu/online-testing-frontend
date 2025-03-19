@@ -15,6 +15,20 @@ import dayjs from "dayjs";
 
 const listQuestionBank = [
 	{
+		id: "65f1a3b4c8e4a2d5b6f7e8d9",
+    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 12",
+    organizeExamStatus: "Active",
+    duration: 90,
+    examType: "Ngẫu nhiên",
+    matrixId: "MATRIX123",
+		matrixName: "MATRIX123",
+    maxScore: 100,
+    subjectId: "MATH12",
+		subjectName: "MATH12",
+    totalQuestion: 50,
+    examSet: ["MA", "MA1"],
+    sesstion: [
+	{
 		sessionId: "SESSION001",
 		sessionName: "SESSION001",
 		activeAt: "2025-04-10T08:00:00Z",
@@ -41,6 +55,7 @@ const listQuestionBank = [
 		activeAt: "2025-04-10T13:00:00Z",
 		sessionStatus: "Active",
 		rooms: []
+	}]
 	}
 ];
 
@@ -189,11 +204,63 @@ const SesstionPage = () => {
 	return (
 		<div className="exam-management-page">
 			{/* Breadcrumb */}
-			<nav>
+			{/* <nav>
 				<Link to="/staff">Home</Link> / 
 				<span className="breadcrumb-current">Quản lý kỳ thi</span>
-			</nav>
-			<div className="account-actions mt-4">
+			</nav> */}
+		<div>
+			{listQuestionBank.map((exam, index) => (
+				<div key={index} style={{
+					background: "#fff",
+					padding: "15px 15px 0px 15px",
+					marginBottom: "15px",
+					borderRadius: "8px",
+					boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+					fontSize: "14px"
+				}}>
+					<p style={{ fontSize: "16px", fontWeight: "bold", color: "#333", marginBottom: "10px" }}>
+							📝 Kỳ thi: {exam.organizeExamName}
+					</p>
+
+					<div className="d-flex" style={{display: "flex",
+							justifyContent: "space-between",
+							gap: "20px",
+							alignItems: "center"
+					}}>
+						{/* Cột 1 */}
+						<div style={{ flex: 1 }}>
+								<p><strong>📚 Môn thi:</strong> {exam.subjectName ?? "Chưa có dữ liệu"}</p>
+								<p><strong>📌 Loại đề thi:</strong> {exam.examType}</p>
+						</div>
+
+						{/* Cột 2 */}
+						<div style={{ flex: 1 }}>
+							<p><strong>⏳ Thời gian làm bài:</strong> {exam.duration} phút</p>
+							{exam.examType === "Đề thi" && (
+									<p><strong>📖 Bộ đề thi:</strong> {exam.examSet.length > 0 ? exam.examSet.join(", ") : "Chưa có dữ liệu"}</p>
+							)}
+							{exam.examType === "Ma trận" && (
+									<p><strong>📊 Ma trận đề:</strong> {exam.matrixName ?? "Chưa có dữ liệu"}</p>
+							)}
+							{exam.examType === "Ngẫu nhiên" && (
+									<p><strong>❓ Tổng số câu hỏi:</strong> {exam.totalQuestion ?? "Chưa có dữ liệu"}</p>
+							)}
+						</div>
+
+						{/* Cột 3 - Hiển thị thông tin đặc biệt */}
+						<div style={{ flex: 1 }}>
+							{(exam.examType === "Ma trận" || exam.examType === "Ngẫu nhiên") && (
+									<p><strong>⭐ Điểm tối đa:</strong> {exam.maxScore}</p>
+							)}
+						</div>
+					</div>
+				</div>
+			))}
+		</div>
+
+
+
+			<div className="account-actions mt-2">
 				<div className="search-container">
 					<SearchBox></SearchBox>
 				</div>
@@ -216,52 +283,55 @@ const SesstionPage = () => {
 							<th scope="col" className="title-row">Thao tác</th>
 						</tr>
 					</thead>
-					<tbody style={{fontSize: "14px"}}>
+					<tbody style={{ fontSize: "14px" }}>
 						{listQuestionBank.length === 0 ? (
-              <tr>
-                <td colSpan="6" className="text-center fw-semibold text-muted" 
-                    style={{ height: "100px", verticalAlign: "middle" }}>
-                  Không có dữ liệu
-                </td>
-              </tr>
-              ) : (
-						listQuestionBank.map((item, index) => (
-							<tr key={item.id} className="align-middle">
-								<td className="text-center">{index + 1}</td>
-								<td>{item.sessionName}</td>
-								<td>{item.activeAt}</td>
-								<td>
-									<Link className="text-hover-primary"
-										to={`/staff/organize/${organizeId}/${item.sessionId}`} 
-										style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
-									>
-										Danh sách phòng thi
-									</Link>
-								</td>
-								<td>
-									<div className="form-check form-switch d-flex justify-content-center">
-										<input
-											className="form-check-input"
-											type="checkbox"
-											role="switch"
-											checked={item.sessionStatus.toLowerCase() === "active"}
-											onChange={() =>
-												handleToggleStatus(item.sessionId, item.sessionStatus)
-											}
-										/>
-									</div>
-								</td>
-								<td>
-									<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}  onClick={() => handleEdit(item)}>
-										<i className="fas fa-edit text-white "></i>
-									</button>
-									<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}  onClick={() => handleDelete(item.sessionId)}>
-										<i className="fas fa-trash-alt"></i>
-									</button>
+							<tr>
+								<td colSpan="6" className="text-center fw-semibold text-muted"
+										style={{ height: "100px", verticalAlign: "middle" }}>
+									Không có dữ liệu
 								</td>
 							</tr>
-						)))}
+						) : (
+							listQuestionBank.flatMap((exam, examIndex) =>
+								exam.sesstion.map((session, sessionIndex) => (
+									<tr key={session.sessionId} className="align-middle">
+										<td className="text-center">{sessionIndex + 1}</td>
+										<td>{session.sessionName}</td>
+										<td>{dayjs(session.activeAt).format("DD/MM/YYYY HH:mm")}</td>
+										<td>
+											<Link className="text-hover-primary"
+													to={`/staff/organize/${organizeId}/${session.sessionId}`}
+													style={{ textDecoration: "none", color: "black", cursor: "pointer" }}>
+												Danh sách phòng thi
+											</Link>
+										</td>
+										<td className="text-center">
+											<div className="form-check form-switch d-flex justify-content-center">
+												<input
+													className="form-check-input"
+													type="checkbox"
+													role="switch"
+													checked={session.sessionStatus === "Active"}
+													onChange={() => handleToggleStatus(session.sessionId, session.sessionStatus)}
+												/>
+											</div>
+										</td>
+										<td>
+											<button className="btn btn-primary btn-sm" style={{ width: "35px", height: "35px" }}
+															onClick={() => handleEdit(session)}>
+												<i className="fas fa-edit text-white"></i>
+											</button>
+											<button className="btn btn-danger btn-sm ms-2" style={{ width: "35px", height: "35px" }}
+															onClick={() => handleDelete(session.sessionId)}>
+												<i className="fas fa-trash-alt"></i>
+											</button>
+										</td>
+									</tr>
+								))
+							)
+						)}
 					</tbody>
+
 				</table>
 			</div>
 			<div className="d-flex justify-content-end">
