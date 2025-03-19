@@ -218,14 +218,13 @@ const SesstionPage = () => {
 					boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
 					fontSize: "14px"
 				}}>
-					<p style={{ fontSize: "16px", fontWeight: "bold", color: "#333", marginBottom: "15px" }}>
+					<p style={{ fontSize: "18px", fontWeight: "bold", color: "#333", marginBottom: "15px" }}>
 							Kỳ thi: {exam.organizeExamName}
 					</p>
 
 					<div className="d-flex" style={{display: "flex",
 							justifyContent: "space-between",
 							gap: "20px",
-							alignItems: "center"
 					}}>
 						{/* Cột 1 */}
 						<div style={{ flex: 1 }}>
@@ -257,9 +256,6 @@ const SesstionPage = () => {
 				</div>
 			))}
 		</div>
-
-
-
 			<div className="account-actions mt-2">
 				<div className="search-container">
 					<SearchBox></SearchBox>
@@ -279,7 +275,7 @@ const SesstionPage = () => {
 							<th scope="col" className="title-row">Ca thi</th>
 							<th scope="col" className="title-row">Active At</th>
 							<th scope="col" className="title-row">Phòng thi</th>
-							<th scope="col" className="title-row text-center">Trạng thái</th>
+							<th scope="col" className="title-row">Trạng thái</th>
 							<th scope="col" className="title-row text-center">Giám sát</th>
 							<th scope="col" className="title-row">Thao tác</th>
 						</tr>
@@ -307,7 +303,7 @@ const SesstionPage = () => {
 											</Link>
 										</td>
 										<td className="text-center">
-											<div className="form-check form-switch d-flex justify-content-center">
+											<div className="form-check form-switch d-flex align-items-center justify-content-left">
 												<input
 													className="form-check-input"
 													type="checkbox"
@@ -315,8 +311,13 @@ const SesstionPage = () => {
 													checked={session.sessionStatus === "Active"}
 													onChange={() => handleToggleStatus(session.sessionId, session.sessionStatus)}
 												/>
+												<span className={`badge ms-2 ${session.sessionStatus === "Active" ? "bg-success" : "bg-secondary"}`}>
+													{session.sessionStatus === "Active" ? "Hoạt động" : "Không hoạt động"}
+												</span>
 											</div>
 										</td>
+
+
 										<td className="text-center">
 											<Link className="text-hover-primary"
 													to={`/staff/organize/monitor/${organizeId}/${session.sessionId}`}
