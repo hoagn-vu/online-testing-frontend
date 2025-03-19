@@ -62,7 +62,7 @@
 .tbl-organize td{
   /* border-collapse: collapse;
   width: 100%; */
-  background-color: #fdfdfd !important; /* Màu nền tổng thể của bảng */
+  background-color: #ffff !important; /* Màu nền tổng thể của bảng */
 }
 
 .tbl-organize th,

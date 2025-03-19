@@ -180,7 +180,15 @@ const RoomOrganizePage = () => {
 							</tr>
 						</thead>
 						<tbody style={{fontSize: "14px"}}>
-							{listQuestionBank.map((item, index) => (
+							{listQuestionBank.length === 0 ? (
+								<tr>
+									<td colSpan="7" className="text-center fw-semibold text-muted" 
+											style={{ height: "100px", verticalAlign: "middle" }}>
+										Không có dữ liệu
+									</td>
+								</tr>
+								) : (
+							listQuestionBank.map((item, index) => (
 								<tr key={item.roomId} className="align-middle">
 									<td className="text-center">{index + 1}</td>
 									<td>{item.roomId}</td>
@@ -216,7 +224,7 @@ const RoomOrganizePage = () => {
 										</button>
 									</td>
 								</tr>
-							))}
+							)))}
 						</tbody>
 					</table>
 				</div>

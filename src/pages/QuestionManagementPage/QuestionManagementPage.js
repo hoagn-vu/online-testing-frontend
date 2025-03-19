@@ -155,34 +155,44 @@ const QuestionManagementPage = () => {
             </tr>
           </thead>
           <tbody>
-            {listSubject.map((item, index) => (
-              <tr key={item.id} className="align-middle">
-                <td className=" text-center" style={{ width: "50px" }}>
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    onChange={(e) => handleSelectItem(e, item.id)}
-                    checked={selectedItems.includes(item.id)}
-                  />
-                </td>
-                <td className="fw-semibold text-hover-primary">
-                  <Link 
-                    to={`/staff/question/${encodeURIComponent(item.subjectName)}`} 
-                    style={{ textDecoration: "none", cursor: "pointer" }}
-                  >
-                    {item.subjectName}
-                  </Link>
-                </td>
-                <td>
-                  <button className="btn btn-primary btn-sm">
-                    <i className="fas fa-edit text-white"></i>
-                  </button>
-                  <button className="btn btn-danger btn-sm ms-2">
-                    <i className="fas fa-trash-alt"></i>
-                  </button>
+            {listSubject.length === 0 ? (
+              <tr>
+                <td colSpan="3" 
+                    className="text-center fw-semibold text-muted" 
+                    style={{ height: "100px", verticalAlign: "middle" }}>
+                  Không có dữ liệu
                 </td>
               </tr>
-            ))}
+              ) : (
+              listSubject.map((item, index) => (
+                <tr key={item.id} className="align-middle">
+                  <td className="text-center" style={{ width: "50px" }}>
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      onChange={(e) => handleSelectItem(e, item.id)}
+                      checked={selectedItems.includes(item.id)}
+                    />
+                  </td>
+                  <td className="fw-semibold text-hover-primary">
+                    <Link 
+                      to={`/staff/question/${encodeURIComponent(item.subjectName)}`} 
+                      style={{ textDecoration: "none", cursor: "pointer" }}
+                    >
+                      {item.subjectName}
+                    </Link>
+                  </td>
+                  <td>
+                    <button className="btn btn-primary btn-sm">
+                      <i className="fas fa-edit text-white"></i>
+                    </button>
+                    <button className="btn btn-danger btn-sm ms-2">
+                      <i className="fas fa-trash-alt"></i>
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
