@@ -256,14 +256,14 @@ const OrganizeExamPage = () => {
   };
   
   const [formData, setFormData] = useState({
-  organizeExamName: "",
-  subjectId: "",
-  examType: "",
-  examSet: "",
-  matrixId: "",
-  duration: "",
-  maxScore: "",
-  organizeExamStatus: "active",
+    organizeExamName: "",
+    subjectId: "",
+    examType: "",
+    examSet: "",
+    matrixId: "",
+    duration: "",
+    maxScore: "",
+    organizeExamStatus: "active",
   });
 
   const handleAddNew = () => {

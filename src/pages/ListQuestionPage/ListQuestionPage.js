@@ -11,115 +11,111 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 
 const subjectData  = 
 {
-		id: "67cf6cee1d44d62edf5de90b",
-		subjectName: "Math",
-		subjectStatus: null,
-		questionBanks: [
+	id: "67cf6cee1d44d62edf5de90b",
+	subjectName: "Math",
+	subjectStatus: null,
+	questionBanks: [
+		{
+			questionBankId: "67cf702d1d44d62edf5de913",
+			questionBankName: "Giải tích 1",
+			questionBankStatus: null,
+			list: [
 				{
-						questionBankId: "67cf702d1d44d62edf5de913",
-						questionBankName: "Giải tích 1",
-						questionBankStatus: null,
-						list: [
-								{
-										id: 1,
-										questionText: "What is the capital of France?",
-										options: [
-												{ optionId: "1", optionText: "Berlin", isCorrect: false },
-												{ optionId: "2", optionText: "Madrid", isCorrect: false },
-												{ optionId: "3", optionText: "Paris", isCorrect: true },
-												{ optionId: "4", optionText: "Rome", isCorrect: false },
-										],
-										isRandomOrder: false,
-										tags: []
-
-								},
-								{
-										id: 2,
-										questionText: "Which planet is known as the Red Planet?",
-										options: [
-												{ optionId: "1", optionText: "Berlin", isCorrect: false },
-												{ optionId: "2", optionText: "Madrid", isCorrect: false },
-												{ optionId: "3", optionText: "Paris", isCorrect: true },
-												{ optionId: "4", optionText: "Rome", isCorrect: false },
-										],
-										isRandomOrder: false,
-										tags: []
-								},
-								
-						],
+					id: 1,
+					questionText: "What is the capital of France?",
+					options: [
+							{ optionId: "1", optionText: "Berlin", isCorrect: false },
+							{ optionId: "2", optionText: "Madrid", isCorrect: false },
+							{ optionId: "3", optionText: "Paris", isCorrect: true },
+							{ optionId: "4", optionText: "Rome", isCorrect: false },
+					],
+					isRandomOrder: false,
+					tags: []
 				},
 				{
-						questionBankId: "67cf70341d44d62edf5de916",
-						questionBankName: "Giải tích 2",
-						questionBankStatus: null,
-						list: [
-								{
-										id: 1,
-										questionText: "Linh?",
-										options: [
-												{ optionId: "1", optionText: "Berlin", isCorrect: false },
-												{ optionId: "2", optionText: "Madrid", isCorrect: false },
-												{ optionId: "3", optionText: "Paris", isCorrect: true },
-												{ optionId: "4", optionText: "Rome", isCorrect: false },
-										],
-										isRandomOrder: false,
-										tags: ["Chương 1", "Nhận biết", "Vận dụng cao"]
+					id: 2,
+					questionText: "Which planet is known as the Red Planet?",
+					options: [
+							{ optionId: "1", optionText: "Berlin", isCorrect: false },
+							{ optionId: "2", optionText: "Madrid", isCorrect: false },
+							{ optionId: "3", optionText: "Paris", isCorrect: true },
+							{ optionId: "4", optionText: "Rome", isCorrect: false },
+					],
+					isRandomOrder: false,
+					tags: []
+				},			
+			],
+		},
+		{
+			questionBankId: "67cf70341d44d62edf5de916",
+			questionBankName: "Giải tích 2",
+			questionBankStatus: null,
+			list: [
+				{
+					id: 1,
+					questionText: "Linh?",
+					options: [
+							{ optionId: "1", optionText: "Berlin", isCorrect: false },
+							{ optionId: "2", optionText: "Madrid", isCorrect: false },
+							{ optionId: "3", optionText: "Paris", isCorrect: true },
+							{ optionId: "4", optionText: "Rome", isCorrect: false },
+					],
+					isRandomOrder: false,
+					tags: ["Chương 1", "Nhận biết"]
+				},
+				{
+					id: 2,
+					questionText: "What is the capital of France?",
+					options: [
+							{ optionId: "1", optionText: "Berlin", isCorrect: false },
+							{ optionId: "2", optionText: "Madrid", isCorrect: false },
+							{ optionId: "3", optionText: "Paris", isCorrect: true },
+							{ optionId: "4", optionText: "Rome", isCorrect: false },
+					],
+					isRandomOrder: false,
+					tags: ["Chương 1", "Nhận biết"]
 
-								},
-								{
-										id: 2,
-										questionText: "What is the capital of France?",
-										options: [
-												{ optionId: "1", optionText: "Berlin", isCorrect: false },
-												{ optionId: "2", optionText: "Madrid", isCorrect: false },
-												{ optionId: "3", optionText: "Paris", isCorrect: true },
-												{ optionId: "4", optionText: "Rome", isCorrect: false },
-										],
-										isRandomOrder: false,
-										tags: ["Chương 1", "Nhận biết"]
+				},
+				{
+					id: 3,
+					questionText: "Linh 1?",
+					options: [
+							{ optionId: "1", optionText: "Berlin", isCorrect: false },
+							{ optionId: "2", optionText: "Madrid", isCorrect: false },
+							{ optionId: "3", optionText: "Paris", isCorrect: true },
+							{ optionId: "4", optionText: "Rome", isCorrect: false },
+					],
+					isRandomOrder: false,
+					tags: ["Chương 1", "Thông hiểu"]
+				},
+				{
+					id: 4,
+					questionText: "Hôm nay là thứ mấy?",
+					options: [
+							{ optionId: "1", optionText: "Berlin", isCorrect: false },
+							{ optionId: "2", optionText: "Madrid", isCorrect: false },
+							{ optionId: "3", optionText: "Paris", isCorrect: true },
+							{ optionId: "4", optionText: "Rome", isCorrect: false },
+					],
+					isRandomOrder: false,
+					tags: ["Chương 2", "Nhận biết"]
 
-								},
-								{
-										id: 3,
-										questionText: "Linh 1?",
-										options: [
-												{ optionId: "1", optionText: "Berlin", isCorrect: false },
-												{ optionId: "2", optionText: "Madrid", isCorrect: false },
-												{ optionId: "3", optionText: "Paris", isCorrect: true },
-												{ optionId: "4", optionText: "Rome", isCorrect: false },
-										],
-										isRandomOrder: false,
-										tags: ["Chương 1", "Thông hiểu"]
-								},
-								{
-										id: 4,
-										questionText: "Hôm nay là thứ mấy?",
-										options: [
-												{ optionId: "1", optionText: "Berlin", isCorrect: false },
-												{ optionId: "2", optionText: "Madrid", isCorrect: false },
-												{ optionId: "3", optionText: "Paris", isCorrect: true },
-												{ optionId: "4", optionText: "Rome", isCorrect: false },
-										],
-										isRandomOrder: false,
-										tags: ["Chương 2", "Nhận biết"]
-
-								},
-								{
-										id: 5,
-										questionText: "Which planet is known as the Red Planet?",
-										options: [
-												{ optionId: "1", optionText: "Berlin", isCorrect: false },
-												{ optionId: "2", optionText: "Madrid", isCorrect: false },
-												{ optionId: "3", optionText: "Paris", isCorrect: true },
-												{ optionId: "4", optionText: "Rome", isCorrect: false },
-										],
-										isRandomOrder: false,
-										tags: ["Chương 2", "Thông hiểu"]
-								},
-						],
-				}
-		]
-		
+				},
+				{
+					id: 5,
+					questionText: "Which planet is known as the Red Planet?",
+					options: [
+							{ optionId: "1", optionText: "Berlin", isCorrect: false },
+							{ optionId: "2", optionText: "Madrid", isCorrect: false },
+							{ optionId: "3", optionText: "Paris", isCorrect: true },
+							{ optionId: "4", optionText: "Rome", isCorrect: false },
+					],
+					isRandomOrder: false,
+					tags: ["Chương 2", "Vận dụng cao"]
+				},
+			],
+		}
+	]	
 };
 
 const ListQuestionPage = () => {
@@ -172,22 +168,39 @@ const ListQuestionPage = () => {
     new window.bootstrap.Modal(document.getElementById("questionModal")).show();
 	};
 
+	// const handleEditQuestion = (question) => {
+	// 	setEditQuestionId(question.id);
+
+	// 	// Chuyển đổi tags thành { label, value }
+	// 	const formattedTags = question.tags ? question.tags.map(tag => ({ label: tag, value: tag })) : [];
+
+	// 	setNewQuestion({ 
+	// 			questionText: question.questionText, 
+	// 			options: question.options 
+	// 	});
+
+	// 	setSelectedGroups(formattedTags); // Cập nhật selectedGroups với các tag của câu hỏi
+
+	// 	new window.bootstrap.Modal(document.getElementById("questionModal")).show();
+	// };
+
 	const handleEditQuestion = (question) => {
-		setEditQuestionId(question.id);
+    setEditQuestionId(question.id);
 
-		// Chuyển đổi tags thành { label, value }
-		const formattedTags = question.tags ? question.tags.map(tag => ({ label: tag, value: tag })) : [];
+    // Lấy chương và mức độ từ tags (nếu có)
+    const chapter = question.tags?.[0] ? { label: question.tags[0], value: question.tags[0] } : null;
+    const level = question.tags?.[1] ? { label: question.tags[1], value: question.tags[1] } : null;
 
-		setNewQuestion({ 
-				questionText: question.questionText, 
-				options: question.options 
-		});
+    setNewQuestion({ 
+        questionText: question.questionText, 
+        options: question.options 
+    });
 
-		setSelectedGroups(formattedTags); // Cập nhật selectedGroups với các tag của câu hỏi
+    setSelectedChapter(chapter); // Cập nhật Select Chương
+    setSelectedLevel(level); // Cập nhật Select Mức độ
 
-		new window.bootstrap.Modal(document.getElementById("questionModal")).show();
+    new window.bootstrap.Modal(document.getElementById("questionModal")).show();
 	};
-
 
 	const handleUploadClick = async () => {
 			const { value: file } = await Swal.fire({
@@ -228,12 +241,6 @@ const ListQuestionPage = () => {
 			groupedQuestions[chapter][level].push(question);
 	});
 
-	const colourOptions = [
-			{ value: "Chương 1", label: "Chương 1" },
-			{ value: "Chương 2", label: "Chương 2" },
-			{ value: "Chương 3", label: "Chương 3" },
-		];
-
 	const handleDelete = (id) => {
 			Swal.fire({
 					title: "Bạn có chắc chắn xóa?",
@@ -259,14 +266,20 @@ const ListQuestionPage = () => {
 	const currentQuestionBank = subjectData.questionBanks.find(qb => qb.questionBankId === questionBankId);
 	const questionBankName = currentQuestionBank ? currentQuestionBank.questionBankName : "Ngân hàng câu hỏi";
     
-	// Lấy tất cả các tags từ subjectData và loại bỏ trùng lặp
-	const allTags = [
-		...new Set(
-			subjectData.questionBanks.flatMap(qb =>
-				qb.list.flatMap(q => q.tags || [])
-			)
-		)
-	].map(tag => ({ label: tag, value: tag }));
+	const allChapters = [
+    ...new Set(subjectData.questionBanks.flatMap(qb => 
+        qb.list.map(q => q.tags?.[0]) // Lấy tag đầu tiên (Chương)
+			).filter(Boolean))
+	].map(chapter => ({ label: chapter, value: chapter }));
+
+	const allLevels = [
+			...new Set(subjectData.questionBanks.flatMap(qb => 
+					qb.list.map(q => q.tags?.[1]) // Lấy tag thứ hai (Mức độ)
+			).filter(Boolean))
+	].map(level => ({ label: level, value: level }));
+
+	const [selectedChapter, setSelectedChapter] = useState(null);
+	const [selectedLevel, setSelectedLevel] = useState(null);
 
 	return (
 		<div className=" list-question-container">
@@ -385,14 +398,37 @@ const ListQuestionPage = () => {
 								<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div className="modal-body">
-							<CreatableSelect
-								isMulti
-								options={allTags}
-								value={selectedGroups}
-								onChange={setSelectedGroups}
-								menuPortalTarget={document.body} 
-								styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-							/>
+							<div className="d-flex" style={{ display: "flex", width: "100%", gap: "10px" }}>
+								<div style={{ flex: 1 }}>
+									<p className="mb-2">Chương:</p>
+									<CreatableSelect
+										options={allChapters}
+										value={selectedChapter}
+										onChange={setSelectedChapter}
+										menuPortalTarget={document.body}
+										placeholder="Chọn chương"
+										styles={{
+												menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+												container: (provided) => ({ ...provided, flex: 1 }) // Chia đều chiều rộng
+										}}
+									/>
+								</div>
+								<div style={{ flex: 1 }}>
+									<p className="mb-2">Mức độ:</p>
+									<CreatableSelect
+										options={allLevels}
+										value={selectedLevel}
+										onChange={setSelectedLevel}
+										menuPortalTarget={document.body}
+										placeholder="Chọn mức độ"
+										styles={{
+												menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+												container: (provided) => ({ ...provided, flex: 1 }) // Chia đều chiều rộng
+										}}
+									/>
+
+								</div>
+							</div>
 							<textarea
 								type="text"
 								className="form-control mb-3 mt-3"

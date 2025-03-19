@@ -28,7 +28,7 @@ const examData  =
             { optionId: "4", optionText: "Rome", isCorrect: false },
         ],
         isRandomOrder: false,
-        tags: ["Chương 1", "Nhận biết", "Vận dụng cao"]
+        tags: ["Chương 1", "Nhận biết"]
 
       },
       {
@@ -158,19 +158,22 @@ const DetailExamPage = () => {
 
 	const handleEditQuestion = (question) => {
 		setEditQuestionId(question.id);
-
-		// Chuyển đổi tags thành { label, value }
-		const formattedTags = question.tags ? question.tags.map(tag => ({ label: tag, value: tag })) : [];
-
+	
+		// Lấy chương và mức độ từ tags
+		const chapter = question.tags?.[0] ? { label: question.tags[0], value: question.tags[0] } : null;
+		const level = question.tags?.[1] ? { label: question.tags[1], value: question.tags[1] } : null;
+	
 		setNewQuestion({ 
-      questionText: question.questionText, 
-      options: question.options 
+			questionText: question.questionText, 
+			options: question.options 
 		});
-
-		setSelectedGroups(formattedTags); // Cập nhật selectedGroups với các tag của câu hỏi
-
+	
+		setSelectedChapter(chapter); // Cập nhật chương đã chọn
+		setSelectedLevel(level); // Cập nhật mức độ đã chọn
+	
 		new window.bootstrap.Modal(document.getElementById("questionModal")).show();
 	};
+	
 
 	const groupedQuestions = {};
 	const selectedQuestions = examData.find(qb => qb.id === examId)?.questionSet || [];
@@ -223,6 +226,26 @@ const DetailExamPage = () => {
     )
   ].map(tag => ({ label: tag, value: tag }));
   
+	const allChapters = [
+		...new Set(
+			examData.flatMap(exam =>
+				exam.questionSet?.map(q => q.tags?.[0]) // Lấy tag đầu tiên (Chương)
+			).filter(Boolean)
+		)
+	].map(chapter => ({ label: chapter, value: chapter }));
+	
+	const allLevels = [
+		...new Set(
+			examData.flatMap(exam =>
+				exam.questionSet?.map(q => q.tags?.[1]) // Lấy tag thứ hai (Mức độ)
+			).filter(Boolean)
+		)
+	].map(level => ({ label: level, value: level }));
+	
+	const [selectedChapter, setSelectedChapter] = useState(null);
+	const [selectedLevel, setSelectedLevel] = useState(null);
+
+	
 	return (
 		<div className="container list-question-container me-0">
 			{/* Breadcrumb */}
@@ -311,14 +334,37 @@ const DetailExamPage = () => {
 								<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div className="modal-body">
-              <CreatableSelect
-								isMulti
-								options={allTags}
-								value={selectedGroups}
-								onChange={setSelectedGroups}
-								menuPortalTarget={document.body} 
-								styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-							/>
+						<div className="d-flex" style={{ display: "flex", width: "100%", gap: "10px" }}>
+								<div style={{ flex: 1 }}>
+									<p className="mb-2">Chương:</p>
+									<CreatableSelect
+										options={allChapters}
+										value={selectedChapter}
+										onChange={setSelectedChapter}
+										menuPortalTarget={document.body}
+										placeholder="Chọn chương"
+										styles={{
+												menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+												container: (provided) => ({ ...provided, flex: 1 }) // Chia đều chiều rộng
+										}}
+									/>
+								</div>
+								<div style={{ flex: 1 }}>
+									<p className="mb-2">Mức độ:</p>
+									<CreatableSelect
+										options={allLevels}
+										value={selectedLevel}
+										onChange={setSelectedLevel}
+										menuPortalTarget={document.body}
+										placeholder="Chọn mức độ"
+										styles={{
+												menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+												container: (provided) => ({ ...provided, flex: 1 }) // Chia đều chiều rộng
+										}}
+									/>
+
+								</div>
+							</div>
 							<textarea
 								type="text"
 								className="form-control mb-3 mt-3"
