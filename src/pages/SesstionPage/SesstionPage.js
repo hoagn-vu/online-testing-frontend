@@ -218,8 +218,8 @@ const SesstionPage = () => {
 					boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
 					fontSize: "14px"
 				}}>
-					<p style={{ fontSize: "16px", fontWeight: "bold", color: "#333", marginBottom: "10px" }}>
-							📝 Kỳ thi: {exam.organizeExamName}
+					<p style={{ fontSize: "16px", fontWeight: "bold", color: "#333", marginBottom: "15px" }}>
+							Kỳ thi: {exam.organizeExamName}
 					</p>
 
 					<div className="d-flex" style={{display: "flex",
@@ -229,28 +229,28 @@ const SesstionPage = () => {
 					}}>
 						{/* Cột 1 */}
 						<div style={{ flex: 1 }}>
-								<p><strong>📚 Môn thi:</strong> {exam.subjectName ?? "Chưa có dữ liệu"}</p>
-								<p><strong>📌 Loại đề thi:</strong> {exam.examType}</p>
+								<p><strong>Môn thi:</strong> {exam.subjectName ?? "Chưa có dữ liệu"}</p>
+								<p><strong>Loại đề thi:</strong> {exam.examType}</p>
 						</div>
 
 						{/* Cột 2 */}
 						<div style={{ flex: 1 }}>
-							<p><strong>⏳ Thời gian làm bài:</strong> {exam.duration} phút</p>
+							<p><strong>Thời gian làm bài:</strong> {exam.duration} phút</p>
 							{exam.examType === "Đề thi" && (
-									<p><strong>📖 Bộ đề thi:</strong> {exam.examSet.length > 0 ? exam.examSet.join(", ") : "Chưa có dữ liệu"}</p>
+									<p><strong>Bộ đề thi:</strong> {exam.examSet.length > 0 ? exam.examSet.join(", ") : "Chưa có dữ liệu"}</p>
 							)}
 							{exam.examType === "Ma trận" && (
-									<p><strong>📊 Ma trận đề:</strong> {exam.matrixName ?? "Chưa có dữ liệu"}</p>
+									<p><strong>Ma trận đề:</strong> {exam.matrixName ?? "Chưa có dữ liệu"}</p>
 							)}
 							{exam.examType === "Ngẫu nhiên" && (
-									<p><strong>❓ Tổng số câu hỏi:</strong> {exam.totalQuestion ?? "Chưa có dữ liệu"}</p>
+									<p><strong>Tổng số câu hỏi:</strong> {exam.totalQuestion ?? "Chưa có dữ liệu"}</p>
 							)}
 						</div>
 
 						{/* Cột 3 - Hiển thị thông tin đặc biệt */}
 						<div style={{ flex: 1 }}>
 							{(exam.examType === "Ma trận" || exam.examType === "Ngẫu nhiên") && (
-									<p><strong>⭐ Điểm tối đa:</strong> {exam.maxScore}</p>
+									<p><strong>Điểm tối đa:</strong> {exam.maxScore}</p>
 							)}
 						</div>
 					</div>
