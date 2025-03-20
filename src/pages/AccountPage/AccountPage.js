@@ -304,7 +304,7 @@ const AccountPage = () => {
       </nav>
 
       {/* Thanh tìm kiếm + Nút thêm mới + Upload */}
-      <div className="sample-actions">
+      <div className="account-actions">
         <div className="search-container">
           <SearchBox></SearchBox>
         </div>
