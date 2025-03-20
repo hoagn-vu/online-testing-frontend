@@ -163,8 +163,8 @@ const ExamMatrixPage = () => {
             {listExamMatrix.map((item, index) => (
               <tr key={item.questionBankId} className="align-middle">
                 <td className="text-center">{index + 1}</td>
-                <td className="text-hover-primary">
-                  <Link 
+                <td >
+                  <Link className="text-hover-primary"
                     to={`/staff/`} 
                     style={{ textDecoration: "none", cursor: "pointer", color: "black" }}
                   >

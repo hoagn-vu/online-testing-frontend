@@ -156,8 +156,8 @@ const QuestionBankPage = () => {
             {listQuestionBank.map((item, index) => (
               <tr key={item.questionBankId} className="align-middle">
                 <td className="text-center">{index+1}</td>
-                <td className="text-hover-primary">
-                  <Link 
+                <td >
+                  <Link className="text-hover-primary"
                     to={`/staff/question/${subjectId}/${item.questionBankId}`} 
                     style={{ textDecoration: "none", cursor: "pointer", color:"black" }}
                   >
