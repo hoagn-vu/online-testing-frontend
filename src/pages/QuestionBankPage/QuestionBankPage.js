@@ -149,7 +149,7 @@ const QuestionBankPage = () => {
               <th className="text-center" style={{ width: "50px"}}>STT</th>
               <th>Bộ câu hỏi cho phân môn: {subjectName}</th>
               <th className="text-center">Số lượng câu hỏi</th>
-              <th style={{ width: "120px"}}>Thao tác</th>
+              <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
             </tr>
           </thead>
           <tbody>
@@ -165,11 +165,11 @@ const QuestionBankPage = () => {
                   </Link>
                 </td>
                 <td className="text-center">{item.totalQuestions}</td>
-                <td>
-                  <button className="btn btn-primary btn-sm">
-                    <i className="fas fa-edit text-white"></i>
+                <td className="text-center">
+                  <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
+                    <i className="fas fa-edit text-white "></i>
                   </button>
-                  <button className="btn btn-danger btn-sm ms-2">
+                  <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
                     <i className="fas fa-trash-alt"></i>
                   </button>
                 </td>

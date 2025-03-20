@@ -365,11 +365,11 @@ const AccountPage = () => {
               <th scope="col" className="title-row">Mã</th>
               <th scope="col" className="title-row">Tài khoản</th>
               <th scope="col" className="title-row">Họ tên</th>
-              <th scope="col" className="title-row">Ngày sinh</th>
-              <th scope="col" className="title-row">Giới tính</th>
-              <th scope="col" className="title-row">Nhóm</th>
+              <th className="text-center">Ngày sinh</th>
+              <th className="text-center">Giới tính</th>
+              <th className="text-center">Nhóm</th>
               <th className="text-center">Trạng thái</th>
-              <th scope="col" className="title-row" style={{ width: "120px"}}>Thao tác</th>
+              <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
             </tr>
           </thead>
           <tbody>
@@ -386,9 +386,9 @@ const AccountPage = () => {
                 <td>{item.userCode}</td>
                 <td>{item.username}</td>
                 <td>{item.fullName}</td>
-                <td>{item.dateOfBirth}</td>
-                <td>{item.gender}</td>
-                <td>{item.groupName}</td>
+                <td className="text-center">{item.dateOfBirth}</td>
+                <td className="text-center">{item.gender}</td>
+                <td className="text-center">{item.groupName}</td>
                 <td>
                    <div className="form-check form-switch d-flex justify-content-center">
                      <input
@@ -402,11 +402,11 @@ const AccountPage = () => {
                      />
                    </div>
                  </td>
-                <td>
-                  <button className="btn btn-primary btn-sm">
-                    <i className="fas fa-edit text-white"></i>
+                 <td className="text-center">
+                  <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
+                    <i className="fas fa-edit text-white "></i>
                   </button>
-                  <button className="btn btn-danger btn-sm ms-2">
+                  <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
                     <i className="fas fa-trash-alt"></i>
                   </button>
                 </td>

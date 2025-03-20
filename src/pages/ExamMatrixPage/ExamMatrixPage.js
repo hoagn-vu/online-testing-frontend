@@ -155,8 +155,8 @@ const ExamMatrixPage = () => {
               <th>Ma trận</th>
               <th>Phân môn</th>
               <th>Bộ câu hỏi</th>
-              <th>Số lượng đề tạo sinh</th>
-              <th style={{ width: "120px"}}>Thao tác</th>
+              <th className="text-center">Số lượng đề tạo sinh</th>
+              <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
             </tr>
           </thead>
           <tbody>
@@ -173,12 +173,12 @@ const ExamMatrixPage = () => {
                 </td>
                 <td></td>
                 <td></td>
-                <td></td>
-                <td>
-                  <button className="btn btn-primary btn-sm">
-                    <i className="fas fa-edit text-white"></i>
+                <td className="text-center"></td>
+                <td className="text-center">
+                  <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
+                    <i className="fas fa-edit text-white "></i>
                   </button>
-                  <button className="btn btn-danger btn-sm ms-2">
+                  <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
                     <i className="fas fa-trash-alt"></i>
                   </button>
                 </td>
