@@ -21,19 +21,10 @@ const MonitoringPage = () => {
 			userCode: "BIT220172",
 			fullName: "Ngô Đức Thuận",
 			gender: "Nam",
-			dateOfBirth: "21/05/2004 21/05/2004",
-			examId: "EXAM124"
-		},
-		{
-			candidateId: "CAND002",
-			userCode: "BIT220172",
-			fullName: "Ngô Đức Thuận",
-			gender: "Nam",
 			dateOfBirth: "21/05/2004",
 			examId: "EXAM124"
 		},
 	];
-	
 
   const [selectedExam, setSelectedExam] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -60,29 +51,29 @@ const processData = (data) => {
 	
   return (
     <div className="home-super-page">
-			<Link className="mt-0" to="/supervisor/home" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
+			<Link to="/supervisor/home" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
 				<ChevronLeftIcon /> Quay về
 			</Link>
-			<div className="mb-3 mt-1">
-				<h5 className="d-flex align-items-center justify-content-center">Giám sát kỳ thi: </h5> 
-				<h6 className="d-flex align-items-center justify-content-center">Ca thi: </h6>
-				<h6 className="d-flex align-items-center justify-content-center">Phòng thi: </h6>
+			<div className="mb-4">
+				<h4 className="d-flex align-items-center justify-content-center">Giám sát kỳ thi: </h4> 
+				<h5 className="d-flex align-items-center justify-content-center">Ca thi: </h5>
+				<h5 className="d-flex align-items-center justify-content-center">Phòng thi: </h5>
 			</div>
 			<div>
-				<table className="table table-hover table-bordered custom-table monitor-tbl">
-					<thead className="custom-header">
+				<table className="table table-hover table-bordered custom-table">
+					<thead className="table-dark">
 						<tr>
 							<th>#</th>
-							<th style={{width: "100px"}}>Mã sinh viên</th>
+							<th>Mã sinh viên</th>
 							<th className="text-wrap" style={{ maxWidth: "100px" }}>Họ và tên đệm</th>
-							<th style={{minWidth: "70px"}}>Tên</th>
+							<th>Tên</th>
 							<th>Trạng thái</th>
 							<th>Bắt đầu</th>
+							<th>Kết thúc</th>
 							<th>Tiến độ</th>
 							<th>Nộp bài</th>
 							<th>Điểm số</th>
 							<th>Cảnh cáo</th>
-							<th>Thao tác</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -94,7 +85,7 @@ const processData = (data) => {
 								<td>{row.firstName}</td>
 								<td>{row.gender}</td>
 								<td>{row.dateOfBirth}</td>
-								<td>0/10</td>
+								<td>{row.dateOfBirth}</td>
 								<td>{row.dateOfBirth}</td>
 								<td></td>
 								<td>{row.dateOfBirth}</td>

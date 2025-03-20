@@ -5,125 +5,32 @@ import "./ListQuestionPage.css";
 import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import CreatableSelect from "react-select/creatable";
-import Icon from '@mui/material/Icon';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import BorderColorIcon from '@mui/icons-material/BorderColor';
-
-const subjectData  = 
-{
-	id: "67cf6cee1d44d62edf5de90b",
-	subjectName: "Math",
-	subjectStatus: null,
-	questionBanks: [
-		{
-			questionBankId: "67cf702d1d44d62edf5de913",
-			questionBankName: "Giải tích 1",
-			questionBankStatus: null,
-			list: [
-				{
-					id: 1,
-					questionText: "What is the capital of France?",
-					options: [
-							{ optionId: "1", optionText: "Berlin", isCorrect: false },
-							{ optionId: "2", optionText: "Madrid", isCorrect: false },
-							{ optionId: "3", optionText: "Paris", isCorrect: true },
-							{ optionId: "4", optionText: "Rome", isCorrect: false },
-					],
-					isRandomOrder: false,
-					tags: []
-				},
-				{
-					id: 2,
-					questionText: "Which planet is known as the Red Planet?",
-					options: [
-							{ optionId: "1", optionText: "Berlin", isCorrect: false },
-							{ optionId: "2", optionText: "Madrid", isCorrect: false },
-							{ optionId: "3", optionText: "Paris", isCorrect: true },
-							{ optionId: "4", optionText: "Rome", isCorrect: false },
-					],
-					isRandomOrder: false,
-					tags: []
-				},			
-			],
-		},
-		{
-			questionBankId: "67cf70341d44d62edf5de916",
-			questionBankName: "Giải tích 2",
-			questionBankStatus: null,
-			list: [
-				{
-					id: 1,
-					questionText: "Linh?",
-					options: [
-							{ optionId: "1", optionText: "Berlin", isCorrect: false },
-							{ optionId: "2", optionText: "Madrid", isCorrect: false },
-							{ optionId: "3", optionText: "Paris", isCorrect: true },
-							{ optionId: "4", optionText: "Rome", isCorrect: false },
-					],
-					isRandomOrder: false,
-					tags: ["Chương 1", "Nhận biết"]
-				},
-				{
-					id: 2,
-					questionText: "What is the capital of France?",
-					options: [
-							{ optionId: "1", optionText: "Berlin", isCorrect: false },
-							{ optionId: "2", optionText: "Madrid", isCorrect: false },
-							{ optionId: "3", optionText: "Paris", isCorrect: true },
-							{ optionId: "4", optionText: "Rome", isCorrect: false },
-					],
-					isRandomOrder: false,
-					tags: ["Chương 1", "Nhận biết"]
-
-				},
-				{
-					id: 3,
-					questionText: "Linh 1?",
-					options: [
-							{ optionId: "1", optionText: "Berlin", isCorrect: false },
-							{ optionId: "2", optionText: "Madrid", isCorrect: false },
-							{ optionId: "3", optionText: "Paris", isCorrect: true },
-							{ optionId: "4", optionText: "Rome", isCorrect: false },
-					],
-					isRandomOrder: false,
-					tags: ["Chương 1", "Thông hiểu"]
-				},
-				{
-					id: 4,
-					questionText: "Hôm nay là thứ mấy?",
-					options: [
-							{ optionId: "1", optionText: "Berlin", isCorrect: false },
-							{ optionId: "2", optionText: "Madrid", isCorrect: false },
-							{ optionId: "3", optionText: "Paris", isCorrect: true },
-							{ optionId: "4", optionText: "Rome", isCorrect: false },
-					],
-					isRandomOrder: false,
-					tags: ["Chương 2", "Nhận biết"]
-
-				},
-				{
-					id: 5,
-					questionText: "Which planet is known as the Red Planet?",
-					options: [
-							{ optionId: "1", optionText: "Berlin", isCorrect: false },
-							{ optionId: "2", optionText: "Madrid", isCorrect: false },
-							{ optionId: "3", optionText: "Paris", isCorrect: true },
-							{ optionId: "4", optionText: "Rome", isCorrect: false },
-					],
-					isRandomOrder: false,
-					tags: ["Chương 2", "Vận dụng cao"]
-				},
-			],
-		}
-	]	
-};
+import ApiService from "../../services/apiService";
 
 const ListQuestionPage = () => {
+	const { subjectId, questionBankId } = useParams();
+	const [ questions, setQuestions ] = useState([]);
+	const [ subjectName, setSubjectName ] = useState("");
+	const [ questionBankName, setQuestionBankName ] = useState("");
+
+	useEffect(() => {
+		const fetchData = async () => {
+			const response = await ApiService.get("/subjects/questions", {
+				params: { subId: subjectId, qbId: questionBankId },
+			});
+			setQuestions(response.data.questions);
+			setSubjectName(response.data.subjectName);
+			setQuestionBankName(response.data.questionBankName);
+			console.log(response.data);
+		};
+
+		fetchData();
+	}, [subjectId, questionBankId]);
+
 	const [editQuestionId, setEditQuestionId] = useState(null);
 	const [shuffleQuestion, setShuffleQuestion] = useState(false);
 	const [selectedQuestionBankId, setSelectedQuestionBankId] = useState(null);
-	const [questions, setQuestions] = useState();
-	const {subject, questionBankId } = useParams();
 	const [selectedGroups, setSelectedGroups] = useState([]);
 
 	const [newQuestion, setNewQuestion] = useState({
@@ -225,8 +132,9 @@ const ListQuestionPage = () => {
 			};
 
 	const groupedQuestions = {};
-	const selectedQuestions = subjectData.questionBanks.find(qb => qb.questionBankId === questionBankId)?.list || [];
-	
+	// const selectedQuestions = subjectData.questionBanks.find(qb => qb.questionBankId === questionBankId)?.list || [];
+	const selectedQuestions = []
+
 	selectedQuestions.forEach((question) => {
 			const chapter = question.tags[0] || "";
 			const level = question.tags[1] || "";
@@ -263,32 +171,30 @@ const ListQuestionPage = () => {
 			});
 	};
 
-	const currentQuestionBank = subjectData.questionBanks.find(qb => qb.questionBankId === questionBankId);
-	const questionBankName = currentQuestionBank ? currentQuestionBank.questionBankName : "Ngân hàng câu hỏi";
-    
-	const allChapters = [
-    ...new Set(subjectData.questionBanks.flatMap(qb => 
-        qb.list.map(q => q.tags?.[0]) // Lấy tag đầu tiên (Chương)
-			).filter(Boolean))
-	].map(chapter => ({ label: chapter, value: chapter }));
-
-	const allLevels = [
-			...new Set(subjectData.questionBanks.flatMap(qb => 
-					qb.list.map(q => q.tags?.[1]) // Lấy tag thứ hai (Mức độ)
-			).filter(Boolean))
-	].map(level => ({ label: level, value: level }));
-
-	const [selectedChapter, setSelectedChapter] = useState(null);
-	const [selectedLevel, setSelectedLevel] = useState(null);
+	// const currentQuestionBank = subjectData.questionBanks.find(qb => qb.questionBankId === questionBankId);
+	// const questionBankName = currentQuestionBank ? currentQuestionBank.questionBankName : "Ngân hàng câu hỏi";
+  
+	// // Lấy tất cả các tags từ subjectData và loại bỏ trùng lặp
+	// const allTags = [
+	// 	...new Set(
+	// 		subjectData.questionBanks.flatMap(qb =>
+	// 			qb.list.flatMap(q => q.tags || [])
+	// 		)
+	// 	)
+	// ].map(tag => ({ label: tag, value: tag }));
+	const allTags = [];
 
 	return (
 		<div className=" list-question-container">
 			{/* Breadcrumb */}
 			<nav className="breadcrumb">
-				<Link to="/admin">Home</Link> / 
-				<Link to="/admin/question">Ngân hàng câu hỏi</Link> / 
-				<Link to={`/admin/question/${subject}`}>{decodeURIComponent(subject)}</Link> / 
-				<span className="breadcrumb-current">{questionBankName}</span>
+				<Link to="/admin">Home</Link>
+				<span> / </span>
+				<Link to="/admin/question">Ngân hàng câu hỏi</Link>
+				<span> / </span>
+				<Link to={`/admin/question/${subjectId}`}>Phân môn: {subjectName}</Link>
+				<span> / </span>
+				<span className="breadcrumb-current">Bộ: { questionBankName }</span>
 			</nav>
 	
 			<div className="d-flex">

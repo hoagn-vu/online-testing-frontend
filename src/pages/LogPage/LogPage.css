@@ -1,3 +1,9 @@
+.log-page {
+    width: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
 /* Đảm bảo bảng tài khoản không tràn ra ngoài */
 .log-table-container {
     width: 100%;

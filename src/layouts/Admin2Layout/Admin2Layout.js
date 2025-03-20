@@ -25,6 +25,9 @@ import avatar from "../../assets/images/avar.jpg";
 import './Admin2Layout.css'
 import Tooltip from '@mui/material/Tooltip';
 
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../../redux/authSlice";
+
 const drawerWidth = 250;
 
 const menuItems = [
@@ -127,6 +130,17 @@ export default function Admin2Layout() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const dispatch = useDispatch();
+  
+  const user = useSelector((state) => state.auth.user);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    navigate("/");
+  };
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -136,19 +150,18 @@ export default function Admin2Layout() {
             <IconButton color="inherit" onClick={handleDrawerOpen} edge="start" sx={{ marginRight: 5, ...(open && { display: 'none' }) }}>
               <MenuIcon />
             </IconButton>
-
           </div>
 
           <div className="user-info position-relative d-flex align-items-center">
             <img src={avatar} alt="Avatar" className="avatar" />
-            <span className="username text-white">Phương Linh</span>
+            <span className="username text-white">{user?.username}</span>
             <button className="dropdown-btn text-white" onClick={() => setIsOpen(!isOpen)}>
               <FaChevronDown />
             </button>
             {isOpen && (
               <ul className="dropdown-menu show position-absolute end-0 mt-2">
                 <li>
-                  <a className="dropdown-item" href="#">
+                  <a className="dropdown-item" onClick={handleLogout}>
                     Đăng xuất
                   </a>
                 </li>
@@ -184,7 +197,7 @@ export default function Admin2Layout() {
             >
               <ListItemButton 
                 onClick={() => navigate(item.path)} 
-                selected={location.pathname.startsWith(item.path)}
+                selected={location.pathname === item.path}
               >
                 <ListItemIcon>{item.icon}</ListItemIcon>
                 {open && <ListItemText primary={item.title} />}
@@ -199,7 +212,7 @@ export default function Admin2Layout() {
         sx={{
           flexGrow: 1,
           p: 2,
-          backgroundColor: "#fdfdfd",
+          backgroundColor: "#F8F9FA",
           minHeight: "100vh",
           transition: "margin 0.3s ease, width 0.3s ease",
           marginLeft: open ? `${drawerWidth - 250}px` : `calc(${theme.spacing(0)} + 1px)`,

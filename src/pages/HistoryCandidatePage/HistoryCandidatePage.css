@@ -2,25 +2,19 @@
     padding-top: 90px;
 }
 
-.tbl-history {
+.container-history .tbl-history {
     box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
     padding: 15px;
     border-radius: 10px;
 }
 
-.tbl-history .table th {
+.container-history .table th {
     text-align: center;
     background-color: #bad2ec;
     font-weight: bold;
 }
 
-.exam-history-table .table th {
-    text-align: center;
-    background-color: #bad2ec;
-    font-weight: bold;
-}
-
-.exam-history-table .table td {
+.container-history .table td {
     text-align: center;
 }
 

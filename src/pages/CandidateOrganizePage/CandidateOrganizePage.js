@@ -16,17 +16,9 @@ const listCandidate = [
     dateOfBirth: "21/05/2003",
     examId: "EXAM123"
   },
-	{
-    candidateId: "CAND002",
-    userCode: "BIT220089",
-    fullName: "Phan Thị Phương Linh",
-    gender: "Nữ",
-    dateOfBirth: "08/01/2004",
-    examId: "EXAM124"
-  },
   {
-    candidateId: "CAND003",
-    userCode: "BIT220149",
+    candidateId: "CAND002",
+    userCode: "BIT220172",
     fullName: "Ngô Đức Thuận",
     gender: "Nam",
     dateOfBirth: "21/05/2004",
@@ -117,54 +109,44 @@ const CandidateOrganizePage = () => {
 				<div className="search-container">
 					<SearchBox></SearchBox>
 				</div>
-				<button className="btn btn-primary me-2" style={{fontSize: "14px"}} onClick={handleAddNew}>
-					<i className="fas fa-plus me-2"></i>
+				<button className="add-btn" onClick={handleAddNew}>
 					Thêm mới
 				</button>
 			</div>
 
-			<div className="session-table-container mt-3">
-				<div className="table-responsive">
-					<table className="table sample-table tbl-organize table-striped">
-						<thead style={{fontSize: "14px"}}>
-							<tr className="align-middle fw-medium">
-								<th scope="col" className="title-row text-center">STT</th> 
-								<th scope="col" className="title-row">MSSV</th>
-								<th scope="col" className="title-row">Họ và tên đệm</th>
-								<th scope="col" className="title-row">Tên</th>
-								<th scope="col" className="title-row">Ngày sinh</th>
-								<th scope="col" className="title-row">Giới tính</th>
-								<th scope="col" className="title-row">Thao tác</th>
-							</tr>
-						</thead>
-						<tbody style={{fontSize: "14px"}}>
-							{processData(rows).length === 0 ? (
-								<tr>
-									<td colSpan="7" className="text-center fw-semibold text-muted" 
-										style={{ height: "100px", verticalAlign: "middle" }}>
-									Không có dữ liệu
-									</td>
-								</tr>
-							) : (
-							processData(rows).map((item, index) => (
-								<tr key={item.candidateId} className="align-middle">
-									<td className="text-center">{index + 1}</td>
-									<td>{item.userCode}</td>
-									<td>{item.lastName}</td>
-									<td>{item.firstName}</td>
-									<td>{item.dateOfBirth}</td>
-									<td>{item.gender}</td>
-									<td>
-										<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}  onClick={() => handleDelete(item.candidateId)}>
-											<i className="fas fa-trash-alt"></i>
-										</button>
-									</td>
-								</tr>
-							)))}
-						</tbody>
-					</table>
-				</div>
-				</div>	
+			{/* Bảng dữ liệu */}
+			<div className="subject-table-container mt-3">
+        <table className="table table-striped table-sm custom-table">
+          <thead className="table-dark">
+            <tr>
+              <th>#</th>
+              <th>Mã sinh viên</th>
+              <th>Họ và tên đệm</th>
+              <th>Tên</th>
+              <th>Giới tính</th>
+              <th>Ngày sinh</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+						{processData(rows).map((row, index) => (
+              <tr key={row.candidateId}>
+                <td>{index + 1}</td>
+                <td>{row.userCode}</td>
+                <td>{row.lastName}</td>
+                <td>{row.firstName}</td>
+                <td>{row.gender}</td>
+                <td>{row.dateOfBirth}</td>
+                <td>
+                  <IconButton color="error" onClick={() => handleDelete(row.candidateId)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
 			{/* Form thêm tài khoản */}
 			{showForm && (

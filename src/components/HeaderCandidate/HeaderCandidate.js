@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../redux/authSlice";
 import { Link, useNavigate } from "react-router-dom";
+import { authApi } from "../../services/authApi";
 
 const HeaderCandidate = ({ avatarUrl, logoUrl }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,7 +19,7 @@ const HeaderCandidate = ({ avatarUrl, logoUrl }) => {
   const handleLogout = () => {
     dispatch(logout());
     localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
+    dispatch(authApi.util.resetApiState());
     navigate("/");
   };
 
