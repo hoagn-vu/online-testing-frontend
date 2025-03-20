@@ -6,10 +6,17 @@
     min-height: 100vh;
 }
   
+.monitor-tbl .custom-table td {
+    align-items: center;
+    justify-content: center;
+    padding: 15px 0px 15px 0px;
+    margin: 0px;
+}
+
 .custom-table td {
     align-items: center;
     justify-content: center;
-    padding: 10px 0px 10px 0px;
+    padding: 15px 0px 15px 0px;
     margin: 0px;
 }
 
@@ -37,4 +44,13 @@
 
 .custom-table {
     margin: auto; 
+}
+
+.custom-header th{
+    background-color: #c6e0f8 !important; /* Màu xanh Bootstrap */
+    padding: 15px;
+}
+
+.custom-table, .custom-table th, .custom-table td {
+    border: 1px solid black !important; /* Viền đen dày */
 }
