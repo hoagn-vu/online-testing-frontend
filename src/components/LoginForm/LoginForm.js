@@ -1,19 +1,4 @@
-<<<<<<< Updated upstream
-import React, { useState, useEffect } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./LoginForm.css";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-
-const LoginForm = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-=======
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLoginMutation } from '../../services/authApi';
 import { useDispatch } from 'react-redux';
 import { setCredentials, setUser } from '../../redux/authSlice';
@@ -29,51 +14,29 @@ const LoginPage = () => {
 
   const [login, { isLoading }] = useLoginMutation();
   const dispatch = useDispatch();
->>>>>>> Stashed changes
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!username && !password) {
-      setError("");
+      setErrMsg("");
     }
   }, [username, password]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
-
-    // console.log("Dữ liệu gửi đi:", { username, password });
+    setErrMsg(null);
 
     if (!username || !password) {
-      setError("Vui lòng nhập tài khoản và mật khẩu");
+      setErrMsg("Vui lòng nhập tài khoản và mật khẩu");
       return;
     }
 
     if (username.length < 6 || password.length < 6) {
-      setError("Tài khoản và mật khẩu phải có ít nhất 6 ký tự");
+      setErrMsg("Tài khoản và mật khẩu phải có ít nhất 6 ký tự");
       return;
     }
 
-    setLoading(true);
-
     try {
-<<<<<<< Updated upstream
-      const response = await axios.post(
-        "http://localhost:5146/api/auth/login",
-        { username, password },
-        { headers: { "Content-Type": "application/json" } }
-      );
-      sessionStorage.setItem("userId", response.data.userId);
-      sessionStorage.setItem("userFullname", response.data.userFullname);
-      setLoading(false);
-      navigate("/welcome");
-    } catch (err) {
-      console.error("Lỗi đăng nhập:", err.response ? err.response.data : err);
-      setError(
-        err.response?.data?.message || "Đã xảy ra lỗi, vui lòng thử lại!"
-      );
-      setLoading(false);
-=======
       // Gọi API login
       const { accessToken } = await login({ username, password }).unwrap();
       dispatch(setCredentials({ accessToken }));
@@ -97,7 +60,6 @@ const LoginPage = () => {
     } catch (err) {
       console.error('Login failed', err);
       setErrMsg(err.data?.message || 'Đã có lỗi xảy ra');
->>>>>>> Stashed changes
     }
   };
 
@@ -134,8 +96,8 @@ const LoginPage = () => {
       >
         <h2 className="text-center mb-3 fw-bold text-blue-holo">Đăng nhập</h2>
 
-        {error && (
-          <div className="alert alert-danger text-center p-2">{error}</div>
+        {errMsg && (
+          <div className="alert alert-danger text-center p-2">{errMsg}</div>
         )}
 
         <div className="mb-3 text-start">
@@ -168,9 +130,9 @@ const LoginPage = () => {
         <button
           type="submit"
           className="btn w-100 fw-bold css-btn"
-          disabled={loading}
+          disabled={isLoading}
         >
-          {loading ? (
+          {isLoading ? (
             <div
               className="spinner-border spinner-border-sm"
               role="status"

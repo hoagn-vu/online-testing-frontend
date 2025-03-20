@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "./OrganizeExamPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import {Chip, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
+import {Chip, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Pagination, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
@@ -97,6 +97,27 @@ const subjectOptions = [
 ];
 
 const OrganizeExamPage = () => {
+
+  const [listOrganizeExam, setListOrganizeExam] = useState([]);
+
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const handleSelectItem = (e, id) => {
+    if (e.target.checked) {
+      setSelectedItems([...selectedItems, id]);
+    } else {
+      setSelectedItems(selectedItems.filter((item) => item !== id));
+    }
+  };
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedItems(listOrganizeExam.map((item) => item.id));
+    } else {
+      setSelectedItems([]);
+    }
+  };
+
   const [showForm, setShowForm] = useState(false);
   const [editingAccount, setEditingAccount] = useState(null);
   const [rows, setRows] = useState(Object.values(listQuestionBank).flat());
@@ -302,54 +323,6 @@ const OrganizeExamPage = () => {
       </div>
 
       {/* Hiển thị bảng theo vai trò đã chọn */}
-<<<<<<< Updated upstream
-      <div className="subject-table-container mt-3">
-        <Paper sx={{ width: "100%" }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          initialState={{
-          pagination: { paginationModel: { page: 0, pageSize: 5 } },
-          }}
-          pageSizeOptions={[5, 10]}
-          disableColumnResize 
-          disableExtendRowFullWidth
-          disableRowSelectionOnClick
-          localeText={{
-            noRowsLabel: "Không có dữ liệu", 
-            }}
-          sx={{
-            "& .MuiDataGrid-cell": {
-              whiteSpace: "normal", 
-              wordWrap: "break-word", 
-              lineHeight: "1.2", 
-              padding: "8px", 
-            },
-            "& .MuiDataGrid-columnHeaders": {
-              borderBottom: "2px solid #ccc", 
-            },
-            "& .MuiDataGrid-cell": {
-              borderRight: "1px solid #ddd", 
-            },
-            "& .MuiDataGrid-row:last-child .MuiDataGrid-cell": {
-              borderBottom: "none", 
-            },
-            "& .MuiTablePagination-displayedRows": {
-              textAlign: "center",      
-              marginTop: "16px",
-              marginLeft: "0px"
-            },
-            "& .MuiTablePagination-selectLabel": {
-              marginTop: "13px",
-              marginLeft: "0px"
-            },
-            "& .MuiTablePagination-select": {
-              marginLeft: "0px",
-            } 
-          }}
-        />
-        </Paper>
-=======
       <div className="organize-examtable-container mt-3">
         <div className="table-responsive">
           <table className="table organize-exam-table table-hover">
@@ -426,7 +399,6 @@ const OrganizeExamPage = () => {
         <div className="organize-exampagination d-flex justify-content-end align-items-center">
           <Pagination count={10} variant="outlined" shape="rounded" />
         </div>
->>>>>>> Stashed changes
       </div>
 
       {/* Form thêm tài khoản */}

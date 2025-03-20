@@ -27,7 +27,6 @@ import Tooltip from '@mui/material/Tooltip';
 
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../redux/authSlice";
-import { authApi } from "../../services/authApi";
 
 const drawerWidth = 250;
 
@@ -138,7 +137,7 @@ export default function Admin2Layout() {
   const handleLogout = () => {
     dispatch(logout());
     localStorage.removeItem("accessToken");
-    dispatch(authApi.util.resetApiState());
+    localStorage.removeItem("refreshToken");
     navigate("/");
   };
 

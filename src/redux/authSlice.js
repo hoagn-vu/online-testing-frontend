@@ -23,7 +23,7 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addMatcher(authApi.endpoints.getProfile.matchFulfilled, (state, { payload }) => {
-      state.user = payload; // Cập nhật user khi lấy profile thành công
+      state.user = payload;
     });
   },
 });

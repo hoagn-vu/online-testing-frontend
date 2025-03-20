@@ -7,7 +7,7 @@ export const authApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL + '/auth',
     prepareHeaders: (headers, { getState }) => {
-      const token = getState().auth.accessToken || localStorage.getItem('accessToken');
+      const token = getState().auth.accessToken || localStorage.getItem('accessToken'); 
       if (token) {
         headers.set('Authorization', `Bearer ${token}`);
       }
@@ -24,13 +24,12 @@ export const authApi = createApi({
     }),
     getProfile: builder.query({
       query: () => '/profile',
-      keepUnusedDataFor: 0,
+      keepUnusedDataFor: 0,  // Không giữ cache
     }),
   }),
 });
 
 export const { useLoginMutation, useGetProfileQuery } = authApi;
-
 
 
 // import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';

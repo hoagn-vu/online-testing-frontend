@@ -47,56 +47,6 @@ const RoomManagementPage = () => {
   const [editingAccount, setEditingAccount] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [accountToDelete, setAccountToDelete] = useState(null);
-<<<<<<< Updated upstream
-  // const [rows, setRows] = useState(Object.values(dummyRooms).flat());
-  const [rows, setRows] = useState([]);
-
-  const columns = [
-    { field: "id", headerName: "#", width: 10, align: "center",headerAlign: "center", },
-    { field: "roomName", headerName: "Tên phòng", width: 440 },
-    { field: "roomLocation", headerName: "Địa điểm", width: 300 },
-    { field: "roomCapacity", headerName: "Số lượng", width: 150, align: "center",headerAlign: "center", },
-    {
-      field: "roomStatus",align: "center", headerAlign: "center",
-      headerName: "Trạng thái",
-      width: 180,
-      renderCell: (params) => (
-        <Select
-          value={params.row.roomStatus}
-          onChange={(e) => handleStatusChange(params.row.id, e.target.value)}
-          size="small"
-          sx={{
-            minWidth: 120,
-            fontSize: "15px", 
-            padding: "0px", 
-          }}
-        >
-          <MenuItem value="active">Active</MenuItem>
-          <MenuItem value="disabled">Disabled</MenuItem>
-        </Select>
-      ),
-    },
-    {
-      field: "actions",
-      headerName: "Thao tác", align: "center",headerAlign: "center",
-      width: 160,
-      sortable: false,
-      renderCell: (params) => (
-        <>
-          <IconButton color="primary" onClick={() => handleEdit(params.row)}>
-            <EditIcon />
-          </IconButton>
-          <IconButton color="error" onClick={() => handleDelete(params.row.id)}>
-            <DeleteIcon />
-          </IconButton>
-        </>
-      ),
-    },
-  ];
-
-  const paginationModel = { page: 0, pageSize: 5 };
-=======
->>>>>>> Stashed changes
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -212,54 +162,6 @@ const RoomManagementPage = () => {
         </div>
       </div>
 
-<<<<<<< Updated upstream
-      <div className="room-table-container ">
-        <Paper sx={{width: "100%" }}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            initialState={{
-              pagination: { paginationModel: { page: 0, pageSize: 5 } },
-            }}
-            pageSizeOptions={[5, 10]}
-            disableColumnResize
-            disableExtendRowFullWidth
-            disableRowSelectionOnClick
-            localeText={{
-              noRowsLabel: "Không có dữ liệu", // ✅ Đổi text mặc định của DataGrid
-            }}
-            sx={{
-              "& .MuiDataGrid-cell": {
-                whiteSpace: "normal", // ✅ Cho phép xuống dòng khi nội dung dài
-                wordWrap: "break-word", // ✅ Xuống dòng tự động
-                lineHeight: "1.2", // ✅ Giảm khoảng cách giữa các dòng nếu nội dung quá dài
-                padding: "8px", // ✅ Thêm padding cho đẹp hơn
-              },
-              "& .MuiDataGrid-columnHeaders": {
-                borderBottom: "2px solid #ccc", // Đường phân cách dưới tiêu đề cột
-              },
-              "& .MuiDataGrid-cell": {
-                borderRight: "1px solid #ddd", // Đường phân cách giữa các cột
-              },
-              "& .MuiDataGrid-row:last-child .MuiDataGrid-cell": {
-                borderBottom: "none", // Loại bỏ viền dưới cùng của hàng cuối
-              },
-              "& .MuiTablePagination-displayedRows": {
-                textAlign: "center",        // Căn giữa chữ "1-1 of 1"
-                marginTop: "16px",
-                marginLeft: "0px"
-              },
-              "& .MuiTablePagination-selectLabel": {
-                marginTop: "13px",
-                marginLeft: "0px"
-              },
-              "& .MuiTablePagination-select": {
-                marginLeft: "0px",
-              } 
-            }}
-          />
-        </Paper>
-=======
       <div className="table-responsive">
         <table className="table sample-table table-hover">
           <thead>
@@ -312,7 +214,6 @@ const RoomManagementPage = () => {
 
       <div className="sample-pagination d-flex justify-content-end align-items-center">
         <Pagination count={10} variant="outlined" shape="rounded" />
->>>>>>> Stashed changes
       </div>
 
       {/* Form thêm tài khoản */}

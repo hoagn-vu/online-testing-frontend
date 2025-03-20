@@ -1,5 +1,5 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import React, { useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 import DefaultLayout from "./layouts/DefaultLayout/DefaultLayout";
@@ -22,10 +22,6 @@ import ExamManagementPage from "./pages/ExamManagementPage/ExamManagementPage";
 import DetailExamPage from "./pages/DetailExamPage/DetailExamPage";
 import OrganizeExamPage from "./pages/OrganizeExamPage/OrganizeExamPage";
 import SesstionPage from "./pages/SesstionPage/SesstionPage";
-<<<<<<< Updated upstream
-
-function App() {
-=======
 import RoomOrganizePage from "./pages/RoomOrganizePage/RoomOrganizePage";
 import CandidateOrganizePage from "./pages/CandidateOrganizePage/CandidateOrganizePage";
 import SupervisorLayout from "./layouts/SupervisorLayout/SupervisorLayout";
@@ -38,24 +34,27 @@ import Admin2Layout from "./layouts/Admin2Layout/Admin2Layout";
 
 import NotFound from "./pages/NotFound/NotFound";
 
-import { authApi } from "./services/authApi";
+import { authApi, useGetProfileQuery } from "./services/authApi";
+import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from "prop-types";
+import { setUser } from './redux/authSlice';
 
 function App() {
   const accessToken = useSelector((state) => state.auth.accessToken) || localStorage.getItem("accessToken");
-  const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
-    if (accessToken && !user) {
+    if (accessToken && !user) {  // Chỉ gọi API nếu chưa có user
       dispatch(authApi.endpoints.getProfile.initiate())
         .unwrap()
         .then((data) => dispatch(setUser(data)))
         .catch((error) => console.error('Failed to fetch profile', error));
     }
-  }, [accessToken, dispatch]);
+  }, [accessToken, user, dispatch]);
 
   const ProtectedRoute = ({ allowedRoles, children }) => {
-    const { user, accessToken } = useSelector((state) => state.auth);
+    // const { user, accessToken } = useSelector((state) => state.auth);
     const { isFetching } = useGetProfileQuery(undefined, {
       skip: !accessToken, // Chỉ gọi API nếu có accessToken
     });
@@ -73,8 +72,11 @@ function App() {
   
     return children;
   };
+  ProtectedRoute.propTypes = {
+    allowedRoles: PropTypes.arrayOf(PropTypes.string).isRequired,
+    children: PropTypes.node.isRequired,
+  };
 
->>>>>>> Stashed changes
   return (
     <Router>
       {" "}
@@ -83,19 +85,6 @@ function App() {
         <Route path="/" element={<LoginPage />} />
       </Routes>
       <Routes>
-<<<<<<< Updated upstream
-        <Route path="/welcome" element={<WelcomePage />} />
-      </Routes>
-      <Routes>
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route path="accountmanage" element={<AccountPage />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="organize" element={<OrganizeExamPage />} />
-          <Route path="session" element={<SesstionPage />} />
-          <Route path="question" element={<QuestionManagementPage />}/>
-          <Route path="question/:subject" element={<QuestionBankNamePage />} />
-          <Route path="question/:subject/:questionBankId" element={<ListQuestionPage />} />
-=======
         <Route 
           path="/staff" 
           element={
@@ -116,7 +105,6 @@ function App() {
           <Route path="question" element={<SubjectPage />}/>
           <Route path="question/:subjectId" element={<QuestionBankPage />} />
           <Route path="question/:subjectId/:questionBankId" element={<ListQuestionPage />} />
->>>>>>> Stashed changes
           <Route path="matrix-exam" element={<ExamMatrixPage />} />
           <Route path="matrix-detail" element={<DetailExamMatrixPage />} />
           <Route path="exam" element={<ExamManagementPage />} />
@@ -126,7 +114,14 @@ function App() {
         </Route>
       </Routes>
       <Routes>
-        <Route path="/candidate" element={<DefaultLayout />}>
+        <Route 
+          path="/candidate" 
+          element={
+            <ProtectedRoute allowedRoles={["candidate"]}>
+              <DefaultLayout />
+              </ProtectedRoute>
+          }
+        >
           <Route path="home" element={<HomeCandidate />} />
           <Route path="history" element={<HistoryCandidatePage />} />
           <Route path="result" element={<ResultCandidatePage />} />

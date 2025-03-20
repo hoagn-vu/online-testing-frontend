@@ -159,8 +159,10 @@ const ExamMatrixPage = () => {
                   checked={selectedItems.length === listExamMatrix.length && listExamMatrix.length > 0}
                 />
               </th>
-              <th scope="col" className="title-row">Bộ câu hỏi cho phân môn</th>
-              <th scope="col" className="title-row">Số lượng câu hỏi</th>
+              <th scope="col" className="title-row">Ma trận</th>
+              <th scope="col" className="title-row">Phân môn</th>
+              <th scope="col" className="title-row">Bộ câu hỏi</th>
+              <th scope="col" className="title-row">Số lượng đề tạo sinh</th>
               <th scope="col" className="title-row" style={{ width: "120px"}}>Thao tác</th>
             </tr>
           </thead>
@@ -180,10 +182,12 @@ const ExamMatrixPage = () => {
                     to={`/staff/`} 
                     style={{ textDecoration: "none", cursor: "pointer" }}
                   >
-                    {item.questionBankName}
+                    {item.matrixName}
                   </Link>
                 </td>
-                <td>{item.totalQuestions}</td>
+                <td></td>
+                <td></td>
+                <td></td>
                 <td>
                   <button className="btn btn-primary btn-sm">
                     <i className="fas fa-edit text-white"></i>

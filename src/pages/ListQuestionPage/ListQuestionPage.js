@@ -6,123 +6,7 @@ import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import CreatableSelect from "react-select/creatable";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-<<<<<<< Updated upstream
-
-const subjectData  = 
-{
-		id: "67cf6cee1d44d62edf5de90b",
-		subjectName: "Math",
-		subjectStatus: null,
-		questionBanks: [
-				{
-						questionBankId: "67cf702d1d44d62edf5de913",
-						questionBankName: "Giải tích 1",
-						questionBankStatus: null,
-						list: [
-								{
-										id: 1,
-										questionText: "What is the capital of France?",
-										options: [
-												{ optionId: "1", optionText: "Berlin", isCorrect: false },
-												{ optionId: "2", optionText: "Madrid", isCorrect: false },
-												{ optionId: "3", optionText: "Paris", isCorrect: true },
-												{ optionId: "4", optionText: "Rome", isCorrect: false },
-										],
-										isRandomOrder: false,
-										tags: []
-
-								},
-								{
-										id: 2,
-										questionText: "Which planet is known as the Red Planet?",
-										options: [
-												{ optionId: "1", optionText: "Berlin", isCorrect: false },
-												{ optionId: "2", optionText: "Madrid", isCorrect: false },
-												{ optionId: "3", optionText: "Paris", isCorrect: true },
-												{ optionId: "4", optionText: "Rome", isCorrect: false },
-										],
-										isRandomOrder: false,
-										tags: []
-								},
-								
-						],
-				},
-				{
-						questionBankId: "67cf70341d44d62edf5de916",
-						questionBankName: "Giải tích 2",
-						questionBankStatus: null,
-						list: [
-								{
-										id: 1,
-										questionText: "Linh?",
-										options: [
-												{ optionId: "1", optionText: "Berlin", isCorrect: false },
-												{ optionId: "2", optionText: "Madrid", isCorrect: false },
-												{ optionId: "3", optionText: "Paris", isCorrect: true },
-												{ optionId: "4", optionText: "Rome", isCorrect: false },
-										],
-										isRandomOrder: false,
-										tags: ["Chương 1", "Nhận biết", "Vận dụng cao"]
-
-								},
-								{
-										id: 2,
-										questionText: "What is the capital of France?",
-										options: [
-												{ optionId: "1", optionText: "Berlin", isCorrect: false },
-												{ optionId: "2", optionText: "Madrid", isCorrect: false },
-												{ optionId: "3", optionText: "Paris", isCorrect: true },
-												{ optionId: "4", optionText: "Rome", isCorrect: false },
-										],
-										isRandomOrder: false,
-										tags: ["Chương 1", "Nhận biết"]
-
-								},
-								{
-										id: 3,
-										questionText: "Linh 1?",
-										options: [
-												{ optionId: "1", optionText: "Berlin", isCorrect: false },
-												{ optionId: "2", optionText: "Madrid", isCorrect: false },
-												{ optionId: "3", optionText: "Paris", isCorrect: true },
-												{ optionId: "4", optionText: "Rome", isCorrect: false },
-										],
-										isRandomOrder: false,
-										tags: ["Chương 1", "Thông hiểu"]
-								},
-								{
-										id: 4,
-										questionText: "Hôm nay là thứ mấy?",
-										options: [
-												{ optionId: "1", optionText: "Berlin", isCorrect: false },
-												{ optionId: "2", optionText: "Madrid", isCorrect: false },
-												{ optionId: "3", optionText: "Paris", isCorrect: true },
-												{ optionId: "4", optionText: "Rome", isCorrect: false },
-										],
-										isRandomOrder: false,
-										tags: ["Chương 2", "Nhận biết"]
-
-								},
-								{
-										id: 5,
-										questionText: "Which planet is known as the Red Planet?",
-										options: [
-												{ optionId: "1", optionText: "Berlin", isCorrect: false },
-												{ optionId: "2", optionText: "Madrid", isCorrect: false },
-												{ optionId: "3", optionText: "Paris", isCorrect: true },
-												{ optionId: "4", optionText: "Rome", isCorrect: false },
-										],
-										isRandomOrder: false,
-										tags: ["Chương 2", "Thông hiểu"]
-								},
-						],
-				}
-		]
-		
-};
-=======
 import ApiService from "../../services/apiService";
->>>>>>> Stashed changes
 
 const ListQuestionPage = () => {
 	const { subjectId, questionBankId } = useParams();
@@ -133,7 +17,7 @@ const ListQuestionPage = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			const response = await ApiService.get("/subjects/questions", {
-				params: { subjectId: subjectId, questionBankId: questionBankId },
+				params: { subId: subjectId, qbId: questionBankId },
 			});
 			setQuestions(response.data.questions);
 			setSubjectName(response.data.subjectName);
@@ -293,10 +177,13 @@ const ListQuestionPage = () => {
 		<div className="container list-question-container me-0">
 			{/* Breadcrumb */}
 			<nav className="breadcrumb">
-				<Link to="/admin">Home</Link> / 
-				<Link to="/admin/question">Ngân hàng câu hỏi</Link> / 
-				<Link to={`/admin/question/${subjectId}`}>{subjectName}</Link> / 
-				<span className="breadcrumb-current">{ questionBankName }</span>
+				<Link to="/admin">Home</Link>
+				<span> / </span>
+				<Link to="/admin/question">Ngân hàng câu hỏi</Link>
+				<span> / </span>
+				<Link to={`/admin/question/${subjectId}`}>Phân môn: {subjectName}</Link>
+				<span> / </span>
+				<span className="breadcrumb-current">Bộ: { questionBankName }</span>
 			</nav>
 	
 			<div className="d-flex">
