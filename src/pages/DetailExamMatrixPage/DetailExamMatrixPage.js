@@ -1,12 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import Select from 'react-select';
+import SelectRe from 'react-select';
 import './DetailExamMatrixPage.css'
-import { Box, Button, Grid, IconButton, Input, TextField, MenuItem, Typography } from "@mui/material";
+import {Select, Box, Button, Grid, IconButton, Input, TextField, MenuItem, Typography } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import ListItemText from '@mui/material/ListItemText';
+import Checkbox from '@mui/material/Checkbox';
 
 const listQuestionBank = [
     {
@@ -147,6 +151,43 @@ const colourOptions = [
     },
 ];
 
+const rawDatas  = 
+	{ 
+		id: 1, 
+		matrixName: "Lịch sử 10 giữa kỳ 1",
+		subjectId: "",
+		subjectName: "Lịch sử",
+		questionBankId: "",
+		questionBankName: "Lịch sử 10",
+		matrixTags:[
+			{
+				tagName: ["Bối cảnh quốc tế từ sau chiến tranh thế giới thứ hai", "Nhận biết"],
+				questionCount: "5", 
+				tagScore: "1"
+			},
+			{
+				tagName: ["Bối cảnh quốc tế từ sau chiến tranh thế giới thứ hai", "Nhận biết"],
+				questionCount: "5", 
+				tagScore: "1"
+			},
+			{
+				tagName: ["Bối cảnh quốc tế từ sau chiến tranh thế giới thứ hai", "Nhận biết"],
+				questionCount: "5", 
+				tagScore: "1"
+			},
+			{
+				tagName: ["Bối cảnh quốc tế từ sau chiến tranh thế giới thứ hai", "Nhận biết"],
+				questionCount: "5", 
+				tagScore: "1"
+			},
+			{
+				tagName: ["Bối cảnh quốc tế từ sau chiến tranh thế giới thứ hai", "Nhận biết"],
+				questionCount: "5", 
+				tagScore: "1"
+			}
+		],
+		totalQuestion: "5", 	
+	};
 
 const rawData  = [
     { id: 1, topic: "Bối cảnh quốc tế từ sau chiến tranh thế giới thứ hai", difficulty: "Nhận biết", selected: "5", totalQuestion: "5", unit: "Câu", score: "1"},
@@ -162,196 +203,247 @@ const difficultyData = [
     { level: "Thông hiểu", count: 15 },
     { level: "Vận dụng cao", count: 5 },
   ];
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+	PaperProps: {
+		style: {
+			maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+			width: 250,
+		},
+	},
+};
+
+const names = ['Chuyên đề','Mức độ',];
+
 const DetailExamMatrixPage = () => {
+	// Xử lý gộp chuyên đề
+	const processData = (data) => {
+		let groupedData = [];
+		let lastTopic = null;
+		data.forEach((item, index) => {
+			let isFirst = item.topic !== lastTopic;
+			groupedData.push({ ...item, id: index + 1, isFirst });
+			lastTopic = item.topic;
+		});
+		return groupedData;
+	};
     
-    
-    // Xử lý gộp chuyên đề
-    const processData = (data) => {
-        let groupedData = [];
-        let lastTopic = null;
-        data.forEach((item, index) => {
-          let isFirst = item.topic !== lastTopic;
-          groupedData.push({ ...item, id: index + 1, isFirst });
-          lastTopic = item.topic;
-        });
-        return groupedData;
-      };
-    
-      // Tính tổng số câu đã chọn
-      const calculateTotalSelected = (data) => {
-        return data.reduce((sum, item) => sum + Number(item.selected), 0); 
-    };
-    const processedData = processData(rawData);
-    const totalSelected = calculateTotalSelected(rawData);
-    const [rows, setRows] = useState([]);
-    // const [totalSelected, setTotalSelected] = useState(0);
-    
-    const footerRow = {
-        id: "", 
-        topic: "Tổng số câu đã chọn",  
-        difficulty: "",
-        selected: `${totalSelected}`,  
-        totalQuestion: "",
-        unit: "Câu",
-        isFirst: true,
-    };
-    
-    return (
-        <div className="detail-matrix-page">
-            {/* Breadcrumb */}
-            <nav>
-                <Link to="/admin">Home</Link> / 
-                <Link to="/admin/exam-matrix">Quản lý ma trận đề</Link> / 
-                <span className="breadcrumb-current"></span>
-            </nav>
+	// Tính tổng số câu đã chọn
+	const calculateTotalSelected = (data) => {
+		return data.reduce((sum, item) => sum + Number(item.selected), 0); 
+	};
+	const processedData = processData(rawData);
+	const totalSelected = calculateTotalSelected(rawData);
+	const [rows, setRows] = useState([]);
+	// const [totalSelected, setTotalSelected] = useState(0);
+	
+	const footerRow = {
+			id: "", 
+			topic: "Tổng số câu đã chọn",  
+			difficulty: "",
+			selected: `${totalSelected}`,  
+			totalQuestion: "",
+			unit: "Câu",
+			isFirst: true,
+	};
+	
+	const [personName, setPersonName] = React.useState([]);
 
-            <div className="d-flex mt-4">
-                <div className="d-flex">          
-                <TextField
-                    required
-                    id="outlined-required"
-                    label="Tên ma trận đề thi"
-                    sx={{
-                         "& .css-16wblaj-MuiInputBase-input-MuiOutlinedInput-input": {
-                            padding: "13px",
-                            fontSize: "14px",
-                            paddingBottom: "17px",
-                            width: "220px"
-                         },
-                        "& .MuiInputLabel-root": {
-                            marginLeft: "0px", // Giữ margin trái
-                            fontSize: "14px"
-                        },
-                    }}
-                />
-
-                    <Select
-                        className="basic-single ms-2 me-2"
-                        classNamePrefix="select"
-                        placeholder="Chọn phân môn"
-                        name="color"
-                        options={colourOptions}
-                        styles={{
-                            control: (base) => ({
-                                ...base,
-                                width: "250px", // Cố định chiều rộng
-                                minWidth: "250px",
-                                maxWidth: "250px",
-                                height: "50px", // Tăng chiều cao
-                                minHeight: "50px",
-                            }),
-                            menu: (base) => ({
-                                ...base,
-                                width: "250px", // Cố định chiều rộng của dropdown
-                            }),
-                            valueContainer: (base) => ({
-                                ...base,
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap",
-                                fontSize: "14px",
-                            }),
-                            placeholder: (base) => ({
-                                ...base,
-                                fontSize: "14px", // Cỡ chữ của placeholder (label)
-                            }),
-                        }}
-                    />
-                    <Select
-                        className="basic-single"
-                        classNamePrefix="select"
-                        placeholder="Chọn ngân hàng câu hỏi"
-                        name="color"
-                        options={colourOptions}
-                        styles={{
-                            control: (base) => ({
-                                ...base,
-                                width: "250px", // Cố định chiều rộng
-                                minWidth: "250px",
-                                maxWidth: "250px",
-                                height: "50px", // Tăng chiều cao
-                                minHeight: "50px",
-                            }),
-                            menu: (base) => ({
-                                ...base,
-                                width: "250px", // Cố định chiều rộng của dropdown
-                            }),
-                            valueContainer: (base) => ({
-                                ...base,
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap",
-                                fontSize: "14px",
-                            }),
-                            placeholder: (base) => ({
-                                ...base,
-                                fontSize: "14px", // Cỡ chữ của placeholder (label)
-                            }),
-                        }}
-                    />
-                </div>
-                <div className="d-flex ms-auto">
-                    <button className="add-btn" >
-                        Lưu
-                    </button>
-                </div>
-            </div>
-            <Box display="flex" gap={2} className="mt-3">
-                <Box sx={{ width: "80%" }}>
-                    <DataGrid
-                        rows={[...processedData, footerRow]}  // 🟢 Đảm bảo footer ở cuối bảng
-                        columns={columns}
-                        disableColumnResize
-                        disableExtendRowFullWidth
-                        disableColumnSorting
-                        hideFooter={true} 
-                        sx={{
-                            backgroundColor: "white",
-                            "& .MuiDataGrid-columnHeaders": {
-                                borderBottom: "2px solid #ccc", // Đường phân cách dưới tiêu đề cột
-                            },
-                            "& .MuiDataGrid-cell": {
-                                borderRight: "1px solid #ddd", // Đường phân cách giữa các cột
-                            },
-                            "& .footer-row": {
-                                fontWeight: "bold",
-                                backgroundColor: "#f5f5f5",
-                                textAlign: "center",
-                            },
-                        }}
-                    />
-                </Box>
-
-                <Paper sx={{ display: "inline-block", padding: 2, height: "250px" }}>
-                    <h5 className="justify-content-center d-flex">Thống kê</h5>
-                    <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #ddd" }}>
-                        <thead>
-                            <tr>
-                                <th style={{ border: "1px solid #ddd", textAlign: "left", padding: "8px", minWidth: "130px" }}>
-                                    Mức độ
-                                </th>
-                                <th style={{ border: "1px solid #ddd", textAlign: "center", padding: "8px" }}>
-                                    Số lượng
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {difficultyData.map((row, index) => (
-                                <tr key={index}>
-                                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                                        {row.level}
-                                    </td>
-                                    <td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "center" }}>
-                                        {row.count}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </Paper>
-            </Box>
-        </div>
+  const handleChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setPersonName(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value,
     );
+  };
+
+	
+
+
+
+	return (
+		<div className="detail-matrix-page">
+			{/* Breadcrumb */}
+			<nav>
+				<Link to="/admin">Home</Link> / 
+				<Link to="/admin/exam-matrix">Quản lý ma trận đề</Link> / 
+				<span className="breadcrumb-current"></span>
+			</nav>
+
+			<div className="d-flex mt-4">
+				<div className="d-flex">          
+					<TextField
+						required
+						id="outlined-size-small"
+										defaultValue="Small"
+										size="small"
+						label="Tên ma trận đề thi"
+						sx={{
+							"& .MuiOutlinedInput-root": {
+								minHeight: "40px",
+								minWidth: "250px",
+							},
+							"& .MuiInputLabel-root": {
+								fontSize: "14px",
+							},
+						}}
+					/>
+					<SelectRe
+						className="basic-single ms-2 me-2"
+						classNamePrefix="select"
+						placeholder="Chọn phân môn"
+						name="color"
+						options={colourOptions}
+						styles={{
+								control: (base) => ({
+										...base,
+										width: "250px", // Cố định chiều rộng
+										minWidth: "250px",
+										maxWidth: "250px",
+										height: "40px", // Tăng chiều cao
+								}),
+								menu: (base) => ({
+										...base,
+										width: "250px", // Cố định chiều rộng của dropdown
+								}),
+								valueContainer: (base) => ({
+										...base,
+										overflow: "hidden",
+										textOverflow: "ellipsis",
+										whiteSpace: "nowrap",
+										fontSize: "14px",
+								}),
+								placeholder: (base) => ({
+										...base,
+										fontSize: "14px", // Cỡ chữ của placeholder (label)
+								}),
+						}}
+					/>
+					<SelectRe
+						className="basic-single"
+						classNamePrefix="select"
+						placeholder="Chọn ngân hàng câu hỏi"
+						name="color"
+						options={colourOptions}
+						styles={{
+								control: (base) => ({
+										...base,
+										width: "250px", // Cố định chiều rộng
+										maxWidth: "250px",
+										height: "40px", // Tăng chiều cao
+								}),
+								menu: (base) => ({
+										...base,
+										width: "250px", // Cố định chiều rộng của dropdown
+								}),
+								valueContainer: (base) => ({
+										...base,
+										overflow: "hidden",
+										textOverflow: "ellipsis",
+										whiteSpace: "nowrap",
+										fontSize: "14px",
+								}),
+								placeholder: (base) => ({
+										...base,
+										fontSize: "14px", // Cỡ chữ của placeholder (label)
+								}),
+						}}
+					/>
+					<FormControl sx={{ ml: 1, width: 235,}} size="small">
+						<InputLabel id="demo-multiple-checkbox-label">Phân loại</InputLabel>
+						<Select
+							labelId="demo-multiple-checkbox-label"
+							id="demo-multiple-checkbox"
+							multiple
+							value={personName}
+							onChange={handleChange}
+							input={<OutlinedInput label="Phân theo" />}
+							renderValue={(selected) => selected.join(', ')}
+							MenuProps={MenuProps}
+						>
+							{names.map((name) => (
+								<MenuItem key={name} value={name}>
+									<Checkbox checked={personName.includes(name)} />
+									<ListItemText primary={name} />
+								</MenuItem>
+							))}
+						</Select>
+					</FormControl>
+				</div>
+				<div className="d-flex ms-auto">
+					<button className="add-btn" >
+						Lưu
+					</button>
+				</div>
+			</div>
+			<Box display="flex" gap={2} className="mt-3">
+				<table className="table table-bordered ">
+					{/* Header */}
+					<thead className="">
+						<tr>
+							{columns.map((col, index) => (
+								<th key={index} style={{ borderBottom: "2px solid #ccc" }}>
+									{col.headerName}
+								</th>
+							))}
+						</tr>
+					</thead>
+
+					{/* Body */}
+					<tbody>
+						{processedData.map((row, rowIndex) => (
+							<tr key={rowIndex}>
+								{columns.map((col, colIndex) => (
+									<td key={colIndex} style={{ borderRight: "1px solid #ddd" }}>
+										{row[col.field]}
+									</td>
+								))}
+							</tr>
+						))}
+
+						{/* Footer Row */}
+						<tr className="footer-row" style={{ fontWeight: "bold", backgroundColor: "#f5f5f5", textAlign: "center" }}>
+							{columns.map((col, colIndex) => (
+								<td key={colIndex}>{footerRow[col.field]}</td>
+							))}
+						</tr>
+					</tbody>
+				</table>
+
+				<Paper sx={{ display: "inline-block", padding: 2, height: "250px" }}>
+						<h5 className="justify-content-center d-flex">Thống kê</h5>
+						<table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #ddd" }}>
+								<thead>
+										<tr>
+												<th style={{ border: "1px solid #ddd", textAlign: "left", padding: "8px", minWidth: "130px" }}>
+														Mức độ
+												</th>
+												<th style={{ border: "1px solid #ddd", textAlign: "center", padding: "8px" }}>
+														Số lượng
+												</th>
+										</tr>
+								</thead>
+								<tbody>
+										{difficultyData.map((row, index) => (
+												<tr key={index}>
+														<td style={{ border: "1px solid #ddd", padding: "8px" }}>
+																{row.level}
+														</td>
+														<td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "center" }}>
+																{row.count}
+														</td>
+												</tr>
+										))}
+								</tbody>
+						</table>
+				</Paper>
+			</Box>
+		</div>
+	);
 };
 
 export default DetailExamMatrixPage;
