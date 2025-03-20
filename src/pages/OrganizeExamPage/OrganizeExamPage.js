@@ -302,6 +302,7 @@ const OrganizeExamPage = () => {
       </div>
 
       {/* Hiển thị bảng theo vai trò đã chọn */}
+<<<<<<< Updated upstream
       <div className="subject-table-container mt-3">
         <Paper sx={{ width: "100%" }}>
         <DataGrid
@@ -348,6 +349,84 @@ const OrganizeExamPage = () => {
           }}
         />
         </Paper>
+=======
+      <div className="organize-examtable-container mt-3">
+        <div className="table-responsive">
+          <table className="table organize-exam-table table-hover">
+            <thead>
+              <tr className="align-middle fw-medium">
+                <th scope="col" className="text-center title-row">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    onChange={handleSelectAll}
+                    checked={selectedItems.length === listQuestionBank.length}
+                  />
+                </th>
+                <th scope="col" className="title-row">Kỳ thi</th>
+                <th scope="col" className="title-row">Phân môn</th>
+                <th scope="col" className="title-row">Loại</th>
+                <th scope="col" className="title-row">Đề thi</th>
+                <th scope="col" className="title-row">Ma trận</th>
+                <th scope="col" className="title-row">Thời gian</th>
+                <th scope="col" className="title-row">Điểm</th>
+                <th scope="col" className="title-row">Trạng thái</th>
+                <th scope="col" className="title-row">Báo cáo</th>
+                <th scope="col" className="title-row">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              {listQuestionBank.map((item, index) => (
+                <tr key={item.id} className="align-middle">
+                  <td className=" text-center" style={{ width: "50px" }}>
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      onChange={(e) => handleSelectItem(e, item.id)}
+                      checked={selectedItems.includes(item.id)}
+                    />
+                  </td>
+                  <td>
+                    <Link className="text-hover-primary"
+                      to={`/staff/organize/${encodeURIComponent(item.id)}`} 
+                      style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
+                    >
+                      {item.organizeExamName}
+                    </Link>
+                  </td>
+                  <td>{item.subjectId}</td>
+                  <td>{item.examType}</td>
+                  <td>{item.examSet}</td>
+                  <td>{item.matrixId}</td>
+                  <td>{item.duration}</td>
+                  <td>{item.maxScore}</td>
+                  <td>{item.organizeExamStatus}</td>
+                  <td>
+                    <Link
+                      to={`/staff/organize/report/${item.id}`}     
+                      style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
+                    >
+                      Chi tiết
+                    </Link>
+                  </td>
+                  <td>
+                    <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
+                      <i className="fas fa-edit text-white "></i>
+                    </button>
+                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
+                      <i className="fas fa-trash-alt"></i>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="organize-exampagination d-flex justify-content-end align-items-center">
+          <Pagination count={10} variant="outlined" shape="rounded" />
+        </div>
+>>>>>>> Stashed changes
       </div>
 
       {/* Form thêm tài khoản */}

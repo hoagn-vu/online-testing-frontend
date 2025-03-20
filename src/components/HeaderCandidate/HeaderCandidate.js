@@ -5,10 +5,32 @@ import { FaChevronDown } from "react-icons/fa";
 import "./HeaderCandidate.css";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+<<<<<<< Updated upstream
+=======
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../../redux/authSlice";
+import { Link, useNavigate } from "react-router-dom";
+import { authApi } from "../../services/authApi";
+>>>>>>> Stashed changes
 
 const HeaderCandidate = ({ username, avatarUrl, logoUrl }) => {
   const [isOpen, setIsOpen] = useState(false);
 
+<<<<<<< Updated upstream
+=======
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  const user = useSelector((state) => state.auth.user);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    localStorage.removeItem("accessToken");
+    dispatch(authApi.util.resetApiState());
+    navigate("/");
+  };
+
+>>>>>>> Stashed changes
   return (
     <div className="header-candidate-container">
       <img src={logoUrl} alt="Logo" className="logo" />

@@ -1,126 +1,53 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import './ExamManagementPage.css'
-import { Box, Button, Grid, IconButton, TextField, MenuItem, Select} from "@mui/material";
+import { Box, Button, Grid, IconButton, TextField, Pagination, MenuItem, Select} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { DataGrid } from "@mui/x-data-grid";
-import { Search } from "lucide-react";
 import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import ReactSelect  from 'react-select';
-
-const listQuestionBank = [
-	{
-		id: "67cf6cee1d44d62edf5de90b",
-		examCode: "MTH01",
-		examName: "Giữa kỳ Giải tích 1",
-		subjectId: "67cf6cee1d44d62edf5de905",
-		questionBankId: "67cf6cee1d44d62edf5de904",
-		examStatus: "Active",
-	},
-	{
-		id: "67cf6cee1d44d62edf5de902",
-		examCode: "MTH02",
-		examName: "Giữa kỳ Giải tích 2",
-		subjectId: "67cf6cee1d44d62edf5de905",
-		questionBankId: "67cf6cee1d44d62edf5de909",
-		examStatus: "Disabled",
-	},
-	
-];
-
-// Dữ liệu mẫu option ngân hàng câu hỏi
-const bankOptions = [
-	{ value: 'Giải tích 1', label: 'Giải tích 1' },
-	{ value: 'Yêu cầu phần mềm', label: 'Yêu cầu phần mềm' },
-	{ value: 'Giải tích 2', label: 'Giải tích 2' },
-
-];
-
-// Dữ liệu mẫu option phân môn
-const subjectOptions = [
-	{ value: 'Tư tưởng Hồ Chí Minh', label: 'Tư tưởng Hồ Chí Minh' },
-	{ value: 'Yêu cầu phần mềm', label: 'Yêu cầu phần mềm' },
-	{ value: 'Giải tích', label: 'Giải tích' },
-];
+import ApiService from "../../services/apiService";
 
 const ExamManagementPage = () => {
+	const [listExam, setListExam] = useState([]);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const response = await ApiService.get("/exams");
+				setListExam(response.data.exams);
+			} catch (error) {
+				console.error("Lỗi lấy dữ liệu:", error);
+			}
+		};
+
+		fetchData();
+	}, []);
+
+	const [selectedItems, setSelectedItems] = useState([]);
+
+	const handleSelectItem = (e, id) => {
+		if (e.target.checked) {
+			setSelectedItems([...selectedItems, id]);
+		} else {
+			setSelectedItems(selectedItems.filter((item) => item !== id));
+		}
+	};
+
+	const handleSelectAll = (e) => {
+		if (e.target.checked) {
+			setSelectedItems(listExam.map((item) => item.id));
+		} else {
+			setSelectedItems([]);
+		}
+	};
+
 	const [showForm, setShowForm] = useState(false);
 	const [editingAccount, setEditingAccount] = useState(null);
-	const [rows, setRows] = useState(Object.values(listQuestionBank).flat());
-	
-	const columns = [
-			{ field: "stt", headerName: "#", width: 15, align: "center", headerAlign: "center" },
-			{ 
-				field: "examCode", 
-				headerName: "Mã đề thi", 
-				width: 1090, flex: 0.1, 
-        renderCell: (params) => (
-          <Link 
-            to={`/admin/exam/${encodeURIComponent(params.row.id)}`} 
-            style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
-          >
-            {params.row.examCode}
-          </Link>
-        )
-			},
-			{ 
-				field: "examName", 
-				headerName: "Tên đề thi", 
-				width: 1090, flex: 0.1, 
-			},
-			{ 
-				field: "subjectId", 
-				headerName: "Phân môn", 
-				width: 1090, flex: 0.1,   
-			},
-			{ 
-				field: "questionBankId", 
-				headerName: "Ngân hàng câu hỏi", 
-				width: 1090, flex: 0.1, 
-			},
-			{ 
-				field: "examStatus", 
-				headerName: "Trạng thái", 
-				width: 160,
-				renderCell: (params) => (
-					<Select
-					value={(params.row.examStatus || "Active").toLowerCase()}  
-					onChange={(e) => handleStatusChange(params.row.id, e.target.value)}
-						size="small"
-						sx={{
-						minWidth: 120, 
-						fontSize: "15px", 
-						padding: "0px", 
-						}}
-					>
-						<MenuItem value="active">Active</MenuItem>
-						<MenuItem value="disabled">Disabled</MenuItem>
-					</Select>
-				),
-			},
-			{
-				field: "actions",
-				headerName: "Thao tác", align: "center",headerAlign: "center",
-				width: 160,
-				sortable: false,
-				renderCell: (params) => (
-					<>
-						<IconButton color="primary" onClick={() => handleEdit(params.row)}>
-							<EditIcon />
-						</IconButton>
-						<IconButton color="error" onClick={() => handleDelete(params.row.id)}>
-							<DeleteIcon />
-						</IconButton>
-					</>
-				),
-			},
-	];
-
-	const paginationModel = { page: 0, pageSize: 5 };
-  	const inputRef = useRef(null);
+	const inputRef = useRef(null);
 
   useEffect(() => {
     if (showForm && inputRef.current) {
@@ -198,94 +125,119 @@ const ExamManagementPage = () => {
   };
 
   const handleDelete = (id) => {
-  Swal.fire({
-    title: "Bạn có chắc chắn xóa?",
-    text: "Bạn sẽ không thể hoàn tác hành động này!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Xóa",
-    cancelButtonText: "Hủy",
-  }).then((result) => {
-    if (result.isConfirmed) {
-    console.log("Xóa tài khoản có ID:", id);
+		Swal.fire({
+			title: "Bạn có chắc chắn xóa?",
+			text: "Bạn sẽ không thể hoàn tác hành động này!",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "Xóa",
+			cancelButtonText: "Hủy",
+		}).then((result) => {
+			if (result.isConfirmed) {
+			console.log("Xóa tài khoản có ID:", id);
 
-    Swal.fire({
-      title: "Đã xóa!",
-      text: "Tài khoản đã bị xóa.",
-      icon: "success",
-    });
-    setRows(rows.filter((row) => row.id !== id));
-    }
-  });
+			Swal.fire({
+				title: "Đã xóa!",
+				text: "Tài khoản đã bị xóa.",
+				icon: "success",
+			});
+			setRows(rows.filter((row) => row.id !== id));
+			}
+		});
   };
 
 	return (
-		<div className="exam-management-page">
+		<div className="sample-management-page">
 			{/* Breadcrumb */}
 			<nav>
 				<Link to="/admin">Home</Link> / 
 				<span className="breadcrumb-current">Quản lý đề thi</span>
 			</nav>
 
-			<div className="account-actions mt-4">
-				<div className="search-container">
-					<SearchBox></SearchBox>
+			<div className="sample-card-header d-flex justify-content-between align-items-center mt-3 mb-3">
+				<div className='left-header d-flex align-items-center'>
+					<div className="search-box me-2 rounded d-flex align-items-center">
+						<i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
+						<input
+							type="text"
+							className="search-input w-100"
+							placeholder="Tìm kiếm..."
+							// value={searchTerm}
+							// onChange={handleChangeSearch}
+						/>
+					</div>
 				</div>
-				<button className="add-btn" onClick={handleAddNew}>
-					Thêm mới
-				</button>
+
+				<div className='right-header'>
+					<button className="btn btn-primary me-2" onClick={handleAddNew}>
+						<i className="fas fa-plus me-2"></i>
+						Thêm mới
+					</button>
+				</div>
 			</div>
 
-			{/* Hiển thị bảng theo vai trò đã chọn */}
-			<div className="subject-table-container mt-3">
-				<Paper sx={{ width: "100%" }}>
-				<DataGrid
-					rows={rows}
-					columns={columns}
-					initialState={{
-					pagination: { paginationModel: { page: 0, pageSize: 5 } },
-					}}
-					pageSizeOptions={[5, 10]}
-					disableColumnResize 
-					disableExtendRowFullWidth
-					disableRowSelectionOnClick
-					localeText={{
-						noRowsLabel: "Không có dữ liệu", 
-					  }}
-					sx={{
-            "& .MuiDataGrid-cell": {
-              whiteSpace: "normal", 
-              wordWrap: "break-word", 
-              lineHeight: "1.2", 
-              padding: "8px", 
-            },
-            "& .MuiDataGrid-columnHeaders": {
-              borderBottom: "2px solid #ccc", 
-            },
-            "& .MuiDataGrid-cell": {
-              borderRight: "1px solid #ddd", 
-            },
-            "& .MuiDataGrid-row:last-child .MuiDataGrid-cell": {
-              borderBottom: "none", 
-            },
-            "& .MuiTablePagination-displayedRows": {
-              textAlign: "center",      
-              marginTop: "16px",
-              marginLeft: "0px"
-            },
-            "& .MuiTablePagination-selectLabel": {
-              marginTop: "13px",
-              marginLeft: "0px"
-            },
-            "& .MuiTablePagination-select": {
-              marginLeft: "0px",
-            } 
-					}}
-				/>
-				</Paper>
+			<div className="table-responsive">
+				<table className="table sample-table table-hover">
+					<thead>
+						<tr className="align-middle">
+							<th scope="col" className="text-center title-row" style={{ width: "50px"}}>
+								<input
+									className="form-check-input"
+									type="checkbox"
+									onChange={handleSelectAll}
+									checked={selectedItems.length === listExam.length && listExam.length > 0}
+								/>
+							</th>
+							<th scope="col" className="title-row">Mã đề thi</th>
+							<th scope="col" className="title-row">Tên đề thi</th>
+							<th scope="col" className="title-row">Phân môn</th>
+							<th scope="col" className="title-row">Bộ câu hỏi</th>
+							<th scope="col" className="title-row" style={{ width: "120px"}}>Thao tác</th>
+						</tr>
+					</thead>
+					<tbody>
+						{listExam.map((item, index) => (
+							<tr key={item.id} className="align-middle">
+								<td className=" text-center" style={{ width: "50px" }}>
+									<input
+										className="form-check-input"
+										type="checkbox"
+										onChange={(e) => handleSelectItem(e, item.questionBankId)}
+										checked={selectedItems.includes(item.questionBankId)}
+									/>
+								</td>
+								<td className="fw-semibold text-hover-primary">
+									<Link 
+										to={`/staff/`} 
+										style={{ textDecoration: "none", cursor: "pointer" }}
+									>
+										{item.examCode}
+									</Link>
+								</td>
+								<td className="fw-semibold text-hover-primary">{item.examName}</td>
+								<td>{item.subjectName}</td>
+								<td>{item.questionBankName}</td>
+								<td>
+									<button className="btn btn-primary btn-sm">
+										<i className="fas fa-edit text-white"></i>
+									</button>
+									<button className="btn btn-danger btn-sm ms-2">
+										<i className="fas fa-trash-alt"></i>
+									</button>
+								</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
 			</div>
+
+			<div className="sample-pagination d-flex justify-content-end align-items-center">
+				<Pagination count={10} variant="outlined" shape="rounded" />
+			</div>
+
+			
 			{/* Form thêm tài khoản */}
 				{showForm && (
 					<div className="form-overlay">

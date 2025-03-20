@@ -12,8 +12,8 @@ import LoginPage from "./pages/LoginPage/LoginPage";
 import TakeExamPage from "./pages/TakeExamPage/TakeExamPage";
 import WelcomePage from "./pages/WelcomePage/WelcomePage";
 import ResultCandidatePage from "./pages/ResultCandidatePage/ResultCandidatePage";
-import QuestionManagementPage from "./pages/QuestionManagementPage/QuestionManagementPage";
-import QuestionBankNamePage from "./pages/QuestionBankNamePage/QuestionBankNamePage";
+import SubjectPage from "./pages/SubjectPage/SubjectPage";
+import QuestionBankPage from "./pages/QuestionBankPage/QuestionBankPage";
 import ListQuestionPage from "./pages/ListQuestionPage/ListQuestionPage";
 import RoomManagementPage from "./pages/RoomManagementPage/RoomManagementPage";
 import ExamMatrixPage from "./pages/ExamMatrixPage/ExamMatrixPage";
@@ -22,8 +22,59 @@ import ExamManagementPage from "./pages/ExamManagementPage/ExamManagementPage";
 import DetailExamPage from "./pages/DetailExamPage/DetailExamPage";
 import OrganizeExamPage from "./pages/OrganizeExamPage/OrganizeExamPage";
 import SesstionPage from "./pages/SesstionPage/SesstionPage";
+<<<<<<< Updated upstream
 
 function App() {
+=======
+import RoomOrganizePage from "./pages/RoomOrganizePage/RoomOrganizePage";
+import CandidateOrganizePage from "./pages/CandidateOrganizePage/CandidateOrganizePage";
+import SupervisorLayout from "./layouts/SupervisorLayout/SupervisorLayout";
+import SupervisorHomePage from "./pages/SupervisorHomePage/SupervisorHomePage";
+import MonitoringPage from "./pages/MonitoringPage/MonitoringPage";
+import MonitorOrganizePage from "./pages/MonitorOrganizePage/MonitorOrganizePage";
+import ScoreTableSessionPage from "./pages/ScoreTableSessionPage/ScoreTableSessionPage";
+import ReportEachOrganizePage from "./pages/ReportEachOrganizePage/ReportEachOrganizePage";
+import Admin2Layout from "./layouts/Admin2Layout/Admin2Layout";
+
+import NotFound from "./pages/NotFound/NotFound";
+
+import { authApi } from "./services/authApi";
+
+function App() {
+  const accessToken = useSelector((state) => state.auth.accessToken) || localStorage.getItem("accessToken");
+  const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (accessToken && !user) {
+      dispatch(authApi.endpoints.getProfile.initiate())
+        .unwrap()
+        .then((data) => dispatch(setUser(data)))
+        .catch((error) => console.error('Failed to fetch profile', error));
+    }
+  }, [accessToken, dispatch]);
+
+  const ProtectedRoute = ({ allowedRoles, children }) => {
+    const { user, accessToken } = useSelector((state) => state.auth);
+    const { isFetching } = useGetProfileQuery(undefined, {
+      skip: !accessToken, // Chỉ gọi API nếu có accessToken
+    });
+  
+    // Nếu API `/profile` đang lấy dữ liệu, hiển thị loading (tránh redirect sai)
+    if (isFetching) return <p>Loading...</p>;
+  
+    if (!user) {
+      return <Navigate to="/" />;
+    }
+  
+    if (!allowedRoles.includes(user.role)) {
+      return <Navigate to="/not-found" />;
+    }
+  
+    return children;
+  };
+
+>>>>>>> Stashed changes
   return (
     <Router>
       {" "}
@@ -32,6 +83,7 @@ function App() {
         <Route path="/" element={<LoginPage />} />
       </Routes>
       <Routes>
+<<<<<<< Updated upstream
         <Route path="/welcome" element={<WelcomePage />} />
       </Routes>
       <Routes>
@@ -43,6 +95,28 @@ function App() {
           <Route path="question" element={<QuestionManagementPage />}/>
           <Route path="question/:subject" element={<QuestionBankNamePage />} />
           <Route path="question/:subject/:questionBankId" element={<ListQuestionPage />} />
+=======
+        <Route 
+          path="/staff" 
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <Admin2Layout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="accountmanage" element={<AccountPage />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="organize" element={<OrganizeExamPage />} />
+          <Route path="organize/report/:organizeId" element={<ReportEachOrganizePage />} />
+          <Route path="organize/:id" element={<SesstionPage />} />
+          <Route path="organize/:organizeId/:sessionId" element={<RoomOrganizePage />} />
+          <Route path="organize/monitor/:organizeId/:sessionId" element={<MonitorOrganizePage />} />
+          <Route path="organize/score/:organizeId/:sessionId" element={<ScoreTableSessionPage />} />
+          <Route path="organize/:organizeId/:sessionId/:roomId" element={<CandidateOrganizePage />} />
+          <Route path="question" element={<SubjectPage />}/>
+          <Route path="question/:subjectId" element={<QuestionBankPage />} />
+          <Route path="question/:subjectId/:questionBankId" element={<ListQuestionPage />} />
+>>>>>>> Stashed changes
           <Route path="matrix-exam" element={<ExamMatrixPage />} />
           <Route path="matrix-detail" element={<DetailExamMatrixPage />} />
           <Route path="exam" element={<ExamManagementPage />} />

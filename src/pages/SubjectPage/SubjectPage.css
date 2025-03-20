@@ -1,0 +1,57 @@
+<<<<<<< Updated upstream:src/pages/QuestionManagementPage/QuestionManagementPage.css
+.subject-page {
+    width: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+    padding-left: 230px;
+    padding-right: 15px;
+    padding-top: 15px;
+  }
+=======
+.sample-table tr {
+  height: 60px;
+}
+
+/* .sample-table .title-row {
+  color: #8a8a8a;
+} */
+
+.sample-table td button {
+  width: 40px;
+}
+
+.text-hover-primary:hover {
+  color: #0d6efd !important;
+  cursor: pointer;
+}
+
+.sample-card-header .search-box {
+  width: 250px;
+  position: relative;
+  border: #dee2e6 solid 1px;
+  padding: 6px 12px;
+  background-color: white;
+}
+
+.sample-card-header .search-box:focus {
+  border: #0d6efd solid 1px !important;
+}
+
+.sample-card-header .search-box .search-input {
+  border: none;
+  outline: none;
+}
+
+.sample-card-header .search-box .search-input:focus {
+  border: none;
+  outline: none;
+}
+
+.sample-card-header .search-box .search-icon {
+  color: #ccc;
+}
+
+.sample-pagination ul li button {
+  font-family: Arial, sans-serif
+}
+>>>>>>> Stashed changes:src/pages/SubjectPage/SubjectPage.css

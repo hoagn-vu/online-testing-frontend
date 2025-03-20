@@ -5,8 +5,8 @@ import "./ListQuestionPage.css";
 import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import CreatableSelect from "react-select/creatable";
-import Icon from '@mui/material/Icon';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+<<<<<<< Updated upstream
 
 const subjectData  = 
 {
@@ -120,13 +120,33 @@ const subjectData  =
 		]
 		
 };
+=======
+import ApiService from "../../services/apiService";
+>>>>>>> Stashed changes
 
 const ListQuestionPage = () => {
+	const { subjectId, questionBankId } = useParams();
+	const [ questions, setQuestions ] = useState([]);
+	const [ subjectName, setSubjectName ] = useState("");
+	const [ questionBankName, setQuestionBankName ] = useState("");
+
+	useEffect(() => {
+		const fetchData = async () => {
+			const response = await ApiService.get("/subjects/questions", {
+				params: { subjectId: subjectId, questionBankId: questionBankId },
+			});
+			setQuestions(response.data.questions);
+			setSubjectName(response.data.subjectName);
+			setQuestionBankName(response.data.questionBankName);
+			console.log(response.data);
+		};
+
+		fetchData();
+	}, [subjectId, questionBankId]);
+
 	const [editQuestionId, setEditQuestionId] = useState(null);
 	const [shuffleQuestion, setShuffleQuestion] = useState(false);
 	const [selectedQuestionBankId, setSelectedQuestionBankId] = useState(null);
-	const [questions, setQuestions] = useState();
-	const {subject, questionBankId } = useParams();
 	const [selectedGroups, setSelectedGroups] = useState([]);
 
 	const [newQuestion, setNewQuestion] = useState({
@@ -211,8 +231,9 @@ const ListQuestionPage = () => {
 			};
 
 	const groupedQuestions = {};
-	const selectedQuestions = subjectData.questionBanks.find(qb => qb.questionBankId === questionBankId)?.list || [];
-	
+	// const selectedQuestions = subjectData.questionBanks.find(qb => qb.questionBankId === questionBankId)?.list || [];
+	const selectedQuestions = []
+
 	selectedQuestions.forEach((question) => {
 			const chapter = question.tags[0] || "";
 			const level = question.tags[1] || "";
@@ -255,17 +276,18 @@ const ListQuestionPage = () => {
 			});
 	};
 
-	const currentQuestionBank = subjectData.questionBanks.find(qb => qb.questionBankId === questionBankId);
-	const questionBankName = currentQuestionBank ? currentQuestionBank.questionBankName : "Ngân hàng câu hỏi";
-    
-	// Lấy tất cả các tags từ subjectData và loại bỏ trùng lặp
-	const allTags = [
-		...new Set(
-			subjectData.questionBanks.flatMap(qb =>
-				qb.list.flatMap(q => q.tags || [])
-			)
-		)
-	].map(tag => ({ label: tag, value: tag }));
+	// const currentQuestionBank = subjectData.questionBanks.find(qb => qb.questionBankId === questionBankId);
+	// const questionBankName = currentQuestionBank ? currentQuestionBank.questionBankName : "Ngân hàng câu hỏi";
+  
+	// // Lấy tất cả các tags từ subjectData và loại bỏ trùng lặp
+	// const allTags = [
+	// 	...new Set(
+	// 		subjectData.questionBanks.flatMap(qb =>
+	// 			qb.list.flatMap(q => q.tags || [])
+	// 		)
+	// 	)
+	// ].map(tag => ({ label: tag, value: tag }));
+	const allTags = [];
 
 	return (
 		<div className="container list-question-container me-0">
@@ -273,8 +295,8 @@ const ListQuestionPage = () => {
 			<nav className="breadcrumb">
 				<Link to="/admin">Home</Link> / 
 				<Link to="/admin/question">Ngân hàng câu hỏi</Link> / 
-				<Link to={`/admin/question/${subject}`}>{decodeURIComponent(subject)}</Link> / 
-				<span className="breadcrumb-current">{questionBankName}</span>
+				<Link to={`/admin/question/${subjectId}`}>{subjectName}</Link> / 
+				<span className="breadcrumb-current">{ questionBankName }</span>
 			</nav>
 	
 			<div className="d-flex">

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "./RoomManagementPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel,} from "@mui/material";
+import { Box, Button, Grid, MenuItem, Pagination, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel,} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
@@ -11,15 +11,13 @@ import SearchBox from "../../components/SearchBox/SearchBox";
 import ApiService from "../../services/apiService";
 
 const RoomManagementPage = () => {
-  const [dummyRooms, setDummyRooms] = useState([]);
+  const [listRoom, setListRoom] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await ApiService.get("/rooms");
-        console.log("Dữ liệu phòng thi: ", response.data.rooms);
-
-        setDummyRooms(response.data.rooms);
+        setListRoom(response.data.rooms);
       } catch (error) {
         console.error("Lỗi lấy dữ liệu: ", error);
       }
@@ -27,14 +25,29 @@ const RoomManagementPage = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    setRows(dummyRooms);
-  }, [dummyRooms]);
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const handleSelectItem = (e, id) => {
+    if (e.target.checked) {
+      setSelectedItems([...selectedItems, id]);
+    } else {
+      setSelectedItems(selectedItems.filter((item) => item !== id));
+    }
+  };
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedItems(listRoom.map((item) => item.id));
+    } else {
+      setSelectedItems([]);
+    }
+  };
 
   const [showForm, setShowForm] = useState(false);
   const [editingAccount, setEditingAccount] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [accountToDelete, setAccountToDelete] = useState(null);
+<<<<<<< Updated upstream
   // const [rows, setRows] = useState(Object.values(dummyRooms).flat());
   const [rows, setRows] = useState([]);
 
@@ -82,6 +95,8 @@ const RoomManagementPage = () => {
   ];
 
   const paginationModel = { page: 0, pageSize: 5 };
+=======
+>>>>>>> Stashed changes
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -175,17 +190,29 @@ const RoomManagementPage = () => {
         <span className="breadcrumb-current">Quản lý phòng thi</span>
       </nav>
 
-      <div className="room-actions">
-        <div className="search-container">
-          <SearchBox></SearchBox>
+      <div className="sample-card-header d-flex justify-content-between align-items-center mt-3 mb-3">
+        <div className='left-header d-flex align-items-center'>
+          <div className="search-box me-2 rounded d-flex align-items-center">
+            <i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
+            <input
+              type="text"
+              className="search-input w-100"
+              placeholder="Tìm kiếm..."
+              // value={searchTerm}
+              // onChange={handleChangeSearch}
+            />
+          </div>
         </div>
-        <div className="role-selector">
-          <button className="add-btn" onClick={handleAddNew}>
+
+        <div className='right-header'>
+          <button className="btn btn-primary me-2" onClick={handleAddNew}>
+            <i className="fas fa-plus me-2"></i>
             Thêm mới
           </button>
         </div>
       </div>
 
+<<<<<<< Updated upstream
       <div className="room-table-container ">
         <Paper sx={{width: "100%" }}>
           <DataGrid
@@ -232,6 +259,60 @@ const RoomManagementPage = () => {
             }}
           />
         </Paper>
+=======
+      <div className="table-responsive">
+        <table className="table sample-table table-hover">
+          <thead>
+            <tr className="align-middle">
+              <th scope="col" className="text-center title-row" style={{ width: "50px"}}>
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  onChange={handleSelectAll}
+                  checked={selectedItems.length === listRoom.length && listRoom.length > 0}
+                />
+              </th>
+              <th scope="col" className="title-row">Tên phòng</th>
+              <th scope="col" className="title-row">Địa chỉ</th>
+              <th scope="col" className="title-row">Số lượng chỗ ngồi</th>
+              <th scope="col" className="title-row">Trạng thái</th>
+              <th scope="col" className="title-row" style={{ width: "120px"}}>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            {listRoom.map((item, index) => (
+              <tr key={item.id} className="align-middle">
+                <td className=" text-center" style={{ width: "50px" }}>
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    onChange={(e) => handleSelectItem(e, item.questionBankId)}
+                    checked={selectedItems.includes(item.questionBankId)}
+                  />
+                </td>
+                <td className="fw-semibold text-hover-primary">
+                  {item.roomName}
+                </td>
+                <td className="fw-semibold text-hover-primary">{item.roomLocation	}</td>
+                <td>{item.roomCapacity}</td>
+                <td>{item.roomStatus}</td>
+                <td>
+                  <button className="btn btn-primary btn-sm">
+                    <i className="fas fa-edit text-white"></i>
+                  </button>
+                  <button className="btn btn-danger btn-sm ms-2">
+                    <i className="fas fa-trash-alt"></i>
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="sample-pagination d-flex justify-content-end align-items-center">
+        <Pagination count={10} variant="outlined" shape="rounded" />
+>>>>>>> Stashed changes
       </div>
 
       {/* Form thêm tài khoản */}
