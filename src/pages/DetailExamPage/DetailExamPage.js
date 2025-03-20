@@ -327,7 +327,7 @@ const DetailExamPage = () => {
 
 			{/* Modal Bootstrap thuần */}
 			<div className="modal fade" id="questionModal" tabIndex="-1" aria-hidden="true">
-				<div className="modal-dialog modal-dialog-centered">
+				<div className="modal-dialog modal-dialog-centered modal-xl">
 					<div className="modal-content">
 						<div className="modal-header">
 								<h5 className="modal-title">{editQuestionId ? "Chỉnh sửa câu hỏi" : "Thêm câu hỏi mới"}</h5>
@@ -365,44 +365,17 @@ const DetailExamPage = () => {
 
 								</div>
 							</div>
-							<textarea
-								type="text"
-								className="form-control mb-3 mt-3"
-								placeholder="Nhập câu hỏi"
-								value={newQuestion.questionText}
-								onChange={(e) => setNewQuestion({ ...newQuestion, questionText: e.target.value })}
-							/>
-							{newQuestion.options.map((option, index) => (
-								<div key={index} className="input-group mb-2">
-									<div className="input-group-text">
-										<input
-											type="checkbox"
-											checked={option.isCorrect}
-											onChange={() => {
-												const newOptions = [...newQuestion.options];
-												newOptions[index].isCorrect = !newOptions[index].isCorrect;
-												setNewQuestion({ ...newQuestion, options: newOptions });
-											}}
-										/>
-									</div>
-									<input
-										type="text"
-										className="form-control m-0"
-										placeholder="Nhập đáp án"
-										value={option.optionText}
-										onChange={(e) => {
-										const newOptions = [...newQuestion.options];
-										newOptions[index].optionText = e.target.value;
-										setNewQuestion({ ...newQuestion, options: newOptions });
-										}}
-									/>
-									<button className="btn btn-danger" onClick={() => handleRemoveOption(index)}>X</button>
-								</div>
-							))}
-							<button className="btn btn-outline-secondary me-2 mt-2" onClick={handleAddOption}>
-								Thêm đáp án
-							</button>
-							<div className="form-check mt-3">
+							<div>
+								<p className="mt-2 mb-2">Câu hỏi:</p>
+								<textarea
+									type="text"
+									className="form-control mb-3"
+									placeholder="Nhập câu hỏi"
+									value={newQuestion.questionText}
+									onChange={(e) => setNewQuestion({ ...newQuestion, questionText: e.target.value })}
+								/>
+							</div>
+							<div className="form-check mt-2 mb-3">
 								<input
 									type="checkbox"
 									className="form-check-input"
@@ -414,12 +387,49 @@ const DetailExamPage = () => {
 									Đảo thứ tự đáp án
 								</label>
 							</div>
+							{newQuestion.options.map((option, index) => (
+								<div key={index} className="input-group mb-2">
+									<div className="input-group-text">
+										<input
+											type="checkbox"
+											className="form-check-input"
+											checked={option.isCorrect}
+											onChange={() => {
+												const newOptions = [...newQuestion.options];
+												newOptions[index].isCorrect = !newOptions[index].isCorrect;
+												setNewQuestion({ ...newQuestion, options: newOptions });
+											}}
+										/>
+									</div>
+									<textarea
+										className="form-control m-0"
+										placeholder="Nhập đáp án"
+										value={option.optionText}
+										rows={1} // Hiển thị tối thiểu 1 dòng, tự động mở rộng khi nhập
+										onChange={(e) => {
+											const newOptions = [...newQuestion.options];
+											newOptions[index].optionText = e.target.value;
+											setNewQuestion({ ...newQuestion, options: newOptions });
+										}}
+										style={{ resize: "none", overflow: "hidden" }} // Ngăn resize tay, tự động mở rộng
+										onInput={(e) => {
+											e.target.style.height = "auto"; // Reset chiều cao để tránh bị giãn bất thường
+											e.target.style.height = e.target.scrollHeight + "px"; // Set chiều cao theo nội dung
+										}}
+									/>
+									<button className="btn btn-danger" onClick={() => handleRemoveOption(index)}><i className="fa-solid fa-xmark"></i>
+									</button>
+								</div>
+							))}
+							<button className="btn btn-outline-secondary me-2 mt-2" onClick={handleAddOption}>
+								Thêm đáp án
+							</button>
 						</div>
 						<div className="modal-footer">
 							<button className="btn btn-success" onClick={handleSaveQuestion}>
 								{editQuestionId ? "Cập nhật" : "Lưu"}
 							</button>
-							<button id="closeModalBtn" className="btn btn-secondary" data-bs-dismiss="modal">
+							<button id="closeModalBtn" className="btn btn-danger" data-bs-dismiss="modal">
 								Hủy
 							</button>
 						</div>
@@ -456,7 +466,7 @@ const DetailExamPage = () => {
 							<button className="btn btn-success" onClick={handleSaveQuestion}>
 								{editQuestionId ? "Cập nhật" : "Lưu"}
 							</button>
-							<button id="closeModalBtn" className="btn btn-secondary" data-bs-dismiss="modal">
+							<button id="closeModalBtn" className="btn btn-danger" data-bs-dismiss="modal">
 								Hủy
 							</button>
 						</div>

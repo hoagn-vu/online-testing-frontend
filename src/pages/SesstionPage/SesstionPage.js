@@ -204,10 +204,11 @@ const SesstionPage = () => {
 	return (
 		<div className="exam-management-page">
 			{/* Breadcrumb */}
-			{/* <nav>
+			<nav>
 				<Link to="/staff">Home</Link> / 
 				<span className="breadcrumb-current">Quản lý kỳ thi</span>
-			</nav> */}
+			</nav>
+
 		<div>
 			{listQuestionBank.map((exam, index) => (
 				<div key={index} style={{

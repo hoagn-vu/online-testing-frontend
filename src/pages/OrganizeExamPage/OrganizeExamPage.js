@@ -329,11 +329,12 @@ const OrganizeExamPage = () => {
   return (
     <div className="exam-management-page">
       {/* Breadcrumb */}
-      <nav>
-        <Link to="/admin">Home</Link> / 
-        <span className="breadcrumb-current">Quản lý kỳ thi</span>
+      <nav className="mb-4">
+        <Link className="breadcrumbs-hover" style={{textDecoration: "none"}} to="/admin">Home</Link> /
+        <span className="breadcrumb-current"> Quản lý kỳ thi</span>
       </nav>
-      <div className="account-actions mt-4">
+
+      <div className="account-actions mt-2">
         <div className="search-container">
           <SearchBox></SearchBox>
         </div>
