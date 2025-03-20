@@ -197,7 +197,7 @@ export default function Admin2Layout() {
             >
               <ListItemButton 
                 onClick={() => navigate(item.path)} 
-                selected={location.pathname === item.path}
+                selected={location.pathname.startsWith(item.path)}
               >
                 <ListItemIcon>{item.icon}</ListItemIcon>
                 {open && <ListItemText primary={item.title} />}
