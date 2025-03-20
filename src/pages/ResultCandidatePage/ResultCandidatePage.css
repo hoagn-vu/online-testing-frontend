@@ -2,9 +2,10 @@
     display: flex;
     justify-content: center;
     background-color: #f4f6f9;
-    padding-top: 90px;
+    padding-top: 100px;
     padding-bottom: 170px;
     height: 100vh;
+    align-items: center;
 }
 
 .result-content p {
@@ -17,6 +18,16 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     padding: 30px;
     min-width: 800px;
+    height: 400px;
+}
+
+.result-ne-content{
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    min-width: 800px;
+    height: 270px;
 }
 
 .btn-home {

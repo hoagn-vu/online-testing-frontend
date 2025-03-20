@@ -1,0 +1,7 @@
+.modal-backdrop {
+    z-index: 1300; /* Hoặc 1030 để đảm bảo modal hiển thị trên backdrop */
+}
+
+.modal {
+    z-index: 1400; /* Đảm bảo modal hiển thị trên backdrop */
+}

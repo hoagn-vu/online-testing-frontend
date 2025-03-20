@@ -51,14 +51,14 @@ const HistoryCandidatePage = () => {
         <div className="container container-history justify-content-center d-flex">
             <div className="table-responsive tbl-history">
                 <h2 className="text-center mb-4">Lịch sử thi</h2>
-                <table className="table table-striped" >
+                <table className="exam-history-table table table-striped" >
                     <thead className="bg-light">
                         <tr>
                             <th style={{ minWidth: "0px" }}>STT</th>
-                            <th style={{ minWidth: "130px" }}>Kỳ thi</th>
-                            <th style={{ minWidth: "70px" }}>Môn thi</th>
-                            <th style={{ minWidth: "30px" }}>Điểm số</th>
-                            <th style={{ minWidth: "150px" }}>Ngày thực hiện</th>
+                            <th style={{ minWidth: "150px" }}>Kỳ thi</th>
+                            <th style={{ minWidth: "90px", justifyContent: "left" }}>Môn thi</th>
+                            <th style={{ minWidth: "100px" }}>Điểm số</th>
+                            <th style={{ width: "180px" }}>Ngày thực hiện</th>
                             <th style={{ minWidth: "300px" }}>Chú thích</th>
                         </tr>
                     </thead>
@@ -67,9 +67,9 @@ const HistoryCandidatePage = () => {
                             <tr key={exam.id}>
                                 <td>{index + 1}</td>
                                 <td>{exam.exam}</td>
-                                <td>{exam.subject}</td>
-                                <td>{exam.score}</td>
-                                <td>{exam.date}</td>
+                                <td className="text-center">{exam.subject}</td>
+                                <td className="text-center">{exam.score}</td>
+                                <td className="text-center">{exam.date}</td>
                                 <td>{exam.note}</td>
                             </tr>
                         ))}

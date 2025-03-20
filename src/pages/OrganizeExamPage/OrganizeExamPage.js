@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams  } from "react-router-dom";
 import "./OrganizeExamPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -12,76 +12,138 @@ import ApiService from "../../services/apiService";
 import CreatableSelect from "react-select/creatable";
 import ReactSelect  from 'react-select';
 
-const listQuestionBank = [{
-  id: "65f1a3b4c8e4a2d5b6f7e8d9",
-  organizeExamName: "Kỳ thi giữa kỳ Toán lớp 12",
-  organizeExamStatus: "Scheduled",
-  duration: 90,
-  examType: "Ngẫu nhiên",
-  matrixId: "MATRIX123",
-  maxScore: 100,
-  subjectId: "MATH12",
-  totalQuestion: 50,
-  examSet: ["Ma12", "Ma13"],
-  sesstion: [
-    {
-      sesstionId: "SESSION001",
-      activeAt: "2025-04-10T08:00:00Z",
-      sesstionStatus: "Active",
-      rooms: [
-        {
-          roomId: "ROOM101",
-          supervisorId: "SUP123",
-          candidates: [
-            {
-              candidateId: "CAND001",
-              examId: "EXAM123"
-            },
-            {
-              candidateId: "CAND002",
-              examId: "EXAM124"
-            }
-          ]
-        },
-        {
-          roomId: "ROOM102",
-          supervisorId: "SUP124",
-          candidates: [
-            {
-              candidateId: "CAND003",
-              examId: "EXAM125"
-            },
-            {
-              candidateId: "CAND004",
-              examId: "EXAM126"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      sesstionId: "SESSION002",
-      activeAt: "2025-04-10T13:00:00Z",
-      sesstionStatus: "Scheduled",
-      rooms: [
-        {
-          roomId: "ROOM201",
-          supervisorId: "SUP125",
-          candidates: [
-            {
-              candidateId: "CAND005",
-              examId: "EXAM127"
-            },
-            {
-              candidateId: "CAND006",
-              examId: "EXAM128"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}];
+const listQuestionBank = [
+  {
+    id: "65f1a3b4c8e4a2d5b6f7e8d9",
+    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 12",
+    organizeExamStatus: "active",
+    duration: 90,
+    examType: "Ma trận",
+    matrixId: "MATRIX123",
+    maxScore: 100,
+    subjectId: "MATH12",
+    totalQuestion: null,
+    examSet: null,
+    sesstion: []
+  },
+  {
+    id: "55f1a3b4c8e4a2d5b6f7e8d9",
+    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
+    organizeExamStatus: "active",
+    duration: 90,
+    examType: "Dề thi",
+    matrixId: null,
+    maxScore: 100,
+    subjectId: "MATH11",
+    totalQuestion: null,
+    examSet: ["Ma12", "Ma13"],
+    sesstion: []
+  },
+  {
+    id: "55f1a3b4c8e4a2d5b6f7e8d0",
+    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 1",
+    organizeExamStatus: "disabled",
+    duration: 90,
+    examType: "Ngẫu nhiên",
+    matrixId: null,
+    maxScore: 100,
+    subjectId: "MATH10",
+    totalQuestion: 50,
+    examSet: null,
+    sesstion: []
+  },
+  {
+    id: "55f1a3b4c8e4a2d5b6f7e8d9",
+    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
+    organizeExamStatus: "active",
+    duration: 90,
+    examType: "Dề thi",
+    matrixId: null,
+    maxScore: 100,
+    subjectId: "MATH11",
+    totalQuestion: null,
+    examSet: ["Ma12", "Ma13"],
+    sesstion: []
+  },
+  {
+    id: "55f1a3b4c8e4a2d5b6f7e8d9",
+    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
+    organizeExamStatus: "active",
+    duration: 90,
+    examType: "Dề thi",
+    matrixId: null,
+    maxScore: 100,
+    subjectId: "MATH11",
+    totalQuestion: null,
+    examSet: ["Ma12", "Ma13"],
+    sesstion: []
+  },
+  {
+    id: "55f1a3b4c8e4a2d5b6f7e8d9",
+    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
+    organizeExamStatus: "active",
+    duration: 90,
+    examType: "Dề thi",
+    matrixId: null,
+    maxScore: 100,
+    subjectId: "MATH11",
+    totalQuestion: null,
+    examSet: ["Ma12", "Ma13"],
+    sesstion: []
+  },
+  {
+    id: "55f1a3b4c8e4a2d5b6f7e8d9",
+    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
+    organizeExamStatus: "active",
+    duration: 90,
+    examType: "Dề thi",
+    matrixId: null,
+    maxScore: 100,
+    subjectId: "MATH11",
+    totalQuestion: null,
+    examSet: ["Ma12", "Ma13"],
+    sesstion: []
+  },
+  {
+    id: "55f1a3b4c8e4a2d5b6f7e8d9",
+    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
+    organizeExamStatus: "active",
+    duration: 90,
+    examType: "Dề thi",
+    matrixId: null,
+    maxScore: 100,
+    subjectId: "MATH11",
+    totalQuestion: null,
+    examSet: ["Ma12", "Ma13"],
+    sesstion: []
+  },
+  {
+    id: "55f1a3b4c8e4a2d5b6f7e8d9",
+    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
+    organizeExamStatus: "active",
+    duration: 90,
+    examType: "Dề thi",
+    matrixId: null,
+    maxScore: 100,
+    subjectId: "MATH11",
+    totalQuestion: null,
+    examSet: ["Ma12", "Ma13"],
+    sesstion: []
+  },
+  {
+    id: "55f1a3b4c8e4a2d5b6f7e8d9",
+    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
+    organizeExamStatus: "active",
+    duration: 90,
+    examType: "Dề thi",
+    matrixId: null,
+    maxScore: 100,
+    subjectId: "MATH11",
+    totalQuestion: null,
+    examSet: ["Ma12", "Ma13"],
+    sesstion: []
+  },
+];
 
 const typeOptions = [
 	{ value: 'Ma trận', label: 'Ma trận' },
@@ -120,130 +182,109 @@ const OrganizeExamPage = () => {
 
   const [showForm, setShowForm] = useState(false);
   const [editingAccount, setEditingAccount] = useState(null);
-  const [rows, setRows] = useState(Object.values(listQuestionBank).flat());
+  const [rows, setRows] = useState(listQuestionBank);
   const paginationModel = { page: 0, pageSize: 5 };
   const inputRef = useRef(null);
   const [selectedType, setSelectedType] = useState(null); 
-
-  const columns = [
-    { field: "stt", headerName: "#", width: 15, align: "center", headerAlign: "center" },
-    { 
-      field: "organizeExamName", 
-      headerName: "Kỳ thi", 
-      width: 1090, flex: 0.1, 
-  // renderCell: (params) => (
-  //   <Link 
-  //   to={`/admin/exam/${encodeURIComponent(params.row.id)}`} 
-  //   style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
-  //   >
-  //   {params.row.examCode}
-  //   </Link>
-  // )
-    },
-    { 
-      field: "subjectId", 
-      headerName: "Phân môn", 
-      width: 200, flex: 0.1, 
-    },
-    { 
-      field: "examType", 
-      headerName: "Loại", 
-      width: 130, flex: 0.05  
-    },
-    { 
-      field: "examSet", 
-      headerName: "Đề thi", 
-      width: 130
-    },
-    { 
-      field: "matrixId", 
-      headerName: "Ma trận", 
-      width: 100,
-    },
-    { 
-      field: "duration", 
-      headerName: "Thời gian", 
-      width: 80, 
-    },
-    { 
-      field: "maxScore", 
-      headerName: "Điểm", 
-      width: 80, 
-    },
-    { 
-      field: "organizeExamStatus", 
-      headerName: "Trạng thái", 
-      width: 145,
-      renderCell: (params) => (
-        <Select
-        value={(params.row.examStatus || "Active").toLowerCase()}  
-        onChange={(e) => handleStatusChange(params.row.id, e.target.value)}
-          size="small"
-          sx={{
-          minWidth: 120, 
-          fontSize: "15px", 
-          padding: "0px", 
-          }}
-        >
-          <MenuItem value="active">Active</MenuItem>
-          <MenuItem value="disabled">Disabled</MenuItem>
-        </Select>
-      ),
-    },
-    {
-      field: "actions",
-      headerName: "Thao tác", align: "center",headerAlign: "center",
-      width: 110,
-      sortable: false,
-      renderCell: (params) => (
-        <>
-          <IconButton color="primary" onClick={() => handleEdit(params.row)}>
-            <EditIcon />
-          </IconButton>
-          <IconButton color="error" onClick={() => handleDelete(params.row.id)}>
-            <DeleteIcon />
-          </IconButton>
-        </>
-      ),
-    },
-  ];
+  const navigate = useNavigate(); // Hook để điều hướng
+  const {id:organizeId} = useParams();
+  // const [rows, setRows] = useState([]);
   
+  useEffect(() => {
+    // Giả lập dữ liệu lấy từ cơ sở dữ liệu (sau này thay bằng API)
+    const fetchData = async () => {
+      const fakeData = [
+        {
+          id: "65f1a3b4c8e4a2d5b6f7e8d9",
+          organizeExamName: "Kỳ thi giữa kỳ Toán lớp 12",
+          organizeExamStatus: "active",
+          duration: 90,
+          examType: "Ma trận",
+          matrixId: "MATRIX123",
+          maxScore: 100,
+          subjectId: "MATH12",
+          totalQuestion: 50,
+          examSet: null,
+          sesstion: []
+        },
+        {
+          id: "55f1a3b4c8e4a2d5b6f7e8d9",
+          organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
+          organizeExamStatus: "active",
+          duration: 90,
+          examType: "Dề thi",
+          matrixId: null,
+          maxScore: 100,
+          subjectId: "MATH11",
+          totalQuestion: 50,
+          examSet: ["Ma12", "Ma13"],
+          sesstion: []
+        },
+        {
+          id: "55f1a3b4c8e4a2d5b6f7e8d0",
+          organizeExamName: "Kỳ thi giữa kỳ Toán lớp 1",
+          organizeExamStatus: "disabled",
+          duration: 90,
+          examType: "Ngẫu nhiên",
+          matrixId: null,
+          maxScore: 100,
+          subjectId: "MATH10",
+          totalQuestion: 50,
+          examSet: null,
+          sesstion: []
+        }
+      ];
+      setRows(fakeData);
+    };
+
+    fetchData();
+  }, []);
+
   useEffect(() => {
     if (showForm && inputRef.current) {
       inputRef.current.focus();
     }
     }, [showForm]);
 
-  const handleStatusChange = (id, newStatus) => {
+  const handleToggleStatus = (id, currentStatus) => {
     Swal.fire({
-    title: "Xác nhận thay đổi trạng thái?",
-    text: "Bạn có chắc chắn muốn thay đổi trạng thái của kỳ thi?",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Đồng ý",
-    cancelButtonText: "Hủy",
+      title: "Bạn có chắc muốn thay đổi trạng thái?",
+      text: "Trạng thái sẽ được cập nhật ngay sau khi xác nhận!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Xác nhận",
+      cancelButtonText: "Hủy",
     }).then((result) => {
       if (result.isConfirmed) {
-        const updatedRows = rows.map((row) =>
-          row.id === id ? { ...row, examStatus: newStatus } : row
+        const newStatus = currentStatus === "active" ? "disabled" : "active";
+
+        // Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
+        setRows((prevRows) =>
+          prevRows.map((row) =>
+            row.id === id ? { ...row, organizeExamStatus: newStatus } : row
+          )
         );
-        setRows(updatedRows);
-        Swal.fire("Thành công!", "Trạng thái đã được cập nhật.", "success");
+
+        Swal.fire({
+          title: "Cập nhật thành công!",
+          text: `Trạng thái đã chuyển sang "${newStatus}".`,
+          icon: "success",
+        });
       }
     });
   };
   
   const [formData, setFormData] = useState({
-  organizeExamName: "",
-  subjectId: "",
-  examType: "",
-  examSet: "",
-  matrixId: "",
-  duration: "",
-  maxScore: "",
-  organizeExamStatus: "active",
+    organizeExamName: "",
+    subjectId: "",
+    examType: "",
+    examSet: "",
+    matrixId: "",
+    duration: "",
+    maxScore: "",
+    organizeExamStatus: "active",
   });
 
   const handleAddNew = () => {
@@ -309,15 +350,17 @@ const OrganizeExamPage = () => {
   return (
     <div className="exam-management-page">
       {/* Breadcrumb */}
-      <nav>
-        <Link to="/admin">Home</Link> / 
-        <span className="breadcrumb-current">Quản lý kỳ thi</span>
+      <nav className="mb-4">
+        <Link className="breadcrumbs-hover" style={{textDecoration: "none"}} to="/admin">Home</Link> /
+        <span className="breadcrumb-current"> Quản lý kỳ thi</span>
       </nav>
-      <div className="account-actions mt-4">
+
+      <div className="account-actions mt-2">
         <div className="search-container">
           <SearchBox></SearchBox>
         </div>
-        <button className="add-btn" onClick={handleAddNew}>
+        <button className="btn btn-primary me-2" style={{fontSize: "14px"}} onClick={handleAddNew}>
+          <i className="fas fa-plus me-2"></i>
           Thêm mới
         </button>
       </div>
@@ -556,7 +599,7 @@ const OrganizeExamPage = () => {
 										fullWidth
 										className="basic-single "
 										classNamePrefix="select"
-										placeholder="Đề thi"
+										placeholder="Chọn đề thi"
 										name="color"
 										options={subjectOptions}
 										isDisabled={editingAccount}
@@ -591,7 +634,7 @@ const OrganizeExamPage = () => {
 										fullWidth
 										className="basic-single "
 										classNamePrefix="select"
-										placeholder="Ma trận"
+										placeholder="Chọn ma trận"
 										name="color"
 										options={subjectOptions}
 										isDisabled={editingAccount}
@@ -617,6 +660,27 @@ const OrganizeExamPage = () => {
 											}),
 										}}
 									/>
+								</Grid>
+                )}
+                {selectedType === "Ngẫu nhiên" && (
+                <Grid item xs={12}>
+                  <TextField
+										fullWidth
+										label="Số lượng câu hỏi"
+										required
+										value={formData.totalQuestion}
+										onChange={(e) =>
+											setFormData({ ...formData, totalQuestion: e.target.value })
+										}
+										sx={{
+											"& .MuiInputBase-input": {
+												fontSize: "14px",
+												paddingBottom: "11px",
+											},
+											"& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+										}}
+									/>
+									
 								</Grid>
                 )}
 							</Grid>		

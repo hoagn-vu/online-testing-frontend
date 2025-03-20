@@ -161,7 +161,7 @@ export default function Admin2Layout() {
             {isOpen && (
               <ul className="dropdown-menu show position-absolute end-0 mt-2">
                 <li>
-                  <a className="dropdown-item" href="#" onClick={handleLogout}>
+                  <a className="dropdown-item" onClick={handleLogout}>
                     Đăng xuất
                   </a>
                 </li>

@@ -7,7 +7,6 @@
 /* Đảm bảo bảng tài khoản không tràn ra ngoài */
 .log-table-container {
     width: 100%;
-  
 }
 
 /* Định dạng lại bảng để phù hợp với giao diện admin */
@@ -30,6 +29,11 @@
     margin-top: 5px;
     margin-bottom: 10px;
 }
+
 .breadcrumb-log-container {
     font-size: 16px;
 }
+
+ .filter-btn {
+    height: 38px;
+ } 

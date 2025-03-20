@@ -92,7 +92,7 @@ const LoginPage = () => {
     <div className="custom-login-form d-flex justify-content-center align-items-center vh-100">
       <form
         className="p-4 shadow-lg login-form bgr-color"
-        onSubmit={handleSubmit}
+        onSubmit={handleLogin}
       >
         <h2 className="text-center mb-3 fw-bold text-blue-holo">Đăng nhập</h2>
 

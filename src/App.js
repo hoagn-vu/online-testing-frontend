@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import AdminLayout from "./layouts/AdminLayout/AdminLayout";
+
 import DefaultLayout from "./layouts/DefaultLayout/DefaultLayout";
 import AccountPage from "./pages/AccountPage/AccountPage";
 import Dashboard from "./pages/Dashboard/Dashboard";
@@ -10,7 +10,6 @@ import HomeCandidate from "./pages/HomeCandidate/HomeCandidate";
 import LogPage from "./pages/LogPage/LogPage";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import TakeExamPage from "./pages/TakeExamPage/TakeExamPage";
-import WelcomePage from "./pages/WelcomePage/WelcomePage";
 import ResultCandidatePage from "./pages/ResultCandidatePage/ResultCandidatePage";
 import SubjectPage from "./pages/SubjectPage/SubjectPage";
 import QuestionBankPage from "./pages/QuestionBankPage/QuestionBankPage";
@@ -79,10 +78,9 @@ function App() {
 
   return (
     <Router>
-      {" "}
-      {/* Thêm BrowserRouter */}
       <Routes>
         <Route path="/" element={<LoginPage />} />
+        <Route path="/not-found" element={<NotFound />} />
       </Routes>
       <Routes>
         <Route 
@@ -113,6 +111,7 @@ function App() {
           <Route path="log" element={<LogPage />} />
         </Route>
       </Routes>
+
       <Routes>
         <Route 
           path="/candidate" 
@@ -128,8 +127,12 @@ function App() {
           <Route path="takexam" element={<TakeExamPage />} />
         </Route>
       </Routes>
+
       <Routes>
-        
+        <Route path="/supervisor" element={<SupervisorLayout />}>
+          <Route path="home" element={<SupervisorHomePage />} /> 
+          <Route path="monitor" element={<MonitoringPage />} /> 
+        </Route>
       </Routes>
     </Router>
   );

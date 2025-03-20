@@ -125,13 +125,13 @@ const QuestionBankNamePage = () => {
     };
 
     const [formData, setFormData] = useState({
-        question_bank_name: "",
+        questionBankName: "",
     });
 
     const handleAddNew = () => {
         setEditingAccount(null); // Đảm bảo không ở chế độ chỉnh sửa
         setFormData({
-        question_bank_name: "",
+            questionBankName: "",
         });
         setTimeout(() => setShowForm(true), 0); // Đợi React cập nhật state rồi mới hiển thị form
     };
@@ -144,7 +144,7 @@ const QuestionBankNamePage = () => {
 
     const handleEdit = (account) => {
         setFormData({
-        question_bank_name: account.question_bank_name,
+            questionBankName: account.questionBankName,
         });
         setEditingAccount(account);
         setShowForm(true);
@@ -178,9 +178,11 @@ const QuestionBankNamePage = () => {
         <div className="question-bank-page">
         {/* Breadcrumb */}
         <nav>
-            <Link to="/admin">Home</Link> / 
-            <Link to="/admin/question">Ngân hàng câu hỏi</Link> / 
-            <span className="breadcrumb-current">{decodeURIComponent(subject)}</span>
+          <Link to="/staff/dashboard">Home</Link>
+          <span> / </span>
+          <Link to="/staff/question">Ngân hàng câu hỏi</Link>
+          <span> / </span>
+          <span className="breadcrumb-current">{decodeURIComponent(subject)}</span>
         </nav>
 
             <div className="account-actions mt-4">
@@ -266,9 +268,9 @@ const QuestionBankNamePage = () => {
                         fullWidth
                         label="Tên ngân hàng câu hỏi"
                         required
-                        value={formData.question_bank_name}
+                        value={formData.questionBankName}
                         onChange={(e) =>
-                            setFormData({ ...formData, question_bank_name: e.target.value })
+                            setFormData({ ...formData, questionBankName: e.target.value })
                         }
                         inputRef={inputRef}
                         sx={{

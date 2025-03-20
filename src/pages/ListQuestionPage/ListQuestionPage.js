@@ -75,22 +75,39 @@ const ListQuestionPage = () => {
     new window.bootstrap.Modal(document.getElementById("questionModal")).show();
 	};
 
+	// const handleEditQuestion = (question) => {
+	// 	setEditQuestionId(question.id);
+
+	// 	// Chuyển đổi tags thành { label, value }
+	// 	const formattedTags = question.tags ? question.tags.map(tag => ({ label: tag, value: tag })) : [];
+
+	// 	setNewQuestion({ 
+	// 			questionText: question.questionText, 
+	// 			options: question.options 
+	// 	});
+
+	// 	setSelectedGroups(formattedTags); // Cập nhật selectedGroups với các tag của câu hỏi
+
+	// 	new window.bootstrap.Modal(document.getElementById("questionModal")).show();
+	// };
+
 	const handleEditQuestion = (question) => {
-		setEditQuestionId(question.id);
+    setEditQuestionId(question.id);
 
-		// Chuyển đổi tags thành { label, value }
-		const formattedTags = question.tags ? question.tags.map(tag => ({ label: tag, value: tag })) : [];
+    // Lấy chương và mức độ từ tags (nếu có)
+    const chapter = question.tags?.[0] ? { label: question.tags[0], value: question.tags[0] } : null;
+    const level = question.tags?.[1] ? { label: question.tags[1], value: question.tags[1] } : null;
 
-		setNewQuestion({ 
-				questionText: question.questionText, 
-				options: question.options 
-		});
+    setNewQuestion({ 
+        questionText: question.questionText, 
+        options: question.options 
+    });
 
-		setSelectedGroups(formattedTags); // Cập nhật selectedGroups với các tag của câu hỏi
+    setSelectedChapter(chapter); // Cập nhật Select Chương
+    setSelectedLevel(level); // Cập nhật Select Mức độ
 
-		new window.bootstrap.Modal(document.getElementById("questionModal")).show();
+    new window.bootstrap.Modal(document.getElementById("questionModal")).show();
 	};
-
 
 	const handleUploadClick = async () => {
 			const { value: file } = await Swal.fire({
@@ -132,12 +149,6 @@ const ListQuestionPage = () => {
 			groupedQuestions[chapter][level].push(question);
 	});
 
-	const colourOptions = [
-			{ value: "Chương 1", label: "Chương 1" },
-			{ value: "Chương 2", label: "Chương 2" },
-			{ value: "Chương 3", label: "Chương 3" },
-		];
-
 	const handleDelete = (id) => {
 			Swal.fire({
 					title: "Bạn có chắc chắn xóa?",
@@ -174,7 +185,7 @@ const ListQuestionPage = () => {
 	const allTags = [];
 
 	return (
-		<div className="container list-question-container me-0">
+		<div className=" list-question-container">
 			{/* Breadcrumb */}
 			<nav className="breadcrumb">
 				<Link to="/admin">Home</Link>
@@ -242,7 +253,7 @@ const ListQuestionPage = () => {
 										<div className="card-header d-flex justify-content-between ps-2">
 											<div className="d-flex ">
 											<button 
-												className="btn btn-link text-decoration-none d-flex p-0 pe-1"
+												className="btn btn-link text-decoration-none d-flex align-items-center p-0 pe-1"
 												style={{color: "black"}}
 												data-bs-toggle="collapse" 
 												data-bs-target={`#collapse-${question.id}`}
@@ -251,16 +262,20 @@ const ListQuestionPage = () => {
 											>			
 												<ArrowDropDownIcon />
 											</button>
-												<div>
-													<h6 className="d-flex align-items-center">{question.questionText}</h6>
+												<div className="d-flex align-items-center">
+													<h6 className="d-flex align-items-center mb-0">{question.questionText}</h6>
 													{question.tags.slice(1).map((tag, index) => (
 														<p className="m-0 tag-level" key={index}>{tag}</p>
 													))}
 												</div>
 											</div>
 											<div className="d-flex" style={{ marginLeft: "50px" }}>
-												<button className="btn btn-primary me-2" onClick={() => handleEditQuestion(question)}>Edit</button>
-												<button className="btn btn-danger" onClick={() => handleDelete()}>Delete</button>
+												<button className="btn btn-primary me-2" onClick={() => handleEditQuestion(question)}>
+													Edit
+												</button>
+												<button className="btn btn-danger" onClick={() => handleDelete()}>
+													Delete
+												</button>
 											</div>
 										</div>
 										<div id={`collapse-${question.id}`} className="collapse show">
@@ -282,59 +297,55 @@ const ListQuestionPage = () => {
 
 			{/* Modal Bootstrap thuần */}
 			<div className="modal fade" id="questionModal" tabIndex="-1" aria-hidden="true">
-				<div className="modal-dialog modal-dialog-centered">
+				<div className="modal-dialog modal-dialog-centered modal-xl">
 					<div className="modal-content">
 						<div className="modal-header">
 								<h5 className="modal-title">{editQuestionId ? "Chỉnh sửa câu hỏi" : "Thêm câu hỏi mới"}</h5>
 								<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div className="modal-body">
-							<CreatableSelect
-								isMulti
-								options={allTags}
-								value={selectedGroups}
-								onChange={setSelectedGroups}
-								menuPortalTarget={document.body} 
-								styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-							/>
-							<textarea
-								type="text"
-								className="form-control mb-3 mt-3"
-								placeholder="Nhập câu hỏi"
-								value={newQuestion.questionText}
-								onChange={(e) => setNewQuestion({ ...newQuestion, questionText: e.target.value })}
-							/>
-							{newQuestion.options.map((option, index) => (
-								<div key={index} className="input-group mb-2">
-									<div className="input-group-text">
-										<input
-											type="checkbox"
-											checked={option.isCorrect}
-											onChange={() => {
-												const newOptions = [...newQuestion.options];
-												newOptions[index].isCorrect = !newOptions[index].isCorrect;
-												setNewQuestion({ ...newQuestion, options: newOptions });
-											}}
-										/>
-									</div>
-									<input
-										type="text"
-										className="form-control m-0"
-										placeholder="Nhập đáp án"
-										value={option.optionText}
-										onChange={(e) => {
-										const newOptions = [...newQuestion.options];
-										newOptions[index].optionText = e.target.value;
-										setNewQuestion({ ...newQuestion, options: newOptions });
+							<div className="d-flex" style={{ display: "flex", width: "100%", gap: "10px" }}>
+								<div style={{ flex: 1 }}>
+									<p className="mb-2">Chương:</p>
+									<CreatableSelect
+										options={allChapters}
+										value={selectedChapter}
+										onChange={setSelectedChapter}
+										menuPortalTarget={document.body}
+										placeholder="Chọn chương"
+										styles={{
+											menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+											container: (provided) => ({ ...provided, flex: 1 }) // Chia đều chiều rộng
 										}}
 									/>
-									<button className="btn btn-danger" onClick={() => handleRemoveOption(index)}>X</button>
 								</div>
-							))}
-							<button className="btn btn-outline-secondary me-2 mt-2" onClick={handleAddOption}>
-								Thêm đáp án
-							</button>
-							<div className="form-check mt-3">
+								<div style={{ flex: 1 }}>
+									<p className="mb-2">Mức độ:</p>
+									<CreatableSelect
+										options={allLevels}
+										value={selectedLevel}
+										onChange={setSelectedLevel}
+										menuPortalTarget={document.body}
+										placeholder="Chọn mức độ"
+										styles={{
+												menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+												container: (provided) => ({ ...provided, flex: 1 }) // Chia đều chiều rộng
+										}}
+									/>
+
+								</div>
+							</div>
+							<div>
+								<p className="mb-0 mt-2">Câu hỏi:</p>
+								<textarea
+									type="text"
+									className="form-control mb-3 mt-2"
+									placeholder="Nhập câu hỏi"
+									value={newQuestion.questionText}
+									onChange={(e) => setNewQuestion({ ...newQuestion, questionText: e.target.value })}
+								/>
+							</div>
+							<div className="form-check mt-0 mb-3">
 								<input
 									type="checkbox"
 									className="form-check-input"
@@ -346,12 +357,50 @@ const ListQuestionPage = () => {
 									Đảo thứ tự đáp án
 								</label>
 							</div>
+							{newQuestion.options.map((option, index) => (
+								<div key={index} className="input-group mb-2">
+									<div className="input-group-text">
+										<input
+											className="form-check-input"
+											type="checkbox"
+											checked={option.isCorrect}
+											onChange={() => {
+												const newOptions = [...newQuestion.options];
+												newOptions[index].isCorrect = !newOptions[index].isCorrect;
+												setNewQuestion({ ...newQuestion, options: newOptions });
+											}}
+										/>
+									</div>
+									<textarea
+										className="form-control m-0"
+										placeholder="Nhập đáp án"
+										value={option.optionText}
+										rows={1} // Hiển thị tối thiểu 1 dòng, tự động mở rộng khi nhập
+										onChange={(e) => {
+											const newOptions = [...newQuestion.options];
+											newOptions[index].optionText = e.target.value;
+											setNewQuestion({ ...newQuestion, options: newOptions });
+										}}
+										style={{ resize: "none", overflow: "hidden" }} // Ngăn resize tay, tự động mở rộng
+										onInput={(e) => {
+											e.target.style.height = "auto"; // Reset chiều cao để tránh bị giãn bất thường
+											e.target.style.height = e.target.scrollHeight + "px"; // Set chiều cao theo nội dung
+										}}
+									/>
+									<button className="btn btn-danger" onClick={() => handleRemoveOption(index)}>
+										<i className="fa-solid fa-xmark"></i>
+									</button>
+								</div>
+							))}
+							<button className="btn btn-outline-secondary me-2 mt-2" onClick={handleAddOption}>
+								Thêm đáp án
+							</button>
 						</div>
 						<div className="modal-footer">
 							<button className="btn btn-success" onClick={handleSaveQuestion}>
 								{editQuestionId ? "Cập nhật" : "Lưu"}
 							</button>
-							<button id="closeModalBtn" className="btn btn-secondary" data-bs-dismiss="modal">
+							<button id="closeModalBtn" className="btn btn-danger" data-bs-dismiss="modal">
 								Hủy
 							</button>
 						</div>

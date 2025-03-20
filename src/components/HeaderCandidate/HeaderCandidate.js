@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaChevronDown } from "react-icons/fa";
-// Import icon
 import "./HeaderCandidate.css";
 import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
@@ -46,7 +45,7 @@ const HeaderCandidate = ({ avatarUrl, logoUrl }) => {
           </Link>
         </nav>
         <img src={avatarUrl} alt="Avatar" className="avatar" />
-        <span className="username">{user.username}</span>
+        <span className="username">{user?.username}</span>
 
         {/* Nút mở dropdown */}
         <button className="dropdown-btn" onClick={() => setIsOpen(!isOpen)}>
@@ -57,7 +56,7 @@ const HeaderCandidate = ({ avatarUrl, logoUrl }) => {
         {isOpen && (
           <ul className="dropdown-menu show position-absolute end-0 mt-2">
             <li>
-              <a className="dropdown-item" href="#" onClick={handleLogout}>
+              <a className="dropdown-item" onClick={handleLogout}>
                 Đăng xuất
               </a>
             </li>

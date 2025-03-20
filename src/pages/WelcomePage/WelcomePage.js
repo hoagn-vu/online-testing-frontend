@@ -1,30 +1,24 @@
 import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../../redux/authSlice";
+import { Link, useNavigate } from "react-router-dom";
 
 const WelcomePage = () => {
-  const [uFullname, setUFullname] = useState(null);
-
-  useEffect(() => {
-    const storedUserId = sessionStorage.getItem("userId");
-    const storedUserFullname = sessionStorage.getItem("userFullname");
-
-    if (!storedUserId || !storedUserFullname) {
-      sessionStorage.removeItem("userId");
-      sessionStorage.removeItem("userFullname");
-      window.location.href = "/";
-    } else {
-      setUFullname(storedUserFullname);
-    }
-  }, []);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  const user = useSelector((state) => state.auth.user);
 
   const handleLogout = () => {
-    sessionStorage.removeItem("userId");
-    sessionStorage.removeItem("userFullname");
-    window.location.href = "/";
+    dispatch(logout());
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    navigate("/");
   };
 
   return (
     <div>
-      <h1>Welcome, {uFullname}</h1>
+      <h1>Welcome, {user?.username}</h1>
       <button onClick={handleLogout} className="btn btn-danger">
         Logout
       </button>

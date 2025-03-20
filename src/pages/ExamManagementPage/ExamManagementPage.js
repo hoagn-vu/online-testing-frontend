@@ -152,7 +152,7 @@ const ExamManagementPage = () => {
 		<div className="sample-management-page">
 			{/* Breadcrumb */}
 			<nav>
-				<Link to="/admin">Home</Link> / 
+				<Link to="/staff">Home</Link> / 
 				<span className="breadcrumb-current">Quản lý đề thi</span>
 			</nav>
 

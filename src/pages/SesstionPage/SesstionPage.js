@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import "./SesstionPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import {Chip, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
+import {Pagination, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
@@ -13,63 +13,51 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
 
-const listQuestionBank = [{
-			sessionId: "SESSION001",
-			activeAt: "2025-04-10T08:00:00Z",
-			sessionStatus: "Active",
-			rooms: [
-				{
-					roomId: "ROOM101",
-					supervisorId: "SUP123",
-					candidates: [
-						{
-							candidateId: "CAND001",
-							examId: "EXAM123"
-						},
-						{
-							candidateId: "CAND002",
-							examId: "EXAM124"
-						}
-					]
-				},
-				{
-					roomId: "ROOM102",
-					supervisorId: "SUP124",
-					candidates: [
-						{
-							candidateId: "CAND003",
-							examId: "EXAM125"
-						},
-						{
-							candidateId: "CAND004",
-							examId: "EXAM126"
-						}
-					]
-				}
-			]
-		},
-		{
-			sessionId: "SESSION002",
-			activeAt: "2025-04-10T13:00:00Z",
-			sessionStatus: "Disabled",
-			rooms: [
-				{
-					roomId: "ROOM201",
-					supervisorId: "SUP125",
-					candidates: [
-						{
-							candidateId: "CAND005",
-							examId: "EXAM127"
-						},
-						{
-							candidateId: "CAND006",
-							examId: "EXAM128"
-						}
-					]
-				}
-			]
-		}
-	];
+const listQuestionBank = [
+	{
+		id: "65f1a3b4c8e4a2d5b6f7e8d9",
+    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 12",
+    organizeExamStatus: "Active",
+    duration: 90,
+    examType: "Ngẫu nhiên",
+    matrixId: "MATRIX123",
+		matrixName: "MATRIX123",
+    maxScore: 100,
+    subjectId: "MATH12",
+		subjectName: "MATH12",
+    totalQuestion: 50,
+    examSet: ["MA", "MA1"],
+    sesstion: [
+	{
+		sessionId: "SESSION001",
+		sessionName: "SESSION001",
+		activeAt: "2025-04-10T08:00:00Z",
+		sessionStatus: "Active",
+		rooms: []
+	},
+	{
+		sessionId: "SESSION002",
+		sessionName: "SESSION001",
+		activeAt: "2025-04-10T13:00:00Z",
+		sessionStatus: "Disabled",
+		rooms: []
+	},
+	{
+		sessionId: "SESSION003",
+		sessionName: "SESSION001",
+		activeAt: "2025-04-10T08:00:00Z",
+		sessionStatus: "Active",
+		rooms: [ ]
+	},
+	{
+		sessionId: "SESSION004",
+		sessionName: "SESSION001",
+		activeAt: "2025-04-10T13:00:00Z",
+		sessionStatus: "Active",
+		rooms: []
+	}]
+	}
+];
 
 const SesstionPage = () => {
 	const [showForm, setShowForm] = useState(false);
@@ -77,60 +65,9 @@ const SesstionPage = () => {
 	const paginationModel = { page: 0, pageSize: 5 };
 	const inputRef = useRef(null);
 	const [rows, setRows] = useState(Object.values(listQuestionBank).flat());
+	const { id: organizeId } = useParams();
 	
 	const columns = [
-		{ field: "stt", headerName: "#", width: 15, align: "center", headerAlign: "center" },
-		{ 
-			field: "sessionId", 
-			headerName: "Ca thi", 
-			width: 1090, flex: 0.1, 
-	// renderCell: (params) => (
-	//   <Link 
-	//   to={`/admin/exam/${encodeURIComponent(params.row.id)}`} 
-	//   style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
-	//   >
-	//   {params.row.examCode}
-	//   </Link>
-	// )
-		},
-		{ 
-			field: "activeAt", 
-			headerName: "activeAt", 
-			width: 160, flex: 0.05,
-		},
-		{ 
-			field: "roomList", 
-			headerName: "Phòng thi", 
-			width: 150, flex: 0.05,
-			renderCell: (params) => (
-				<Link 
-					to={`/admin/exam/rooms/${params.row.sessionId}`} 
-					style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
-				>
-					Danh sách phòng thi
-				</Link>
-			)
-		},
-		{ 
-			field: "sessionStatus", 
-			headerName: "Trạng thái", 
-			width: 145,
-			renderCell: (params) => (
-				<Select
-				value={(params.row.sessionStatus || "Active").toLowerCase()}  
-				onChange={(e) => handleStatusChange(params.row.sessionId, e.target.value)}
-					size="small"
-					sx={{
-					minWidth: 120, 
-					fontSize: "15px", 
-					padding: "0px", 
-					}}
-				>
-					<MenuItem value="active">Active</MenuItem>
-					<MenuItem value="disabled">Disabled</MenuItem>
-				</Select>
-			),
-		},
 		{
 			field: "actions",
 			headerName: "Thao tác", align: "center",headerAlign: "center",
@@ -234,71 +171,183 @@ const SesstionPage = () => {
 		});
 	};
 
+	const handleToggleStatus = (id, currentStatus) => {
+		Swal.fire({
+			title: "Bạn có chắc muốn thay đổi trạng thái?",
+			text: "Trạng thái sẽ được cập nhật ngay sau khi xác nhận!",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "Xác nhận",
+			cancelButtonText: "Hủy",
+		}).then((result) => {
+			if (result.isConfirmed) {
+				const newStatus = currentStatus === "Active" ? "Disabled" : "Active";
+
+				// Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
+				setRows((prevRows) =>
+					prevRows.map((row) =>
+						row.id === id ? { ...row, sessionStatus: newStatus } : row
+					)
+				);
+				console.log("sessionId được đổi status:", id)
+				Swal.fire({
+					title: "Cập nhật thành công!",
+					text: `Trạng thái đã chuyển sang "${newStatus}".`,
+					icon: "success",
+				});
+			}
+		});
+	};
+
 	return (
 		<div className="exam-management-page">
 			{/* Breadcrumb */}
 			<nav>
-				<Link to="/admin">Home</Link> / 
+				<Link to="/staff">Home</Link> / 
 				<span className="breadcrumb-current">Quản lý kỳ thi</span>
 			</nav>
-			<div className="account-actions mt-4">
+
+		<div>
+			{listQuestionBank.map((exam, index) => (
+				<div key={index} style={{
+					background: "#fff",
+					padding: "15px 15px 0px 15px",
+					marginBottom: "15px",
+					borderRadius: "8px",
+					boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+					fontSize: "14px"
+				}}>
+					<p style={{ fontSize: "18px", fontWeight: "bold", color: "#333", marginBottom: "15px" }}>
+							Kỳ thi: {exam.organizeExamName}
+					</p>
+
+					<div className="d-flex" style={{display: "flex",
+							justifyContent: "space-between",
+							gap: "20px",
+					}}>
+						{/* Cột 1 */}
+						<div style={{ flex: 1 }}>
+								<p><strong>Môn thi:</strong> {exam.subjectName ?? "Chưa có dữ liệu"}</p>
+								<p><strong>Loại đề thi:</strong> {exam.examType}</p>
+						</div>
+
+						{/* Cột 2 */}
+						<div style={{ flex: 1 }}>
+							<p><strong>Thời gian làm bài:</strong> {exam.duration} phút</p>
+							{exam.examType === "Đề thi" && (
+									<p><strong>Bộ đề thi:</strong> {exam.examSet.length > 0 ? exam.examSet.join(", ") : "Chưa có dữ liệu"}</p>
+							)}
+							{exam.examType === "Ma trận" && (
+									<p><strong>Ma trận đề:</strong> {exam.matrixName ?? "Chưa có dữ liệu"}</p>
+							)}
+							{exam.examType === "Ngẫu nhiên" && (
+									<p><strong>Tổng số câu hỏi:</strong> {exam.totalQuestion ?? "Chưa có dữ liệu"}</p>
+							)}
+						</div>
+
+						{/* Cột 3 - Hiển thị thông tin đặc biệt */}
+						<div style={{ flex: 1 }}>
+							{(exam.examType === "Ma trận" || exam.examType === "Ngẫu nhiên") && (
+									<p><strong>Điểm tối đa:</strong> {exam.maxScore}</p>
+							)}
+						</div>
+					</div>
+				</div>
+			))}
+		</div>
+			<div className="account-actions mt-2">
 				<div className="search-container">
 					<SearchBox></SearchBox>
 				</div>
-				<button className="add-btn" onClick={handleAddNew}>
+				<button className="btn btn-primary me-2" style={{fontSize: "14px"}} onClick={handleAddNew}>
+					<i className="fas fa-plus me-2"></i>
 					Thêm mới
 				</button>
 			</div>
 
-			{/* Hiển thị bảng theo vai trò đã chọn */}
-			<div className="subject-table-container mt-3">
-				<Paper sx={{ width: "100%" }}>
-				<DataGrid
-					rows={rows}
-					columns={columns}
-					initialState={{
-					pagination: { paginationModel: { page: 0, pageSize: 5 } },
-					}}
-					pageSizeOptions={[5, 10]}
-					disableColumnResize 
-					disableExtendRowFullWidth
-					disableRowSelectionOnClick
-					getRowId={(row) => row.sessionId} 
-					localeText={{
-						noRowsLabel: "Không có dữ liệu", 
-						}}
-					sx={{
-						"& .MuiDataGrid-cell": {
-							whiteSpace: "normal", 
-							wordWrap: "break-word", 
-							lineHeight: "1.2", 
-							padding: "8px", 
-						},
-						"& .MuiDataGrid-columnHeaders": {
-							borderBottom: "2px solid #ccc", 
-						},
-						"& .MuiDataGrid-cell": {
-							borderRight: "1px solid #ddd", 
-						},
-						"& .MuiDataGrid-row:last-child .MuiDataGrid-cell": {
-							borderBottom: "none", 
-						},
-						"& .MuiTablePagination-displayedRows": {
-							textAlign: "center",      
-							marginTop: "16px",
-							marginLeft: "0px"
-						},
-						"& .MuiTablePagination-selectLabel": {
-							marginTop: "13px",
-							marginLeft: "0px"
-						},
-						"& .MuiTablePagination-select": {
-							marginLeft: "0px",
-						} 
-					}}
-				/>
-				</Paper>
+			<div className="session-table-container mt-3">
+			<div className="table-responsive">
+				<table className="table sample-table tbl-organize">
+					<thead style={{fontSize: "14px"}}>
+						<tr className="align-middle fw-medium">
+							<th scope="col" className="title-row text-center">STT</th> 
+							<th scope="col" className="title-row">Ca thi</th>
+							<th scope="col" className="title-row">Active At</th>
+							<th scope="col" className="title-row">Phòng thi</th>
+							<th scope="col" className="title-row">Trạng thái</th>
+							<th scope="col" className="title-row text-center">Giám sát</th>
+							<th scope="col" className="title-row">Thao tác</th>
+						</tr>
+					</thead>
+					<tbody style={{ fontSize: "14px" }}>
+						{listQuestionBank.length === 0 ? (
+							<tr>
+								<td colSpan="6" className="text-center fw-semibold text-muted"
+										style={{ height: "100px", verticalAlign: "middle" }}>
+									Không có dữ liệu
+								</td>
+							</tr>
+						) : (
+							listQuestionBank.flatMap((exam, examIndex) =>
+								exam.sesstion.map((session, sessionIndex) => (
+									<tr key={session.sessionId} className="align-middle">
+										<td className="text-center">{sessionIndex + 1}</td>
+										<td>{session.sessionName}</td>
+										<td>{dayjs(session.activeAt).format("DD/MM/YYYY HH:mm")}</td>
+										<td>
+											<Link className="text-hover-primary"
+													to={`/staff/organize/${organizeId}/${session.sessionId}`}
+													style={{ textDecoration: "none", color: "black", cursor: "pointer" }}>
+												Danh sách phòng thi
+											</Link>
+										</td>
+										<td className="text-center">
+											<div className="form-check form-switch d-flex align-items-center justify-content-left">
+												<input
+													className="form-check-input"
+													type="checkbox"
+													role="switch"
+													checked={session.sessionStatus === "Active"}
+													onChange={() => handleToggleStatus(session.sessionId, session.sessionStatus)}
+												/>
+												<span className={`badge ms-2 ${session.sessionStatus === "Active" ? "bg-success" : "bg-secondary"}`}>
+													{session.sessionStatus === "Active" ? "Hoạt động" : "Không hoạt động"}
+												</span>
+											</div>
+										</td>
+
+
+										<td className="text-center">
+											<Link className="text-hover-primary"
+													to={`/staff/organize/monitor/${organizeId}/${session.sessionId}`}
+													style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}>
+												Giám sát
+											</Link>
+										</td>
+										<td>
+											<button className="btn btn-primary btn-sm" style={{ width: "35px", height: "35px" }}
+															onClick={() => handleEdit(session)}>
+												<i className="fas fa-edit text-white"></i>
+											</button>
+											<button className="btn btn-danger btn-sm ms-2" style={{ width: "35px", height: "35px" }}
+															onClick={() => handleDelete(session.sessionId)}>
+												<i className="fas fa-trash-alt"></i>
+											</button>
+										</td>
+									</tr>
+								))
+							)
+						)}
+					</tbody>
+
+				</table>
 			</div>
+			<div className="d-flex justify-content-end">
+				<Pagination count={10} color="primary"></Pagination>
+			</div>
+			</div>	
 
 			{/* Form thêm tài khoản */}
 			{showForm && (

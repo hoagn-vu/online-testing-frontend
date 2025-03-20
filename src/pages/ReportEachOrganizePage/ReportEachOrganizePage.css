@@ -1,6 +1,5 @@
 .container-report-organize {
   color: black;
-  font-family: 'Times New Roman', Times, serif;
 }
 
 /* Định dạng quốc hiệu - tiêu đề */
@@ -72,12 +71,16 @@
   color: white;
 }
 
-@media print {
-  body {
-    font-family: "Times New Roman", Times, serif !important;
-    margin: 1.5cm !important;
-  }
+#printable-report-table {
+  font-family: "Times New Roman", Times, serif !important;
+}
 
+@page {
+  size: A4;
+  margin: 2cm;
+}
+
+@media print {
   #printable-report-table {
     width: 21cm !important;
     min-height: 29.7cm !important;

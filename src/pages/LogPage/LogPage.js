@@ -1,194 +1,144 @@
 import "./LogPage.css";
-import Paper from "@mui/material/Paper";
-import { DataGrid } from "@mui/x-data-grid";
+import { Chip, Pagination } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-const dummyLogs = {
-  "Thí sinh": [
-    {
-      id: 1,
-      studentId: "BIT220079",
-      lastname: "Nguyễn Thu",
-      gender: "Nữ",
-      dob: "01/01/2000",
-    },
-    {
-      id: 2,
-      studentId: "SV002",
-      lastname: "Trần Thị",
-      dob: "15/05/2001",
-      gender: "Nữ",
-    },
-    {
-      id: 3,
-      studentId: "BIT220089",
-      lastname: "Phan Thị Phương",
-      dob: "01/01/2000",
-      gender: "Nữ",
-    },
-    {
-      id: 4,
-      studentId: "SV002",
-      lastname: "Trần Thị",
-      dob: "15/05/2001",
-      gender: "Nữ",
-    },
-    {
-      id: 5,
-      studentId: "BIT220089",
-      lastname: "Phan Thị Phương",
-      dob: "01/01/2000",
-      gender: "Nữ",
-    },
-    {
-      id: 6,
-      studentId: "SV002",
-      lastname: "Trần Thị",
-      dob: "15/05/2001",
-      gender: "Nữ",
-    },
-    {
-      id: 7,
-      studentId: "BIT220089",
-      lastname: "Phan Thị Phương",
-      firstname: "Linh",
-      dob: "01/01/2000",
-      gender: "Nữ",
-    },
-    {
-      id: 8,
-      studentId: "SV002",
-      lastname: "Trần Thị",
-      dob: "15/05/2001",
-      gender: "Nữ",
-    },
-    {
-      id: 9,
-      studentId: "BIT220089",
-      lastname: "Phan Thị Phương",
-      dob: "01/01/2000",
-      gender: "Nữ",
-    },
-    {
-      id: 10,
-      studentId: "SV002",
-      lastname: "Trần Thị",
-      dob: "15/05/2001",
-      gender: "Nữ",
-    },
-  ],
+const dummyLogs = [
+  {
+    userId: "abcdefg123",
+    fullName: "Hoàng Nguyên Vũ",
+    userLogs: [
+      {
+        logId: 1,
+        logAction: "Login",
+        affectedObject: "Hệ thống",
+        affectedName: "Trang chủ",
+        logAt: "2025-04-10T08:00:00Z",
+        logDetail: "Đã đăng nhập vào hệ thống",
+      },
+      {
+        logId: 2,
+        logAction: "Thêm mới",
+        affectedObject: "Câu hỏi",
+        affectedName: "Ngân hàng câu hỏi",
+        logAt: "2025-04-10T08:30:00Z",
+        logDetail: "Thêm câu hỏi trắc nghiệm mới",
+      },
+      {
+        logId: 3,
+        logAction: "Sửa",
+        affectedObject: "Đề thi",
+        affectedName: "Danh sách đề thi",
+        logAt: "2025-04-10T09:00:00Z",
+        logDetail: "Chỉnh sửa đề thi cuối kỳ",
+      },
+      {
+        logId: 4,
+        logAction: "Xóa",
+        affectedObject: "Lịch thi",
+        affectedName: "Kỳ thi giữa kỳ",
+        logAt: "2025-04-10T10:00:00Z",
+        logDetail: "Xóa lịch thi không hợp lệ",
+      },
+    ],
+  },
+];
+
+const getTagColor = (action) => {
+  switch (action) {
+    case "Login":
+      return "success";
+    case "Thêm mới":
+      return "primary";
+    case "Sửa":
+      return { backgroundColor: "#FFC107", color: "#000" }; // Màu vàng custom
+    case "Xóa":
+      return "error";
+    default:
+      return "default";
+  }
 };
 
 const LogPage = () => {
-  const [rows, setRows] = useState(Object.values(dummyLogs).flat());
-  // Lọc danh sách tài khoản theo vai trò được chọn
-  const columns = [
-    { field: "id", headerName: "#", width: 10 },
-    {
-      field: "studentId",
-      headerName: "Thời điểm",
-      type: "datetime",
-      width: 260,
-    },
-    { field: "lastname", headerName: "Người thực hiện", minWidth: 150, flex: 0.05},
-    {
-      field: "gender",
-      headerName: "Hành động",
-      width: 150,
-      align: "center", // ✅ Căn giữa tiêu đề cột
-      headerAlign: "center", // ✅ Căn giữa nội dung trong cột
-    },
-    {
-      field: "dob",
-      headerName: "Mô tả",
-      type: "datetime",
-      width: 600, flex: 0.1,
-      headerAlign: "center",
-    },
-  ];
-
-  const paginationModel = { page: 0, pageSize: 5 };
+  const [logs, setLogs] = useState([]);
 
   useEffect(() => {
-    // Chuyển đổi object thành mảng
-    const mergedRows = Object.values(dummyLogs).flat();
-    setRows(mergedRows);
+    // Gộp tất cả các userLogs lại thành một mảng duy nhất
+    const mergedLogs = dummyLogs.flatMap(user =>
+      user.userLogs.map(log => ({
+        ...log,
+        fullName: user.fullName, // Thêm thông tin người thực hiện vào từng log
+      }))
+    );
+    setLogs(mergedLogs);
   }, []);
 
   return (
     <div className="log-page">
       {/* Breadcrumbs */}
       <nav className="breadcrumb-log-container">
-        <Link to="/" className="breadcrumb-link">
-          Home
-        </Link>
+        <Link to="/" className="breadcrumb-link">Home</Link>
         <span> / </span>
         <span className="breadcrumb-current">Nhật ký sử dụng</span>
       </nav>
 
-      {/* Thanh tìm kiếm + Nút thêm mới + Upload */}
+      {/* Thanh tìm kiếm + Nút lọc */}
       <div className="log-actions mt-3">
         <div className="action-selector">
-        <select className="form-select" aria-label="Default select example">
-          <option disabled>Hành động</option>
+        <select className="form-select" defaultValue="">
+          <option value="" disabled>Hành động</option>
           <option value="Login">Login</option>
           <option value="Thêm mới">Thêm mới</option>
           <option value="Sửa">Sửa</option>
           <option value="Xóa">Xóa</option>
         </select>
-          <input type="date" placeholder="" className="search-box" />
-          <button className="add-btn">Lọc</button>
+
+          <input type="date" className="search-box" />
+          <button className="add-btn d-flex filter-btn align-items-center">
+            <i className="fas fa-filter me-2 mt-1 "></i>
+            Lọc
+          </button>
         </div>
       </div>
 
-      {/* Hiển thị bảng theo vai trò đã chọn */}
-      <div className="log-table-container">
-        <Paper sx={{width: "100%" }}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            initialState={{
-              pagination: { paginationModel: { page: 0, pageSize: 5 } },
-            }}
-            pageSizeOptions={[5, 10]}
-            disableColumnResize // ✅ Ngăn kéo giãn cột
-            disableExtendRowFullWidth
-            disableRowSelectionOnClick
-            localeText={{
-              noRowsLabel: "Không có dữ liệu", // ✅ Đổi text mặc định của DataGrid
-            }}
-            sx={{
-              "& .MuiDataGrid-cell": {
-                whiteSpace: "normal", // ✅ Cho phép xuống dòng khi nội dung dài
-                wordWrap: "break-word", // ✅ Xuống dòng tự động
-                lineHeight: "1.2", // ✅ Giảm khoảng cách giữa các dòng nếu nội dung quá dài
-                padding: "8px", // ✅ Thêm padding cho đẹp hơn
-              },
-              "& .MuiDataGrid-columnHeaders": {
-                borderBottom: "2px solid #ccc", // Đường phân cách dưới tiêu đề cột
-              },
-              "& .MuiDataGrid-cell": {
-                borderRight: "1px solid #ddd", // Đường phân cách giữa các cột
-              },
-              "& .MuiDataGrid-row:last-child .MuiDataGrid-cell": {
-                borderBottom: "none", // Loại bỏ viền dưới cùng của hàng cuối
-              },
-              "& .MuiTablePagination-displayedRows": {
-                textAlign: "center",        // Căn giữa chữ "1-1 of 1"
-                marginTop: "16px",
-                marginLeft: "0px"
-              },
-              "& .MuiTablePagination-selectLabel": {
-                marginTop: "13px",
-                marginLeft: "0px"
-              },
-              "& .MuiTablePagination-select": {
-                marginLeft: "0px",
-              } 
-            }}
-          />
-        </Paper>
+      {/* Bảng hiển thị nhật ký */}
+      <div className="session-table-container mt-3">
+        <div className="table-responsive tbl-log">
+          <table className="table sample-table tbl-organize table-striped ">
+            <thead style={{ fontSize: "14px" }}>
+              <tr className="align-middle fw-medium">
+                <th scope="col" className="title-row text-center">STT</th>
+                <th scope="col" className="title-row" style={{ width: "200px" }}>Thời điểm</th>
+                <th scope="col" className="title-row text-center" style={{ width: "200px" }}>Hành động</th>
+                <th scope="col" className="title-row">Đối tượng</th>
+                <th scope="col" className="title-row">Người thực hiện</th>
+                <th scope="col" className="title-row">Mô tả</th>
+              </tr>
+            </thead>
+            <tbody style={{ fontSize: "14px" }}>
+              {logs.map((log, index) => (
+                <tr key={log.logId} className="align-middle" >
+                  <td className="text-center">{index + 1}</td>
+                  <td>{new Date(log.logAt).toLocaleString()}</td>
+                  <td className="text-center">
+                    <Chip 
+                      label={log.logAction} 
+                      sx={typeof getTagColor(log.logAction) === "string" 
+                        ? { bgcolor: `${getTagColor(log.logAction)}.main`, color: "white" }
+                        : getTagColor(log.logAction)}
+                    />
+                  </td>
+                  <td>{log.affectedName}</td>
+                  <td>{log.fullName}</td>
+                  <td>{log.logDetail}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="d-flex justify-content-end">
+          <Pagination count={10} />
+        </div>
       </div>
     </div>
   );
