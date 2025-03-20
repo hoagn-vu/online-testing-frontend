@@ -226,7 +226,7 @@ const RoomOrganizePage = () => {
  					</table>
  				</div>
  				<div className="d-flex justify-content-end">
- 					<Pagination count={10}></Pagination>
+		  			<Pagination count={10} color="primary" />        
  				</div>
  			</div>	
 

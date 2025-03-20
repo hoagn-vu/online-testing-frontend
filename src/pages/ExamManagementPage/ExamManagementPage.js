@@ -220,7 +220,7 @@ const ExamManagementPage = () => {
 			</div>
 
 			<div className="sample-pagination d-flex justify-content-end align-items-center">
-				<Pagination count={10} variant="outlined" shape="rounded" />
+		  		<Pagination count={10} color="primary" />        
 			</div>
 
 			
