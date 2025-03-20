@@ -353,9 +353,9 @@ const AccountPage = () => {
                     checked={selectedItems.includes(item.questionBankId)}
                   />
                 </td>
-                <td className="fw-semibold text-hover-primary">{item.userCode}</td>
-                <td className="fw-semibold text-hover-primary">{item.username}</td>
-                <td className="fw-semibold text-hover-primary">{item.fullName}</td>
+                <td>{item.userCode}</td>
+                <td>{item.username}</td>
+                <td>{item.fullName}</td>
                 <td>{item.dateOfBirth}</td>
                 <td>{item.gender}</td>
                 <td>{item.groupName}</td>

@@ -14,9 +14,9 @@ import ReactSelect  from 'react-select';
 
 const listQuestionBank = [
   {
-    id: "65f1a3b4c8e4a2d5b6f7e8d9",
+    id: "65f1a3b4c8e4a2d5b6f7e8d1",
     organizeExamName: "Kỳ thi giữa kỳ Toán lớp 12",
-    organizeExamStatus: "active",
+    organizeExamStatus: "Active",
     duration: 90,
     examType: "Ma trận",
     matrixId: "MATRIX123",
@@ -27,11 +27,11 @@ const listQuestionBank = [
     sesstion: []
   },
   {
-    id: "55f1a3b4c8e4a2d5b6f7e8d9",
+    id: "55f1a3b4c8e4a2d5b6f7e8d2",
     organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
-    organizeExamStatus: "active",
+    organizeExamStatus: "Disabled",
     duration: 90,
-    examType: "Dề thi",
+    examType: "Đề thi",
     matrixId: null,
     maxScore: 100,
     subjectId: "MATH11",
@@ -40,9 +40,9 @@ const listQuestionBank = [
     sesstion: []
   },
   {
-    id: "55f1a3b4c8e4a2d5b6f7e8d0",
+    id: "55f1a3b4c8e4a2d5b6f7e8d3",
     organizeExamName: "Kỳ thi giữa kỳ Toán lớp 1",
-    organizeExamStatus: "disabled",
+    organizeExamStatus: "Disabled",
     duration: 90,
     examType: "Ngẫu nhiên",
     matrixId: null,
@@ -53,11 +53,63 @@ const listQuestionBank = [
     sesstion: []
   },
   {
-    id: "55f1a3b4c8e4a2d5b6f7e8d9",
+    id: "55f1a3b4c8e4a2d5b6f7e8d4",
     organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
-    organizeExamStatus: "active",
+    organizeExamStatus: "Active",
     duration: 90,
-    examType: "Dề thi",
+    examType: "Đề thi",
+    matrixId: null,
+    maxScore: 100,
+    subjectId: "MATH11",
+    totalQuestion: null,
+    examSet: ["Ma12", "Ma13"],
+    sesstion: []
+  },
+  {
+    id: "55f1a3b4c8e4a2d5b6f7e8d5",
+    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
+    organizeExamStatus: "Active",
+    duration: 90,
+    examType: "Đề thi",
+    matrixId: null,
+    maxScore: 100,
+    subjectId: "MATH11",
+    totalQuestion: null,
+    examSet: ["Ma12", "Ma13"],
+    sesstion: []
+  },
+  {
+    id: "55f1a3b4c8e4a2d5b6f7e8d6",
+    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
+    organizeExamStatus: "Disabled",
+    duration: 90,
+    examType: "Đề thi",
+    matrixId: null,
+    maxScore: 100,
+    subjectId: "MATH11",
+    totalQuestion: null,
+    examSet: ["Ma12", "Ma13"],
+    sesstion: []
+  },
+  {
+    id: "55f1a3b4c8e4a2d5b6f7e8d7",
+    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
+    organizeExamStatus: "Disabled",
+    duration: 90,
+    examType: "Đề thi",
+    matrixId: null,
+    maxScore: 100,
+    subjectId: "MATH11",
+    totalQuestion: null,
+    examSet: ["Ma12", "Ma13"],
+    sesstion: []
+  },
+  {
+    id: "55f1a3b4c8e4a2d5b6f7e8d8",
+    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
+    organizeExamStatus: "Active",
+    duration: 90,
+    examType: "Đề thi",
     matrixId: null,
     maxScore: 100,
     subjectId: "MATH11",
@@ -68,9 +120,9 @@ const listQuestionBank = [
   {
     id: "55f1a3b4c8e4a2d5b6f7e8d9",
     organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
-    organizeExamStatus: "active",
+    organizeExamStatus: "Active",
     duration: 90,
-    examType: "Dề thi",
+    examType: "Đề thi",
     matrixId: null,
     maxScore: 100,
     subjectId: "MATH11",
@@ -79,63 +131,11 @@ const listQuestionBank = [
     sesstion: []
   },
   {
-    id: "55f1a3b4c8e4a2d5b6f7e8d9",
+    id: "55f1a3b4c8e4a2d5b6f7e8d10",
     organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
-    organizeExamStatus: "active",
+    organizeExamStatus: "Active",
     duration: 90,
-    examType: "Dề thi",
-    matrixId: null,
-    maxScore: 100,
-    subjectId: "MATH11",
-    totalQuestion: null,
-    examSet: ["Ma12", "Ma13"],
-    sesstion: []
-  },
-  {
-    id: "55f1a3b4c8e4a2d5b6f7e8d9",
-    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
-    organizeExamStatus: "active",
-    duration: 90,
-    examType: "Dề thi",
-    matrixId: null,
-    maxScore: 100,
-    subjectId: "MATH11",
-    totalQuestion: null,
-    examSet: ["Ma12", "Ma13"],
-    sesstion: []
-  },
-  {
-    id: "55f1a3b4c8e4a2d5b6f7e8d9",
-    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
-    organizeExamStatus: "active",
-    duration: 90,
-    examType: "Dề thi",
-    matrixId: null,
-    maxScore: 100,
-    subjectId: "MATH11",
-    totalQuestion: null,
-    examSet: ["Ma12", "Ma13"],
-    sesstion: []
-  },
-  {
-    id: "55f1a3b4c8e4a2d5b6f7e8d9",
-    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
-    organizeExamStatus: "active",
-    duration: 90,
-    examType: "Dề thi",
-    matrixId: null,
-    maxScore: 100,
-    subjectId: "MATH11",
-    totalQuestion: null,
-    examSet: ["Ma12", "Ma13"],
-    sesstion: []
-  },
-  {
-    id: "55f1a3b4c8e4a2d5b6f7e8d9",
-    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
-    organizeExamStatus: "active",
-    duration: 90,
-    examType: "Dề thi",
+    examType: "Đề thi",
     matrixId: null,
     maxScore: 100,
     subjectId: "MATH11",
@@ -258,7 +258,7 @@ const OrganizeExamPage = () => {
       cancelButtonText: "Hủy",
     }).then((result) => {
       if (result.isConfirmed) {
-        const newStatus = currentStatus === "active" ? "disabled" : "active";
+        const newStatus = currentStatus === "Active" ? "Disabled" : "Active";
 
         // Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
         setRows((prevRows) =>
@@ -266,7 +266,7 @@ const OrganizeExamPage = () => {
             row.id === id ? { ...row, organizeExamStatus: newStatus } : row
           )
         );
-
+        console.log("organizeExamId được đổi status:", id)
         Swal.fire({
           title: "Cập nhật thành công!",
           text: `Trạng thái đã chuyển sang "${newStatus}".`,
@@ -368,40 +368,26 @@ const OrganizeExamPage = () => {
       {/* Hiển thị bảng theo vai trò đã chọn */}
       <div className="organize-examtable-container mt-3">
         <div className="table-responsive">
-          <table className="table organize-exam-table table-hover">
+          <table className="table organize-exam-table sample-table tbl-organize" style={{fontSize: "14px"}}>
             <thead>
               <tr className="align-middle fw-medium">
-                <th scope="col" className="text-center title-row">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    onChange={handleSelectAll}
-                    checked={selectedItems.length === listQuestionBank.length}
-                  />
-                </th>
+                <th className="text-center">STT</th>
                 <th scope="col" className="title-row">Kỳ thi</th>
                 <th scope="col" className="title-row">Phân môn</th>
                 <th scope="col" className="title-row">Loại</th>
                 <th scope="col" className="title-row">Đề thi</th>
                 <th scope="col" className="title-row">Ma trận</th>
-                <th scope="col" className="title-row">Thời gian</th>
-                <th scope="col" className="title-row">Điểm</th>
+                <th className="text-center">Thời gian (M)</th>
+                <th className="text-center">Điểm</th>
                 <th scope="col" className="title-row">Trạng thái</th>
-                <th scope="col" className="title-row">Báo cáo</th>
-                <th scope="col" className="title-row">Thao tác</th>
+                <th className="text-center">Báo cáo</th>
+                <th className="text-center">Thao tác</th>
               </tr>
             </thead>
             <tbody>
               {listQuestionBank.map((item, index) => (
                 <tr key={item.id} className="align-middle">
-                  <td className=" text-center" style={{ width: "50px" }}>
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      onChange={(e) => handleSelectItem(e, item.id)}
-                      checked={selectedItems.includes(item.id)}
-                    />
-                  </td>
+                  <td className="text-center">{index + 1}</td>
                   <td>
                     <Link className="text-hover-primary"
                       to={`/staff/organize/${encodeURIComponent(item.id)}`} 
@@ -412,12 +398,24 @@ const OrganizeExamPage = () => {
                   </td>
                   <td>{item.subjectId}</td>
                   <td>{item.examType}</td>
-                  <td>{item.examSet}</td>
-                  <td>{item.matrixId}</td>
-                  <td>{item.duration}</td>
-                  <td>{item.maxScore}</td>
-                  <td>{item.organizeExamStatus}</td>
+                  <td>{item.examType === "Ma trận" || item.examType === "Ngẫu nhiên" ? "N/A" : item.examSet?.join(", ") || "N/A"}</td>
+                  <td>{item.examType === "Đề thi" || item.examType === "Ngẫu nhiên" ? "N/A" : item.matrixId || "N/A"}</td>
+                  <td className="text-center">{item.duration}</td>
+                  <td className="text-center">{item.maxScore}</td>
                   <td>
+                   <div className="form-check form-switch d-flex justify-content-center">
+                     <input
+                       className="form-check-input"
+                       type="checkbox"
+                       role="switch"
+                       checked={item.organizeExamStatus === "Active"}
+                       onChange={() =>
+                         handleToggleStatus(item.id, item.organizeExamStatus)
+                       }
+                     />
+                   </div>
+                 </td>
+                  <td className="text-center">
                     <Link
                       to={`/staff/organize/report/${item.id}`}     
                       style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
@@ -425,7 +423,7 @@ const OrganizeExamPage = () => {
                       Chi tiết
                     </Link>
                   </td>
-                  <td>
+                  <td className="text-center">
                     <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
                       <i className="fas fa-edit text-white "></i>
                     </button>

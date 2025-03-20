@@ -166,39 +166,23 @@ const RoomManagementPage = () => {
         <table className="table sample-table table-hover">
           <thead>
             <tr className="align-middle">
-              <th scope="col" className="text-center title-row" style={{ width: "50px"}}>
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  onChange={handleSelectAll}
-                  checked={selectedItems.length === listRoom.length && listRoom.length > 0}
-                />
-              </th>
-              <th scope="col" className="title-row">Tên phòng</th>
-              <th scope="col" className="title-row">Địa chỉ</th>
-              <th scope="col" className="title-row">Số lượng chỗ ngồi</th>
-              <th scope="col" className="title-row">Trạng thái</th>
-              <th scope="col" className="title-row" style={{ width: "120px"}}>Thao tác</th>
+              <th className="text-center" style={{ width: "50px"}}>STT</th>
+              <th>Tên phòng</th>
+              <th>Địa chỉ</th>
+              <th className="text-center">Số lượng chỗ ngồi</th>
+              <th>Trạng thái</th>
+              <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
             </tr>
           </thead>
           <tbody>
             {listRoom.map((item, index) => (
               <tr key={item.id} className="align-middle">
-                <td className=" text-center" style={{ width: "50px" }}>
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    onChange={(e) => handleSelectItem(e, item.questionBankId)}
-                    checked={selectedItems.includes(item.questionBankId)}
-                  />
-                </td>
-                <td className="fw-semibold text-hover-primary">
-                  {item.roomName}
-                </td>
-                <td className="fw-semibold text-hover-primary">{item.roomLocation	}</td>
-                <td>{item.roomCapacity}</td>
+                <td className=" text-center" style={{ width: "50px" }}>{index + 1}</td>
+                <td>{item.roomName}</td>
+                <td>{item.roomLocation}</td>
+                <td className="text-center">{item.roomCapacity}</td>
                 <td>{item.roomStatus}</td>
-                <td>
+                <td className="text-center">
                   <button className="btn btn-primary btn-sm">
                     <i className="fas fa-edit text-white"></i>
                   </button>

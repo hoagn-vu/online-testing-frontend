@@ -143,42 +143,28 @@ const QuestionBankPage = () => {
       </div>
 
       <div className="table-responsive">
-        <table className="table question-bank-table table-hover">
+        <table className="table question-bank-table" style={{fontSize: "14px"}}>
           <thead>
             <tr className="align-middle">
-              <th scope="col" className="text-center title-row" style={{ width: "50px"}}>
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  onChange={handleSelectAll}
-                  checked={selectedItems.length === listQuestionBank.length && listQuestionBank.length > 0}
-                />
-              </th>
-              <th scope="col" className="title-row">Bộ câu hỏi cho phân môn: {subjectName}</th>
-              <th scope="col" className="title-row">Số lượng câu hỏi</th>
-              <th scope="col" className="title-row" style={{ width: "120px"}}>Thao tác</th>
+              <th className="text-center" style={{ width: "50px"}}>STT</th>
+              <th>Bộ câu hỏi cho phân môn: {subjectName}</th>
+              <th className="text-center">Số lượng câu hỏi</th>
+              <th style={{ width: "120px"}}>Thao tác</th>
             </tr>
           </thead>
           <tbody>
             {listQuestionBank.map((item, index) => (
               <tr key={item.questionBankId} className="align-middle">
-                <td className=" text-center" style={{ width: "50px" }}>
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    onChange={(e) => handleSelectItem(e, item.questionBankId)}
-                    checked={selectedItems.includes(item.questionBankId)}
-                  />
-                </td>
-                <td className="fw-semibold text-hover-primary">
+                <td className="text-center">{index+1}</td>
+                <td className="text-hover-primary">
                   <Link 
                     to={`/staff/question/${subjectId}/${item.questionBankId}`} 
-                    style={{ textDecoration: "none", cursor: "pointer" }}
+                    style={{ textDecoration: "none", cursor: "pointer", color:"black" }}
                   >
                     {item.questionBankName}
                   </Link>
                 </td>
-                <td>{item.totalQuestions}</td>
+                <td className="text-center">{item.totalQuestions}</td>
                 <td>
                   <button className="btn btn-primary btn-sm">
                     <i className="fas fa-edit text-white"></i>

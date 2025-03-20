@@ -151,36 +151,22 @@ const ExamMatrixPage = () => {
         <table className="table sample-table table-hover">
           <thead>
             <tr className="align-middle">
-              <th scope="col" className="text-center title-row" style={{ width: "50px"}}>
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  onChange={handleSelectAll}
-                  checked={selectedItems.length === listExamMatrix.length && listExamMatrix.length > 0}
-                />
-              </th>
-              <th scope="col" className="title-row">Ma trận</th>
-              <th scope="col" className="title-row">Phân môn</th>
-              <th scope="col" className="title-row">Bộ câu hỏi</th>
-              <th scope="col" className="title-row">Số lượng đề tạo sinh</th>
-              <th scope="col" className="title-row" style={{ width: "120px"}}>Thao tác</th>
+              <th className="text-center" style={{ width: "50px"}}>STT</th>
+              <th>Ma trận</th>
+              <th>Phân môn</th>
+              <th>Bộ câu hỏi</th>
+              <th>Số lượng đề tạo sinh</th>
+              <th style={{ width: "120px"}}>Thao tác</th>
             </tr>
           </thead>
           <tbody>
             {listExamMatrix.map((item, index) => (
               <tr key={item.questionBankId} className="align-middle">
-                <td className=" text-center" style={{ width: "50px" }}>
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    onChange={(e) => handleSelectItem(e, item.questionBankId)}
-                    checked={selectedItems.includes(item.questionBankId)}
-                  />
-                </td>
-                <td className="fw-semibold text-hover-primary">
+                <td className="text-center">{index + 1}</td>
+                <td className="text-hover-primary">
                   <Link 
                     to={`/staff/`} 
-                    style={{ textDecoration: "none", cursor: "pointer" }}
+                    style={{ textDecoration: "none", cursor: "pointer", color: "black" }}
                   >
                     {item.matrixName}
                   </Link>
@@ -205,8 +191,6 @@ const ExamMatrixPage = () => {
       <div className="sample-pagination d-flex justify-content-end align-items-center">
         <Pagination count={10} variant="outlined" shape="rounded" />
       </div>
-
-
 
           {/* Form thêm tài khoản */}
           {showForm && (

@@ -143,48 +143,34 @@ const SubjectPage = () => {
       </div>
 
       <div className="table-responsive">
-        <table className="table sample-table table-hover">
+        <table className="table sample-table" style={{fontSize: "14px"}}>
           <thead>
             <tr className="align-middle">
-              <th scope="col" className="text-center title-row">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  onChange={handleSelectAll}
-                  checked={selectedItems.length === listSubject.length && listSubject.length > 0}
-                />
-              </th>
-              <th scope="col" className="title-row">Phân môn</th>
-              <th scope="col" className="title-row" style={{ width: "120px"}}>Thao tác</th>
+              <th className="text-center" style={{ width: "50px"}}>STT</th>
+              <th>Phân môn</th>
+              <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
             </tr>
           </thead>
           <tbody>
             {listSubject.map((item, index) => (
               <tr key={item.id} className="align-middle">
-                <td className=" text-center" style={{ width: "50px" }}>
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    onChange={(e) => handleSelectItem(e, item.id)}
-                    checked={selectedItems.includes(item.id)}
-                  />
-                </td>
-                <td className="fw-semibold text-hover-primary">
+                <td className="text-center">{index + 1}</td>
+                <td className="text-hover-primary">
                   <Link 
                     to={`/staff/question/${item.id}`} 
-                    style={{ textDecoration: "none", cursor: "pointer" }}
+                    style={{ textDecoration: "none", cursor: "pointer", color: "black" }}
                   >
                     {item.subjectName}
                   </Link>
                 </td>
-                <td>
-                  <button className="btn btn-primary btn-sm">
-                    <i className="fas fa-edit text-white"></i>
-                  </button>
-                  <button className="btn btn-danger btn-sm ms-2">
-                    <i className="fas fa-trash-alt"></i>
-                  </button>
-                </td>
+                <td className="text-center">
+                    <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
+                      <i className="fas fa-edit text-white "></i>
+                    </button>
+                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
+                      <i className="fas fa-trash-alt"></i>
+                    </button>
+                  </td>
               </tr>
             ))}
           </tbody>
