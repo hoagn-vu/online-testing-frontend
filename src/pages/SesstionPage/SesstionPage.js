@@ -27,7 +27,7 @@ const listQuestionBank = [
 		subjectName: "MATH12",
     totalQuestion: 50,
     examSet: ["MA", "MA1"],
-    sesstion: [
+    session: [
 	{
 		sessionId: "SESSION001",
 		sessionName: "SESSION001",
@@ -183,7 +183,7 @@ const SesstionPage = () => {
 			cancelButtonText: "Hủy",
 		}).then((result) => {
 			if (result.isConfirmed) {
-				const newStatus = currentStatus === "Active" ? "Disabled" : "Active";
+				const newStatus = currentStatus.toLowerCase() === "active" ? "disabled" : "active";
 
 				// Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
 				setRows((prevRows) =>
@@ -291,7 +291,7 @@ const SesstionPage = () => {
 							</tr>
 						) : (
 							listQuestionBank.flatMap((exam, examIndex) =>
-								exam.sesstion.map((session, sessionIndex) => (
+								exam.session.map((session, sessionIndex) => (
 									<tr key={session.sessionId} className="align-middle">
 										<td className="text-center">{sessionIndex + 1}</td>
 										<td>{session.sessionName}</td>
@@ -309,7 +309,7 @@ const SesstionPage = () => {
 													className="form-check-input"
 													type="checkbox"
 													role="switch"
-													checked={session.sessionStatus === "Active"}
+													checked={session.sessionStatus.toLowerCase() === "active"}
 													onChange={() => handleToggleStatus(session.sessionId, session.sessionStatus)}
 												/>
 												<span className={`badge ms-2 ${session.sessionStatus === "Active" ? "bg-success" : "bg-secondary"}`}>

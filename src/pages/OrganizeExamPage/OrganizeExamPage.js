@@ -258,7 +258,7 @@ const OrganizeExamPage = () => {
       cancelButtonText: "Hủy",
     }).then((result) => {
       if (result.isConfirmed) {
-        const newStatus = currentStatus === "Active" ? "Disabled" : "Active";
+        const newStatus = currentStatus.toLowerCase() === "active" ? "disabled" : "active";
 
         // Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
         setRows((prevRows) =>
@@ -379,7 +379,7 @@ const OrganizeExamPage = () => {
                 <th scope="col" className="title-row">Ma trận</th>
                 <th className="text-center">Thời gian (M)</th>
                 <th className="text-center">Điểm</th>
-                <th scope="col" className="title-row">Trạng thái</th>
+                <th className="text-center">Trạng thái</th>
                 <th className="text-center">Báo cáo</th>
                 <th className="text-center">Thao tác</th>
               </tr>
@@ -408,7 +408,7 @@ const OrganizeExamPage = () => {
                        className="form-check-input"
                        type="checkbox"
                        role="switch"
-                       checked={item.organizeExamStatus === "Active"}
+                       checked={item.organizeExamStatus.toLowerCase() === "active"}
                        onChange={() =>
                          handleToggleStatus(item.id, item.organizeExamStatus)
                        }

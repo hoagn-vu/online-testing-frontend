@@ -17,7 +17,7 @@ const listQuestionBank = [
 		roomLocation: "Tòa A",
 		supervisorId: "SUP123",
 		supervisorName: "Hoàng Nguyên Vũ",
-		roomStatus: "Active",
+		roomOrganizeStatus: "Active",
 		candidates: []
 	},
 	{
@@ -26,7 +26,7 @@ const listQuestionBank = [
 		roomLocation: "Tòa B",
 		supervisorId: "SUP124",
 		supervisorName: "Ngô Đức Thuận",
-		roomStatus: "Active",
+		roomOrganizeStatus: "Active",
 		candidates: []
 	}
 ];
@@ -126,31 +126,31 @@ const RoomOrganizePage = () => {
 	
 	const handleToggleStatus = (id, currentStatus) => {
 		Swal.fire({
-			title: "Bạn có chắc muốn thay đổi trạng thái?",
-			text: "Trạng thái sẽ được cập nhật ngay sau khi xác nhận!",
-			icon: "warning",
-			showCancelButton: true,
-			confirmButtonColor: "#3085d6",
-			cancelButtonColor: "#d33",
-			confirmButtonText: "Xác nhận",
-			cancelButtonText: "Hủy",
+		  title: "Bạn có chắc muốn thay đổi trạng thái?",
+		  text: "Trạng thái sẽ được cập nhật ngay sau khi xác nhận!",
+		  icon: "warning",
+		  showCancelButton: true,
+		  confirmButtonColor: "#3085d6",
+		  cancelButtonColor: "#d33",
+		  confirmButtonText: "Xác nhận",
+		  cancelButtonText: "Hủy",
 		}).then((result) => {
-			if (result.isConfirmed) {
-				const newStatus = currentStatus === "Active" ? "Disabled" : "Active";
-
-				// Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
-				setRows((prevRows) =>
-					prevRows.map((row) =>
-						row.id === id ? { ...row, roomStatus: newStatus } : row
-					)
-				);
-				console.log("roomId được đổi status:", id)
-				Swal.fire({
-					title: "Cập nhật thành công!",
-					text: `Trạng thái đã chuyển sang "${newStatus}".`,
-					icon: "success",
-				});
-			}
+		  if (result.isConfirmed) {
+			const newStatus = currentStatus.toLowerCase() === "active" ? "disabled" : "active";
+	
+			// Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
+			setRows((prevRows) =>
+			  prevRows.map((row) =>
+				row.roomId === id ? { ...row, roomOrganizeStatus: newStatus } : row
+			  )
+			);
+			console.log("organizeExamId được đổi status:", id)
+			Swal.fire({
+			  title: "Cập nhật thành công!",
+			  text: `Trạng thái đã chuyển sang "${newStatus}".`,
+			  icon: "success",
+			});
+		  }
 		});
 	};
 
@@ -181,7 +181,7 @@ const RoomOrganizePage = () => {
  								<th scope="col" className="title-row">Giám thị</th>
  								<th scope="col" className="title-row">Thí sinh</th>
  								<th scope="col" className="title-row text-center">Trạng thái</th>
- 								<th scope="col" className="title-row">Thao tác</th>
+ 								<th className="text-center">Thao tác</th>
  							</tr>
  						</thead>
  						<tbody style={{fontSize: "14px"}}>
@@ -205,14 +205,14 @@ const RoomOrganizePage = () => {
  												className="form-check-input"
  												type="checkbox"
  												role="switch"
- 												checked={item.roomStatus === "Active"}
+ 												checked={item.roomOrganizeStatus.toLowerCase() === "active"}
  												onChange={() =>
- 													handleToggleStatus(item.roomId, item.roomStatus)
+ 													handleToggleStatus(item.roomId, item.roomOrganizeStatus)
  												}
  											/>
  										</div>
  									</td>
- 									<td>
+ 									<td className="text-center">
  										<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}  onClick={() => handleEdit(item)}>
  											<i className="fas fa-edit text-white "></i>
  										</button>

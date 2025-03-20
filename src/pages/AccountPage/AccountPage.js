@@ -262,6 +262,36 @@ const AccountPage = () => {
   const [showGroupForm, setShowGroupForm] = useState(false);
   const [selectedGroups, setSelectedGroups] = useState([]);
 
+  const handleToggleStatus = (id, currentStatus) => {
+    Swal.fire({
+      title: "Bạn có chắc muốn thay đổi trạng thái?",
+      text: "Trạng thái sẽ được cập nhật ngay sau khi xác nhận!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Xác nhận",
+      cancelButtonText: "Hủy",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const newStatus = currentStatus.toLowerCase() === "active" ? "disabled" : "active";
+
+        // Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
+        setRows((prevRows) =>
+          prevRows.map((row) =>
+            row.id === id ? { ...row, accountStatus: newStatus } : row
+          )
+        );
+        console.log("userId được đổi status:", id)
+        Swal.fire({
+          title: "Cập nhật thành công!",
+          text: `Trạng thái đã chuyển sang "${newStatus}".`,
+          icon: "success",
+        });
+      }
+    });
+  };
+
   return (
     <div className="sample-page">
       {/* Breadcrumbs */}
@@ -338,7 +368,7 @@ const AccountPage = () => {
               <th scope="col" className="title-row">Ngày sinh</th>
               <th scope="col" className="title-row">Giới tính</th>
               <th scope="col" className="title-row">Nhóm</th>
-              <th scope="col" className="title-row">Trạng thái</th>
+              <th className="text-center">Trạng thái</th>
               <th scope="col" className="title-row" style={{ width: "120px"}}>Thao tác</th>
             </tr>
           </thead>
@@ -359,7 +389,19 @@ const AccountPage = () => {
                 <td>{item.dateOfBirth}</td>
                 <td>{item.gender}</td>
                 <td>{item.groupName}</td>
-                <td>{item.accountStatus}</td>
+                <td>
+                   <div className="form-check form-switch d-flex justify-content-center">
+                     <input
+                       className="form-check-input"
+                       type="checkbox"
+                       role="switch"
+                       checked={item.accountStatus.toLowerCase() === "active"}
+                       onChange={() =>
+                         handleToggleStatus(item.id, item.accountStatus)
+                       }
+                     />
+                   </div>
+                 </td>
                 <td>
                   <button className="btn btn-primary btn-sm">
                     <i className="fas fa-edit text-white"></i>

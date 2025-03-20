@@ -12,12 +12,14 @@ import ApiService from "../../services/apiService";
 
 const RoomManagementPage = () => {
   const [listRoom, setListRoom] = useState([]);
+  const [rows, setRows] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await ApiService.get("/rooms");
         setListRoom(response.data.rooms);
+        setRows(response.data.rooms);
       } catch (error) {
         console.error("Lỗi lấy dữ liệu: ", error);
       }
@@ -130,6 +132,36 @@ const RoomManagementPage = () => {
     });
   };
 
+  const handleToggleStatus = (id, currentStatus) => {
+    Swal.fire({
+      title: "Bạn có chắc muốn thay đổi trạng thái?",
+      text: "Trạng thái sẽ được cập nhật ngay sau khi xác nhận!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Xác nhận",
+      cancelButtonText: "Hủy",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const newStatus = currentStatus.toLowerCase() === "available" ? "unavailable" : "available";
+
+        // Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
+        setRows((prevRows) =>
+          prevRows.map((row) =>
+            row.id === id ? { ...row, roomStatus: newStatus } : row
+          )
+        );
+        console.log("roomId được đổi status:", id)
+        Swal.fire({
+          title: "Cập nhật thành công!",
+          text: `Trạng thái đã chuyển sang "${newStatus}".`,
+          icon: "success",
+        });
+      }
+    });
+  };
+
   return (
     <div className="room-page">
       <nav className="breadcrumb-container">
@@ -170,7 +202,7 @@ const RoomManagementPage = () => {
               <th>Tên phòng</th>
               <th>Địa chỉ</th>
               <th className="text-center">Số lượng chỗ ngồi</th>
-              <th>Trạng thái</th>
+              <th className="text-center">Trạng thái</th>
               <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
             </tr>
           </thead>
@@ -181,7 +213,19 @@ const RoomManagementPage = () => {
                 <td>{item.roomName}</td>
                 <td>{item.roomLocation}</td>
                 <td className="text-center">{item.roomCapacity}</td>
-                <td>{item.roomStatus}</td>
+                <td>
+                   <div className="form-check form-switch d-flex justify-content-center">
+                     <input
+                       className="form-check-input"
+                       type="checkbox"
+                       role="switch"
+                       checked={item.roomStatus.toLowerCase() === "available"}
+                       onChange={() =>
+                         handleToggleStatus(item.id, item.roomStatus)
+                       }
+                     />
+                   </div>
+                 </td>
                 <td className="text-center">
                   <button className="btn btn-primary btn-sm">
                     <i className="fas fa-edit text-white"></i>
