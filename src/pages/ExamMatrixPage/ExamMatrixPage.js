@@ -140,10 +140,10 @@ const ExamMatrixPage = () => {
         </div>
 
         <div className='right-header'>
-          <button className="btn btn-primary me-2" onClick={handleAddNew}>
+          <Link className="add-btn btn link-btn d-flex align-items-center" to="/staff/matrix-detail">
             <i className="fas fa-plus me-2"></i>
             Thêm mới
-          </button>
+          </Link>
         </div>
       </div>
 

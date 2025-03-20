@@ -187,7 +187,7 @@ const RoomManagementPage = () => {
         </div>
 
         <div className='right-header'>
-          <button className="btn btn-primary me-2" onClick={handleAddNew}>
+          <button className="btn btn-primary me-2" style={{fontSize: "14px"}} onClick={handleAddNew}>
             <i className="fas fa-plus me-2"></i>
             Thêm mới
           </button>
