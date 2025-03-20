@@ -212,7 +212,7 @@ export default function Admin2Layout() {
         sx={{
           flexGrow: 1,
           p: 2,
-          backgroundColor: "#F8F9FA",
+          backgroundColor: "#fdfdfd",
           minHeight: "100vh",
           transition: "margin 0.3s ease, width 0.3s ease",
           marginLeft: open ? `${drawerWidth - 250}px` : `calc(${theme.spacing(0)} + 1px)`,
