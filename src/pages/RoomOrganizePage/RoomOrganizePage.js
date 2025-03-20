@@ -172,7 +172,7 @@ const RoomOrganizePage = () => {
 
 			<div className="room-organize-table-container mt-3">
  				<div className="table-responsive">
- 					<table className="table sample-table tbl-organize">
+ 					<table className="table sample-table tbl-organize-hover table-hover">
  						<thead style={{fontSize: "14px"}}>
  							<tr className="align-middle fw-medium">
  								<th scope="col" className="title-row text-center">STT</th> 

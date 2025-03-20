@@ -351,7 +351,7 @@ const AccountPage = () => {
       </ul>
 
       <div className="table-responsive">
-        <table className="table sample-table table-hover">
+        <table className="table sample-table table-hover tbl-organize-hover">
           <thead>
             <tr className="align-middle">
               <th scope="col" className="text-center title-row" style={{ width: "50px"}}>

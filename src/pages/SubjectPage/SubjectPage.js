@@ -143,7 +143,7 @@ const SubjectPage = () => {
       </div>
 
       <div className="table-responsive">
-        <table className="table sample-table" style={{fontSize: "14px"}}>
+        <table className="table sample-table tbl-organize-hover table-hover" style={{fontSize: "14px"}}>
           <thead>
             <tr className="align-middle">
               <th className="text-center" style={{ width: "50px"}}>STT</th>

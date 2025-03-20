@@ -143,7 +143,7 @@ const QuestionBankPage = () => {
       </div>
 
       <div className="table-responsive">
-        <table className="table question-bank-table" style={{fontSize: "14px"}}>
+        <table className="table question-bank-table tbl-organize-hover table-hover" style={{fontSize: "14px"}}>
           <thead>
             <tr className="align-middle">
               <th className="text-center" style={{ width: "50px"}}>STT</th>

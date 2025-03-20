@@ -179,7 +179,7 @@ const ExamManagementPage = () => {
 			</div>
 
 			<div className="table-responsive">
-				<table className="table sample-table table-hover">
+				<table className="table sample-table table-hover tbl-organize-hover">
 					<thead>
 						<tr className="align-middle">
 							<th className=" text-center" style={{ width: "50px"}}>STT</th>
