@@ -3,29 +3,39 @@ import { Modal, Button } from "react-bootstrap";
 import { FaFileAlt, FaUserCircle } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./HomeCandidate.css";
+import { useSelector } from "react-redux";
+import ApiService from "../../services/apiService";
+import { useNavigate } from "react-router-dom";
 
 const HomeCandidate = () => {
-  // Thông tin thí sinh
-  const candidate = {
-    name: "Phan Thị Phương Linh",
-    studentId: "2112203",
-  };
+  const user = useSelector((state) => state.auth.user);
 
-  // Danh sách bài thi
-  const exams = [
-    "Test 4",
-    "Test 2",
-    "Bài kiểm tra giữa kỳ II (22 toán)",
-    "Bài kiểm tra giữa kỳ I (22 toán)",
-  ];
+  const navigate = useNavigate();
+
+  const [exams, setExams] = useState([]);
+  useEffect(() => {
+    const fetchExam = async () => {
+      try {
+        const response = await ApiService.get("/organize-exams/candidate-get-list", {
+          params: { candidateId: user.id },
+        });
+        setExams(response.data);
+      } catch (error) {
+        console.error("Failed to fetch exam list: ", error);
+      }
+    };
+
+    fetchExam();
+  }, [user.id]);
 
   const [selectedExam, setSelectedExam] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
   // Xử lý khi nhấn vào bài thi
-  const handleExamClick = (exam) => {
-    setSelectedExam(exam);
-    setShowModal(true);
+  const handleExamClick = (examId) => {
+    // setSelectedExam(exam);
+    // setShowModal(true);
+    navigate("/candidate/take-exam/" + examId);
   };
 
   return (
@@ -42,11 +52,11 @@ const HomeCandidate = () => {
             {/* Thông tin thí sinh */}
             <p className="mt-4 font-semibold">
               <span className="fw-bold">Họ tên: </span>
-              <span>{candidate.name}</span>
+              <span>{user.fullName}</span>
             </p>
             <p className="text-gray-500">
               <span className="fw-bold">Mã sinh viên: </span>
-              <span>{candidate.studentId}</span>
+              <span>{user.userCode}</span>
             </p>
           </div>
 
@@ -56,15 +66,23 @@ const HomeCandidate = () => {
             <ul className="space-y-2 detail-list-exam">
               {exams.map((exam, index) => (
                 <ol
-                  key={index}
+                  key={exam.id}
                   className="flex items-center space-x-2 text-blue-600 cursor-pointer p-0 pt-3"
                 >
                   <div
+<<<<<<< Updated upstream
                     className="cursor-pointer baithi cursor-pointer"
                     onClick={() => handleExamClick(exam)}
                   >
                     <FaFileAlt className="text-blue-400 icon" />
                     <span>{exam}</span>
+=======
+                    className="cursor-pointer baithi cursor-pointer d-flex align-items-center"
+                    onClick={() => handleExamClick(exam.id)}
+                  >
+                    <FaFileAlt className="text-blue-400 icon me-2" />
+                    <span>{exam.organizeExamName}</span>
+>>>>>>> Stashed changes
                   </div>
                 </ol>
               ))}

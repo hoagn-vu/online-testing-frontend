@@ -12,79 +12,42 @@ import { DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
-
-const listQuestionBank = [
-	{
-		id: "65f1a3b4c8e4a2d5b6f7e8d9",
-    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 12",
-    organizeExamStatus: "Active",
-    duration: 90,
-    examType: "Ngẫu nhiên",
-    matrixId: "MATRIX123",
-		matrixName: "MATRIX123",
-    maxScore: 100,
-    subjectId: "MATH12",
-		subjectName: "MATH12",
-    totalQuestion: 50,
-    examSet: ["MA", "MA1"],
-    sesstion: [
-	{
-		sessionId: "SESSION001",
-		sessionName: "SESSION001",
-		activeAt: "2025-04-10T08:00:00Z",
-		sessionStatus: "Active",
-		rooms: []
-	},
-	{
-		sessionId: "SESSION002",
-		sessionName: "SESSION001",
-		activeAt: "2025-04-10T13:00:00Z",
-		sessionStatus: "Disabled",
-		rooms: []
-	},
-	{
-		sessionId: "SESSION003",
-		sessionName: "SESSION001",
-		activeAt: "2025-04-10T08:00:00Z",
-		sessionStatus: "Active",
-		rooms: [ ]
-	},
-	{
-		sessionId: "SESSION004",
-		sessionName: "SESSION001",
-		activeAt: "2025-04-10T13:00:00Z",
-		sessionStatus: "Active",
-		rooms: []
-	}]
-	}
-];
+import ApiService from "../../services/apiService";
 
 const SesstionPage = () => {
 	const [showForm, setShowForm] = useState(false);
 	const [editingAccount, setEditingAccount] = useState(null);
-	const paginationModel = { page: 0, pageSize: 5 };
 	const inputRef = useRef(null);
-	const [rows, setRows] = useState(Object.values(listQuestionBank).flat());
 	const { id: organizeId } = useParams();
+
+		const [listOrganizeExam, setListOrganizeExam] = useState([]);
 	
-	const columns = [
-		{
-			field: "actions",
-			headerName: "Thao tác", align: "center",headerAlign: "center",
-			width: 150,
-			sortable: false,
-			renderCell: (params) => (
-				<>
-					<IconButton color="primary" onClick={() => handleEdit(params.row)}>
-						<EditIcon />
-					</IconButton>
-					<IconButton color="error" onClick={() => handleDelete(params.row.sessionId)}>
-						<DeleteIcon />
-					</IconButton>
-				</>
-			),
-		},
-	];
+		useEffect(() => {
+			const fetchData = async () => {
+				const response = await ApiService.get('/organize-exams');
+				setListOrganizeExam(response.data.organizeExams);
+			};
+	
+			fetchData();
+		}, []);
+
+	const [listSession, setListSession] = useState([]);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const response = await ApiService.get(`/organize-exams/sessions`, {
+					params: { orgExamId: organizeId },
+				});
+				setListSession(response.data.sessions);
+			} catch (error) {
+				console.error("Failed to fetch data: ", error);
+			}
+		};
+
+		fetchData();
+	}, [organizeId]);
+	
 	
 	useEffect(() => {
 		if (showForm && inputRef.current) {
@@ -210,8 +173,8 @@ const SesstionPage = () => {
 			</nav>
 
 		<div>
-			{listQuestionBank.map((exam, index) => (
-				<div key={index} style={{
+			{listOrganizeExam.map((exam) => (
+				<div key={exam.id} style={{
 					background: "#fff",
 					padding: "15px 15px 0px 15px",
 					marginBottom: "15px",
@@ -236,20 +199,20 @@ const SesstionPage = () => {
 						{/* Cột 2 */}
 						<div style={{ flex: 1 }}>
 							<p><strong>Thời gian làm bài:</strong> {exam.duration} phút</p>
-							{exam.examType === "Đề thi" && (
-									<p><strong>Bộ đề thi:</strong> {exam.examSet.length > 0 ? exam.examSet.join(", ") : "Chưa có dữ liệu"}</p>
+							{exam.examType === "exam" || "Đề thi" && (
+									<p><strong>Bộ đề thi:</strong> {exam.exams.length > 0 ? exam.examSet.join(", ") : "Chưa có dữ liệu"}</p>
 							)}
-							{exam.examType === "Ma trận" && (
+							{exam.examType === "matrix" || "Ma trận" && (
 									<p><strong>Ma trận đề:</strong> {exam.matrixName ?? "Chưa có dữ liệu"}</p>
 							)}
-							{exam.examType === "Ngẫu nhiên" && (
+							{exam.examType === "auto" || "Ngẫu nhiên" && (
 									<p><strong>Tổng số câu hỏi:</strong> {exam.totalQuestion ?? "Chưa có dữ liệu"}</p>
 							)}
 						</div>
 
 						{/* Cột 3 - Hiển thị thông tin đặc biệt */}
 						<div style={{ flex: 1 }}>
-							{(exam.examType === "Ma trận" || exam.examType === "Ngẫu nhiên") && (
+							{(exam.examType === "matrix" || "Ma trận" || exam.examType === "auto" || "Ngẫu nhiên") && (
 									<p><strong>Điểm tối đa:</strong> {exam.maxScore}</p>
 							)}
 						</div>
@@ -282,7 +245,7 @@ const SesstionPage = () => {
 						</tr>
 					</thead>
 					<tbody style={{ fontSize: "14px" }}>
-						{listQuestionBank.length === 0 ? (
+						{listSession.length === 0 ? (
 							<tr>
 								<td colSpan="6" className="text-center fw-semibold text-muted"
 										style={{ height: "100px", verticalAlign: "middle" }}>
@@ -290,8 +253,7 @@ const SesstionPage = () => {
 								</td>
 							</tr>
 						) : (
-							listQuestionBank.flatMap((exam, examIndex) =>
-								exam.sesstion.map((session, sessionIndex) => (
+							listSession.map((session, sessionIndex) => (
 									<tr key={session.sessionId} className="align-middle">
 										<td className="text-center">{sessionIndex + 1}</td>
 										<td>{session.sessionName}</td>
@@ -309,11 +271,11 @@ const SesstionPage = () => {
 													className="form-check-input"
 													type="checkbox"
 													role="switch"
-													checked={session.sessionStatus === "Active"}
+													checked={session.sessionStatus === "Active" || "available"}
 													onChange={() => handleToggleStatus(session.sessionId, session.sessionStatus)}
 												/>
-												<span className={`badge ms-2 ${session.sessionStatus === "Active" ? "bg-success" : "bg-secondary"}`}>
-													{session.sessionStatus === "Active" ? "Hoạt động" : "Không hoạt động"}
+												<span className={`badge ms-2 ${session.sessionStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
+													{session.sessionStatus === "Active" || "available" ? "Hoạt động" : "Không hoạt động"}
 												</span>
 											</div>
 										</td>
@@ -338,7 +300,6 @@ const SesstionPage = () => {
 										</td>
 									</tr>
 								))
-							)
 						)}
 					</tbody>
 

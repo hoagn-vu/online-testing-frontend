@@ -155,6 +155,7 @@ const SubjectPage = () => {
                 />
               </th>
               <th scope="col" className="title-row">Phân môn</th>
+              <th scope="col" className="title-row">Số lượng bộ câu hỏi</th>
               <th scope="col" className="title-row" style={{ width: "120px"}}>Thao tác</th>
             </tr>
           </thead>
@@ -177,6 +178,7 @@ const SubjectPage = () => {
                     {item.subjectName}
                   </Link>
                 </td>
+                <td>{item.totalQuestionBanks}</td>
                 <td>
                   <button className="btn btn-primary btn-sm">
                     <i className="fas fa-edit text-white"></i>
