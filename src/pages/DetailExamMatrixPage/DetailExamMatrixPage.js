@@ -279,8 +279,8 @@ const DetailExamMatrixPage = () => {
 					<TextField
 						required
 						id="outlined-size-small"
-										defaultValue="Small"
-										size="small"
+						defaultValue=""
+						size="small"
 						label="Tên ma trận đề thi"
 						sx={{
 							"& .MuiOutlinedInput-root": {
@@ -292,7 +292,7 @@ const DetailExamMatrixPage = () => {
 							},
 						}}
 					/>
-					<SelectRe
+					{/* <SelectRe
 						className="basic-single ms-2 me-2"
 						classNamePrefix="select"
 						placeholder="Chọn phân môn"
@@ -301,14 +301,14 @@ const DetailExamMatrixPage = () => {
 						styles={{
 								control: (base) => ({
 										...base,
-										width: "250px", // Cố định chiều rộng
+										width: "250px",
 										minWidth: "250px",
 										maxWidth: "250px",
-										height: "40px", // Tăng chiều cao
+										height: "40px", 
 								}),
 								menu: (base) => ({
 										...base,
-										width: "250px", // Cố định chiều rộng của dropdown
+										width: "250px",
 								}),
 								valueContainer: (base) => ({
 										...base,
@@ -322,9 +322,9 @@ const DetailExamMatrixPage = () => {
 										fontSize: "14px", // Cỡ chữ của placeholder (label)
 								}),
 						}}
-					/>
+					/> */}
 					<SelectRe
-						className="basic-single"
+						className="basic-single ms-2"
 						classNamePrefix="select"
 						placeholder="Chọn ngân hàng câu hỏi"
 						name="color"
@@ -353,7 +353,7 @@ const DetailExamMatrixPage = () => {
 								}),
 						}}
 					/>
-					<FormControl sx={{ ml: 1, width: 235,}} size="small">
+					<FormControl sx={{ ml: 1, width: 250,}} size="small">
 						<InputLabel id="demo-multiple-checkbox-label">Phân loại</InputLabel>
 						<Select
 							labelId="demo-multiple-checkbox-label"
