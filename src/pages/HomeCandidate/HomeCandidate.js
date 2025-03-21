@@ -70,19 +70,11 @@ const HomeCandidate = () => {
                   className="flex items-center space-x-2 text-blue-600 cursor-pointer p-0 pt-3"
                 >
                   <div
-<<<<<<< Updated upstream
-                    className="cursor-pointer baithi cursor-pointer"
-                    onClick={() => handleExamClick(exam)}
-                  >
-                    <FaFileAlt className="text-blue-400 icon" />
-                    <span>{exam}</span>
-=======
                     className="cursor-pointer baithi cursor-pointer d-flex align-items-center"
                     onClick={() => handleExamClick(exam.id)}
                   >
                     <FaFileAlt className="text-blue-400 icon me-2" />
                     <span>{exam.organizeExamName}</span>
->>>>>>> Stashed changes
                   </div>
                 </ol>
               ))}

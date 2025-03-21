@@ -22,7 +22,7 @@ const LoginPage = () => {
     }
   }, [username, password]);
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setErrMsg(null);
 
