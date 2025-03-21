@@ -60,10 +60,10 @@ const HomeCandidate = () => {
                   className="flex items-center space-x-2 text-blue-600 cursor-pointer p-0 pt-3"
                 >
                   <div
-                    className="cursor-pointer baithi cursor-pointer"
+                    className="cursor-pointer baithi cursor-pointer d-flex align-items-center"
                     onClick={() => handleExamClick(exam)}
                   >
-                    <FaFileAlt className="text-blue-400 icon" />
+                    <FaFileAlt className="text-blue-400 icon me-2" />
                     <span>{exam}</span>
                   </div>
                 </ol>

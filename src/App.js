@@ -124,7 +124,7 @@ function App() {
           <Route path="home" element={<HomeCandidate />} />
           <Route path="history" element={<HistoryCandidatePage />} />
           <Route path="result" element={<ResultCandidatePage />} />
-          <Route path="takexam" element={<TakeExamPage />} />
+          <Route path="take-exam" element={<TakeExamPage />} />
         </Route>
       </Routes>
 
