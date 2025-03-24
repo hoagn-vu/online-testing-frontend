@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
-import "./SesstionPage.css";
+import "./SessionPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import {Pagination, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
@@ -14,7 +14,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
 import ApiService from "../../services/apiService";
 
-const SesstionPage = () => {
+const SessionPage = () => {
 	const [showForm, setShowForm] = useState(false);
 	const [editingAccount, setEditingAccount] = useState(null);
 	const inputRef = useRef(null);
@@ -146,7 +146,7 @@ const SesstionPage = () => {
 			cancelButtonText: "Hủy",
 		}).then((result) => {
 			if (result.isConfirmed) {
-				const newStatus = currentStatus.toLowerCase() === "active" ? "disabled" : "active";
+				const newStatus = currentStatus === "Active" ? "Disabled" : "Active";
 
 				// Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
 				setRows((prevRows) =>
@@ -220,11 +220,7 @@ const SesstionPage = () => {
 				</div>
 			))}
 		</div>
-			
-
-			<div className="session-table-container mt-3">
-				<div className="tbl-session">
-				<div className="account-actions mt-2 ps-3">
+			<div className="account-actions mt-2">
 				<div className="search-container">
 					<SearchBox></SearchBox>
 				</div>
@@ -283,35 +279,7 @@ const SesstionPage = () => {
 												</span>
 											</div>
 										</td>
-									</tr>
-								) : (
-									listQuestionBank.flatMap((exam, examIndex) =>
-										exam.session.map((session, sessionIndex) => (
-											<tr key={session.sessionId} className="align-middle">
-												<td className="text-center">{sessionIndex + 1}</td>
-												<td>{session.sessionName}</td>
-												<td>{dayjs(session.activeAt).format("DD/MM/YYYY HH:mm")}</td>
-												<td>
-													<Link className="text-hover-primary"
-															to={`/staff/organize/${organizeId}/${session.sessionId}`}
-															style={{ textDecoration: "none", color: "black", cursor: "pointer" }}>
-														Danh sách phòng thi
-													</Link>
-												</td>
-												<td className="text-center">
-													<div className="form-check form-switch d-flex align-items-center justify-content-left">
-														<input
-															className="form-check-input"
-															type="checkbox"
-															role="switch"
-															checked={session.sessionStatus.toLowerCase() === "active"}
-															onChange={() => handleToggleStatus(session.sessionId, session.sessionStatus)}
-														/>
-														<span className={`badge ms-2 ${session.sessionStatus === "Active" ? "bg-success" : "bg-secondary"}`}>
-															{session.sessionStatus === "Active" ? "Hoạt động" : "Không hoạt động"}
-														</span>
-													</div>
-												</td>
+
 
 										<td className="text-center">
 											<Link className="text-hover-primary"
@@ -335,13 +303,11 @@ const SesstionPage = () => {
 						)}
 					</tbody>
 
-						</table>
-					</div>
-					<div className="d-flex justify-content-end">
-						<Pagination count={10} color="primary" ></Pagination>
-					</div>
-
-				</div>
+				</table>
+			</div>
+			<div className="d-flex justify-content-end">
+				<Pagination count={10} color="primary"></Pagination>
+			</div>
 			</div>	
 
 			{/* Form thêm tài khoản */}
@@ -445,4 +411,4 @@ const SesstionPage = () => {
 	)
 }
 
-export default SesstionPage;
+export default SessionPage;
