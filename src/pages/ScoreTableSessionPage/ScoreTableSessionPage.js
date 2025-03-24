@@ -2,6 +2,7 @@ import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./ScoreTableSessionPage.css";
 import Print from "@mui/icons-material/Print";
+import { Link, useParams, useLocation } from "react-router-dom";
 
 
 const ScoreTableSessionPage = () => {
@@ -27,11 +28,16 @@ const ScoreTableSessionPage = () => {
     
   ];
 
+  const { organizeId, sessionId } = useParams();
+  const location = useLocation();
+  const { sessionName} = location.state || {};
+  const organizeExamName = location.state?.organizeExamName || localStorage.getItem("organizeExamName");
+
   // Hàm chỉ in nội dung bảng điểm
   const handlePrint = () => {
     const printContent = document.getElementById("printable-score-table").innerHTML;
     const originalContent = document.body.innerHTML;
-
+    
     document.body.innerHTML = printContent;
     window.print();
     document.body.innerHTML = originalContent;
@@ -40,9 +46,22 @@ const ScoreTableSessionPage = () => {
 
   return (
     <div className="container-score-room">
-      <nav className="mb-4">
-        <a href="/admin">Home</a> / <span className="breadcrumb-current">Quản lý kỳ thi</span>
-      </nav>
+			<nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
+				<Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
+				<span className="ms-2 me-2"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+				<span className="breadcrumb-between">
+					<Link to="/staff/organize" className="breadcrumb-between">Quản lý kỳ thi</Link></span>
+				<span className="ms-2 me-2"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+				<span className="breadcrumb-between">
+				<Link 
+					to={`/staff/organize/${organizeId}`} 
+					state={{ organizeExamName: organizeExamName }} 
+					className="breadcrumb-between">
+					{organizeExamName}
+				</Link></span>
+				<span className="ms-2 me-2"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+				<span className="breadcrumb-current">In bảng điểm</span>
+			</nav>
 
       {/* Nút in bảng điểm */}
       <div className="mt-2 mb-3 d-flex ms-auto justify-content-end">

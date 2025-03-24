@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./MonitorOrganizePage.css";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -26,8 +26,11 @@ const MonitorOrganizePage = () => {
 
   const [selectedExam, setSelectedExam] = useState(null);
   const [showModal, setShowModal] = useState(false);
-	const { id: organizeId, sessionId } = useParams();
-	
+	const { organizeId, sessionId } = useParams();
+	const location = useLocation();
+	const { sessionName} = location.state || {};
+	const organizeExamName = location.state?.organizeExamName || localStorage.getItem("organizeExamName");
+
   // Xử lý khi nhấn vào bài thi
   const handleExamClick = (exam) => {
     setSelectedExam(exam);
@@ -49,9 +52,21 @@ const MonitorOrganizePage = () => {
 
   return (
     <div className="exam-management-page">
-			<nav className="mb-3">
-				<Link to="/admin">Home</Link> / 
-				<span className="breadcrumb-current">Quản lý kỳ thi</span>
+			<nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
+				<Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
+				<span className="ms-2 me-2"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+				<span className="breadcrumb-between">
+					<Link to="/staff/organize" className="breadcrumb-between">Quản lý kỳ thi</Link></span>
+				<span className="ms-2 me-2"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+				<span className="breadcrumb-between">
+				<Link 
+					to={`/staff/organize/${organizeId}`} 
+					state={{ organizeExamName: organizeExamName }} 
+					className="breadcrumb-between">
+					{organizeExamName}
+				</Link></span>
+				<span className="ms-2 me-2"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+				<span className="breadcrumb-current">Giám sát</span>
 			</nav>
 			
 			<div className="tbl-shadow p-3">
