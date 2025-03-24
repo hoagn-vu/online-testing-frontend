@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation  } from "react-router-dom";
 import "./AccountPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -291,135 +291,135 @@ const AccountPage = () => {
       }
     });
   };
-
+  const location = useLocation();
+  const pathnames = location.pathname.split("/").filter((x) => x);
   return (
     <div className="sample-page">
       {/* Breadcrumbs */}
-      <nav className="breadcrumb-container">
-        <Link to="/" className="breadcrumb-link">
-          Home
-        </Link>
-        <span> / </span>
-        <span className="breadcrumb-current">Quản lý tài khoản</span>
+      <nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
+        <Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
+        
+        <span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+        <span className="breadcrumb-current"> Quản lý tài khoản</span>
       </nav>
+      <div className="tbl-shadow p-3 pt-1">
+        {/* Thanh tìm kiếm + Nút thêm mới + Upload */}
+        <div className="account-actions">
+          <div className="search-container">
+            <SearchBox></SearchBox>
+          </div>
+          <div className="role-selector">
 
-      {/* Thanh tìm kiếm + Nút thêm mới + Upload */}
-      <div className="account-actions">
-        <div className="search-container">
-          <SearchBox></SearchBox>
-        </div>
-        <div className="role-selector">
-
-          <button className="btn btn-primary me-0" style={{fontSize: "14px"}} onClick={handleAddNew}>
-            <i className="fas fa-plus me-2"></i>
-            Thêm mới
-          </button>
-          <button
-            className="change-password-btn btn-size align-items-center d-flex"
-            onClick={() => setShowPasswordForm(true)}
-          >
-            Đổi mật khẩu
-          </button>
-          <button className="upload-btn btn-size align-items-center d-flex" onClick={handleUploadClick}>
-            Upload File
-          </button>
-          <button className="btn btn-primary btn-size align-items-center d-flex" onClick={() => setShowGroupForm(true)}>
-            Thêm nhóm
-          </button>
-          <button className="btn btn-primary btn-size align-items-center d-flex" >
-            Xóa nhóm
-          </button>
-        </div>
-      </div>
-
-      {/* Tabs để chọn loại tài khoản */}
-      <ul className="nav nav-tabs">
-        {Object.keys(listAccount).map((role) => (
-          <li className="nav-item" key={role}>
-            <a
-              className={`nav-link ${selectedRole === role ? "active" : ""}`}
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                handleRoleChange(role);
-              }}
+            <button className="btn btn-primary me-0" style={{fontSize: "14px"}} onClick={handleAddNew}>
+              <i className="fas fa-plus me-2"></i>
+              Thêm mới
+            </button>
+            <button
+              className="change-password-btn btn-size align-items-center d-flex"
+              onClick={() => setShowPasswordForm(true)}
             >
-              {role}
-            </a>
-          </li>
-        ))}
-      </ul>
+              Đổi mật khẩu
+            </button>
+            <button className="upload-btn btn-size align-items-center d-flex" onClick={handleUploadClick}>
+              Upload File
+            </button>
+            <button className="btn btn-primary btn-size align-items-center d-flex" onClick={() => setShowGroupForm(true)}>
+              Thêm nhóm
+            </button>
+            <button className="btn btn-primary btn-size align-items-center d-flex" >
+              Xóa nhóm
+            </button>
+          </div>
+        </div>
 
-      <div className="table-responsive">
-        <table className="table sample-table table-hover tbl-organize-hover">
-          <thead>
-            <tr className="align-middle">
-              <th scope="col" className="text-center title-row" style={{ width: "50px"}}>
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  onChange={handleSelectAll}
-                  checked={selectedItems.length === listAccount.length && listAccount.length > 0}
-                />
-              </th>
-              <th scope="col" className="title-row">Mã</th>
-              <th scope="col" className="title-row">Tài khoản</th>
-              <th scope="col" className="title-row">Họ tên</th>
-              <th className="text-center">Ngày sinh</th>
-              <th className="text-center">Giới tính</th>
-              <th className="text-center">Nhóm</th>
-              <th className="text-center">Trạng thái</th>
-              <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
-            </tr>
-          </thead>
-          <tbody>
-            {listDisplay.map((item, index) => (
-              <tr key={item.id} className="align-middle">
-                <td className=" text-center" style={{ width: "50px" }}>
+        {/* Tabs để chọn loại tài khoản */}
+        <ul className="nav nav-tabs">
+          {Object.keys(listAccount).map((role) => (
+            <li className="nav-item" key={role}>
+              <a
+                className={`nav-link ${selectedRole === role ? "active" : ""}`}
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleRoleChange(role);
+                }}
+              >
+                {role}
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <div className="table-responsive">
+          <table className="table sample-table table-hover tbl-organize-hover">
+            <thead>
+              <tr className="align-middle">
+                <th scope="col" className="text-center title-row" style={{ width: "50px"}}>
                   <input
                     className="form-check-input"
                     type="checkbox"
-                    onChange={(e) => handleSelectItem(e, item.questionBankId)}
-                    checked={selectedItems.includes(item.questionBankId)}
+                    onChange={handleSelectAll}
+                    checked={selectedItems.length === listAccount.length && listAccount.length > 0}
                   />
-                </td>
-                <td>{item.userCode}</td>
-                <td>{item.username}</td>
-                <td>{item.fullName}</td>
-                <td className="text-center">{item.dateOfBirth}</td>
-                <td className="text-center">{item.gender}</td>
-                <td className="text-center">{item.groupName}</td>
-                <td>
-                   <div className="form-check form-switch d-flex justify-content-center">
-                     <input
-                       className="form-check-input"
-                       type="checkbox"
-                       role="switch"
-                       checked={item.accountStatus.toLowerCase() === "active"}
-                       onChange={() =>
-                         handleToggleStatus(item.id, item.accountStatus)
-                       }
-                     />
-                   </div>
-                 </td>
-                 <td className="text-center">
-                  <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
-                    <i className="fas fa-edit text-white "></i>
-                  </button>
-                  <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
-                    <i className="fas fa-trash-alt"></i>
-                  </button>
-                </td>
+                </th>
+                <th scope="col" className="title-row">Mã</th>
+                <th scope="col" className="title-row">Tài khoản</th>
+                <th scope="col" className="title-row">Họ tên</th>
+                <th className="text-center">Ngày sinh</th>
+                <th className="text-center">Giới tính</th>
+                <th className="text-center">Nhóm</th>
+                <th className="text-center">Trạng thái</th>
+                <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {listDisplay.map((item, index) => (
+                <tr key={item.id} className="align-middle">
+                  <td className=" text-center" style={{ width: "50px" }}>
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      onChange={(e) => handleSelectItem(e, item.questionBankId)}
+                      checked={selectedItems.includes(item.questionBankId)}
+                    />
+                  </td>
+                  <td>{item.userCode}</td>
+                  <td>{item.username}</td>
+                  <td>{item.fullName}</td>
+                  <td className="text-center">{item.dateOfBirth}</td>
+                  <td className="text-center">{item.gender}</td>
+                  <td className="text-center">{item.groupName}</td>
+                  <td>
+                    <div className="form-check form-switch d-flex justify-content-center">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        role="switch"
+                        checked={item.accountStatus.toLowerCase() === "active"}
+                        onChange={() =>
+                          handleToggleStatus(item.id, item.accountStatus)
+                        }
+                      />
+                    </div>
+                  </td>
+                  <td className="text-center">
+                    <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
+                      <i className="fas fa-edit text-white " onClick={handleEdit}></i>
+                    </button>
+                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
+                      <i className="fas fa-trash-alt"></i>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-      <div className="sample-pagination d-flex justify-content-end align-items-center">
-        <Pagination count={10} color="primary" />
+        <div className="sample-pagination d-flex justify-content-end align-items-center mb-2">
+          <Pagination count={10} color="primary" shape="rounded" />
+        </div>
       </div>
-
       {/* Form thêm tài khoản */}
       {showForm && (
         <div className="form-overlay">

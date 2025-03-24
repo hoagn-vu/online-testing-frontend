@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 import "./RoomOrganizePage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -43,10 +43,14 @@ const RoomOrganizePage = () => {
 	const paginationModel = { page: 0, pageSize: 5 };
 	const inputRef = useRef(null);
 	const [rows, setRows] = useState();
-	const {sessionId} = useParams();
-	const { id: organizeId } = useParams();
+	// const {sessionId} = useParams();
+	const { organizeId, sessionId } = useParams();
+	const location = useLocation();
+	const { sessionName} = location.state || {};
+	const organizeExamName = location.state?.organizeExamName || localStorage.getItem("organizeExamName");
 
 	console.error("organizeId:", organizeId);
+	console.error("organizeName:", organizeExamName);
 	useEffect(() => {
 		setRows(
 		  listQuestionBank.map(room => ({
@@ -157,78 +161,98 @@ const RoomOrganizePage = () => {
 	return (
 		<div className="exam-management-page">
 			{/* Breadcrumb */}
-			<nav>
-				<Link to="/admin">Home</Link> / 
-				<span className="breadcrumb-current">Quản lý kỳ thi</span>
+			<nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
+				<Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
+				<span className="ms-2 me-2"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+				<span className="breadcrumb-between">
+					<Link to="/staff/organize" className="breadcrumb-between">Quản lý kỳ thi</Link></span>
+				<span className="ms-2 me-2"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+				<span className="breadcrumb-between">
+				<Link 
+					to={`/staff/organize/${organizeId}`} 
+					state={{ organizeExamName: organizeExamName }} 
+					className="breadcrumb-between">
+					{organizeExamName}
+				</Link></span>
+				<span className="ms-2 me-2"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+				<span className="breadcrumb-current">{sessionName}</span>
 			</nav>
-			<div className="account-actions mt-4">
-				<div className="search-container">
-						<SearchBox></SearchBox>
-				</div>
-				<button className="add-btn" onClick={handleAddNew}>
-						Thêm mới
-				</button>
-			</div>
 
-			<div className="room-organize-table-container mt-3">
- 				<div className="table-responsive">
- 					<table className="table sample-table tbl-organize-hover table-hover">
- 						<thead style={{fontSize: "14px"}}>
- 							<tr className="align-middle fw-medium">
- 								<th scope="col" className="title-row text-center">STT</th> 
- 								<th scope="col" className="title-row">Mã phòng</th>
- 								<th scope="col" className="title-row">Phòng</th>
- 								<th scope="col" className="title-row">Giám thị</th>
- 								<th scope="col" className="title-row">Thí sinh</th>
- 								<th scope="col" className="title-row text-center">Trạng thái</th>
- 								<th className="text-center">Thao tác</th>
- 							</tr>
- 						</thead>
- 						<tbody style={{fontSize: "14px"}}>
- 							{listQuestionBank.map((item, index) => (
- 								<tr key={item.roomId} className="align-middle">
- 									<td className="text-center">{index + 1}</td>
- 									<td>{item.roomId}</td>
- 									<td>{item.roomName} ({item.roomLocation})</td>
- 									<td>{item.supervisorName}</td>
- 									<td>
- 										<Link className="text-hover-primary"
- 											to={`/staff/organize/${organizeId}/${sessionId}/${item.roomId}`}
- 											style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
- 										>
- 											Danh sách thí sinh
- 										</Link>
- 									</td>
- 									<td>
- 										<div className="form-check form-switch d-flex justify-content-center">
- 											<input
- 												className="form-check-input"
- 												type="checkbox"
- 												role="switch"
- 												checked={item.roomOrganizeStatus.toLowerCase() === "active"}
- 												onChange={() =>
- 													handleToggleStatus(item.roomId, item.roomOrganizeStatus)
- 												}
- 											/>
- 										</div>
- 									</td>
- 									<td className="text-center">
- 										<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}  onClick={() => handleEdit(item)}>
- 											<i className="fas fa-edit text-white "></i>
- 										</button>
- 										<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}  onClick={() => handleDelete(item.roomId)}>
- 											<i className="fas fa-trash-alt"></i>
- 										</button>
- 									</td>
- 								</tr>
- 							))}
- 						</tbody>
- 					</table>
- 				</div>
- 				<div className="d-flex justify-content-end">
-		  			<Pagination count={10} color="primary" />        
- 				</div>
- 			</div>	
+			<div className="tbl-shadow">
+				<div className="account-actions p-2">
+					<div className="search-container">
+							<SearchBox></SearchBox>
+					</div>
+					<button className="add-btn" onClick={handleAddNew}>
+							Thêm mới
+					</button>
+				</div>
+
+				<div className="room-organize-table-container mt-3">
+					<div className="table-responsive">
+						<table className="table sample-table tbl-organize-hover table-hover">
+							<thead style={{fontSize: "14px"}}>
+								<tr className="align-middle fw-medium">
+									<th scope="col" className="title-row text-center">STT</th> 
+									<th scope="col" className="title-row">Mã phòng</th>
+									<th scope="col" className="title-row">Phòng</th>
+									<th scope="col" className="title-row">Giám thị</th>
+									<th scope="col" className="title-row">Thí sinh</th>
+									<th scope="col" className="title-row text-center">Trạng thái</th>
+									<th className="text-center">Thao tác</th>
+								</tr>
+							</thead>
+							<tbody style={{fontSize: "14px"}}>
+								{listQuestionBank.map((item, index) => (
+									<tr key={item.roomId} className="align-middle">
+										<td className="text-center">{index + 1}</td>
+										<td>{item.roomId}</td>
+										<td>{item.roomName} ({item.roomLocation})</td>
+										<td>{item.supervisorName}</td>
+										<td>
+											<Link className="text-hover-primary"
+												to={`/staff/organize/${organizeId}/${sessionId}/${item.roomId}`}
+												state={{ 
+													roomName: item.roomName,
+													sessionName: sessionName,
+													organizeExamName: organizeExamName  // Truyền thêm organizeExamName
+												}}
+												style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
+											>
+												Danh sách thí sinh
+											</Link>
+										</td>
+										<td>
+											<div className="form-check form-switch d-flex justify-content-center">
+												<input
+													className="form-check-input"
+													type="checkbox"
+													role="switch"
+													checked={item.roomOrganizeStatus.toLowerCase() === "active"}
+													onChange={() =>
+														handleToggleStatus(item.roomId, item.roomOrganizeStatus)
+													}
+												/>
+											</div>
+										</td>
+										<td className="text-center">
+											<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}  onClick={() => handleEdit(item)}>
+												<i className="fas fa-edit text-white "></i>
+											</button>
+											<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}  onClick={() => handleDelete(item.roomId)}>
+												<i className="fas fa-trash-alt"></i>
+											</button>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+					<div className="d-flex justify-content-end mb-2">
+						<Pagination count={10} color="primary" shape="rounded" />        
+					</div>
+				</div>	
+			</div>
 
 			{/* Form thêm tài khoản */}
 			{showForm && (

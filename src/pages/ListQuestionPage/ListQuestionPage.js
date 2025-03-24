@@ -1,5 +1,5 @@
 	import React, { useEffect, useState } from "react";
-	import { useParams, Link } from "react-router-dom";
+	import { useParams, Link, useLocation  } from "react-router-dom";
 	import "bootstrap/dist/css/bootstrap.min.css";
 	import "./ListQuestionPage.css";
 	import Swal from "sweetalert2";
@@ -12,6 +12,9 @@
 		const { subjectId, questionBankId } = useParams();
 		const [ questions, setQuestions ] = useState([]);
 		const [ subjectName, setSubjectName ] = useState("");
+		const [ questionBankName, setQuestionBankName ] = useState("");	
+		console.error("questionBankName:", questionBankName);
+		// console.error("organizeName:", organizeExamName);
 
 		const fetchData = async () => {
 			const response = await ApiService.get("/subjects/questions", {
@@ -19,7 +22,7 @@
 			});
 			setQuestions(response.data.questions);
 			setSubjectName(response.data.subjectName);
-			// setQuestionBankName(response.data.questionBankName);
+			setQuestionBankName(response.data.questionBankName);
 			// console.log(response.data);
 		};
 		useEffect(() => {
@@ -279,7 +282,7 @@
 	// const currentQuestionBank = subjectData.questionBanks.find(qb => qb.questionBankId === questionBankId);
     
 		// Lấy thông tin ngân hàng câu hỏi
-		const questionBankName = questions.questionBankName || "Ngân hàng câu hỏi";
+		// const questionBankName = questions.questionBankName || "Ngân hàng câu hỏi";
 
 		// Danh sách tất cả chương & mức độ từ `questions`
 		const allChapters = [
@@ -296,13 +299,13 @@
 		return (
 			<div className=" list-question-container">
 				{/* Breadcrumb */}
-				<nav className="breadcrumb">
-					<Link to="/admin">Home</Link>
-					<span> / </span>
-					<Link to="/admin/question">Ngân hàng câu hỏi</Link>
-					<span> / </span>
-					<Link to={`/admin/question/${subjectId}`}>{subjectName}</Link>
-					<span> / </span>
+				<nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
+					<Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
+					<span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+					<span className="breadcrumb-between"> <Link to="/staff/question" className="breadcrumb-between">Ngân hàng câu hỏi</Link></span>
+					<span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+					<span className="breadcrumb-between"><Link to={`/staff/question/${subjectId}`} className="breadcrumb-between">{subjectName}</Link></span>
+					<span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
 					<span className="breadcrumb-current">{questionBankName}</span>
 				</nav>
 		
@@ -371,12 +374,13 @@
 																			>            
 																					<ArrowDropDownIcon />
 																			</button>
-																			<div className="d-flex flex-column">
-																					<h6 className="d-flex align-items-center mb-0">{question.questionText}</h6>
-																					{question.tags?.slice(1).map((tag, index) => (
-																							<p className="m-0 tag-level" key={index}>{tag}</p>
-																					))}
+																			<div className="d-flex flex-column justify-content-center">
+																				<h6 className="mb-1">{question.questionText}</h6>
+																				{question.tags?.slice(1).map((tag, index) => (
+																					<p className="m-0 tag-level" key={index}>{tag}</p>
+																				))}
 																			</div>
+
 																	</div>
 																	<div className="d-flex" style={{ marginLeft: "50px" }}>
 																			<button className="btn btn-primary me-2" onClick={() => handleEditQuestion(question)}>
@@ -415,19 +419,20 @@
 						<div className="modal-body">
 							<div className="d-flex" style={{ display: "flex", width: "100%", gap: "10px" }}>
 								<div style={{ flex: 1 }}>
-									<p className="mb-2">Chương:</p>
-									{/* <CreatableSelect
-										options={allChapters}
-										value={selectedChapter}
-										onChange={setSelectedChapter}
-										menuPortalTarget={document.body}
-										placeholder="Chọn chương"
-										styles={{
+									<p className="mb-2">Chọn chuyên đề kiến thức:</p>
+										<CreatableSelect
+											options={allChapters}
+											value={selectedChapter}
+											onChange={setSelectedChapter}
+											menuPortalTarget={document.body}
+											placeholder="Chọn chuyên đề kiến thức"
+											styles={{
 											menuPortal: (base) => ({ ...base, zIndex: 9999 }),
 											container: (provided) => ({ ...provided, flex: 1 }) // Chia đều chiều rộng
 										}}
-									/> */}
+									/>
 								</div>
+
 								<div style={{ flex: 1 }}>
 									<p className="mb-2">Mức độ:</p>
 									<CreatableSelect
@@ -439,27 +444,13 @@
 										styles={{
 												menuPortal: (base) => ({ ...base, zIndex: 9999 }),
 												container: (provided) => ({ ...provided, flex: 1 }) // Chia đều chiều rộng
-											}}
-										/>
-									</div>
-									<div style={{ flex: 1 }}>
-										<p className="mb-2">Mức độ:</p>
-										<CreatableSelect
-											options={allLevels}
-											value={selectedLevel}
-											onChange={setSelectedLevel}
-											menuPortalTarget={document.body}
-											placeholder="Chọn mức độ"
-											styles={{
-													menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-													container: (provided) => ({ ...provided, flex: 1 }) // Chia đều chiều rộng
-											}}
-										/>
+										}}
+									/>
 
-									</div>
 								</div>
+							</div>
 								<div>
-									<p className="mb-0 mt-2">Câu hỏi:</p>
+									<p className="mb-0 mt-2"> <span style={{ color: "red" }}>*</span> Câu hỏi:</p>
 									<textarea
 										type="text"
 										className="form-control mb-3 mt-2"
@@ -467,6 +458,7 @@
 										value={newQuestion.questionText}
 										onChange={(e) => setNewQuestion({ ...newQuestion, questionText: e.target.value })}
 									/>
+
 								</div>
 								<div className="form-check mt-0 mb-3">
 									<input

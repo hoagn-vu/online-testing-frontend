@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import "./CandidateOrganizePage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {Chip, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
@@ -38,6 +38,16 @@ const CandidateOrganizePage = () => {
   const [showForm, setShowForm] = useState(false);
   const paginationModel = { page: 0, pageSize: 5 };
   const inputRef = useRef(null);
+	const location = useLocation();
+	const { roomName, sessionName, organizeExamName } = location.state || {};
+	// const organizeExamName = location.state?.organizeExamName || localStorage.getItem("organizeExamName");
+	const { organizeId, sessionId } = useParams();
+
+	console.log("CandidateOrganizePage - location.state:", location.state);
+	console.log("CandidateOrganizePage - sessionName:", sessionName);
+	console.log("CandidateOrganizePage - organizeExamName:", organizeExamName);
+	console.log("CandidateOrganizePage - roomName:", roomName);
+
 
 	const processData = (data) => {
 		return data.map((item) => {
@@ -109,62 +119,85 @@ const CandidateOrganizePage = () => {
 	return (
 		<div className="exam-management-page">
 			{/* Breadcrumb */}
-			<nav>
-				<Link to="/admin">Home</Link> / 
-				<span className="breadcrumb-current">Quản lý kỳ thi</span>
+			<nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
+				<Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
+				<span className="ms-2 me-2"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+				<span className="breadcrumb-between">
+					<Link to="/staff/organize" className="breadcrumb-between">Quản lý kỳ thi</Link></span>
+				<span className="ms-2 me-2"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+				<span className="breadcrumb-between">
+				<Link 
+					to={`/staff/organize/${organizeId}`} 
+					state={{ organizeExamName: organizeExamName }} 
+					className="breadcrumb-between">
+					{organizeExamName}
+				</Link></span>
+				<span className="ms-2 me-2"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+				<span className="breadcrumb-between">
+				<Link 
+					to={`/staff/organize/${organizeId}/${sessionId}`} 
+					state={{ sessionName: sessionName }} 
+					className="breadcrumb-between">
+					{sessionName}
+				</Link></span>
+				<span className="ms-2 me-2"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+				<span className="breadcrumb-current">Phòng {roomName}</span>
 			</nav>
-			<div className="account-actions mt-4">
-				<div className="search-container">
-					<SearchBox></SearchBox>
-				</div>
-				<button className="btn btn-primary me-2" style={{fontSize: "14px"}} onClick={handleAddNew}>
-					<i className="fas fa-plus me-2"></i>
-					Thêm mới
-				</button>
-			</div>
 
-			<div className="session-table-container mt-3">
-				<div className="table-responsive">
-					<table className="table sample-table tbl-organize table-striped">
-						<thead style={{fontSize: "14px"}}>
-							<tr className="align-middle fw-medium">
-								<th className="text-center">STT</th> 
-								<th>MSSV</th>
-								<th>Họ và tên đệm</th>
-								<th>Tên</th>
-								<th className="text-center">Ngày sinh</th>
-								<th className="text-center">Giới tính</th>
-								<th scope="col" className="title-row">Thao tác</th>
-							</tr>
-						</thead>
-						<tbody style={{fontSize: "14px"}}>
-							{processData(rows).length === 0 ? (
-								<tr>
-									<td colSpan="7" className="text-center fw-semibold text-muted" 
-										style={{ height: "100px", verticalAlign: "middle" }}>
-									Không có dữ liệu
-									</td>
-								</tr>
-							) : (
-							processData(rows).map((item, index) => (
-								<tr key={item.candidateId} className="align-middle">
-									<td className="text-center">{index + 1}</td>
-									<td>{item.userCode}</td>
-									<td>{item.lastName}</td>
-									<td>{item.firstName}</td>
-									<td className="text-center">{item.dateOfBirth}</td>
-									<td className="text-center">{item.gender}</td>
-									<td>
-										<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}  onClick={() => handleDelete(item.candidateId)}>
-											<i className="fas fa-trash-alt"></i>
-										</button>
-									</td>
-								</tr>
-							)))}
-						</tbody>
-					</table>
+			<div className="tbl-shadow p-3">
+				<div className="account-actions">
+					<div className="search-container">
+						<SearchBox></SearchBox>
+					</div>
+					<button className="btn btn-primary" style={{fontSize: "14px"}} onClick={handleAddNew}>
+						<i className="fas fa-plus me-2"></i>
+						Thêm mới
+					</button>
 				</div>
-				</div>	
+
+				<div className="session-table-container mt-3">
+					<div className="table-responsive">
+						<table className="table sample-table tbl-organize table-striped">
+							<thead style={{fontSize: "14px"}}>
+								<tr className="align-middle fw-medium">
+									<th className="text-center">STT</th> 
+									<th>MSSV</th>
+									<th>Họ và tên đệm</th>
+									<th>Tên</th>
+									<th className="text-center">Ngày sinh</th>
+									<th className="text-center">Giới tính</th>
+									<th scope="col" className="title-row">Thao tác</th>
+								</tr>
+							</thead>
+							<tbody style={{fontSize: "14px"}}>
+								{processData(rows).length === 0 ? (
+									<tr>
+										<td colSpan="7" className="text-center fw-semibold text-muted" 
+											style={{ height: "100px", verticalAlign: "middle" }}>
+										Không có dữ liệu
+										</td>
+									</tr>
+								) : (
+								processData(rows).map((item, index) => (
+									<tr key={item.candidateId} className="align-middle">
+										<td className="text-center">{index + 1}</td>
+										<td>{item.userCode}</td>
+										<td>{item.lastName}</td>
+										<td>{item.firstName}</td>
+										<td className="text-center">{item.dateOfBirth}</td>
+										<td className="text-center">{item.gender}</td>
+										<td>
+											<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}  onClick={() => handleDelete(item.candidateId)}>
+												<i className="fas fa-trash-alt"></i>
+											</button>
+										</td>
+									</tr>
+								)))}
+							</tbody>
+						</table>
+					</div>
+					</div>	
+			</div>
 
 			{/* Form thêm tài khoản */}
 			{showForm && (

@@ -38,11 +38,29 @@
 
 .breadcrumb-link {
   text-decoration: none;
+  color: black;
+}
+
+.breadcrumb-link:hover {
+  text-decoration: underline;
   color: #007bff;
 }
 
 .breadcrumb-current {
-  font-weight: bold;
+  background-color: #ececec;
+  padding: 6px 10px 6px 9px;
+  border-radius: 15px;
+  color: #007bff;
+}
+
+.breadcrumb-between {
+  color: #000000;
+  text-decoration: none;
+}
+
+.breadcrumb-between:hover {
+  text-decoration: underline;
+  color: #007bff;
 }
 
 .account-actions {

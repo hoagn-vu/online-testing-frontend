@@ -164,84 +164,84 @@ const RoomManagementPage = () => {
 
   return (
     <div className="room-page">
-      <nav className="breadcrumb-container">
-        <Link to="/" className="breadcrumb-link">
-          Home
-        </Link>
-        <span> / </span>
-        <span className="breadcrumb-current">Quản lý phòng thi</span>
+      <nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
+        <Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
+        <span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+        <span className="breadcrumb-current"> Quản lý phòng thi</span>
       </nav>
 
-      <div className="sample-card-header d-flex justify-content-between align-items-center mt-3 mb-3">
-        <div className='left-header d-flex align-items-center'>
-          <div className="search-box me-2 rounded d-flex align-items-center">
-            <i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
-            <input
-              type="text"
-              className="search-input w-100"
-              placeholder="Tìm kiếm..."
-              // value={searchTerm}
-              // onChange={handleChangeSearch}
-            />
+      <div className="tbl-shadow p-3">
+        <div className="sample-card-header d-flex justify-content-between align-items-center mb-3">
+          <div className='left-header d-flex align-items-center'>
+            <div className="search-box me-2 rounded d-flex align-items-center">
+              <i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
+              <input
+                type="text"
+                className="search-input w-100"
+                placeholder="Tìm kiếm..."
+                // value={searchTerm}
+                // onChange={handleChangeSearch}
+              />
+            </div>
+          </div>
+
+          <div className='right-header'>
+            <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={handleAddNew}>
+              <i className="fas fa-plus me-2"></i>
+              Thêm mới
+            </button>
           </div>
         </div>
 
-        <div className='right-header'>
-          <button className="btn btn-primary me-2" style={{fontSize: "14px"}} onClick={handleAddNew}>
-            <i className="fas fa-plus me-2"></i>
-            Thêm mới
-          </button>
-        </div>
-      </div>
-
-      <div className="table-responsive">
-        <table className="table sample-table table-hover tbl-organize-hover">
-          <thead>
-            <tr className="align-middle">
-              <th className="text-center" style={{ width: "50px"}}>STT</th>
-              <th>Tên phòng</th>
-              <th>Địa chỉ</th>
-              <th className="text-center">Số lượng chỗ ngồi</th>
-              <th className="text-center">Trạng thái</th>
-              <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
-            </tr>
-          </thead>
-          <tbody>
-            {listRoom.map((item, index) => (
-              <tr key={item.id} className="align-middle">
-                <td className=" text-center" style={{ width: "50px" }}>{index + 1}</td>
-                <td>{item.roomName}</td>
-                <td>{item.roomLocation}</td>
-                <td className="text-center">{item.roomCapacity}</td>
-                <td>
-                   <div className="form-check form-switch d-flex justify-content-center">
-                     <input
-                       className="form-check-input"
-                       type="checkbox"
-                       role="switch"
-                       checked={item.roomStatus.toLowerCase() === "available"}
-                       onChange={() =>
-                         handleToggleStatus(item.id, item.roomStatus)
-                       }
-                     />
-                   </div>
-                 </td>
-                 <td className="text-center">
-                  <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
-                    <i className="fas fa-edit text-white "></i>
-                  </button>
-                  <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
-                    <i className="fas fa-trash-alt"></i>
-                  </button>
-                </td>
+        <div className="table-responsive">
+          <table className="table sample-table table-hover tbl-organize-hover">
+            <thead>
+              <tr className="align-middle">
+                <th className="text-center" style={{ width: "50px"}}>STT</th>
+                <th>Tên phòng</th>
+                <th>Địa chỉ</th>
+                <th className="text-center">Số lượng chỗ ngồi</th>
+                <th className="text-center">Trạng thái</th>
+                <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {listRoom.map((item, index) => (
+                <tr key={item.id} className="align-middle">
+                  <td className=" text-center" style={{ width: "50px" }}>{index + 1}</td>
+                  <td>{item.roomName}</td>
+                  <td>{item.roomLocation}</td>
+                  <td className="text-center">{item.roomCapacity}</td>
+                  <td>
+                    <div className="form-check form-switch d-flex justify-content-center">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        role="switch"
+                        checked={item.roomStatus.toLowerCase() === "available"}
+                        onChange={() =>
+                          handleToggleStatus(item.id, item.roomStatus)
+                        }
+                      />
+                    </div>
+                  </td>
+                  <td className="text-center">
+                    <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
+                      <i className="fas fa-edit text-white "></i>
+                    </button>
+                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
+                      <i className="fas fa-trash-alt"></i>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-      <div className="sample-pagination d-flex justify-content-end align-items-center">
-          <Pagination count={10} color="primary" />        
+        <div className="sample-pagination d-flex justify-content-end align-items-center">
+            <Pagination count={10} color="primary" shape="rounded"/>        
+        </div>
       </div>
 
       {/* Form thêm tài khoản */}

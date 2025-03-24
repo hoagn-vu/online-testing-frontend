@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./ReportEachOrganizePage.css";
 import BarChart from "../../components/BarChart/BarChart";
 import { useReactToPrint } from "react-to-print"; // Import thư viện
+import {Link} from "react-router-dom"
 
 const ReportEachOrganizePage = () => {
   const [chartImage, setChartImage] = useState(null);
@@ -52,8 +53,13 @@ const ReportEachOrganizePage = () => {
   
   return (
     <div className="container-report-organize">
-      <nav className="mb-2">
-        <a href="/admin">Home</a> / <span className="breadcrumb-current">Quản lý kỳ thi</span>
+      <nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
+        <Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
+        <span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+        <span className="breadcrumb-between">
+          <Link to="/staff/organize" className="breadcrumb-between">Quản lý kỳ thi</Link></span>
+        <span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+        <span className="breadcrumb-current"> Báo cáo</span>
       </nav>
 
       <div className="mb-3 d-flex ms-auto justify-content-end">
