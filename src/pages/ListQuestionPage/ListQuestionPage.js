@@ -115,6 +115,22 @@
 			new window.bootstrap.Modal(document.getElementById("questionModal")).show();
 		};
 
+// 	const handleEditQuestion = (question) => {
+// 		setEditQuestionId(question.questionId); // Cập nhật theo `questionId`
+	
+// 		// Lấy chương và mức độ từ tags (nếu có)
+// 		const chapter = question.tags?.[0] ? { label: question.tags[0], value: question.tags[0] } : null;
+// 		const level = question.tags?.[1] ? { label: question.tags[1], value: question.tags[1] } : null;
+	
+// 		setNewQuestion({ 
+// 			questionText: question.questionText, 
+// 			options: question.options 
+// 		});
+	
+// 		setSelectedChapter(chapter); // Cập nhật Select Chương
+// 		setSelectedLevel(level); // Cập nhật Select Mức độ
+// 	};
+
 		// const handleEditQuestion = (question) => {
 		// 	setEditQuestionId(question.id);
 
@@ -142,6 +158,47 @@
 					questionText: question.questionText, 
 					options: question.options 
 			});
+	
+// 			if (file) {
+// 					const reader = new FileReader();
+// 					reader.onload = (e) => {
+// 					Swal.fire({
+// 							title: "Tải lên thành công",
+// 							icon: "success",
+// 					});
+// 					};
+// 					reader.readAsDataURL(file);
+// 			}
+// 			};
+
+// 	// Nhóm câu hỏi theo Chương và Mức độ
+// const groupedQuestions = {};
+// questions.questions.forEach((question) => {
+//     const chapter = question.tags[0] || "Chương chưa xác định";
+//     const level = question.tags[1] || "Mức độ chưa xác định";
+
+//     if (!groupedQuestions[chapter]) {
+//         groupedQuestions[chapter] = {};
+//     }
+//     if (!groupedQuestions[chapter][level]) {
+//         groupedQuestions[chapter][level] = [];
+//     }
+
+//     groupedQuestions[chapter][level].push(question);
+// });
+
+// 	const handleDelete = (id) => {
+// 			Swal.fire({
+// 					title: "Bạn có chắc chắn xóa?",
+// 					text: "Bạn sẽ không thể hoàn tác hành động này!",
+// 					icon: "warning",
+// 					showCancelButton: true,
+// 					confirmButtonColor: "#3085d6",
+// 					cancelButtonColor: "#d33",
+// 					confirmButtonText: "Xóa",
+// 					cancelButtonText: "Hủy",
+// 			}).then((result) => {
+// 					if (result.isConfirmed) {
 
 			setSelectedChapter(chapter); // Cập nhật Select Chương
 			setSelectedLevel(level); // Cập nhật Select Mức độ
@@ -220,6 +277,7 @@
 		// 	)
 		// ].map(tag => ({ label: tag, value: tag }));
 	// const currentQuestionBank = subjectData.questionBanks.find(qb => qb.questionBankId === questionBankId);
+    
 		// Lấy thông tin ngân hàng câu hỏi
 		const questionBankName = questions.questionBankName || "Ngân hàng câu hỏi";
 

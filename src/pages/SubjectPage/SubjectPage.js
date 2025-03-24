@@ -135,7 +135,7 @@ const SubjectPage = () => {
         </div>
 
         <div className='right-header'>
-          <button className="btn btn-primary me-2" onClick={handleAddNew}>
+          <button className="btn btn-primary me-2" style={{fontSize: "14px"}} onClick={handleAddNew}>
             <i className="fas fa-plus me-2"></i>
             Thêm mới
           </button>
@@ -143,7 +143,7 @@ const SubjectPage = () => {
       </div>
 
       <div className="table-responsive">
-        <table className="table sample-table table-hover">
+        <table className="table sample-table tbl-organize-hover table-hover" style={{fontSize: "14px"}}>
           <thead>
             <tr className="align-middle">
               <th scope="col" className="text-center title-row">
@@ -162,22 +162,16 @@ const SubjectPage = () => {
           <tbody>
             {listSubject.map((item, index) => (
               <tr key={item.id} className="align-middle">
-                <td className=" text-center" style={{ width: "50px" }}>
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    onChange={(e) => handleSelectItem(e, item.id)}
-                    checked={selectedItems.includes(item.id)}
-                  />
-                </td>
-                <td className="fw-semibold text-hover-primary">
-                  <Link 
+                <td className="text-center">{index + 1}</td>
+                <td >
+                  <Link className="text-hover-primary"
                     to={`/staff/question/${item.id}`} 
-                    style={{ textDecoration: "none", cursor: "pointer" }}
+                    style={{ textDecoration: "none", cursor: "pointer", color: "black" }}
                   >
                     {item.subjectName}
                   </Link>
                 </td>
+
                 <td>{item.totalQuestionBanks}</td>
                 <td>
                   <button className="btn btn-primary btn-sm">
@@ -194,7 +188,7 @@ const SubjectPage = () => {
       </div>
 
       <div className="sample-pagination d-flex justify-content-end align-items-center">
-        <Pagination count={10} variant="outlined" shape="rounded" />
+          <Pagination count={10} color="primary" />        
       </div>
 
       {/* Form thêm/sửa phân môn */}

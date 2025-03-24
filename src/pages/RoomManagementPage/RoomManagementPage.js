@@ -12,12 +12,14 @@ import ApiService from "../../services/apiService";
 
 const RoomManagementPage = () => {
   const [listRoom, setListRoom] = useState([]);
+  const [rows, setRows] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await ApiService.get("/rooms");
         setListRoom(response.data.rooms);
+        setRows(response.data.rooms);
       } catch (error) {
         console.error("Lỗi lấy dữ liệu: ", error);
       }
@@ -130,6 +132,36 @@ const RoomManagementPage = () => {
     });
   };
 
+  const handleToggleStatus = (id, currentStatus) => {
+    Swal.fire({
+      title: "Bạn có chắc muốn thay đổi trạng thái?",
+      text: "Trạng thái sẽ được cập nhật ngay sau khi xác nhận!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Xác nhận",
+      cancelButtonText: "Hủy",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const newStatus = currentStatus.toLowerCase() === "available" ? "unavailable" : "available";
+
+        // Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
+        setRows((prevRows) =>
+          prevRows.map((row) =>
+            row.id === id ? { ...row, roomStatus: newStatus } : row
+          )
+        );
+        console.log("roomId được đổi status:", id)
+        Swal.fire({
+          title: "Cập nhật thành công!",
+          text: `Trạng thái đã chuyển sang "${newStatus}".`,
+          icon: "success",
+        });
+      }
+    });
+  };
+
   return (
     <div className="room-page">
       <nav className="breadcrumb-container">
@@ -155,7 +187,7 @@ const RoomManagementPage = () => {
         </div>
 
         <div className='right-header'>
-          <button className="btn btn-primary me-2" onClick={handleAddNew}>
+          <button className="btn btn-primary me-2" style={{fontSize: "14px"}} onClick={handleAddNew}>
             <i className="fas fa-plus me-2"></i>
             Thêm mới
           </button>
@@ -163,46 +195,42 @@ const RoomManagementPage = () => {
       </div>
 
       <div className="table-responsive">
-        <table className="table sample-table table-hover">
+        <table className="table sample-table table-hover tbl-organize-hover">
           <thead>
             <tr className="align-middle">
-              <th scope="col" className="text-center title-row" style={{ width: "50px"}}>
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  onChange={handleSelectAll}
-                  checked={selectedItems.length === listRoom.length && listRoom.length > 0}
-                />
-              </th>
-              <th scope="col" className="title-row">Tên phòng</th>
-              <th scope="col" className="title-row">Địa chỉ</th>
-              <th scope="col" className="title-row">Số lượng chỗ ngồi</th>
-              <th scope="col" className="title-row">Trạng thái</th>
-              <th scope="col" className="title-row" style={{ width: "120px"}}>Thao tác</th>
+              <th className="text-center" style={{ width: "50px"}}>STT</th>
+              <th>Tên phòng</th>
+              <th>Địa chỉ</th>
+              <th className="text-center">Số lượng chỗ ngồi</th>
+              <th className="text-center">Trạng thái</th>
+              <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
             </tr>
           </thead>
           <tbody>
             {listRoom.map((item, index) => (
               <tr key={item.id} className="align-middle">
-                <td className=" text-center" style={{ width: "50px" }}>
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    onChange={(e) => handleSelectItem(e, item.questionBankId)}
-                    checked={selectedItems.includes(item.questionBankId)}
-                  />
-                </td>
-                <td className="fw-semibold text-hover-primary">
-                  {item.roomName}
-                </td>
-                <td className="fw-semibold text-hover-primary">{item.roomLocation	}</td>
-                <td>{item.roomCapacity}</td>
-                <td>{item.roomStatus}</td>
+                <td className=" text-center" style={{ width: "50px" }}>{index + 1}</td>
+                <td>{item.roomName}</td>
+                <td>{item.roomLocation}</td>
+                <td className="text-center">{item.roomCapacity}</td>
                 <td>
-                  <button className="btn btn-primary btn-sm">
-                    <i className="fas fa-edit text-white"></i>
+                   <div className="form-check form-switch d-flex justify-content-center">
+                     <input
+                       className="form-check-input"
+                       type="checkbox"
+                       role="switch"
+                       checked={item.roomStatus.toLowerCase() === "available"}
+                       onChange={() =>
+                         handleToggleStatus(item.id, item.roomStatus)
+                       }
+                     />
+                   </div>
+                 </td>
+                 <td className="text-center">
+                  <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
+                    <i className="fas fa-edit text-white "></i>
                   </button>
-                  <button className="btn btn-danger btn-sm ms-2">
+                  <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
                     <i className="fas fa-trash-alt"></i>
                   </button>
                 </td>
@@ -213,7 +241,7 @@ const RoomManagementPage = () => {
       </div>
 
       <div className="sample-pagination d-flex justify-content-end align-items-center">
-        <Pagination count={10} variant="outlined" shape="rounded" />
+          <Pagination count={10} color="primary" />        
       </div>
 
       {/* Form thêm tài khoản */}

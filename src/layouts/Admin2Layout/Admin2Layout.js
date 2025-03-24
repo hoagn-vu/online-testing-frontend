@@ -197,7 +197,7 @@ export default function Admin2Layout() {
             >
               <ListItemButton 
                 onClick={() => navigate(item.path)} 
-                selected={location.pathname === item.path}
+                selected={location.pathname.startsWith(item.path)}
               >
                 <ListItemIcon>{item.icon}</ListItemIcon>
                 {open && <ListItemText primary={item.title} />}
@@ -212,7 +212,7 @@ export default function Admin2Layout() {
         sx={{
           flexGrow: 1,
           p: 2,
-          backgroundColor: "#F8F9FA",
+          backgroundColor: "#fdfdfd",
           minHeight: "100vh",
           transition: "margin 0.3s ease, width 0.3s ease",
           marginLeft: open ? `${drawerWidth - 250}px` : `calc(${theme.spacing(0)} + 1px)`,

@@ -171,7 +171,7 @@ const ExamManagementPage = () => {
 				</div>
 
 				<div className='right-header'>
-					<button className="btn btn-primary me-2" onClick={handleAddNew}>
+					<button className="btn btn-primary me-2" style={{fontSize: "14px"}} onClick={handleAddNew}>
 						<i className="fas fa-plus me-2"></i>
 						Thêm mới
 					</button>
@@ -179,54 +179,40 @@ const ExamManagementPage = () => {
 			</div>
 
 			<div className="table-responsive">
-				<table className="table sample-table table-hover">
+				<table className="table sample-table table-hover tbl-organize-hover">
 					<thead>
 						<tr className="align-middle">
-							<th scope="col" className="text-center title-row" style={{ width: "50px"}}>
-								<input
-									className="form-check-input"
-									type="checkbox"
-									onChange={handleSelectAll}
-									checked={selectedItems.length === listExam.length && listExam.length > 0}
-								/>
-							</th>
-							<th scope="col" className="title-row">Mã đề thi</th>
-							<th scope="col" className="title-row">Tên đề thi</th>
-							<th scope="col" className="title-row">Phân môn</th>
-							<th scope="col" className="title-row">Bộ câu hỏi</th>
-							<th scope="col" className="title-row" style={{ width: "120px"}}>Thao tác</th>
+							<th className=" text-center" style={{ width: "50px"}}>STT</th>
+							<th>Mã đề thi</th>
+							<th>Tên đề thi</th>
+							<th>Phân môn</th>
+							<th>Bộ câu hỏi</th>
+							<th className=" text-center" style={{ width: "120px"}}>Thao tác</th>
 						</tr>
 					</thead>
 					<tbody>
 						{listExam.map((item, index) => (
 							<tr key={item.id} className="align-middle">
-								<td className=" text-center" style={{ width: "50px" }}>
-									<input
-										className="form-check-input"
-										type="checkbox"
-										onChange={(e) => handleSelectItem(e, item.questionBankId)}
-										checked={selectedItems.includes(item.questionBankId)}
-									/>
-								</td>
-								<td className="fw-semibold text-hover-primary">
-									<Link 
+								<td className=" text-center">{index +1} </td>
+								<td >
+									<Link className="text-hover-primary"
 										to={`/staff/`} 
-										style={{ textDecoration: "none", cursor: "pointer" }}
+										style={{ textDecoration: "none", cursor: "pointer", color: "black" }}
 									>
 										{item.examCode}
 									</Link>
 								</td>
-								<td className="fw-semibold text-hover-primary">{item.examName}</td>
+								<td className=" text-hover-primary">{item.examName}</td>
 								<td>{item.subjectName}</td>
 								<td>{item.questionBankName}</td>
-								<td>
-									<button className="btn btn-primary btn-sm">
-										<i className="fas fa-edit text-white"></i>
-									</button>
-									<button className="btn btn-danger btn-sm ms-2">
-										<i className="fas fa-trash-alt"></i>
-									</button>
-								</td>
+								<td className="text-center">
+                  <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
+                    <i className="fas fa-edit text-white "></i>
+                  </button>
+                  <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
+                    <i className="fas fa-trash-alt"></i>
+                  </button>
+                </td>
 							</tr>
 						))}
 					</tbody>
@@ -234,7 +220,7 @@ const ExamManagementPage = () => {
 			</div>
 
 			<div className="sample-pagination d-flex justify-content-end align-items-center">
-				<Pagination count={10} variant="outlined" shape="rounded" />
+		  		<Pagination count={10} color="primary" />        
 			</div>
 
 			

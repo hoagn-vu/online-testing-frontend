@@ -12,7 +12,6 @@ import ApiService from "../../services/apiService";
 import CreatableSelect from "react-select/creatable";
 import ReactSelect  from 'react-select';
 
-
 const OrganizeExamPage = () => {
 
   const [listOrganizeExam, setListOrganizeExam] = useState([]);
@@ -74,7 +73,7 @@ const OrganizeExamPage = () => {
       cancelButtonText: "Hủy",
     }).then((result) => {
       if (result.isConfirmed) {
-        const newStatus = currentStatus === "active" ? "disabled" : "active";
+        const newStatus = currentStatus.toLowerCase() === "active" ? "disabled" : "active";
 
         // Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
         setRows((prevRows) =>
@@ -82,7 +81,7 @@ const OrganizeExamPage = () => {
             row.id === id ? { ...row, organizeExamStatus: newStatus } : row
           )
         );
-
+        console.log("organizeExamId được đổi status:", id)
         Swal.fire({
           title: "Cập nhật thành công!",
           text: `Trạng thái đã chuyển sang "${newStatus}".`,
@@ -184,7 +183,7 @@ const OrganizeExamPage = () => {
       {/* Hiển thị bảng theo vai trò đã chọn */}
       <div className="organize-examtable-container mt-3">
         <div className="table-responsive">
-          <table className="table organize-exam-table table-hover">
+          <table className="table organize-exam-table sample-table tbl-organize-hover table-hover" style={{fontSize: "14px"}}>
             <thead>
               <tr className="align-middle fw-medium">
                 <th scope="col" className="text-center title-row">
@@ -200,24 +199,17 @@ const OrganizeExamPage = () => {
                 <th scope="col" className="title-row">Loại</th>
                 <th scope="col" className="title-row">Đề thi</th>
                 <th scope="col" className="title-row">Ma trận</th>
-                <th scope="col" className="title-row">Thời gian</th>
-                <th scope="col" className="title-row">Điểm</th>
-                <th scope="col" className="title-row">Trạng thái</th>
-                <th scope="col" className="title-row">Báo cáo</th>
-                <th scope="col" className="title-row">Thao tác</th>
+                <th className="text-center">Thời gian (M)</th>
+                <th className="text-center">Điểm</th>
+                <th className="text-center">Trạng thái</th>
+                <th className="text-center">Báo cáo</th>
+                <th className="text-center">Thao tác</th>
               </tr>
             </thead>
             <tbody>
               {listOrganizeExam.map((item, index) => (
                 <tr key={item.id} className="align-middle">
-                  <td className=" text-center" style={{ width: "50px" }}>
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      onChange={(e) => handleSelectItem(e, item.id)}
-                      checked={selectedItems.includes(item.id)}
-                    />
-                  </td>
+                  <td className="text-center">{index + 1}</td>
                   <td>
                     <Link className="text-hover-primary"
                       to={`/staff/organize/${encodeURIComponent(item.id)}`} 
@@ -228,12 +220,24 @@ const OrganizeExamPage = () => {
                   </td>
                   <td>{item.subjectName}</td>
                   <td>{item.examType}</td>
-                  <td>{item.examSet}</td>
-                  <td>{item.matrixId}</td>
-                  <td>{item.duration}</td>
-                  <td>{item.maxScore}</td>
-                  <td>{item.organizeExamStatus}</td>
+                  <td>{item.examType === "Ma trận" || item.examType === "Ngẫu nhiên" ? "N/A" : item.examSet?.join(", ") || "N/A"}</td>
+                  <td>{item.examType === "Đề thi" || item.examType === "Ngẫu nhiên" ? "N/A" : item.matrixId || "N/A"}</td>
+                  <td className="text-center">{item.duration}</td>
+                  <td className="text-center">{item.maxScore}</td>
                   <td>
+                   <div className="form-check form-switch d-flex justify-content-center">
+                     <input
+                       className="form-check-input"
+                       type="checkbox"
+                       role="switch"
+                       checked={item.organizeExamStatus.toLowerCase() === "active"}
+                       onChange={() =>
+                         handleToggleStatus(item.id, item.organizeExamStatus)
+                       }
+                     />
+                   </div>
+                 </td>
+                  <td className="text-center">
                     <Link
                       to={`/staff/organize/report/${item.id}`}     
                       style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
@@ -241,7 +245,7 @@ const OrganizeExamPage = () => {
                       Chi tiết
                     </Link>
                   </td>
-                  <td>
+                  <td className="text-center">
                     <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
                       <i className="fas fa-edit text-white "></i>
                     </button>
@@ -256,7 +260,7 @@ const OrganizeExamPage = () => {
         </div>
 
         <div className="organize-exampagination d-flex justify-content-end align-items-center">
-          <Pagination count={10} variant="outlined" shape="rounded" />
+          <Pagination count={10} color="primary" />        
         </div>
       </div>
 

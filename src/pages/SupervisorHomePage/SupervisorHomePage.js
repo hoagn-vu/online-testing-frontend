@@ -37,7 +37,7 @@ const SupervisorHomePage = () => {
             {/* Avatar */}
             <h2>Thông tin giám thị</h2>
             <div className=" icon icon-user">
-              <FaUserCircle style={{ fontSize: "130px" }} />
+              <FaUserCircle style={{ fontSize: "130px", color: "#206ee3" }} />
             </div>
             {/* Thông tin thí sinh */}
             <p className="mt-4 font-semibold">
@@ -63,7 +63,7 @@ const SupervisorHomePage = () => {
                     className="cursor-pointer baithi cursor-pointer"
                     onClick={() => handleExamClick(exam)}
                   >
-                    <FaFileAlt className="text-blue-400 icon" />
+                    <FaFileAlt className="text-blue-400 icon me-2" style={{color: "#206ee3"}}/>
                     <span>{exam}</span>
                   </div>
                 </ol>

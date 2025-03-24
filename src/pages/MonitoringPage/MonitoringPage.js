@@ -59,21 +59,21 @@ const processData = (data) => {
 				<h5 className="d-flex align-items-center justify-content-center">Ca thi: </h5>
 				<h5 className="d-flex align-items-center justify-content-center">Phòng thi: </h5>
 			</div>
-			<div>
-				<table className="table table-hover table-bordered custom-table">
-					<thead className="table-dark">
+			<div className="monitor-tbl">
+			<table className="table table-hover table-bordered custom-table monitor-tbl">
+					<thead className="custom-header">
 						<tr>
 							<th>#</th>
-							<th>Mã sinh viên</th>
+							<th style={{width: "100px"}}>Mã sinh viên</th>
 							<th className="text-wrap" style={{ maxWidth: "100px" }}>Họ và tên đệm</th>
-							<th>Tên</th>
+							<th style={{minWidth: "70px"}}>Tên</th>
 							<th>Trạng thái</th>
 							<th>Bắt đầu</th>
-							<th>Kết thúc</th>
 							<th>Tiến độ</th>
 							<th>Nộp bài</th>
 							<th>Điểm số</th>
 							<th>Cảnh cáo</th>
+							<th>Thao tác</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -85,7 +85,7 @@ const processData = (data) => {
 								<td>{row.firstName}</td>
 								<td>{row.gender}</td>
 								<td>{row.dateOfBirth}</td>
-								<td>{row.dateOfBirth}</td>
+								<td>0/10</td>
 								<td>{row.dateOfBirth}</td>
 								<td></td>
 								<td>{row.dateOfBirth}</td>

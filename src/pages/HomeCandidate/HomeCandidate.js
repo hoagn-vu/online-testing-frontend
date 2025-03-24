@@ -47,7 +47,7 @@ const HomeCandidate = () => {
             {/* Avatar */}
             <h2>Thông tin thí sinh</h2>
             <div className=" icon icon-user">
-              <FaUserCircle style={{ fontSize: "130px" }} />
+              <FaUserCircle style={{ fontSize: "130px", color: "#206ee3" }} />
             </div>
             {/* Thông tin thí sinh */}
             <p className="mt-4 font-semibold">

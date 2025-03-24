@@ -262,6 +262,36 @@ const AccountPage = () => {
   const [showGroupForm, setShowGroupForm] = useState(false);
   const [selectedGroups, setSelectedGroups] = useState([]);
 
+  const handleToggleStatus = (id, currentStatus) => {
+    Swal.fire({
+      title: "Bạn có chắc muốn thay đổi trạng thái?",
+      text: "Trạng thái sẽ được cập nhật ngay sau khi xác nhận!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Xác nhận",
+      cancelButtonText: "Hủy",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const newStatus = currentStatus.toLowerCase() === "active" ? "disabled" : "active";
+
+        // Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
+        setRows((prevRows) =>
+          prevRows.map((row) =>
+            row.id === id ? { ...row, accountStatus: newStatus } : row
+          )
+        );
+        console.log("userId được đổi status:", id)
+        Swal.fire({
+          title: "Cập nhật thành công!",
+          text: `Trạng thái đã chuyển sang "${newStatus}".`,
+          icon: "success",
+        });
+      }
+    });
+  };
+
   return (
     <div className="sample-page">
       {/* Breadcrumbs */}
@@ -274,7 +304,7 @@ const AccountPage = () => {
       </nav>
 
       {/* Thanh tìm kiếm + Nút thêm mới + Upload */}
-      <div className="sample-actions">
+      <div className="account-actions">
         <div className="search-container">
           <SearchBox></SearchBox>
         </div>
@@ -321,7 +351,7 @@ const AccountPage = () => {
       </ul>
 
       <div className="table-responsive">
-        <table className="table sample-table table-hover">
+        <table className="table sample-table table-hover tbl-organize-hover">
           <thead>
             <tr className="align-middle">
               <th scope="col" className="text-center title-row" style={{ width: "50px"}}>
@@ -335,11 +365,11 @@ const AccountPage = () => {
               <th scope="col" className="title-row">Mã</th>
               <th scope="col" className="title-row">Tài khoản</th>
               <th scope="col" className="title-row">Họ tên</th>
-              <th scope="col" className="title-row">Ngày sinh</th>
-              <th scope="col" className="title-row">Giới tính</th>
-              <th scope="col" className="title-row">Nhóm</th>
-              <th scope="col" className="title-row">Trạng thái</th>
-              <th scope="col" className="title-row" style={{ width: "120px"}}>Thao tác</th>
+              <th className="text-center">Ngày sinh</th>
+              <th className="text-center">Giới tính</th>
+              <th className="text-center">Nhóm</th>
+              <th className="text-center">Trạng thái</th>
+              <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
             </tr>
           </thead>
           <tbody>
@@ -353,18 +383,30 @@ const AccountPage = () => {
                     checked={selectedItems.includes(item.questionBankId)}
                   />
                 </td>
-                <td className="fw-semibold text-hover-primary">{item.userCode}</td>
-                <td className="fw-semibold text-hover-primary">{item.username}</td>
-                <td className="fw-semibold text-hover-primary">{item.fullName}</td>
-                <td>{item.dateOfBirth}</td>
-                <td>{item.gender}</td>
-                <td>{item.groupName}</td>
-                <td>{item.accountStatus}</td>
+                <td>{item.userCode}</td>
+                <td>{item.username}</td>
+                <td>{item.fullName}</td>
+                <td className="text-center">{item.dateOfBirth}</td>
+                <td className="text-center">{item.gender}</td>
+                <td className="text-center">{item.groupName}</td>
                 <td>
-                  <button className="btn btn-primary btn-sm">
-                    <i className="fas fa-edit text-white"></i>
+                   <div className="form-check form-switch d-flex justify-content-center">
+                     <input
+                       className="form-check-input"
+                       type="checkbox"
+                       role="switch"
+                       checked={item.accountStatus.toLowerCase() === "active"}
+                       onChange={() =>
+                         handleToggleStatus(item.id, item.accountStatus)
+                       }
+                     />
+                   </div>
+                 </td>
+                 <td className="text-center">
+                  <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
+                    <i className="fas fa-edit text-white "></i>
                   </button>
-                  <button className="btn btn-danger btn-sm ms-2">
+                  <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
                     <i className="fas fa-trash-alt"></i>
                   </button>
                 </td>
@@ -375,7 +417,7 @@ const AccountPage = () => {
       </div>
 
       <div className="sample-pagination d-flex justify-content-end align-items-center">
-        <Pagination count={10} variant="outlined" shape="rounded" />
+        <Pagination count={10} color="primary" />
       </div>
 
       {/* Form thêm tài khoản */}
