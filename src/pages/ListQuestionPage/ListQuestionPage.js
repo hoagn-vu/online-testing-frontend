@@ -346,25 +346,39 @@
 			</div>
 	))}
 
-				{/* Modal Bootstrap thuần */}
-				<div className="modal fade" id="questionModal" tabIndex="-1" aria-hidden="true">
-					<div className="modal-dialog modal-dialog-centered modal-xl">
-						<div className="modal-content">
-							<div className="modal-header">
-									<h5 className="modal-title">{editQuestionId ? "Chỉnh sửa câu hỏi" : "Thêm câu hỏi mới"}</h5>
-									<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-							</div>
-							<div className="modal-body">
-								<div className="d-flex" style={{ display: "flex", width: "100%", gap: "10px" }}>
-									<div style={{ flex: 1 }}>
-										<p className="mb-2">Chương:</p>
-										<CreatableSelect
-											options={allChapters}
-											value={selectedChapter}
-											onChange={setSelectedChapter}
-											menuPortalTarget={document.body}
-											placeholder="Chọn chương"
-											styles={{
+			{/* Modal Bootstrap thuần */}
+			<div className="modal fade" id="questionModal" tabIndex="-1" aria-hidden="true">
+				<div className="modal-dialog modal-dialog-centered modal-xl">
+					<div className="modal-content">
+						<div className="modal-header">
+								<h5 className="modal-title">{editQuestionId ? "Chỉnh sửa câu hỏi" : "Thêm câu hỏi mới"}</h5>
+								<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div className="modal-body">
+							<div className="d-flex" style={{ display: "flex", width: "100%", gap: "10px" }}>
+								<div style={{ flex: 1 }}>
+									<p className="mb-2">Chương:</p>
+									{/* <CreatableSelect
+										options={allChapters}
+										value={selectedChapter}
+										onChange={setSelectedChapter}
+										menuPortalTarget={document.body}
+										placeholder="Chọn chương"
+										styles={{
+											menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+											container: (provided) => ({ ...provided, flex: 1 }) // Chia đều chiều rộng
+										}}
+									/> */}
+								</div>
+								<div style={{ flex: 1 }}>
+									<p className="mb-2">Mức độ:</p>
+									<CreatableSelect
+										options={allLevels}
+										value={selectedLevel}
+										onChange={setSelectedLevel}
+										menuPortalTarget={document.body}
+										placeholder="Chọn mức độ"
+										styles={{
 												menuPortal: (base) => ({ ...base, zIndex: 9999 }),
 												container: (provided) => ({ ...provided, flex: 1 }) // Chia đều chiều rộng
 											}}
