@@ -418,19 +418,20 @@
 						<div className="modal-body">
 							<div className="d-flex" style={{ display: "flex", width: "100%", gap: "10px" }}>
 								<div style={{ flex: 1 }}>
-									<p className="mb-2">Chương:</p>
-									{/* <CreatableSelect
-										options={allChapters}
-										value={selectedChapter}
-										onChange={setSelectedChapter}
-										menuPortalTarget={document.body}
-										placeholder="Chọn chương"
-										styles={{
+									<p className="mb-2">Chọn chuyên đề kiến thức:</p>
+										<CreatableSelect
+											options={allChapters}
+											value={selectedChapter}
+											onChange={setSelectedChapter}
+											menuPortalTarget={document.body}
+											placeholder="Chọn chuyên đề kiến thức"
+											styles={{
 											menuPortal: (base) => ({ ...base, zIndex: 9999 }),
 											container: (provided) => ({ ...provided, flex: 1 }) // Chia đều chiều rộng
 										}}
-									/> */}
+									/>
 								</div>
+
 								<div style={{ flex: 1 }}>
 									<p className="mb-2">Mức độ:</p>
 									<CreatableSelect
@@ -442,25 +443,11 @@
 										styles={{
 												menuPortal: (base) => ({ ...base, zIndex: 9999 }),
 												container: (provided) => ({ ...provided, flex: 1 }) // Chia đều chiều rộng
-											}}
-										/>
-									</div>
-									<div style={{ flex: 1 }}>
-										<p className="mb-2">Mức độ:</p>
-										<CreatableSelect
-											options={allLevels}
-											value={selectedLevel}
-											onChange={setSelectedLevel}
-											menuPortalTarget={document.body}
-											placeholder="Chọn mức độ"
-											styles={{
-													menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-													container: (provided) => ({ ...provided, flex: 1 }) // Chia đều chiều rộng
-											}}
-										/>
+										}}
+									/>
 
-									</div>
 								</div>
+							</div>
 								<div>
 									<p className="mb-0 mt-2">Câu hỏi:</p>
 									<textarea
