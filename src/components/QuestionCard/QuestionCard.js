@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 
 const QuestionCard = ({ question, options, questionNumber, allowMultiple, onAnswerSelect, flagged, onToggleFlag }) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
-
+  
   const handleOptionChange = (option) => {
     let updatedSelection;
 
@@ -56,7 +56,7 @@ const QuestionCard = ({ question, options, questionNumber, allowMultiple, onAnsw
                     onChange={() => handleOptionChange(option)}
                   />
                 </div>
-                <span>{option}</span>
+                <span>{option.optionText}</span>
               </label>
             </li>
           ))}

@@ -12,155 +12,19 @@ import ApiService from "../../services/apiService";
 import CreatableSelect from "react-select/creatable";
 import ReactSelect  from 'react-select';
 
-const listQuestionBank = [
-  {
-    id: "65f1a3b4c8e4a2d5b6f7e8d1",
-    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 12",
-    organizeExamStatus: "Active",
-    duration: 90,
-    examType: "Ma trận",
-    matrixId: "MATRIX123",
-    maxScore: 100,
-    subjectId: "MATH12",
-    totalQuestion: null,
-    examSet: null,
-    sesstion: []
-  },
-  {
-    id: "55f1a3b4c8e4a2d5b6f7e8d2",
-    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
-    organizeExamStatus: "Disabled",
-    duration: 90,
-    examType: "Đề thi",
-    matrixId: null,
-    maxScore: 100,
-    subjectId: "MATH11",
-    totalQuestion: null,
-    examSet: ["Ma12", "Ma13"],
-    sesstion: []
-  },
-  {
-    id: "55f1a3b4c8e4a2d5b6f7e8d3",
-    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 1",
-    organizeExamStatus: "Disabled",
-    duration: 90,
-    examType: "Ngẫu nhiên",
-    matrixId: null,
-    maxScore: 100,
-    subjectId: "MATH10",
-    totalQuestion: 50,
-    examSet: null,
-    sesstion: []
-  },
-  {
-    id: "55f1a3b4c8e4a2d5b6f7e8d4",
-    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
-    organizeExamStatus: "Active",
-    duration: 90,
-    examType: "Đề thi",
-    matrixId: null,
-    maxScore: 100,
-    subjectId: "MATH11",
-    totalQuestion: null,
-    examSet: ["Ma12", "Ma13"],
-    sesstion: []
-  },
-  {
-    id: "55f1a3b4c8e4a2d5b6f7e8d5",
-    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
-    organizeExamStatus: "Active",
-    duration: 90,
-    examType: "Đề thi",
-    matrixId: null,
-    maxScore: 100,
-    subjectId: "MATH11",
-    totalQuestion: null,
-    examSet: ["Ma12", "Ma13"],
-    sesstion: []
-  },
-  {
-    id: "55f1a3b4c8e4a2d5b6f7e8d6",
-    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
-    organizeExamStatus: "Disabled",
-    duration: 90,
-    examType: "Đề thi",
-    matrixId: null,
-    maxScore: 100,
-    subjectId: "MATH11",
-    totalQuestion: null,
-    examSet: ["Ma12", "Ma13"],
-    sesstion: []
-  },
-  {
-    id: "55f1a3b4c8e4a2d5b6f7e8d7",
-    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
-    organizeExamStatus: "Disabled",
-    duration: 90,
-    examType: "Đề thi",
-    matrixId: null,
-    maxScore: 100,
-    subjectId: "MATH11",
-    totalQuestion: null,
-    examSet: ["Ma12", "Ma13"],
-    sesstion: []
-  },
-  {
-    id: "55f1a3b4c8e4a2d5b6f7e8d8",
-    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
-    organizeExamStatus: "Active",
-    duration: 90,
-    examType: "Đề thi",
-    matrixId: null,
-    maxScore: 100,
-    subjectId: "MATH11",
-    totalQuestion: null,
-    examSet: ["Ma12", "Ma13"],
-    sesstion: []
-  },
-  {
-    id: "55f1a3b4c8e4a2d5b6f7e8d9",
-    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
-    organizeExamStatus: "Active",
-    duration: 90,
-    examType: "Đề thi",
-    matrixId: null,
-    maxScore: 100,
-    subjectId: "MATH11",
-    totalQuestion: null,
-    examSet: ["Ma12", "Ma13"],
-    sesstion: []
-  },
-  {
-    id: "55f1a3b4c8e4a2d5b6f7e8d10",
-    organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
-    organizeExamStatus: "Active",
-    duration: 90,
-    examType: "Đề thi",
-    matrixId: null,
-    maxScore: 100,
-    subjectId: "MATH11",
-    totalQuestion: null,
-    examSet: ["Ma12", "Ma13"],
-    sesstion: []
-  },
-];
-
-const typeOptions = [
-	{ value: 'Ma trận', label: 'Ma trận' },
-	{ value: 'Ngẫu nhiên', label: 'Ngẫu nhiên' },
-	{ value: 'Đề thi', label: 'Đề thi' },
-
-];
-
-const subjectOptions = [
-	{ value: 'Tư tưởng Hồ Chí Minh', label: 'Tư tưởng Hồ Chí Minh' },
-	{ value: 'Yêu cầu phần mềm', label: 'Yêu cầu phần mềm' },
-	{ value: 'Giải tích', label: 'Giải tích' },
-];
-
 const OrganizeExamPage = () => {
 
   const [listOrganizeExam, setListOrganizeExam] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await ApiService.get('/organize-exams');
+      setListOrganizeExam(response.data.organizeExams);
+    };
+
+    fetchData();
+  }, []);
+
 
   const [selectedItems, setSelectedItems] = useState([]);
 
@@ -182,7 +46,6 @@ const OrganizeExamPage = () => {
 
   const [showForm, setShowForm] = useState(false);
   const [editingAccount, setEditingAccount] = useState(null);
-  const [rows, setRows] = useState(listQuestionBank);
   const paginationModel = { page: 0, pageSize: 5 };
   const inputRef = useRef(null);
   const [selectedType, setSelectedType] = useState(null); 
@@ -190,55 +53,7 @@ const OrganizeExamPage = () => {
   const {id:organizeId} = useParams();
   // const [rows, setRows] = useState([]);
   
-  useEffect(() => {
-    // Giả lập dữ liệu lấy từ cơ sở dữ liệu (sau này thay bằng API)
-    const fetchData = async () => {
-      const fakeData = [
-        {
-          id: "65f1a3b4c8e4a2d5b6f7e8d9",
-          organizeExamName: "Kỳ thi giữa kỳ Toán lớp 12",
-          organizeExamStatus: "active",
-          duration: 90,
-          examType: "Ma trận",
-          matrixId: "MATRIX123",
-          maxScore: 100,
-          subjectId: "MATH12",
-          totalQuestion: 50,
-          examSet: null,
-          sesstion: []
-        },
-        {
-          id: "55f1a3b4c8e4a2d5b6f7e8d9",
-          organizeExamName: "Kỳ thi giữa kỳ Toán lớp 11",
-          organizeExamStatus: "active",
-          duration: 90,
-          examType: "Dề thi",
-          matrixId: null,
-          maxScore: 100,
-          subjectId: "MATH11",
-          totalQuestion: 50,
-          examSet: ["Ma12", "Ma13"],
-          sesstion: []
-        },
-        {
-          id: "55f1a3b4c8e4a2d5b6f7e8d0",
-          organizeExamName: "Kỳ thi giữa kỳ Toán lớp 1",
-          organizeExamStatus: "disabled",
-          duration: 90,
-          examType: "Ngẫu nhiên",
-          matrixId: null,
-          maxScore: 100,
-          subjectId: "MATH10",
-          totalQuestion: 50,
-          examSet: null,
-          sesstion: []
-        }
-      ];
-      setRows(fakeData);
-    };
 
-    fetchData();
-  }, []);
 
   useEffect(() => {
     if (showForm && inputRef.current) {
@@ -371,7 +186,14 @@ const OrganizeExamPage = () => {
           <table className="table organize-exam-table sample-table tbl-organize-hover table-hover" style={{fontSize: "14px"}}>
             <thead>
               <tr className="align-middle fw-medium">
-                <th className="text-center">STT</th>
+                <th scope="col" className="text-center title-row">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    onChange={handleSelectAll}
+                    checked={selectedItems.length === listOrganizeExam.length && listOrganizeExam.length > 0}
+                  />
+                </th>
                 <th scope="col" className="title-row">Kỳ thi</th>
                 <th scope="col" className="title-row">Phân môn</th>
                 <th scope="col" className="title-row">Loại</th>
@@ -385,7 +207,7 @@ const OrganizeExamPage = () => {
               </tr>
             </thead>
             <tbody>
-              {listQuestionBank.map((item, index) => (
+              {listOrganizeExam.map((item, index) => (
                 <tr key={item.id} className="align-middle">
                   <td className="text-center">{index + 1}</td>
                   <td>
@@ -396,7 +218,7 @@ const OrganizeExamPage = () => {
                       {item.organizeExamName}
                     </Link>
                   </td>
-                  <td>{item.subjectId}</td>
+                  <td>{item.subjectName}</td>
                   <td>{item.examType}</td>
                   <td>{item.examType === "Ma trận" || item.examType === "Ngẫu nhiên" ? "N/A" : item.examSet?.join(", ") || "N/A"}</td>
                   <td>{item.examType === "Đề thi" || item.examType === "Ngẫu nhiên" ? "N/A" : item.matrixId || "N/A"}</td>

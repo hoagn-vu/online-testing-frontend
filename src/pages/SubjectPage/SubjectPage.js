@@ -146,9 +146,17 @@ const SubjectPage = () => {
         <table className="table sample-table tbl-organize-hover table-hover" style={{fontSize: "14px"}}>
           <thead>
             <tr className="align-middle">
-              <th className="text-center" style={{ width: "50px"}}>STT</th>
-              <th>Phân môn</th>
-              <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
+              <th scope="col" className="text-center title-row">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  onChange={handleSelectAll}
+                  checked={selectedItems.length === listSubject.length && listSubject.length > 0}
+                />
+              </th>
+              <th scope="col" className="title-row">Phân môn</th>
+              <th scope="col" className="title-row">Số lượng bộ câu hỏi</th>
+              <th scope="col" className="title-row" style={{ width: "120px"}}>Thao tác</th>
             </tr>
           </thead>
           <tbody>
@@ -163,14 +171,16 @@ const SubjectPage = () => {
                     {item.subjectName}
                   </Link>
                 </td>
-                <td className="text-center">
-                    <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
-                      <i className="fas fa-edit text-white "></i>
-                    </button>
-                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
-                      <i className="fas fa-trash-alt"></i>
-                    </button>
-                  </td>
+
+                <td>{item.totalQuestionBanks}</td>
+                <td>
+                  <button className="btn btn-primary btn-sm">
+                    <i className="fas fa-edit text-white"></i>
+                  </button>
+                  <button className="btn btn-danger btn-sm ms-2">
+                    <i className="fas fa-trash-alt"></i>
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>

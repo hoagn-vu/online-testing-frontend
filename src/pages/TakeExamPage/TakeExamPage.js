@@ -1,53 +1,75 @@
-import React, { useState, useRef  } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './TakeExamPage.css';
 import QuestionCard from '../../components/QuestionCard/QuestionCard';
 import Swal from 'sweetalert2';
+import { useParams } from 'react-router-dom';
+import ApiService from '../../services/apiService';
 
 const TakeExamPage = () => {
+    const { organizeExamId } = useParams();
     const username = "Phương Linh";
     const studentID = "123456";
     const avatarUrl = ""; // Đường dẫn ảnh avatar
 
-    
-    const questions = [
-        { question: "8 x 8 = ?", options: ["72", "80", "64", "56"], allowMultiple: false },
-        { question: "1 + 1 = ?", options: ["1", "5", "4", "3", "2"], allowMultiple: true },
-        { question: "Hôm nay là thứ mấy?", options: ["Thứ hai", "Chủ nhật", "Thứ năm", "Thứ ba"], allowMultiple: false },
-        { question: "Cây lúa gạo thích hợp với điều kiện sinh thái nào sau đây?", 
-            options: ["Khí hậu nóng, ẩm, chân ruộng ngập nước,đất phù sa.", 
-                "Khí hậu ấm, khô, đất màu mỡ.", 
-                "Khí hậu nóng, đất ẩm.", 
-                "Khí hậu khô, đất thoát nước.", 
-            ], 
-            allowMultiple: false 
-        },
-        { question: "Ngành nuôi trồng thuỷ sản đang phát triển với tốc độ nhanh hơn ngành khai thác là do", 
-            options: ["đáp ứng tốt hơn nhu cầu của con người và chủ động nguyên liệu cho các nhà máy chế biến.", 
-                "nguồn lợi thuỷ sản tự nhiên đã cạn kiệt.", 
-                "thiên tai ngày càng nhiều nên không thể đánh bắt được.", 
-                "không phải đầu tư ban đầu.", 
-            ], 
-            allowMultiple: false 
-        },
-        { question: "Hôm nay là thứ mấy?", options: ["Thứ hai", "Chủ nhật", "Thứ năm", "Thứ ba"], allowMultiple: false },
-        { question: "Cây lúa gạo thích hợp với điều kiện sinh thái nào sau đây?", 
-            options: ["Khí hậu nóng, ẩm, chân ruộng ngập nước,đất phù sa.", 
-                "Khí hậu ấm, khô, đất màu mỡ.", 
-                "Khí hậu nóng, đất ẩm.", 
-                "Khí hậu khô, đất thoát nước.", 
-            ], 
-            allowMultiple: false 
-        },
-        { question: "Ngành nuôi trồng thuỷ sản đang phát triển với tốc độ nhanh hơn ngành khai thác là do", 
-            options: ["đáp ứng tốt hơn nhu cầu của con người và chủ động nguyên liệu cho các nhà máy chế biến, nguồn lợi thuỷ sản tự nhiên đã cạn kiệt.đáp ứng tốt hơn nhu cầu của con người và chủ động nguyên liệu cho các nhà máy chế biến, nguồn lợi thuỷ sản tự nhiên đã cạn kiệt.", 
-                "nguồn lợi thuỷ sản tự nhiên đã cạn kiệt.", 
-                "thiên tai ngày càng nhiều nên không thể đánh bắt được.", 
-                "không phải đầu tư ban đầu.", 
-            ], 
-            allowMultiple: false 
-        },
-    ];
+    const [questions, setQuestions] = useState([]);
+    const [duration, setDuration] = useState(1);
+
+    useEffect(() => {
+        const fetchQuestions = async () => {
+            try {
+                const response = await ApiService.get(`/organize-exams/questions/${organizeExamId}`);
+                setQuestions(response.data.questions);
+                setDuration(response.data.duration * 60);
+                // setDuration(10); 
+            } catch (error) {
+                console.error('Failed to fetch questions: ', error);
+            }
+        };
+
+        fetchQuestions();
+    }, [organizeExamId]);
+
+    useEffect(() => {
+        if (duration <= 0) {
+            alert("Hết thời gian làm bài!");
+            return;
+        }
+        
+        const interval = setInterval(() => {
+            setDuration(prev => prev - 1);
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [duration]);
+
+    const formatTime = (sec) => {
+        const minutes = Math.floor(sec / 60);
+        const seconds = sec % 60;
+        return `${minutes < 10 ? "0"+minutes : minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    };
+
+    const [leaveCount, setLeaveCount] = useState(0);
+
+  useEffect(() => {
+    const handleFullscreen = () => {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      } else if (document.documentElement.mozRequestFullScreen) {
+        document.documentElement.mozRequestFullScreen();
+      } else if (document.documentElement.webkitRequestFullscreen) {
+        document.documentElement.webkitRequestFullscreen();
+      } else if (document.documentElement.msRequestFullscreen) {
+        document.documentElement.msRequestFullscreen();
+      }
+    };
+
+    handleFullscreen();
+
+    const handleBlur = () => setLeaveCount((prev) => prev + 1);
+      window.addEventListener("blur", handleBlur);
+      return () => window.removeEventListener("blur", handleBlur);
+    }, []);
     
     const [currentQuestion, setCurrentQuestion] = useState(0); 
 
@@ -139,7 +161,7 @@ const TakeExamPage = () => {
                         <div ref={(el) => (questionRefs.current[index] = el)}>
                             <QuestionCard 
                                 questionNumber={index + 1} 
-                                question={q.question} 
+                                question={q.questionName} 
                                 options={q.options} 
                                 allowMultiple={q.allowMultiple}
                                 onAnswerSelect={() => handleAnswerSelect(index)}
@@ -157,7 +179,7 @@ const TakeExamPage = () => {
                 <div className="sidebar-take-exams">
                     <div className="timer-take-exam">
                         <p className="time-title-take-exam pt-2">Thời gian còn lại</p>
-                        <p className="time-count-take-exam mb-2">0:02:47</p>
+                        <p className="time-count-take-exam mb-2">{formatTime(duration)}</p>
                     </div>
                     <div className="progress-take-exam">
                         <h5>Câu hỏi</h5>
@@ -182,7 +204,9 @@ const TakeExamPage = () => {
                         </button>
                         ))}
                     </div>
-
+                    <div className="leave-count-take-exam d-flex justify-content-center">
+                      <p>Số lần rời khỏi trang: {leaveCount}</p>
+                    </div>
                 </div>
             </div>
         </div>
