@@ -157,78 +157,81 @@ const RoomOrganizePage = () => {
 	return (
 		<div className="exam-management-page">
 			{/* Breadcrumb */}
-			<nav>
+			<nav className="mb-3">
 				<Link to="/admin">Home</Link> / 
 				<span className="breadcrumb-current">Quản lý kỳ thi</span>
 			</nav>
-			<div className="account-actions mt-4">
-				<div className="search-container">
-						<SearchBox></SearchBox>
-				</div>
-				<button className="add-btn" onClick={handleAddNew}>
-						Thêm mới
-				</button>
-			</div>
 
-			<div className="room-organize-table-container mt-3">
- 				<div className="table-responsive">
- 					<table className="table sample-table tbl-organize-hover table-hover">
- 						<thead style={{fontSize: "14px"}}>
- 							<tr className="align-middle fw-medium">
- 								<th scope="col" className="title-row text-center">STT</th> 
- 								<th scope="col" className="title-row">Mã phòng</th>
- 								<th scope="col" className="title-row">Phòng</th>
- 								<th scope="col" className="title-row">Giám thị</th>
- 								<th scope="col" className="title-row">Thí sinh</th>
- 								<th scope="col" className="title-row text-center">Trạng thái</th>
- 								<th className="text-center">Thao tác</th>
- 							</tr>
- 						</thead>
- 						<tbody style={{fontSize: "14px"}}>
- 							{listQuestionBank.map((item, index) => (
- 								<tr key={item.roomId} className="align-middle">
- 									<td className="text-center">{index + 1}</td>
- 									<td>{item.roomId}</td>
- 									<td>{item.roomName} ({item.roomLocation})</td>
- 									<td>{item.supervisorName}</td>
- 									<td>
- 										<Link className="text-hover-primary"
- 											to={`/staff/organize/${organizeId}/${sessionId}/${item.roomId}`}
- 											style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
- 										>
- 											Danh sách thí sinh
- 										</Link>
- 									</td>
- 									<td>
- 										<div className="form-check form-switch d-flex justify-content-center">
- 											<input
- 												className="form-check-input"
- 												type="checkbox"
- 												role="switch"
- 												checked={item.roomOrganizeStatus.toLowerCase() === "active"}
- 												onChange={() =>
- 													handleToggleStatus(item.roomId, item.roomOrganizeStatus)
- 												}
- 											/>
- 										</div>
- 									</td>
- 									<td className="text-center">
- 										<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}  onClick={() => handleEdit(item)}>
- 											<i className="fas fa-edit text-white "></i>
- 										</button>
- 										<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}  onClick={() => handleDelete(item.roomId)}>
- 											<i className="fas fa-trash-alt"></i>
- 										</button>
- 									</td>
- 								</tr>
- 							))}
- 						</tbody>
- 					</table>
- 				</div>
- 				<div className="d-flex justify-content-end">
-		  			<Pagination count={10} color="primary" />        
- 				</div>
- 			</div>	
+			<div className="tbl-shadow">
+				<div className="account-actions p-2">
+					<div className="search-container">
+							<SearchBox></SearchBox>
+					</div>
+					<button className="add-btn" onClick={handleAddNew}>
+							Thêm mới
+					</button>
+				</div>
+
+				<div className="room-organize-table-container mt-3">
+					<div className="table-responsive">
+						<table className="table sample-table tbl-organize-hover table-hover">
+							<thead style={{fontSize: "14px"}}>
+								<tr className="align-middle fw-medium">
+									<th scope="col" className="title-row text-center">STT</th> 
+									<th scope="col" className="title-row">Mã phòng</th>
+									<th scope="col" className="title-row">Phòng</th>
+									<th scope="col" className="title-row">Giám thị</th>
+									<th scope="col" className="title-row">Thí sinh</th>
+									<th scope="col" className="title-row text-center">Trạng thái</th>
+									<th className="text-center">Thao tác</th>
+								</tr>
+							</thead>
+							<tbody style={{fontSize: "14px"}}>
+								{listQuestionBank.map((item, index) => (
+									<tr key={item.roomId} className="align-middle">
+										<td className="text-center">{index + 1}</td>
+										<td>{item.roomId}</td>
+										<td>{item.roomName} ({item.roomLocation})</td>
+										<td>{item.supervisorName}</td>
+										<td>
+											<Link className="text-hover-primary"
+												to={`/staff/organize/${organizeId}/${sessionId}/${item.roomId}`}
+												style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
+											>
+												Danh sách thí sinh
+											</Link>
+										</td>
+										<td>
+											<div className="form-check form-switch d-flex justify-content-center">
+												<input
+													className="form-check-input"
+													type="checkbox"
+													role="switch"
+													checked={item.roomOrganizeStatus.toLowerCase() === "active"}
+													onChange={() =>
+														handleToggleStatus(item.roomId, item.roomOrganizeStatus)
+													}
+												/>
+											</div>
+										</td>
+										<td className="text-center">
+											<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}  onClick={() => handleEdit(item)}>
+												<i className="fas fa-edit text-white "></i>
+											</button>
+											<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}  onClick={() => handleDelete(item.roomId)}>
+												<i className="fas fa-trash-alt"></i>
+											</button>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+					<div className="d-flex justify-content-end mb-2">
+						<Pagination count={10} color="primary" />        
+					</div>
+				</div>	
+			</div>
 
 			{/* Form thêm tài khoản */}
 			{showForm && (

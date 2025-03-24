@@ -151,76 +151,79 @@ const ExamManagementPage = () => {
 	return (
 		<div className="sample-management-page">
 			{/* Breadcrumb */}
-			<nav>
+			<nav className="mb-3">
 				<Link to="/staff">Home</Link> / 
 				<span className="breadcrumb-current">Quản lý đề thi</span>
 			</nav>
 
-			<div className="sample-card-header d-flex justify-content-between align-items-center mt-3 mb-3">
-				<div className='left-header d-flex align-items-center'>
-					<div className="search-box me-2 rounded d-flex align-items-center">
-						<i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
-						<input
-							type="text"
-							className="search-input w-100"
-							placeholder="Tìm kiếm..."
-							// value={searchTerm}
-							// onChange={handleChangeSearch}
-						/>
+			<div className="tbl-shadow p-3">
+				<div className="sample-card-header d-flex justify-content-between align-items-center mb-3">
+					<div className='left-header d-flex align-items-center'>
+						<div className="search-box me-2 rounded d-flex align-items-center">
+							<i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
+							<input
+								type="text"
+								className="search-input w-100"
+								placeholder="Tìm kiếm..."
+								// value={searchTerm}
+								// onChange={handleChangeSearch}
+							/>
+						</div>
+					</div>
+
+					<div className='right-header'>
+						<button className="btn btn-primary" style={{fontSize: "14px"}} onClick={handleAddNew}>
+							<i className="fas fa-plus me-2"></i>
+							Thêm mới
+						</button>
 					</div>
 				</div>
 
-				<div className='right-header'>
-					<button className="btn btn-primary me-2" style={{fontSize: "14px"}} onClick={handleAddNew}>
-						<i className="fas fa-plus me-2"></i>
-						Thêm mới
-					</button>
-				</div>
-			</div>
-
-			<div className="table-responsive">
-				<table className="table sample-table table-hover tbl-organize-hover">
-					<thead>
-						<tr className="align-middle">
-							<th className=" text-center" style={{ width: "50px"}}>STT</th>
-							<th>Mã đề thi</th>
-							<th>Tên đề thi</th>
-							<th>Phân môn</th>
-							<th>Bộ câu hỏi</th>
-							<th className=" text-center" style={{ width: "120px"}}>Thao tác</th>
-						</tr>
-					</thead>
-					<tbody>
-						{listExam.map((item, index) => (
-							<tr key={item.id} className="align-middle">
-								<td className=" text-center">{index +1} </td>
-								<td >
-									<Link className="text-hover-primary"
-										to={`/staff/`} 
-										style={{ textDecoration: "none", cursor: "pointer", color: "black" }}
-									>
-										{item.examCode}
-									</Link>
-								</td>
-								<td className=" text-hover-primary">{item.examName}</td>
-								<td>{item.subjectName}</td>
-								<td>{item.questionBankName}</td>
-								<td className="text-center">
-                  <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
-                    <i className="fas fa-edit text-white "></i>
-                  </button>
-                  <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
-                    <i className="fas fa-trash-alt"></i>
-                  </button>
-                </td>
+				<div className="table-responsive">
+					<table className="table sample-table table-hover tbl-organize-hover">
+						<thead>
+							<tr className="align-middle">
+								<th className=" text-center" style={{ width: "50px"}}>STT</th>
+								<th>Mã đề thi</th>
+								<th>Tên đề thi</th>
+								<th>Phân môn</th>
+								<th>Bộ câu hỏi</th>
+								<th className=" text-center" style={{ width: "120px"}}>Thao tác</th>
 							</tr>
-						))}
-					</tbody>
-				</table>
-			</div>
+						</thead>
+						<tbody>
+							{listExam.map((item, index) => (
+								<tr key={item.id} className="align-middle">
+									<td className=" text-center">{index +1} </td>
+									<td >
+										<Link className="text-hover-primary"
+											to={`/staff/`} 
+											style={{ textDecoration: "none", cursor: "pointer", color: "black" }}
+										>
+											{item.examCode}
+										</Link>
+									</td>
+									<td className=" text-hover-primary">{item.examName}</td>
+									<td>{item.subjectName}</td>
+									<td>{item.questionBankName}</td>
+									<td className="text-center">
+					<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
+						<i className="fas fa-edit text-white "></i>
+					</button>
+					<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
+						<i className="fas fa-trash-alt"></i>
+					</button>
+					</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
 
-			<div className="sample-pagination d-flex justify-content-end align-items-center">
-		  		<Pagination count={10} color="primary" />        
+				<div className="sample-pagination d-flex justify-content-end align-items-center">
+					<Pagination count={10} color="primary" />        
+				</div>
+
 			</div>
 
 			

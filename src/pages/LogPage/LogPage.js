@@ -76,70 +76,73 @@ const LogPage = () => {
   return (
     <div className="log-page">
       {/* Breadcrumbs */}
-      <nav className="breadcrumb-log-container">
+      <nav className="breadcrumb-log-container mb-3">
         <Link to="/" className="breadcrumb-link">Home</Link>
         <span> / </span>
         <span className="breadcrumb-current">Nhật ký sử dụng</span>
       </nav>
 
-      {/* Thanh tìm kiếm + Nút lọc */}
-      <div className="log-actions mt-3">
-        <div className="action-selector">
-        <select className="form-select" defaultValue="">
-          <option value="" disabled>Hành động</option>
-          <option value="Login">Login</option>
-          <option value="Thêm mới">Thêm mới</option>
-          <option value="Sửa">Sửa</option>
-          <option value="Xóa">Xóa</option>
-        </select>
+      <div className="tbl-shadow p-3">
+                {/* Thanh tìm kiếm + Nút lọc */}
+        <div className="log-actions">
+          <div className="action-selector">
+          <select className="form-select" defaultValue="">
+            <option value="" disabled>Hành động</option>
+            <option value="Login">Login</option>
+            <option value="Thêm mới">Thêm mới</option>
+            <option value="Sửa">Sửa</option>
+            <option value="Xóa">Xóa</option>
+          </select>
 
-          <input type="date" className="search-box" />
-          <button className="add-btn d-flex filter-btn align-items-center">
-            <i className="fas fa-filter me-2 mt-1 "></i>
-            Lọc
-          </button>
+            <input type="date" className="search-box" />
+            <button className="add-btn d-flex filter-btn align-items-center">
+              <i className="fas fa-filter me-2 mt-1 "></i>
+              Lọc
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* Bảng hiển thị nhật ký */}
-      <div className="session-table-container mt-3">
-        <div className="table-responsive tbl-log">
-          <table className="table sample-table tbl-organize table-striped ">
-            <thead style={{ fontSize: "14px" }}>
-              <tr className="align-middle fw-medium">
-                <th scope="col" className="title-row text-center">STT</th>
-                <th scope="col" className="title-row" style={{ width: "200px" }}>Thời điểm</th>
-                <th scope="col" className="title-row text-center" style={{ width: "200px" }}>Hành động</th>
-                <th scope="col" className="title-row">Đối tượng</th>
-                <th scope="col" className="title-row">Người thực hiện</th>
-                <th scope="col" className="title-row">Mô tả</th>
-              </tr>
-            </thead>
-            <tbody style={{ fontSize: "14px" }}>
-              {logs.map((log, index) => (
-                <tr key={log.logId} className="align-middle" >
-                  <td className="text-center">{index + 1}</td>
-                  <td>{new Date(log.logAt).toLocaleString()}</td>
-                  <td className="text-center">
-                    <Chip 
-                      label={log.logAction} 
-                      sx={typeof getTagColor(log.logAction) === "string" 
-                        ? { bgcolor: `${getTagColor(log.logAction)}.main`, color: "white" }
-                        : getTagColor(log.logAction)}
-                    />
-                  </td>
-                  <td>{log.affectedName}</td>
-                  <td>{log.fullName}</td>
-                  <td>{log.logDetail}</td>
+        {/* Bảng hiển thị nhật ký */}
+        <div className="session-table-container mt-2">
+          <div className="table-responsive tbl-log">
+            <table className="table sample-table tbl-organize table-striped ">
+              <thead style={{ fontSize: "14px" }}>
+                <tr className="align-middle fw-medium">
+                  <th scope="col" className="title-row text-center">STT</th>
+                  <th scope="col" className="title-row" style={{ width: "200px" }}>Thời điểm</th>
+                  <th scope="col" className="title-row text-center" style={{ width: "200px" }}>Hành động</th>
+                  <th scope="col" className="title-row">Đối tượng</th>
+                  <th scope="col" className="title-row">Người thực hiện</th>
+                  <th scope="col" className="title-row">Mô tả</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="d-flex justify-content-end">
-          <Pagination count={10} color="primary" />        
+              </thead>
+              <tbody style={{ fontSize: "14px" }}>
+                {logs.map((log, index) => (
+                  <tr key={log.logId} className="align-middle" >
+                    <td className="text-center">{index + 1}</td>
+                    <td>{new Date(log.logAt).toLocaleString()}</td>
+                    <td className="text-center">
+                      <Chip 
+                        label={log.logAction} 
+                        sx={typeof getTagColor(log.logAction) === "string" 
+                          ? { bgcolor: `${getTagColor(log.logAction)}.main`, color: "white" }
+                          : getTagColor(log.logAction)}
+                      />
+                    </td>
+                    <td>{log.affectedName}</td>
+                    <td>{log.fullName}</td>
+                    <td>{log.logDetail}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="d-flex justify-content-end">
+            <Pagination count={10} color="primary" />        
+          </div>
         </div>
       </div>
+
     </div>
   );
 };

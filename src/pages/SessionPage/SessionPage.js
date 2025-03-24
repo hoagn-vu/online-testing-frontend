@@ -167,7 +167,7 @@ const SessionPage = () => {
 	return (
 		<div className="exam-management-page">
 			{/* Breadcrumb */}
-			<nav>
+			<nav className="mb-3">
 				<Link to="/staff">Home</Link> / 
 				<span className="breadcrumb-current">Quản lý kỳ thi</span>
 			</nav>
@@ -179,7 +179,7 @@ const SessionPage = () => {
 					padding: "15px 15px 0px 15px",
 					marginBottom: "15px",
 					borderRadius: "8px",
-					boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+					boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
 					fontSize: "14px"
 				}}>
 					<p style={{ fontSize: "18px", fontWeight: "bold", color: "#333", marginBottom: "15px" }}>
@@ -199,116 +199,122 @@ const SessionPage = () => {
 						{/* Cột 2 */}
 						<div style={{ flex: 1 }}>
 							<p><strong>Thời gian làm bài:</strong> {exam.duration} phút</p>
-							{exam.examType === "exam" || "Đề thi" && (
-									<p><strong>Bộ đề thi:</strong> {exam.exams.length > 0 ? exam.examSet.join(", ") : "Chưa có dữ liệu"}</p>
+							{/* Chỉ hiển thị examSet khi loại đề là "exam" */}
+							{exam.examType === "exam" && (
+								<p><strong>Bộ đề thi:</strong> {exam.exams?.length > 0 ? exam.examSet.join(", ") : "Chưa có dữ liệu"}</p>
 							)}
-							{exam.examType === "matrix" || "Ma trận" && (
-									<p><strong>Ma trận đề:</strong> {exam.matrixName ?? "Chưa có dữ liệu"}</p>
-							)}
-							{exam.examType === "auto" || "Ngẫu nhiên" && (
-									<p><strong>Tổng số câu hỏi:</strong> {exam.totalQuestion ?? "Chưa có dữ liệu"}</p>
+
+							{/* Chỉ hiển thị tổng số câu hỏi khi loại đề là "auto" */}
+							{exam.examType === "auto" && (
+								<p><strong>Tổng số câu hỏi:</strong> {exam.totalQuestion ?? "Chưa có dữ liệu"}</p>
 							)}
 						</div>
 
 						{/* Cột 3 - Hiển thị thông tin đặc biệt */}
 						<div style={{ flex: 1 }}>
-							{(exam.examType === "matrix" || "Ma trận" || exam.examType === "auto" || "Ngẫu nhiên") && (
-									<p><strong>Điểm tối đa:</strong> {exam.maxScore}</p>
+							{(exam.examType === "matrix" || exam.examType === "auto") && (
+								<p><strong>Điểm tối đa:</strong> {exam.maxScore}</p>
+							)}
+							{exam.examType === "matrix"  && (
+									<p><strong>Ma trận đề:</strong> {exam.matrixName ?? "Chưa có dữ liệu"}</p>
 							)}
 						</div>
 					</div>
 				</div>
 			))}
 		</div>
-			<div className="account-actions mt-2">
-				<div className="search-container">
-					<SearchBox></SearchBox>
+			<div className="tbl-shadow">
+					<div className="account-actions mt-2 ms-1">
+					<div className="search-container">
+						<SearchBox></SearchBox>
+					</div>
+					<button className="btn btn-primary me-2" style={{fontSize: "14px"}} onClick={handleAddNew}>
+						<i className="fas fa-plus me-2"></i>
+						Thêm mới
+					</button>
 				</div>
-				<button className="btn btn-primary me-2" style={{fontSize: "14px"}} onClick={handleAddNew}>
-					<i className="fas fa-plus me-2"></i>
-					Thêm mới
-				</button>
-			</div>
 
-			<div className="session-table-container mt-3">
-			<div className="table-responsive">
-				<table className="table sample-table tbl-organize">
-					<thead style={{fontSize: "14px"}}>
-						<tr className="align-middle fw-medium">
-							<th scope="col" className="title-row text-center">STT</th> 
-							<th scope="col" className="title-row">Ca thi</th>
-							<th scope="col" className="title-row">Active At</th>
-							<th scope="col" className="title-row">Phòng thi</th>
-							<th scope="col" className="title-row">Trạng thái</th>
-							<th scope="col" className="title-row text-center">Giám sát</th>
-							<th scope="col" className="title-row">Thao tác</th>
-						</tr>
-					</thead>
-					<tbody style={{ fontSize: "14px" }}>
-						{listSession.length === 0 ? (
-							<tr>
-								<td colSpan="6" className="text-center fw-semibold text-muted"
-										style={{ height: "100px", verticalAlign: "middle" }}>
-									Không có dữ liệu
-								</td>
+				<div className="session-table-container mt-3">
+				<div className="table-responsive">
+					<table className="table sample-table tbl-organize-hover table-hover">
+						<thead style={{fontSize: "14px"}}>
+							<tr className="align-middle fw-medium">
+								<th scope="col" className="title-row text-center">STT</th> 
+								<th scope="col" className="title-row">Ca thi</th>
+								<th scope="col" className="title-row">Active At</th>
+								<th scope="col" className="title-row">Phòng thi</th>
+								<th scope="col" className="title-row">Trạng thái</th>
+								<th scope="col" className="title-row text-center">Giám sát</th>
+								<th scope="col" className="title-row">Thao tác</th>
 							</tr>
-						) : (
-							listSession.map((session, sessionIndex) => (
-									<tr key={session.sessionId} className="align-middle">
-										<td className="text-center">{sessionIndex + 1}</td>
-										<td>{session.sessionName}</td>
-										<td>{dayjs(session.activeAt).format("DD/MM/YYYY HH:mm")}</td>
-										<td>
-											<Link className="text-hover-primary"
-													to={`/staff/organize/${organizeId}/${session.sessionId}`}
-													style={{ textDecoration: "none", color: "black", cursor: "pointer" }}>
-												Danh sách phòng thi
-											</Link>
-										</td>
-										<td className="text-center">
-											<div className="form-check form-switch d-flex align-items-center justify-content-left">
-												<input
-													className="form-check-input"
-													type="checkbox"
-													role="switch"
-													checked={session.sessionStatus === "Active" || "available"}
-													onChange={() => handleToggleStatus(session.sessionId, session.sessionStatus)}
-												/>
-												<span className={`badge ms-2 ${session.sessionStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
-													{session.sessionStatus === "Active" || "available" ? "Hoạt động" : "Không hoạt động"}
-												</span>
-											</div>
-										</td>
+						</thead>
+						<tbody style={{ fontSize: "14px" }}>
+							{listSession.length === 0 ? (
+								<tr>
+									<td colSpan="6" className="text-center fw-semibold text-muted"
+											style={{ height: "100px", verticalAlign: "middle" }}>
+										Không có dữ liệu
+									</td>
+								</tr>
+							) : (
+								listSession.map((session, sessionIndex) => (
+										<tr key={session.sessionId} className="align-middle">
+											<td className="text-center">{sessionIndex + 1}</td>
+											<td>{session.sessionName}</td>
+											<td>{dayjs(session.activeAt).format("DD/MM/YYYY HH:mm")}</td>
+											<td>
+												<Link className="text-hover-primary"
+														to={`/staff/organize/${organizeId}/${session.sessionId}`}
+														style={{ textDecoration: "none", color: "black", cursor: "pointer" }}>
+													Danh sách phòng thi
+												</Link>
+											</td>
+											<td className="text-center">
+												<div className="form-check form-switch d-flex align-items-center justify-content-left">
+													<input
+														className="form-check-input"
+														type="checkbox"
+														role="switch"
+														checked={session.sessionStatus === "Active" || "available"}
+														onChange={() => handleToggleStatus(session.sessionId, session.sessionStatus)}
+													/>
+													<span className={`badge ms-2 ${session.sessionStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
+														{session.sessionStatus === "Active" || "available" ? "Hoạt động" : "Không hoạt động"}
+													</span>
+												</div>
+											</td>
 
 
-										<td className="text-center">
-											<Link className="text-hover-primary"
-													to={`/staff/organize/monitor/${organizeId}/${session.sessionId}`}
-													style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}>
-												Giám sát
-											</Link>
-										</td>
-										<td>
-											<button className="btn btn-primary btn-sm" style={{ width: "35px", height: "35px" }}
-															onClick={() => handleEdit(session)}>
-												<i className="fas fa-edit text-white"></i>
-											</button>
-											<button className="btn btn-danger btn-sm ms-2" style={{ width: "35px", height: "35px" }}
-															onClick={() => handleDelete(session.sessionId)}>
-												<i className="fas fa-trash-alt"></i>
-											</button>
-										</td>
-									</tr>
-								))
-						)}
-					</tbody>
+											<td className="text-center">
+												<Link className="text-hover-primary"
+														to={`/staff/organize/monitor/${organizeId}/${session.sessionId}`}
+														style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}>
+													Giám sát
+												</Link>
+											</td>
+											<td>
+												<button className="btn btn-primary btn-sm" style={{ width: "35px", height: "35px" }}
+																onClick={() => handleEdit(session)}>
+													<i className="fas fa-edit text-white"></i>
+												</button>
+												<button className="btn btn-danger btn-sm ms-2" style={{ width: "35px", height: "35px" }}
+																onClick={() => handleDelete(session.sessionId)}>
+													<i className="fas fa-trash-alt"></i>
+												</button>
+											</td>
+										</tr>
+									))
+							)}
+						</tbody>
 
-				</table>
+					</table>
+				</div>
+				<div className="d-flex justify-content-end mb-2">
+					<Pagination count={10} color="primary"></Pagination>
+				</div>
+				</div>	
 			</div>
-			<div className="d-flex justify-content-end">
-				<Pagination count={10} color="primary"></Pagination>
-			</div>
-			</div>	
+			
 
 			{/* Form thêm tài khoản */}
 			{showForm && (

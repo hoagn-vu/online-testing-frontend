@@ -165,104 +165,106 @@ const OrganizeExamPage = () => {
   return (
     <div className="exam-management-page">
       {/* Breadcrumb */}
-      <nav className="mb-4">
+      <nav className="mb-3">
         <Link className="breadcrumbs-hover" style={{textDecoration: "none"}} to="/admin">Home</Link> /
         <span className="breadcrumb-current"> Quản lý kỳ thi</span>
       </nav>
 
-      <div className="account-actions mt-2">
-        <div className="search-container">
-          <SearchBox></SearchBox>
-        </div>
-        <button className="btn btn-primary me-2" style={{fontSize: "14px"}} onClick={handleAddNew}>
-          <i className="fas fa-plus me-2"></i>
-          Thêm mới
-        </button>
-      </div>
+			<div className="tbl-shadow p-3 pt-2">
+				<div className="account-actions mt-2">
+					<div className="search-container">
+						<SearchBox></SearchBox>
+					</div>
+					<button className="btn btn-primary" style={{fontSize: "14px"}} onClick={handleAddNew}>
+						<i className="fas fa-plus me-2"></i>
+						Thêm mới
+					</button>
+				</div>
 
-      {/* Hiển thị bảng theo vai trò đã chọn */}
-      <div className="organize-examtable-container mt-3">
-        <div className="table-responsive">
-          <table className="table organize-exam-table sample-table tbl-organize-hover table-hover" style={{fontSize: "14px"}}>
-            <thead>
-              <tr className="align-middle fw-medium">
-                <th scope="col" className="text-center title-row">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    onChange={handleSelectAll}
-                    checked={selectedItems.length === listOrganizeExam.length && listOrganizeExam.length > 0}
-                  />
-                </th>
-                <th scope="col" className="title-row">Kỳ thi</th>
-                <th scope="col" className="title-row">Phân môn</th>
-                <th scope="col" className="title-row">Loại</th>
-                <th scope="col" className="title-row">Đề thi</th>
-                <th scope="col" className="title-row">Ma trận</th>
-                <th className="text-center">Thời gian (M)</th>
-                <th className="text-center">Điểm</th>
-                <th className="text-center">Trạng thái</th>
-                <th className="text-center">Báo cáo</th>
-                <th className="text-center">Thao tác</th>
-              </tr>
-            </thead>
-            <tbody>
-              {listOrganizeExam.map((item, index) => (
-                <tr key={item.id} className="align-middle">
-                  <td className="text-center">{index + 1}</td>
-                  <td>
-                    <Link className="text-hover-primary"
-                      to={`/staff/organize/${encodeURIComponent(item.id)}`} 
-                      style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
-                    >
-                      {item.organizeExamName}
-                    </Link>
-                  </td>
-                  <td>{item.subjectName}</td>
-                  <td>{item.examType}</td>
-                  <td>{item.examType === "Ma trận" || item.examType === "Ngẫu nhiên" ? "N/A" : item.examSet?.join(", ") || "N/A"}</td>
-                  <td>{item.examType === "Đề thi" || item.examType === "Ngẫu nhiên" ? "N/A" : item.matrixId || "N/A"}</td>
-                  <td className="text-center">{item.duration}</td>
-                  <td className="text-center">{item.maxScore}</td>
-                  <td>
-                   <div className="form-check form-switch d-flex justify-content-center">
-                     <input
-                       className="form-check-input"
-                       type="checkbox"
-                       role="switch"
-                       checked={item.organizeExamStatus.toLowerCase() === "active"}
-                       onChange={() =>
-                         handleToggleStatus(item.id, item.organizeExamStatus)
-                       }
-                     />
-                   </div>
-                 </td>
-                  <td className="text-center">
-                    <Link
-                      to={`/staff/organize/report/${item.id}`}     
-                      style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
-                    >
-                      Chi tiết
-                    </Link>
-                  </td>
-                  <td className="text-center">
-                    <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
-                      <i className="fas fa-edit text-white "></i>
-                    </button>
-                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
-                      <i className="fas fa-trash-alt"></i>
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+				{/* Hiển thị bảng theo vai trò đã chọn */}
+				<div className="organize-examtable-container mt-3">
+					<div className="table-responsive">
+						<table className="table organize-exam-table sample-table tbl-organize-hover table-hover" style={{fontSize: "14px"}}>
+							<thead>
+								<tr className="align-middle fw-medium">
+									<th scope="col" className="text-center title-row">
+										<input
+											className="form-check-input"
+											type="checkbox"
+											onChange={handleSelectAll}
+											checked={selectedItems.length === listOrganizeExam.length && listOrganizeExam.length > 0}
+										/>
+									</th>
+									<th scope="col" className="title-row">Kỳ thi</th>
+									<th scope="col" className="title-row">Phân môn</th>
+									<th scope="col" className="title-row">Loại</th>
+									<th scope="col" className="title-row">Đề thi</th>
+									<th scope="col" className="title-row">Ma trận</th>
+									<th className="text-center">Thời gian (M)</th>
+									<th className="text-center">Điểm</th>
+									<th className="text-center">Trạng thái</th>
+									<th className="text-center">Báo cáo</th>
+									<th className="text-center">Thao tác</th>
+								</tr>
+							</thead>
+							<tbody>
+								{listOrganizeExam.map((item, index) => (
+									<tr key={item.id} className="align-middle">
+										<td className="text-center">{index + 1}</td>
+										<td>
+											<Link className="text-hover-primary"
+												to={`/staff/organize/${encodeURIComponent(item.id)}`} 
+												style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
+											>
+												{item.organizeExamName}
+											</Link>
+										</td>
+										<td>{item.subjectName}</td>
+										<td>{item.examType}</td>
+										<td>{item.examType === "Ma trận" || item.examType === "Ngẫu nhiên" ? "N/A" : item.examSet?.join(", ") || "N/A"}</td>
+										<td>{item.examType === "Đề thi" || item.examType === "Ngẫu nhiên" ? "N/A" : item.matrixId || "N/A"}</td>
+										<td className="text-center">{item.duration}</td>
+										<td className="text-center">{item.maxScore}</td>
+										<td>
+										<div className="form-check form-switch d-flex justify-content-center">
+											<input
+												className="form-check-input"
+												type="checkbox"
+												role="switch"
+												checked={item.organizeExamStatus.toLowerCase() === "active"}
+												onChange={() =>
+													handleToggleStatus(item.id, item.organizeExamStatus)
+												}
+											/>
+										</div>
+									</td>
+										<td className="text-center">
+											<Link
+												to={`/staff/organize/report/${item.id}`}     
+												style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
+											>
+												Chi tiết
+											</Link>
+										</td>
+										<td className="text-center">
+											<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
+												<i className="fas fa-edit text-white "></i>
+											</button>
+											<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
+												<i className="fas fa-trash-alt"></i>
+											</button>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
 
-        <div className="organize-exampagination d-flex justify-content-end align-items-center">
-          <Pagination count={10} color="primary" />        
-        </div>
-      </div>
+					<div className="organize-exampagination d-flex justify-content-end align-items-center">
+						<Pagination count={10} color="primary" />        
+					</div>
+				</div>
+			</div>
 
       {/* Form thêm tài khoản */}
 				{showForm && (
