@@ -182,7 +182,7 @@ const SubjectPage = () => {
         </div>
 
         <div className="sample-pagination d-flex justify-content-end align-items-center ">
-            <Pagination count={10} color="primary" />        
+            <Pagination count={10} color="primary" shape="rounded"/>        
         </div>
       </div>
 

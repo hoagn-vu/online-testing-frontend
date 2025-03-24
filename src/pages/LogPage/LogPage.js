@@ -138,7 +138,7 @@ const LogPage = () => {
             </table>
           </div>
           <div className="d-flex justify-content-end">
-            <Pagination count={10} color="primary" />        
+            <Pagination count={10} color="primary" shape="rounded"/>        
           </div>
         </div>
       </div>

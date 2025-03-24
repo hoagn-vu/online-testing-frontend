@@ -417,7 +417,7 @@ const AccountPage = () => {
         </div>
 
         <div className="sample-pagination d-flex justify-content-end align-items-center mb-2">
-          <Pagination count={10} color="primary" />
+          <Pagination count={10} color="primary" shape="rounded" />
         </div>
       </div>
       {/* Form thêm tài khoản */}

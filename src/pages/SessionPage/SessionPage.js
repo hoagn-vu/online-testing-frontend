@@ -310,7 +310,7 @@ const SessionPage = () => {
 					</table>
 				</div>
 				<div className="d-flex justify-content-end mb-2">
-					<Pagination count={10} color="primary"></Pagination>
+					<Pagination count={10} color="primary" shape="rounded"></Pagination>
 				</div>
 				</div>	
 			</div>
