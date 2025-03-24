@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import "./CandidateOrganizePage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {Chip, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
@@ -38,6 +38,16 @@ const CandidateOrganizePage = () => {
   const [showForm, setShowForm] = useState(false);
   const paginationModel = { page: 0, pageSize: 5 };
   const inputRef = useRef(null);
+	const location = useLocation();
+	const { roomName, sessionName, organizeExamName } = location.state || {};
+	// const organizeExamName = location.state?.organizeExamName || localStorage.getItem("organizeExamName");
+	const { organizeId, sessionId } = useParams();
+
+	console.log("CandidateOrganizePage - location.state:", location.state);
+	console.log("CandidateOrganizePage - sessionName:", sessionName);
+	console.log("CandidateOrganizePage - organizeExamName:", organizeExamName);
+	console.log("CandidateOrganizePage - roomName:", roomName);
+
 
 	const processData = (data) => {
 		return data.map((item) => {
@@ -109,9 +119,29 @@ const CandidateOrganizePage = () => {
 	return (
 		<div className="exam-management-page">
 			{/* Breadcrumb */}
-			<nav className="mb-3">
-				<Link to="/admin">Home</Link> / 
-				<span className="breadcrumb-current">Quản lý kỳ thi</span>
+			<nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
+				<Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
+				<span className="ms-2 me-2"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+				<span className="breadcrumb-between">
+					<Link to="/staff/organize" className="breadcrumb-between">Quản lý kỳ thi</Link></span>
+				<span className="ms-2 me-2"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+				<span className="breadcrumb-between">
+				<Link 
+					to={`/staff/organize/${organizeId}`} 
+					state={{ organizeExamName: organizeExamName }} 
+					className="breadcrumb-between">
+					{organizeExamName}
+				</Link></span>
+				<span className="ms-2 me-2"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+				<span className="breadcrumb-between">
+				<Link 
+					to={`/staff/organize/${organizeId}/${sessionId}`} 
+					state={{ sessionName: sessionName }} 
+					className="breadcrumb-between">
+					{sessionName}
+				</Link></span>
+				<span className="ms-2 me-2"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+				<span className="breadcrumb-current">Phòng {roomName}</span>
 			</nav>
 
 			<div className="tbl-shadow p-3">

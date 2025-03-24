@@ -165,10 +165,12 @@ const OrganizeExamPage = () => {
   return (
     <div className="exam-management-page">
       {/* Breadcrumb */}
-      <nav className="mb-3">
-        <Link className="breadcrumbs-hover" style={{textDecoration: "none"}} to="/admin">Home</Link> /
-        <span className="breadcrumb-current"> Quản lý kỳ thi</span>
-      </nav>
+			<nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
+				<Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
+				
+				<span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+				<span className="breadcrumb-current"> Quản lý kỳ thi</span>
+			</nav>
 
 			<div className="tbl-shadow p-3 pt-2">
 				<div className="account-actions mt-2">
@@ -187,14 +189,7 @@ const OrganizeExamPage = () => {
 						<table className="table organize-exam-table sample-table tbl-organize-hover table-hover" style={{fontSize: "14px"}}>
 							<thead>
 								<tr className="align-middle fw-medium">
-									<th scope="col" className="text-center title-row">
-										<input
-											className="form-check-input"
-											type="checkbox"
-											onChange={handleSelectAll}
-											checked={selectedItems.length === listOrganizeExam.length && listOrganizeExam.length > 0}
-										/>
-									</th>
+									<th scope="col" className="text-center">STT</th>
 									<th scope="col" className="title-row">Kỳ thi</th>
 									<th scope="col" className="title-row">Phân môn</th>
 									<th scope="col" className="title-row">Loại</th>
@@ -213,7 +208,8 @@ const OrganizeExamPage = () => {
 										<td className="text-center">{index + 1}</td>
 										<td>
 											<Link className="text-hover-primary"
-												to={`/staff/organize/${encodeURIComponent(item.id)}`} 
+												to={`/staff/organize/${encodeURIComponent(item.id)}`}
+												state={{ organizeExamName: item.organizeExamName }} // ✅ Truyền state
 												style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
 											>
 												{item.organizeExamName}

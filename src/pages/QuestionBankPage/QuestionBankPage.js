@@ -112,11 +112,11 @@ const QuestionBankPage = () => {
     return (
       <div className="question-bank-page">
       {/* Breadcrumb */}
-      <nav className="mb-3">
-        <Link to="/staff/dashboard">Home</Link>
-        <span> / </span>
-        <Link to="/staff/question">Ngân hàng câu hỏi</Link>
-        <span> / </span>
+      <nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
+        <Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
+        <span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+        <span className="breadcrumb-between"> <Link to="/staff/question" className="breadcrumb-between">Ngân hàng câu hỏi</Link></span>
+        <span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
         <span className="breadcrumb-current">{subjectName}</span>
       </nav>
 
@@ -160,6 +160,7 @@ const QuestionBankPage = () => {
                   <td >
                     <Link className="text-hover-primary"
                       to={`/staff/question/${subjectId}/${item.questionBankId}`} 
+                      state={{questionBankName: item.questionBankName}}
                       style={{ textDecoration: "none", cursor: "pointer", color:"black" }}
                     >
                       {item.questionBankName}

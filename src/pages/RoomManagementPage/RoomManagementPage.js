@@ -164,12 +164,10 @@ const RoomManagementPage = () => {
 
   return (
     <div className="room-page">
-      <nav className="breadcrumb-container mb-3">
-        <Link to="/" className="breadcrumb-link">
-          Home
-        </Link>
-        <span> / </span>
-        <span className="breadcrumb-current">Quản lý phòng thi</span>
+      <nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
+        <Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
+        <span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+        <span className="breadcrumb-current"> Quản lý phòng thi</span>
       </nav>
 
       <div className="tbl-shadow p-3">

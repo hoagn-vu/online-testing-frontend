@@ -1,5 +1,5 @@
 	import React, { useEffect, useState } from "react";
-	import { useParams, Link } from "react-router-dom";
+	import { useParams, Link, useLocation  } from "react-router-dom";
 	import "bootstrap/dist/css/bootstrap.min.css";
 	import "./ListQuestionPage.css";
 	import Swal from "sweetalert2";
@@ -12,6 +12,9 @@
 		const { subjectId, questionBankId } = useParams();
 		const [ questions, setQuestions ] = useState([]);
 		const [ subjectName, setSubjectName ] = useState("");
+		const [ questionBankName, setQuestionBankName ] = useState("");	
+		console.error("questionBankName:", questionBankName);
+		// console.error("organizeName:", organizeExamName);
 
 		const fetchData = async () => {
 			const response = await ApiService.get("/subjects/questions", {
@@ -19,7 +22,7 @@
 			});
 			setQuestions(response.data.questions);
 			setSubjectName(response.data.subjectName);
-			// setQuestionBankName(response.data.questionBankName);
+			setQuestionBankName(response.data.questionBankName);
 			// console.log(response.data);
 		};
 		useEffect(() => {
@@ -279,7 +282,7 @@
 	// const currentQuestionBank = subjectData.questionBanks.find(qb => qb.questionBankId === questionBankId);
     
 		// Lấy thông tin ngân hàng câu hỏi
-		const questionBankName = questions.questionBankName || "Ngân hàng câu hỏi";
+		// const questionBankName = questions.questionBankName || "Ngân hàng câu hỏi";
 
 		// Danh sách tất cả chương & mức độ từ `questions`
 		const allChapters = [
@@ -296,13 +299,13 @@
 		return (
 			<div className=" list-question-container">
 				{/* Breadcrumb */}
-				<nav className="breadcrumb">
-					<Link to="/admin">Home</Link>
-					<span> / </span>
-					<Link to="/admin/question">Ngân hàng câu hỏi</Link>
-					<span> / </span>
-					<Link to={`/admin/question/${subjectId}`}>{subjectName}</Link>
-					<span> / </span>
+				<nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
+					<Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
+					<span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+					<span className="breadcrumb-between"> <Link to="/staff/question" className="breadcrumb-between">Ngân hàng câu hỏi</Link></span>
+					<span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+					<span className="breadcrumb-between"><Link to={`/staff/question/${subjectId}`} className="breadcrumb-between">{subjectName}</Link></span>
+					<span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
 					<span className="breadcrumb-current">{questionBankName}</span>
 				</nav>
 		

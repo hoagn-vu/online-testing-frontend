@@ -22,10 +22,10 @@
     text-decoration: underline;
 }
 
-.breadcrumb-current {
+/* .breadcrumb-current {
     font-weight: bold;
     color: #343a40;
-}
+} */
 
 .tag-level{
     font-size: 13px;
