@@ -257,7 +257,11 @@ const SesstionPage = () => {
 				</div>
 			))}
 		</div>
-			<div className="account-actions mt-2">
+			
+
+			<div className="session-table-container mt-3">
+				<div className="tbl-session">
+				<div className="account-actions mt-2 ps-3">
 				<div className="search-container">
 					<SearchBox></SearchBox>
 				</div>
@@ -266,87 +270,87 @@ const SesstionPage = () => {
 					Thêm mới
 				</button>
 			</div>
-
-			<div className="session-table-container mt-3">
-			<div className="table-responsive">
-				<table className="table sample-table tbl-organize-hover table-hover">
-					<thead style={{fontSize: "14px"}}>
-						<tr className="align-middle fw-medium">
-							<th scope="col" className="title-row text-center">STT</th> 
-							<th scope="col" className="title-row">Ca thi</th>
-							<th scope="col" className="title-row">Active At</th>
-							<th scope="col" className="title-row">Phòng thi</th>
-							<th scope="col" className="title-row">Trạng thái</th>
-							<th scope="col" className="title-row text-center">Giám sát</th>
-							<th scope="col" className="title-row">Thao tác</th>
-						</tr>
-					</thead>
-					<tbody style={{ fontSize: "14px" }}>
-						{listQuestionBank.length === 0 ? (
-							<tr>
-								<td colSpan="6" className="text-center fw-semibold text-muted"
-										style={{ height: "100px", verticalAlign: "middle" }}>
-									Không có dữ liệu
-								</td>
-							</tr>
-						) : (
-							listQuestionBank.flatMap((exam, examIndex) =>
-								exam.session.map((session, sessionIndex) => (
-									<tr key={session.sessionId} className="align-middle">
-										<td className="text-center">{sessionIndex + 1}</td>
-										<td>{session.sessionName}</td>
-										<td>{dayjs(session.activeAt).format("DD/MM/YYYY HH:mm")}</td>
-										<td>
-											<Link className="text-hover-primary"
-													to={`/staff/organize/${organizeId}/${session.sessionId}`}
-													style={{ textDecoration: "none", color: "black", cursor: "pointer" }}>
-												Danh sách phòng thi
-											</Link>
-										</td>
-										<td className="text-center">
-											<div className="form-check form-switch d-flex align-items-center justify-content-left">
-												<input
-													className="form-check-input"
-													type="checkbox"
-													role="switch"
-													checked={session.sessionStatus.toLowerCase() === "active"}
-													onChange={() => handleToggleStatus(session.sessionId, session.sessionStatus)}
-												/>
-												<span className={`badge ms-2 ${session.sessionStatus === "Active" ? "bg-success" : "bg-secondary"}`}>
-													{session.sessionStatus === "Active" ? "Hoạt động" : "Không hoạt động"}
-												</span>
-											</div>
-										</td>
-
-
-										<td className="text-center">
-											<Link className="text-hover-primary"
-													to={`/staff/organize/monitor/${organizeId}/${session.sessionId}`}
-													style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}>
-												Giám sát
-											</Link>
-										</td>
-										<td>
-											<button className="btn btn-primary btn-sm" style={{ width: "35px", height: "35px" }}
-															onClick={() => handleEdit(session)}>
-												<i className="fas fa-edit text-white"></i>
-											</button>
-											<button className="btn btn-danger btn-sm ms-2" style={{ width: "35px", height: "35px" }}
-															onClick={() => handleDelete(session.sessionId)}>
-												<i className="fas fa-trash-alt"></i>
-											</button>
+					<div className="table-responsive p-2">
+						<table className="table sample-table tbl-organize-hover table-hover">
+							<thead style={{fontSize: "14px"}}>
+								<tr className="align-middle fw-medium">
+									<th scope="col" className="title-row text-center">STT</th> 
+									<th scope="col" className="title-row">Ca thi</th>
+									<th scope="col" className="title-row">Active At</th>
+									<th scope="col" className="title-row">Phòng thi</th>
+									<th scope="col" className="title-row">Trạng thái</th>
+									<th scope="col" className="title-row text-center">Giám sát</th>
+									<th scope="col" className="title-row">Thao tác</th>
+								</tr>
+							</thead>
+							<tbody style={{ fontSize: "14px" }}>
+								{listQuestionBank.length === 0 ? (
+									<tr>
+										<td colSpan="6" className="text-center fw-semibold text-muted"
+												style={{ height: "100px", verticalAlign: "middle" }}>
+											Không có dữ liệu
 										</td>
 									</tr>
-								))
-							)
-						)}
-					</tbody>
+								) : (
+									listQuestionBank.flatMap((exam, examIndex) =>
+										exam.session.map((session, sessionIndex) => (
+											<tr key={session.sessionId} className="align-middle">
+												<td className="text-center">{sessionIndex + 1}</td>
+												<td>{session.sessionName}</td>
+												<td>{dayjs(session.activeAt).format("DD/MM/YYYY HH:mm")}</td>
+												<td>
+													<Link className="text-hover-primary"
+															to={`/staff/organize/${organizeId}/${session.sessionId}`}
+															style={{ textDecoration: "none", color: "black", cursor: "pointer" }}>
+														Danh sách phòng thi
+													</Link>
+												</td>
+												<td className="text-center">
+													<div className="form-check form-switch d-flex align-items-center justify-content-left">
+														<input
+															className="form-check-input"
+															type="checkbox"
+															role="switch"
+															checked={session.sessionStatus.toLowerCase() === "active"}
+															onChange={() => handleToggleStatus(session.sessionId, session.sessionStatus)}
+														/>
+														<span className={`badge ms-2 ${session.sessionStatus === "Active" ? "bg-success" : "bg-secondary"}`}>
+															{session.sessionStatus === "Active" ? "Hoạt động" : "Không hoạt động"}
+														</span>
+													</div>
+												</td>
 
-				</table>
-			</div>
-			<div className="d-flex justify-content-end">
-				<Pagination count={10} color="primary"></Pagination>
-			</div>
+
+												<td className="text-center">
+													<Link className="text-hover-primary"
+															to={`/staff/organize/monitor/${organizeId}/${session.sessionId}`}
+															style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}>
+														Giám sát
+													</Link>
+												</td>
+												<td>
+													<button className="btn btn-primary btn-sm" style={{ width: "35px", height: "35px" }}
+																	onClick={() => handleEdit(session)}>
+														<i className="fas fa-edit text-white"></i>
+													</button>
+													<button className="btn btn-danger btn-sm ms-2" style={{ width: "35px", height: "35px" }}
+																	onClick={() => handleDelete(session.sessionId)}>
+														<i className="fas fa-trash-alt"></i>
+													</button>
+												</td>
+											</tr>
+										))
+									)
+								)}
+							</tbody>
+
+						</table>
+					</div>
+					<div className="d-flex justify-content-end">
+						<Pagination count={10} color="primary" ></Pagination>
+					</div>
+
+				</div>
 			</div>	
 
 			{/* Form thêm tài khoản */}

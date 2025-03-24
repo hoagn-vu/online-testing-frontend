@@ -5,32 +5,16 @@ import "./ListQuestionPage.css";
 import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import CreatableSelect from "react-select/creatable";
+import Icon from '@mui/material/Icon';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ApiService from "../../services/apiService";
+import BorderColorIcon from '@mui/icons-material/BorderColor';
 
 const ListQuestionPage = () => {
-	const { subjectId, questionBankId } = useParams();
-	const [ questions, setQuestions ] = useState([]);
-	const [ subjectName, setSubjectName ] = useState("");
-	const [ questionBankName, setQuestionBankName ] = useState("");
-
-	useEffect(() => {
-		const fetchData = async () => {
-			const response = await ApiService.get("/subjects/questions", {
-				params: { subId: subjectId, qbId: questionBankId },
-			});
-			setQuestions(response.data.questions);
-			setSubjectName(response.data.subjectName);
-			setQuestionBankName(response.data.questionBankName);
-			console.log(response.data);
-		};
-
-		fetchData();
-	}, [subjectId, questionBankId]);
-
 	const [editQuestionId, setEditQuestionId] = useState(null);
 	const [shuffleQuestion, setShuffleQuestion] = useState(false);
 	const [selectedQuestionBankId, setSelectedQuestionBankId] = useState(null);
+	// const [questions, setQuestions] = useState();
+	const {subject, questionBankId } = useParams();
 	const [selectedGroups, setSelectedGroups] = useState([]);
 
 	const [newQuestion, setNewQuestion] = useState({
@@ -92,21 +76,19 @@ const ListQuestionPage = () => {
 	// };
 
 	const handleEditQuestion = (question) => {
-    setEditQuestionId(question.id);
-
-    // Lấy chương và mức độ từ tags (nếu có)
-    const chapter = question.tags?.[0] ? { label: question.tags[0], value: question.tags[0] } : null;
-    const level = question.tags?.[1] ? { label: question.tags[1], value: question.tags[1] } : null;
-
-    setNewQuestion({ 
-        questionText: question.questionText, 
-        options: question.options 
-    });
-
-    setSelectedChapter(chapter); // Cập nhật Select Chương
-    setSelectedLevel(level); // Cập nhật Select Mức độ
-
-    new window.bootstrap.Modal(document.getElementById("questionModal")).show();
+		setEditQuestionId(question.questionId); // Cập nhật theo `questionId`
+	
+		// Lấy chương và mức độ từ tags (nếu có)
+		const chapter = question.tags?.[0] ? { label: question.tags[0], value: question.tags[0] } : null;
+		const level = question.tags?.[1] ? { label: question.tags[1], value: question.tags[1] } : null;
+	
+		setNewQuestion({ 
+			questionText: question.questionText, 
+			options: question.options 
+		});
+	
+		setSelectedChapter(chapter); // Cập nhật Select Chương
+		setSelectedLevel(level); // Cập nhật Select Mức độ
 	};
 
 	const handleUploadClick = async () => {
@@ -131,23 +113,21 @@ const ListQuestionPage = () => {
 			}
 			};
 
-	const groupedQuestions = {};
-	// const selectedQuestions = subjectData.questionBanks.find(qb => qb.questionBankId === questionBankId)?.list || [];
-	const selectedQuestions = []
+	// Nhóm câu hỏi theo Chương và Mức độ
+const groupedQuestions = {};
+questions.questions.forEach((question) => {
+    const chapter = question.tags[0] || "Chương chưa xác định";
+    const level = question.tags[1] || "Mức độ chưa xác định";
 
-	selectedQuestions.forEach((question) => {
-			const chapter = question.tags[0] || "";
-			const level = question.tags[1] || "";
-	
-			if (!groupedQuestions[chapter]) {
-					groupedQuestions[chapter] = {};
-			}
-			if (!groupedQuestions[chapter][level]) {
-					groupedQuestions[chapter][level] = [];
-			}
-	
-			groupedQuestions[chapter][level].push(question);
-	});
+    if (!groupedQuestions[chapter]) {
+        groupedQuestions[chapter] = {};
+    }
+    if (!groupedQuestions[chapter][level]) {
+        groupedQuestions[chapter][level] = [];
+    }
+
+    groupedQuestions[chapter][level].push(question);
+});
 
 	const handleDelete = (id) => {
 			Swal.fire({
@@ -172,29 +152,29 @@ const ListQuestionPage = () => {
 	};
 
 	// const currentQuestionBank = subjectData.questionBanks.find(qb => qb.questionBankId === questionBankId);
-	// const questionBankName = currentQuestionBank ? currentQuestionBank.questionBankName : "Ngân hàng câu hỏi";
-  
-	// // Lấy tất cả các tags từ subjectData và loại bỏ trùng lặp
-	// const allTags = [
-	// 	...new Set(
-	// 		subjectData.questionBanks.flatMap(qb =>
-	// 			qb.list.flatMap(q => q.tags || [])
-	// 		)
-	// 	)
-	// ].map(tag => ({ label: tag, value: tag }));
-	const allTags = [];
+	// Lấy thông tin ngân hàng câu hỏi
+	const questionBankName = questions.questionBankName || "Ngân hàng câu hỏi";
+
+	// Danh sách tất cả chương & mức độ từ `questions`
+	const allChapters = [
+		...new Set(questions.questions.map(q => q.tags?.[0]).filter(Boolean))
+	].map(chapter => ({ label: chapter, value: chapter }));
+
+	const allLevels = [
+		...new Set(questions.questions.map(q => q.tags?.[1]).filter(Boolean))
+	].map(level => ({ label: level, value: level }));
+
+	const [selectedChapter, setSelectedChapter] = useState(null);
+	const [selectedLevel, setSelectedLevel] = useState(null);
 
 	return (
 		<div className=" list-question-container">
 			{/* Breadcrumb */}
 			<nav className="breadcrumb">
-				<Link to="/admin">Home</Link>
-				<span> / </span>
-				<Link to="/admin/question">Ngân hàng câu hỏi</Link>
-				<span> / </span>
-				<Link to={`/admin/question/${subjectId}`}>Phân môn: {subjectName}</Link>
-				<span> / </span>
-				<span className="breadcrumb-current">Bộ: { questionBankName }</span>
+				<Link to="/admin">Home</Link> / 
+				<Link to="/admin/question">Ngân hàng câu hỏi</Link> / 
+				<Link to={`/admin/question/${subject}`}>{decodeURIComponent(subject)}</Link> / 
+				<span className="breadcrumb-current">{questionBankName}</span>
 			</nav>
 	
 			<div className="d-flex">
@@ -223,77 +203,59 @@ const ListQuestionPage = () => {
 					</button>
 				</div>
 			</div>
-
-			{/* {selectedQuestions.map((question) => (
-					<div key={question.id} className="card mb-2">
-							<div className="card-header d-flex justify-content-between">
-									<h6>{question.questionText}</h6>
-									<div className="d-flex" style={{ marginLeft: "50px" }}>
-									<button className="btn btn-primary me-2" onClick={() => handleEditQuestion(question)}>Edit</button>
-									<button className="btn btn-danger">Delete</button>
-									</div>
-							</div>
-							<ul className="list-group">
-									{question.options.map((option, index) => (
-									<li key={index} className={option.isCorrect ? "list-group-item list-group-item-success" : "list-group-item"}>
-											{option.optionText}
-									</li>
-									))}
-							</ul>
-					</div>
-			))} */}
 			{Object.entries(groupedQuestions).map(([chapter, levels]) => (
-				<div key={chapter}>
-					<h4 className="mt-4 mb-3">{chapter}</h4>
-					{Object.entries(levels).map(([level, questions]) => (
-						<div key={level}>
-							<div>
-								{questions.map((question) => (
-									<div key={question.id} className="card mb-2">
-										<div className="card-header d-flex justify-content-between ps-2">
-											<div className="d-flex ">
-											<button 
-												className="btn btn-link text-decoration-none d-flex align-items-center p-0 pe-1"
-												style={{color: "black"}}
-												data-bs-toggle="collapse" 
-												data-bs-target={`#collapse-${question.id}`}
-												aria-expanded="false"
-												aria-controls={`collapse-${question.id}`}
-											>			
-												<ArrowDropDownIcon />
-											</button>
-												<div className="d-flex align-items-center">
-													<h6 className="d-flex align-items-center mb-0">{question.questionText}</h6>
-													{question.tags.slice(1).map((tag, index) => (
-														<p className="m-0 tag-level" key={index}>{tag}</p>
-													))}
-												</div>
-											</div>
-											<div className="d-flex" style={{ marginLeft: "50px" }}>
-												<button className="btn btn-primary me-2" onClick={() => handleEditQuestion(question)}>
-													Edit
-												</button>
-												<button className="btn btn-danger" onClick={() => handleDelete()}>
-													Delete
-												</button>
-											</div>
-										</div>
-										<div id={`collapse-${question.id}`} className="collapse show">
-											<ul className="list-group">
-												{question.options.map((option, index) => (
-													<li key={index} className={option.isCorrect ? "list-group-item list-group-item-success" : "list-group-item"}>
-														{option.optionText}
-													</li>
-												))}
-											</ul>
-										</div>
-									</div>
-								))}
-							</div>
-						</div>
-					))}
-				</div>
-			))}
+    <div key={chapter}>
+        <h4 className="mt-4 mb-3">{chapter}</h4>
+        {Object.entries(levels).map(([level, questions]) => (
+            <div key={level}>
+                <div>
+                    {questions.map((question) => (
+                        <div key={question.questionId} className="card mb-2">
+                            <div className="card-header d-flex justify-content-between ps-2">
+                                <div className="d-flex ">
+                                    <button 
+                                        className="btn btn-link text-decoration-none d-flex align-items-center p-0 pe-1"
+                                        style={{color: "black"}}
+                                        data-bs-toggle="collapse" 
+                                        data-bs-target={`#collapse-${question.questionId}`}
+                                        aria-expanded="false"
+                                        aria-controls={`collapse-${question.questionId}`}
+                                    >            
+                                        <ArrowDropDownIcon />
+                                    </button>
+                                    <div className="d-flex align-items-center">
+                                        <h6 className="d-flex align-items-center mb-0">{question.questionText}</h6>
+                                        {question.tags?.slice(1).map((tag, index) => (
+                                            <p className="m-0 tag-level" key={index}>{tag}</p>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="d-flex" style={{ marginLeft: "50px" }}>
+                                    <button className="btn btn-primary me-2" onClick={() => handleEditQuestion(question)}>
+                                        Edit
+                                    </button>
+                                    <button className="btn btn-danger" onClick={() => handleDelete()}>
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                            <div id={`collapse-${question.questionId}`} className="collapse show">
+                                <ul className="list-group">
+                                    {question.options.map((option, index) => (
+                                        <li key={index} className={option.isCorrect ? "list-group-item list-group-item-success" : "list-group-item"}>
+                                            {option.optionText}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        ))}
+    </div>
+))}
+
 
 			{/* Modal Bootstrap thuần */}
 			<div className="modal fade" id="questionModal" tabIndex="-1" aria-hidden="true">
