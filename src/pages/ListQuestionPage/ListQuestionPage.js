@@ -374,12 +374,13 @@
 																			>            
 																					<ArrowDropDownIcon />
 																			</button>
-																			<div className="d-flex flex-column">
-																					<h6 className="d-flex align-items-center mb-0">{question.questionText}</h6>
-																					{question.tags?.slice(1).map((tag, index) => (
-																							<p className="m-0 tag-level" key={index}>{tag}</p>
-																					))}
+																			<div className="d-flex flex-column justify-content-center">
+																				<h6 className="mb-1">{question.questionText}</h6>
+																				{question.tags?.slice(1).map((tag, index) => (
+																					<p className="m-0 tag-level" key={index}>{tag}</p>
+																				))}
 																			</div>
+
 																	</div>
 																	<div className="d-flex" style={{ marginLeft: "50px" }}>
 																			<button className="btn btn-primary me-2" onClick={() => handleEditQuestion(question)}>
@@ -449,7 +450,7 @@
 								</div>
 							</div>
 								<div>
-									<p className="mb-0 mt-2">Câu hỏi:</p>
+									<p className="mb-0 mt-2"> <span style={{ color: "red" }}>*</span> Câu hỏi:</p>
 									<textarea
 										type="text"
 										className="form-control mb-3 mt-2"
@@ -457,6 +458,7 @@
 										value={newQuestion.questionText}
 										onChange={(e) => setNewQuestion({ ...newQuestion, questionText: e.target.value })}
 									/>
+
 								</div>
 								<div className="form-check mt-0 mb-3">
 									<input
