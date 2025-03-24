@@ -404,7 +404,7 @@ const AccountPage = () => {
                   </td>
                   <td className="text-center">
                     <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
-                      <i className="fas fa-edit text-white "></i>
+                      <i className="fas fa-edit text-white " onClick={handleEdit}></i>
                     </button>
                     <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
                       <i className="fas fa-trash-alt"></i>
