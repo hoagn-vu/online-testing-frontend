@@ -20,7 +20,7 @@ import DetailExamMatrixPage from "./pages/DetailExamMatrixPage/DetailExamMatrixP
 import ExamManagementPage from "./pages/ExamManagementPage/ExamManagementPage";
 import DetailExamPage from "./pages/DetailExamPage/DetailExamPage";
 import OrganizeExamPage from "./pages/OrganizeExamPage/OrganizeExamPage";
-import SesstionPage from "./pages/SesstionPage/SesstionPage";
+import SessionPage from "./pages/SessionPage/SessionPage";
 import RoomOrganizePage from "./pages/RoomOrganizePage/RoomOrganizePage";
 import CandidateOrganizePage from "./pages/CandidateOrganizePage/CandidateOrganizePage";
 import SupervisorLayout from "./layouts/SupervisorLayout/SupervisorLayout";
@@ -95,7 +95,7 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="organize" element={<OrganizeExamPage />} />
           <Route path="organize/report/:organizeId" element={<ReportEachOrganizePage />} />
-          <Route path="organize/:id" element={<SesstionPage />} />
+          <Route path="organize/:id" element={<SessionPage />} />
           <Route path="organize/:organizeId/:sessionId" element={<RoomOrganizePage />} />
           <Route path="organize/monitor/:organizeId/:sessionId" element={<MonitorOrganizePage />} />
           <Route path="organize/score/:organizeId/:sessionId" element={<ScoreTableSessionPage />} />
