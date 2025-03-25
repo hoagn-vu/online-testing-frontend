@@ -435,7 +435,7 @@ const AccountPage = () => {
             }}
             onSubmit={handleSubmit}
           >
-            <p className="text-align fw-bold">
+            <p className="fw-bold">
               {editingAccount ? "Chỉnh sửa tài khoản" : "Thêm tài khoản mới"}
             </p>
 
@@ -683,11 +683,12 @@ const AccountPage = () => {
       {/* Form Đổi mật khẩu */}
       {showPasswordForm && (
         <div className="form-overlay">
-          <div className="form-container">
-            <h3>Đổi mật khẩu</h3>
+          <div className="form-container" style={{width: "40%"}}>
+            <h6 className="fw-bold align-items-left">Đổi mật khẩu</h6>
             <form onSubmit={handlePasswordSubmit}>
               <label>Chọn vai trò:</label>
               <select
+                className="input-height"
                 onChange={(e) =>
                   setPasswordData({ ...passwordData, role: e.target.value })
                 }
@@ -702,6 +703,7 @@ const AccountPage = () => {
 
               <label>Mật khẩu mới:</label>
               <input
+                className="input-height"
                 type="password"
                 required
                 onChange={(e) =>
@@ -714,6 +716,7 @@ const AccountPage = () => {
 
               <label>Xác nhận mật khẩu:</label>
               <input
+                className="input-height"
                 type="password"
                 required
                 onChange={(e) =>
@@ -723,11 +726,12 @@ const AccountPage = () => {
                   })
                 }
               />
-
-              <button type="submit">Lưu</button>
-              <button type="button" onClick={() => setShowPasswordForm(false)}>
-                Hủy
-              </button>
+              <div className="d-flex mt-2">
+                <button type="submit" style={{width: "100%"}}>Lưu</button>
+                <button type="button" style={{width: "100%"}} onClick={() => setShowPasswordForm(false)}>
+                  Hủy
+                </button>
+              </div>
             </form>
           </div>
         </div>
@@ -744,11 +748,13 @@ const AccountPage = () => {
               onChange={setSelectedGroups}
             />
 
-            {/* Nút Đóng */}
-            <button type="submit">Lưu</button>
-            <button type="button" onClick={() => setShowGroupForm(false)}>
-              Hủy
-            </button>
+            <div className="d-flex">
+              <button type="submit" style={{width: "100%"}}>Lưu</button>
+              <button type="button" style={{width: "100%"}} onClick={() => setShowGroupForm(false)}>
+                Hủy
+              </button>
+
+            </div>
           </div>
         </div>
       )}
