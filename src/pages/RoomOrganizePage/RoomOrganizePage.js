@@ -209,9 +209,9 @@ const RoomOrganizePage = () => {
 							</thead>
 							<tbody style={{fontSize: "14px"}}>
 								{roomsOrganize.map((item, index) => (
-									<tr key={item.roomId} className="align-middle">
+									<tr key={item.roomInSessionId} className="align-middle">
 										<td className="text-center">{index + 1}</td>
-										<td>{item.roomId}</td>
+										<td>{item.roomInSessionId}</td>
 										<td>{item.roomName} - {item.roomLocation}</td>
 										<td>{item.supervisorName}</td>
 										<td>

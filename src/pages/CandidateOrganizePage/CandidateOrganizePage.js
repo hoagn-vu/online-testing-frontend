@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import "./CandidateOrganizePage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
-import {Chip, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
+import {Chip, Box, Button, Grid, MenuItem, Select, Pagination, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
 import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import ReactSelect  from 'react-select';
@@ -207,7 +207,18 @@ const CandidateOrganizePage = () => {
 							</tbody>
 						</table>
 					</div>
-					</div>	
+					<div className="d-flex justify-content-end mb-2">
+						{ totalCount > 0 && (
+							<Pagination
+								count={Math.ceil(totalCount / pageSize)}
+								shape="rounded"
+								page={page}
+								onChange={(e, value) => setPage(value)}
+								color="primary"
+							/>
+						)}
+					</div>
+				</div>
 			</div>
 
 			{/* Form thêm tài khoản */}
