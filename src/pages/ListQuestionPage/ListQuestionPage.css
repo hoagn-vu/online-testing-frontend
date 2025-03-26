@@ -32,3 +32,15 @@
     color: rgb(112, 112, 110);
 }
 
+.list-question-container .search-box {
+    width: 250px;
+    position: relative;
+    border: #dee2e6 solid 1px;
+    padding: 6px 12px;
+    background-color: white;
+}
+
+.list-question-container .search-box .search-input {
+    border: none;
+    outline: none;
+}
