@@ -11,79 +11,104 @@ import SearchBox from "../../components/SearchBox/SearchBox";
 import ApiService from "../../services/apiService";
 
 const QuestionBankPage = () => {
-    const { subjectId } = useParams();
-    const [subjectName, setSubjectName] = useState("");
+  const { subjectId } = useParams();
+  const [subjectName, setSubjectName] = useState("");
 
-    const [showForm, setShowForm] = useState(false);
-    const [editingAccount, setEditingAccount] = useState(null);
+  const [listQuestionBank, setListQuestionBank] = useState([]);
 
-    const [listQuestionBank, setListQuestionBank] = useState([]);
+  const [keyword, setKeyword] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [isLoading, setIsLoading] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
 
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response = await ApiService.get("/subjects/question-banks", {
-            params: { subId: subjectId },
-          });
-          setListQuestionBank(response.data.questionBanks);
-          setSubjectName(response.data.subjectName);
-        } catch (error) {
-          console.error("Lỗi lấy dữ liệu:", error);
-        }
-      };
-  
+  const [showForm, setShowForm] = useState(false);
+  const [editingBank, setEditingBank] = useState(null);
+
+  const handleKeywordChange = (e) => {
+    setKeyword(e.target.value);
+    setPage(1);
+  };
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await ApiService.get("/subjects/question-banks", {
+        params: { subId: subjectId, keyword, page, pageSize },
+      });
+      setListQuestionBank(response.data.questionBanks);
+      setSubjectName(response.data.subjectName);
+      setTotalCount(response.data.totalCount);
+    } catch (error) {
+      console.error("Lỗi lấy dữ liệu:", error);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [subjectId, keyword, page, pageSize]);
+
+  const createQuestionBank = async (questionBankName) => {
+    setIsLoading(true);
+    try {
+      await ApiService.post("/subjects/add-question-bank", {
+        subjectId: subjectId,
+        questionBankName: questionBankName,
+      });
       fetchData();
-    }, [subjectId]);
-  
-    const [selectedItems, setSelectedItems] = useState([]);
-  
-    const handleSelectItem = (e, id) => {
-      if (e.target.checked) {
-        setSelectedItems([...selectedItems, id]);
-      } else {
-        setSelectedItems(selectedItems.filter((item) => item !== id));
-      }
-    };
-  
-    const handleSelectAll = (e) => {
-      if (e.target.checked) {
-        setSelectedItems(listQuestionBank.map((item) => item.id));
-      } else {
-        setSelectedItems([]);
-      }
-    };
+    } catch (error) {
+      console.error("Lỗi tạo ngân hàng câu hỏi:", error);
+    }
+    setIsLoading(false);
+  };
 
-    const handleStatusChange = (id, newStatus) => {
-        setRows(
-        rows.map((row) => (row.id === id ? { ...row, status: newStatus } : row))
-        );
-    };
+  const updateQuestionBank = async (questionBankId, questionBankName) => {
+    setIsLoading(true);
+    try {
+      await ApiService.put(`/subjects/update-question-bank`, {
+        subjectId: subjectId,
+        questionBankId: questionBankId,
+        questionBankName: questionBankName,
+      });
+      fetchData();
+    } catch (error) {
+      console.error("Lỗi cập nhật ngân hàng câu hỏi:", error);
+    }
+    setIsLoading(false);
+  };
 
-    const [formData, setFormData] = useState({
-        questionBankName: "",
+  const handlePreAddNew = () => {
+    setEditingBank(null);
+    setFormData({ questionBankName: "" });
+    setShowForm(true);
+  };
+
+  const handlePreEdit = (account) => {
+    setFormData({
+      questionBankId: account.questionBankId,
+      questionBankName: account.questionBankName,
     });
+    setEditingBank(account);
+    setShowForm(true);
+  };
+  
+  const inputRef = useRef(null);
+    
+  const [formData, setFormData] = useState({
+    questionBankName: "",
+  });
 
-    const handleAddNew = () => {
-        setEditingAccount(null); // Đảm bảo không ở chế độ chỉnh sửa
-        setFormData({
-            questionBankName: "",
-        });
-        setTimeout(() => setShowForm(true), 0); // Đợi React cập nhật state rồi mới hiển thị form
-    };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (editingBank) {
+      updateQuestionBank(editingBank.questionBankId, formData.questionBankName);
+    } else {
+      createQuestionBank(formData.questionBankName);
+    }
+    setShowForm(false);
+  };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log("Dữ liệu thêm mới:", formData);
-        setShowForm(false);
-    };
-
-    const handleEdit = (account) => {
-        setFormData({
-            questionBankName: account.questionBankName,
-        });
-        setEditingAccount(account);
-        setShowForm(true);
-    };
 
     const handleDelete = (id) => {
         Swal.fire({
@@ -129,14 +154,14 @@ const QuestionBankPage = () => {
                 type="text"
                 className="search-input w-100"
                 placeholder="Tìm kiếm..."
-                // value={searchTerm}
-                // onChange={handleChangeSearch}
+                value={keyword}
+                onChange={handleKeywordChange}
               />
             </div>
           </div>
 
           <div className='right-header'>
-            <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={handleAddNew}>
+            <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={handlePreAddNew}>
               <i className="fas fa-plus me-2"></i>
               Thêm mới
             </button>
@@ -168,7 +193,7 @@ const QuestionBankPage = () => {
                   </td>
                   <td className="text-center">{item.totalQuestions}</td>
                   <td className="text-center">
-                    <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
+                    <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}} onClick={() => handlePreEdit(item)}>
                       <i className="fas fa-edit text-white "></i>
                     </button>
                     <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
@@ -181,8 +206,16 @@ const QuestionBankPage = () => {
           </table>
         </div>
 
-        <div className="question-bank-pagination d-flex justify-content-end align-items-center">
-            <Pagination count={10} color="primary" shape="rounded"/>        
+        <div className="sample-pagination d-flex justify-content-end align-items-center ">
+          { totalCount > 0 && (
+            <Pagination
+              count={Math.ceil(totalCount / pageSize)}
+              shape="rounded"
+              page={page}
+              onChange={(e, value) => setPage(value)}
+              color="primary"
+            />
+          )}
         </div>
       </div>
 
@@ -203,13 +236,13 @@ const QuestionBankPage = () => {
                     onSubmit={handleSubmit}
                 >
                     <p className="text-align fw-bold">
-                    {editingAccount ? "Chỉnh sửa ngân hàng câu hỏi" : "Thêm ngân hàng câu hỏi"}
+                    {editingBank ? "Chỉnh sửa bộ câu hỏi" : "Thêm bộ câu hỏi"}
                     </p>
 
                     <Grid container>
                         <TextField
                         fullWidth
-                        label="Tên ngân hàng câu hỏi"
+                        label="Tên bộ câu hỏi"
                         required
                         value={formData.questionBankName}
                         onChange={(e) =>
@@ -235,7 +268,7 @@ const QuestionBankPage = () => {
                         color="primary"
                         fullWidth
                         >
-                        {editingAccount ? "Cập nhật" : "Lưu"}
+                        {editingBank ? "Cập nhật" : "Lưu"}
                         </Button>
                     </Grid>
                     <Grid item xs={6}>

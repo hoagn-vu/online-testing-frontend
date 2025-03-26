@@ -12,79 +12,95 @@ import ApiService from "../../services/apiService";
 const SubjectPage = () => {
   const [listSubject, setListSubject] = useState([]);
 
+  const [keyword, setKeyword] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [isLoading, setIsLoading] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+
+  const [showForm, setShowForm] = useState(false);
+  const [editingSubject, setEditingSubject] = useState(null);
+
+  const handleKeywordChange = (e) => {
+    setKeyword(e.target.value);
+    setPage(1);
+  };
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await ApiService.get("/subjects", {
+        params: { keyword, page, pageSize },
+      });
+      setListSubject(response.data.subjects);
+      setTotalCount(response.data.totalCount);
+    } catch (error) {
+      console.error("Failed to fetch data: ", error);
+    }
+    setIsLoading(false);
+  };
+
+  const createSubject = async (subject) => {
+    setIsLoading(true);
+    try {
+      await ApiService.post("/subjects/add-subject", subject);
+      fetchData();
+    } catch (error) {
+      console.error("Failed to create subject: ", error);
+    }
+    setIsLoading(false);
+  };
+
+  const updateSubject = async (subject) => {
+    setIsLoading(true);
+    try {
+      await ApiService.put(`/subjects/update/${subject.id}`, subject);
+      fetchData();
+    }
+    catch (error) {
+      console.error("Failed to update subject: ", error);
+    }
+    setIsLoading(false);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await ApiService.get("/subjects");
-        setListSubject(response.data.subjects);
-      } catch (error) {
-        console.error("Failed to fetch data: ", error);
-      }
-    };
-
     fetchData();
-  }, []);
+  }, [keyword, page, pageSize]);
 
-  const [selectedItems, setSelectedItems] = useState([]);
- 	
-  const handleSelectItem = (e, id) => {
-    if (e.target.checked) {
-      setSelectedItems([...selectedItems, id]);
-    } else {
-      setSelectedItems(selectedItems.filter((item) => item !== id));
-    }
+  const preAddNew = () => {
+    setEditingSubject(null);
+    setFormData({ subjectName: "" });
+    setShowForm(true);
   };
 
-  const handleSelectAll = (e) => {
-    if (e.target.checked) {
-      setSelectedItems(listSubject.map((item) => item.id));
-    } else {
-      setSelectedItems([]);
-    }
-  };
-
-  const showForm = false;
   const inputRef = useRef(null);
 
-    useEffect(() => {
-        if (showForm && inputRef.current) {
-            inputRef.current.focus();
-        }
-    }, [showForm]);
+  useEffect(() => {
+    if (showForm && inputRef.current) {
+        inputRef.current.focus();
+    }
+  }, [showForm]);
 
-    const [formData, setFormData] = useState({
-        subjectName: "",
-    });
+  const [formData, setFormData] = useState({
+      subjectName: "",
+  });
 
-    const handleAddNew = () => {
-        setEditingAccount(null);
-        setFormData({ subjectName: "" });
-        setTimeout(() => setShowForm(true), 0);
-    };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (editingSubject) {
+      updateSubject({ ...editingSubject, ...formData });
+    } else {
+      // Thêm mới dữ liệu
+      createSubject(formData);
+    }
+    setShowForm(false);
+  };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (editingAccount) {
-            // Cập nhật dữ liệu
-            setRows(rows.map((row) => (row.id === editingAccount.id ? { ...row, subjectName: formData.subjectName } : row)));
-        } else {
-            // Thêm mới dữ liệu
-            const newSubject = {
-                id: Date.now().toString(), // Giả lập ID, cần backend tạo ID thực
-                subjectName: formData.subjectName,
-                subjectStatus: null,
-                questionBanks: [],
-            };
-            setRows([...rows, newSubject]);
-        }
-        setShowForm(false);
-    };
-
-    const handleEdit = (subject) => {
-        setFormData({ subjectName: subject.subjectName });
-        setEditingAccount(subject);
-        setShowForm(true);
-    };
+  const handlePreEdit = (subject) => {
+    setFormData({ subjectName: subject.subjectName });
+    setEditingSubject(subject);
+    setShowForm(true);
+  };
 
     const handleDelete = (id) => {
         Swal.fire({
@@ -124,20 +140,20 @@ const SubjectPage = () => {
       <div className="tbl-shadow p-3">
         <div className="sample-card-header d-flex justify-content-between align-items-center mb-2">
           <div className='left-header d-flex align-items-center'>
-            <div className="search-box me-2 rounded d-flex align-items-center">
+            <div className="search-box rounded d-flex align-items-center">
               <i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
               <input
                 type="text"
                 className="search-input w-100"
                 placeholder="Tìm kiếm..."
-                // value={searchTerm}
-                // onChange={handleChangeSearch}
+                value={keyword}
+                onChange={handleKeywordChange}
               />
             </div>
           </div>
 
           <div className='right-header'>
-            <button className="btn btn-primary me-2" style={{fontSize: "14px"}} onClick={handleAddNew}>
+            <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={preAddNew}>
               <i className="fas fa-plus me-2"></i>
               Thêm mới
             </button>
@@ -155,10 +171,18 @@ const SubjectPage = () => {
               </tr>
             </thead>
             <tbody>
-              {listSubject.map((item, index) => (
+              {isLoading ? (
+                <tr>
+                  <td colSpan="4" className="text-center">
+                    <div className="spinner-border text-primary" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                  </td>
+                </tr>
+              ) : listSubject.map((item, index) => (  
                 <tr key={item.id} className="align-middle">
                   <td className="text-center">{index + 1}</td>
-                  <td >
+                  <td>
                     <Link className="text-hover-primary"
                       to={`/staff/question/${item.id}`} 
                       style={{ textDecoration: "none", cursor: "pointer", color: "black" }}
@@ -166,10 +190,9 @@ const SubjectPage = () => {
                       {item.subjectName}
                     </Link>
                   </td>
-
                   <td className="text-center">{item.totalQuestionBanks}</td>
                   <td className="text-center">
-                    <button className="btn btn-primary btn-sm">
+                    <button className="btn btn-primary btn-sm" onClick={() => handlePreEdit(item)}>
                       <i className="fas fa-edit text-white"></i>
                     </button>
                     <button className="btn btn-danger btn-sm ms-2">
@@ -179,11 +202,20 @@ const SubjectPage = () => {
                 </tr>
               ))}
             </tbody>
+
           </table>
         </div>
 
         <div className="sample-pagination d-flex justify-content-end align-items-center ">
-            <Pagination count={10} color="primary" shape="rounded"/>        
+          { totalCount > 0 && (
+            <Pagination
+              count={Math.ceil(totalCount / pageSize)}
+              shape="rounded"
+              page={page}
+              onChange={(e, value) => setPage(value)}
+              color="primary"
+            />
+          )}
         </div>
       </div>
 
@@ -206,7 +238,7 @@ const SubjectPage = () => {
             >
                 {/* Add your form content here */}
                 <p className="text-align fw-bold">
-                    {editingAccount ? "Chỉnh sửa phân môn" : "Thêm phân môn"}
+                    {editingSubject ? "Chỉnh sửa phân môn" : "Thêm phân môn"}
                 </p>
 
                 <Grid container>
@@ -253,8 +285,8 @@ const SubjectPage = () => {
 
                 <Grid container spacing={2} sx={{ mt: 2 }}>
                     <Grid item xs={6}>
-                        <Button type="submit" variant="contained" color="primary" fullWidth>
-                            {editingAccount ? "Cập nhật" : "Lưu"}
+                        <Button type="submit" variant="contained" color="primary" fullWidth >
+                            {editingSubject ? "Cập nhật" : "Lưu"}
                         </Button>
                     </Grid>
                     <Grid item xs={6}>
