@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams  } from "react-router-dom";
 import "./OrganizeExamPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import {Chip, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Pagination, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
+import {Chip, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Pagination, NumberInput, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
@@ -13,47 +13,115 @@ import CreatableSelect from "react-select/creatable";
 import ReactSelect  from 'react-select';
 
 const OrganizeExamPage = () => {
-
   const [listOrganizeExam, setListOrganizeExam] = useState([]);
 
+	const [keyword, setKeyword] = useState("");
+	const [page, setPage] = useState(1);
+	const [pageSize, setPageSize] = useState(10);
+	const [isLoading, setIsLoading] = useState(false);
+	const [totalCount, setTotalCount] = useState(0);
+	const [subjectOptions, setSubjectOptions] = useState([]);
+	const [questionBankOptions, setQuestionBankOptions] = useState([]);
+	const [typeOptions, setTypeOptions] = useState([
+		{ value: "matrix", label: "Ma trận" },
+		{ value: "auto", label: "Ngẫu nhiên" },
+		{ value: "exams", label: "Đề thi" },
+	]);
+  const [formData, setFormData] = useState({
+    organizeExamName: "",
+    subjectId: "",
+		questionBankId: null,
+    examType: "",
+    examSet: null,
+    matrixId: null,
+    duration: "",
+    maxScore: 10,
+		totalQuestions: "",
+    organizeExamStatus: "active",
+  });
+
+	const handleKeywordChange = (e) => {
+    setKeyword(e.target.value);
+    setPage(1);
+  };
+
+	const fetchData = async () => {
+		setIsLoading(true);
+		try {
+			const response = await ApiService.get('/organize-exams', {
+				params: { page, pageSize, keyword },
+			});
+			setListOrganizeExam(response.data.organizeExams);
+			setTotalCount(response.data.totalCount);
+		} catch (error) {
+			console.error("Failed to fetch data", error);
+		}
+	};
+
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await ApiService.get('/organize-exams');
-      setListOrganizeExam(response.data.organizeExams);
-    };
-
     fetchData();
-  }, []);
+  }, [page, pageSize, keyword]);
 
+	useEffect(() => {
+		const fetchSubjectOptions = async () => {
+			try {
+				const response = await ApiService.get("/subjects");
+				setSubjectOptions(response.data.subjects.map((subject) => ({
+					value: subject.id,
+					label: subject.subjectName,
+				})));
+			} catch (error) {
+				console.error("Failed to fetch subjects", error);
+			}
+		};
+		fetchSubjectOptions();
+	}, []);
 
-  const [selectedItems, setSelectedItems] = useState([]);
+	const fetchQuestionBankOptions = async (type, subjectId) => {
+		if (type !== "auto") {
+			setQuestionBankOptions([]);
+			return;
+		}
+		try {
+			const response = await ApiService.get("/subjects/question-bank-options", {
+				params: { subjectId: subjectId },
+			});
 
-  const handleSelectItem = (e, id) => {
-    if (e.target.checked) {
-      setSelectedItems([...selectedItems, id]);
-    } else {
-      setSelectedItems(selectedItems.filter((item) => item !== id));
-    }
-  };
+			setQuestionBankOptions(response.data.map((questionBank) => ({
+				value: questionBank.questionBankId,
+				label: questionBank.questionBankName,
+			})));
+		} catch (error) {
+			console.error("Failed to fetch question banks", error);
+		}
+	};
 
-  const handleSelectAll = (e) => {
-    if (e.target.checked) {
-      setSelectedItems(listOrganizeExam.map((item) => item.id));
-    } else {
-      setSelectedItems([]);
-    }
-  };
+	// 	if (formData.subjectId && formData.examType === "auto") {
+	// 		fetchQuestionBankOptions();
+	// 	}
+	// }, [formData.subjectId, formData.examType]);
+	
+  const preAddNew = () => {
+		setEditingOrganizeExam(null); 
+		setFormData({
+			organizeExamName: "",
+			subjectId: "",
+			questionBankId: null,
+			examType: "",
+			examSet: null,
+			matrixId: null,
+			duration: "",
+			maxScore: 10,
+			totalQuestions: "",
+			organizeExamStatus: "active",
+		});
+		setShowForm(true);
+	};	
 
   const [showForm, setShowForm] = useState(false);
-  const [editingAccount, setEditingAccount] = useState(null);
-  const paginationModel = { page: 0, pageSize: 5 };
+  const [editingOrganizeExam, setEditingOrganizeExam] = useState(null);
   const inputRef = useRef(null);
   const [selectedType, setSelectedType] = useState(null); 
-  const navigate = useNavigate(); // Hook để điều hướng
-  const {id:organizeId} = useParams();
-  // const [rows, setRows] = useState([]);
-  
-
 
   useEffect(() => {
     if (showForm && inputRef.current) {
@@ -90,40 +158,21 @@ const OrganizeExamPage = () => {
       }
     });
   };
-  
-  const [formData, setFormData] = useState({
-    organizeExamName: "",
-    subjectId: "",
-    examType: "",
-    examSet: "",
-    matrixId: "",
-    duration: "",
-    maxScore: "",
-    organizeExamStatus: "active",
-  });
 
-  const handleAddNew = () => {
-  setEditingAccount(null); 
-  setFormData({
-    organizeExamName: "",
-    subjectId: "",
-    examType: "",
-    examSet: "",
-    matrixId: "",
-    duration: "",
-    maxScore: "",
-    organizeExamStatus: "active",
-  });
-  setTimeout(() => setShowForm(true), 0); 
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Dữ liệu thêm mới:", formData);
-    setShowForm(false);
+		try {
+			await ApiService.post("/organize-exams", formData);
+			fetchData();
+		} catch (error) {
+			console.error("Failed to add organize exam", error);
+		}
+
+		resetForm();
   };
 
-  const handleEdit = (account) => {
+  const preEdit = (account) => {
     setFormData({
       organizeExamName: account.organizeExamName,
       subjectId: account.subjectId,
@@ -132,9 +181,10 @@ const OrganizeExamPage = () => {
       matrixId: account.matrixId,
       duration: account.duration,
       maxScore: account.maxScore,
+			totalQuestions: account.totalQuestions,
       organizeExamStatus: account.organizeExamStatus,
     });
-    setEditingAccount(account);
+    setEditingOrganizeExam(account);
     setShowForm(true);
   };
   
@@ -162,6 +212,23 @@ const OrganizeExamPage = () => {
     });
   };
 
+	const resetForm = () => {
+		setFormData({
+			organizeExamName: "",
+			subjectId: "",
+			questionBankId: null,
+			examType: "",
+			examSet: null,
+			matrixId: null,
+			duration: "",
+			maxScore: 10,
+			organizeExamStatus: "active",
+		});
+		setEditingOrganizeExam(null);
+		setQuestionBankOptions([]);
+		setShowForm(false);
+	};
+
   return (
     <div className="exam-management-page">
       {/* Breadcrumb */}
@@ -169,19 +236,31 @@ const OrganizeExamPage = () => {
 				<Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
 				
 				<span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
-				<span className="breadcrumb-current"> Quản lý kỳ thi</span>
+				<span className="breadcrumb-current">Quản lý kỳ thi</span>
 			</nav>
 
-			<div className="tbl-shadow p-3 pt-2">
-				<div className="account-actions mt-2">
-					<div className="search-container">
-						<SearchBox></SearchBox>
-					</div>
-					<button className="btn btn-primary" style={{fontSize: "14px"}} onClick={handleAddNew}>
-						<i className="fas fa-plus me-2"></i>
-						Thêm mới
-					</button>
-				</div>
+			<div className="tbl-shadow p-3">
+				<div className="sample-card-header d-flex justify-content-between align-items-center mb-2">
+          <div className='left-header d-flex align-items-center'>
+            <div className="search-box rounded d-flex align-items-center">
+              <i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
+              <input
+                type="text"
+                className="search-input w-100"
+                placeholder="Tìm kiếm..."
+                value={keyword}
+                onChange={handleKeywordChange}
+              />
+            </div>
+          </div>
+
+          <div className='right-header'>
+            <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={preAddNew}>
+              <i className="fas fa-plus me-2"></i>
+              Thêm mới
+            </button>
+          </div>
+        </div>
 
 				{/* Hiển thị bảng theo vai trò đã chọn */}
 				<div className="organize-examtable-container mt-3">
@@ -209,7 +288,7 @@ const OrganizeExamPage = () => {
 										<td>
 											<Link className="text-hover-primary"
 												to={`/staff/organize/${encodeURIComponent(item.id)}`}
-												state={{ organizeExamName: item.organizeExamName }} // ✅ Truyền state
+												state={{ organizeExamName: item.organizeExamName }}
 												style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
 											>
 												{item.organizeExamName}
@@ -217,8 +296,8 @@ const OrganizeExamPage = () => {
 										</td>
 										<td>{item.subjectName}</td>
 										<td>{item.examType}</td>
-										<td>{item.examType === "Ma trận" || item.examType === "Ngẫu nhiên" ? "N/A" : item.examSet?.join(", ") || "N/A"}</td>
-										<td>{item.examType === "Đề thi" || item.examType === "Ngẫu nhiên" ? "N/A" : item.matrixId || "N/A"}</td>
+										<td>{item.examType === "Ma trận" || item.examType === "Ngẫu nhiên" ? "-" : item.examSet?.join(", ") || "-"}</td>
+										<td>{item.examType === "Đề thi" || item.examType === "Ngẫu nhiên" ? "-" : item.matrixId || "-"}</td>
 										<td className="text-center">{item.duration}</td>
 										<td className="text-center">{item.maxScore}</td>
 										<td>
@@ -243,7 +322,7 @@ const OrganizeExamPage = () => {
 											</Link>
 										</td>
 										<td className="text-center">
-											<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
+											<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}} onClick={() => preEdit(item)}>
 												<i className="fas fa-edit text-white "></i>
 											</button>
 											<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
@@ -257,7 +336,15 @@ const OrganizeExamPage = () => {
 					</div>
 
 					<div className="organize-exampagination d-flex justify-content-end align-items-center">
-						<Pagination count={10} color="primary" shape="rounded"/>        
+						{ totalCount > 0 && (
+							<Pagination
+								count={Math.ceil(totalCount / pageSize)}
+								shape="rounded"
+								page={page}
+								onChange={(e, value) => setPage(value)}
+								color="primary"
+							/>
+						)}
 					</div>
 				</div>
 			</div>
@@ -278,7 +365,7 @@ const OrganizeExamPage = () => {
 							onSubmit={handleSubmit}
 						>
 							<p className="text-align fw-bold">
-								{editingAccount ? "Chỉnh sửa thông tin kỳ thi" : "Tạo kỳ thi"}
+								{editingOrganizeExam ? "Chỉnh sửa thông tin kỳ thi" : "Tạo kỳ thi"}
 							</p>
 	
 							<Grid container spacing={2}>										
@@ -304,7 +391,8 @@ const OrganizeExamPage = () => {
                 <Grid item xs={6}>
 									<TextField
 										fullWidth
-										label="Thời gian"
+										label="Thời lượng"
+										type="number"
 										required
 										value={formData.duration}
 										onChange={(e) =>
@@ -323,6 +411,7 @@ const OrganizeExamPage = () => {
 									<TextField
 										fullWidth
 										label="Điểm tối đa"
+										type="number"
 										required
 										value={formData.maxScore}
 										onChange={(e) =>
@@ -345,7 +434,10 @@ const OrganizeExamPage = () => {
 										placeholder="Phân môn"
 										name="color"
 										options={subjectOptions}
-										isDisabled={editingAccount}
+										isDisabled={editingOrganizeExam}
+										onChange={(selectedOption) => {
+											setFormData({ ...formData, subjectId: selectedOption.value });
+										}}
 										styles={{
 											control: (base) => ({
 												...base,
@@ -381,9 +473,13 @@ const OrganizeExamPage = () => {
 										placeholder="Loại"
 										name="color"
 										options={typeOptions}
-										isDisabled={editingAccount}
+										isDisabled={editingOrganizeExam}
                     value={typeOptions.find((option) => option.value === selectedType)}
-                    onChange={(selected) => setSelectedType(selected?.value || null)}
+										onChange={(selected) => {
+											setSelectedType(selected?.value || null);
+											fetchQuestionBankOptions(selected?.value, formData.subjectId);
+											setFormData({ ...formData, examType: selected?.value || null });
+										}}
 										styles={{
 											control: (base) => ({
 												...base,
@@ -411,7 +507,7 @@ const OrganizeExamPage = () => {
 										}}
 									/>
 								</Grid>
-                {selectedType === "Đề thi" && (
+                {selectedType === "exams" && (
 								<Grid item xs={12}>
 									<ReactSelect
 										fullWidth
@@ -420,7 +516,7 @@ const OrganizeExamPage = () => {
 										placeholder="Chọn đề thi"
 										name="color"
 										options={subjectOptions}
-										isDisabled={editingAccount}
+										isDisabled={editingOrganizeExam}
 										styles={{
 											control: (base) => ({
 												...base,
@@ -446,7 +542,7 @@ const OrganizeExamPage = () => {
 								</Grid>
                 )}
 
-                {selectedType === "Ma trận" && (
+                {selectedType === "matrix" && (
                 <Grid item xs={12}>
 									<ReactSelect
 										fullWidth
@@ -455,7 +551,7 @@ const OrganizeExamPage = () => {
 										placeholder="Chọn ma trận"
 										name="color"
 										options={subjectOptions}
-										isDisabled={editingAccount}
+										isDisabled={editingOrganizeExam}
 										styles={{
 											control: (base) => ({
 												...base,
@@ -480,26 +576,67 @@ const OrganizeExamPage = () => {
 									/>
 								</Grid>
                 )}
-                {selectedType === "Ngẫu nhiên" && (
-                <Grid item xs={12}>
-                  <TextField
-										fullWidth
-										label="Số lượng câu hỏi"
-										required
-										value={formData.totalQuestion}
-										onChange={(e) =>
-											setFormData({ ...formData, totalQuestion: e.target.value })
-										}
-										sx={{
-											"& .MuiInputBase-input": {
-												fontSize: "14px",
-												paddingBottom: "11px",
-											},
-											"& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-										}}
-									/>
-									
-								</Grid>
+                {selectedType === "auto" && (
+									<Grid container spacing={2}>		
+										<Grid item xs={6}>
+										<ReactSelect
+											fullWidth
+											className="basic-single "
+											classNamePrefix="select"
+											placeholder="Bộ câu hỏi"
+											name="color"
+											onChange={(selectedOption) => {
+												setFormData({ ...formData, questionBankId: selectedOption.value });
+											}}
+											options={questionBankOptions}
+											isDisabled={editingOrganizeExam}
+											styles={{
+												control: (base) => ({
+													...base,
+													width: "275px", // Cố định chiều rộng
+													minWidth: "275px",
+													maxWidth: "250px",
+													height: "48px", // Tăng chiều cao
+													minHeight: "40px",
+												}),
+												menu: (base) => ({
+													...base,
+													width: "250px", // Cố định chiều rộng của dropdown
+												}),
+												valueContainer: (base) => ({
+													...base,
+													overflow: "hidden",
+													textOverflow: "ellipsis",
+													whiteSpace: "nowrap",
+													fontSize: "14px",
+												}),
+												placeholder: (base) => ({
+													...base,
+													fontSize: "14px", // Cỡ chữ của placeholder (label)
+												}),
+											}}
+										/>
+										</Grid>
+										<Grid item xs={6}>
+											<TextField
+												fullWidth
+												label="Số lượng câu hỏi"
+												type="number"
+												required
+												value={formData.totalQuestions}
+												onChange={(e) =>
+													setFormData({ ...formData, totalQuestions: e.target.value })
+												}
+												sx={{
+													"& .MuiInputBase-input": {
+														fontSize: "14px",
+														paddingBottom: "11px",
+													},
+													"& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+												}}
+											/>
+										</Grid>
+									</Grid>
                 )}
 							</Grid>		
 							{/* Buttons */}
@@ -511,7 +648,7 @@ const OrganizeExamPage = () => {
 										color="primary"
 										fullWidth
 									>
-										{editingAccount ? "Cập nhật" : "Lưu"}
+										{editingOrganizeExam ? "Cập nhật" : "Lưu"}
 									</Button>
 								</Grid>
 								<Grid item xs={6}>
@@ -519,7 +656,7 @@ const OrganizeExamPage = () => {
 										variant="outlined"
 										color="secondary"
 										fullWidth
-										onClick={() => setShowForm(false)}
+										onClick={() => resetForm()}
 									>
 										Hủy
 									</Button>

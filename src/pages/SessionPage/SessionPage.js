@@ -15,24 +15,21 @@ import dayjs from "dayjs";
 import ApiService from "../../services/apiService";
 
 const SessionPage = () => {
+	const { organizeId } = useParams();
+
 	const [showForm, setShowForm] = useState(false);
 	const [editingAccount, setEditingAccount] = useState(null);
 	const inputRef = useRef(null);
-	const { id: organizeId } = useParams();
-	// const { organizeExamName } = useParams();
-	const { id } = useParams(); // Lấy ID kỳ thi từ URL
-  const location = useLocation();
-  //const organizeExamName = location.state?.organizeExamName || "Chưa có tên kỳ thi";
+	const [organizeExamName, setOrganizeExamName] = useState("");
 
-	const organizeExamName = location.state?.organizeExamName || localStorage.getItem("organizeExamName");
-
-
-	const [listOrganizeExam, setListOrganizeExam] = useState([]);
+	const [organizeExam, setOrganizeExam] = useState([]);
 
 	useEffect(() => {
 		const fetchData = async () => {
-			const response = await ApiService.get('/organize-exams');
-			setListOrganizeExam(response.data.organizeExams);
+			const response = await ApiService.get('/organize-exams/get-by-id', {
+				params: { organizeExamId: organizeId },
+			});
+			setOrganizeExam(response.data);
 		};
 
 		fetchData();
@@ -40,27 +37,57 @@ const SessionPage = () => {
 
 	const [listSession, setListSession] = useState([]);
 
-	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const response = await ApiService.get(`/organize-exams/sessions`, {
-					params: { orgExamId: organizeId },
-				});
-				setListSession(response.data.sessions);
-			} catch (error) {
-				console.error("Failed to fetch data: ", error);
-			}
-		};
+	const [keyword, setKeyword] = useState("");
+	const [page, setPage] = useState(1);
+	const [pageSize, setPageSize] = useState(10);
+	const [isLoading, setIsLoading] = useState(false);
+	const [totalCount, setTotalCount] = useState(0);
 
+	const handleKeywordChange = (e) => {
+    setKeyword(e.target.value);
+    setPage(1);
+  };
+
+	const fetchData = async () => {
+		try {
+			const response = await ApiService.get(`/organize-exams/sessions`, {
+				params: { orgExamId: organizeId, keyword, page, pageSize },
+			});
+			setListSession(response.data.sessions);
+			setTotalCount(response.data.totalCount);
+			setOrganizeExamName(response.data.organizeExamName);
+		} catch (error) {
+			console.error("Failed to fetch data: ", error);
+		}
+	};
+
+	useEffect(() => {
 		fetchData();
-	}, [organizeId]);
+	}, [organizeId, keyword, page, pageSize]);
 	
+	const [formData, setFormData] = useState({
+		sessionId: "",
+		activeAt: "",
+		roomList: "",
+		sessionStatus: "active",
+	});
+	
+	const preAddNew = () => {
+		setEditingAccount(null); 
+		setFormData({
+			sessionId: "",
+			activeAt: "",
+			roomList: "",
+			sessionStatus: "active",
+		});
+		setTimeout(() => setShowForm(true), 0); 
+	};
 	
 	useEffect(() => {
 		if (showForm && inputRef.current) {
 			inputRef.current.focus();
 		}
-		}, [showForm]);
+	}, [showForm]);
 
 	const handleStatusChange = (id, newStatus) => {
 		Swal.fire({
@@ -81,24 +108,6 @@ const SessionPage = () => {
 				Swal.fire("Thành công!", "Trạng thái đã được cập nhật.", "success");
 			}
 		});
-	};
-	
-	const [formData, setFormData] = useState({
-	sessionId: "",
-	activeAt: "",
-	roomList: "",
-	sessionStatus: "active",
-	});
-
-	const handleAddNew = () => {
-	setEditingAccount(null); 
-	setFormData({
-		sessionId: "",
-		activeAt: "",
-		roomList: "",
-		sessionStatus: "active",
-	});
-	setTimeout(() => setShowForm(true), 0); 
 	};
 
 	const handleSubmit = (e) => {
@@ -170,7 +179,6 @@ const SessionPage = () => {
 			}
 		});
 	};
-	console.log("organizeExamName trước khi truyền:", organizeExamName);
 
 	return (
 		<div className="exam-management-page">
@@ -190,8 +198,7 @@ const SessionPage = () => {
 			</nav> */}
 
 		<div>
-			{listOrganizeExam.map((exam) => (
-				<div key={exam.id} style={{
+				<div style={{
 					background: "#fff",
 					padding: "15px 15px 0px 15px",
 					marginBottom: "15px",
@@ -200,7 +207,7 @@ const SessionPage = () => {
 					fontSize: "14px"
 				}}>
 					<p style={{ fontSize: "18px", fontWeight: "bold", color: "#333", marginBottom: "15px" }}>
-							Kỳ thi: {exam.organizeExamName}
+							Kỳ thi: {organizeExam.organizeExamName}
 					</p>
 
 					<div className="d-flex" style={{display: "flex",
@@ -209,47 +216,58 @@ const SessionPage = () => {
 					}}>
 						{/* Cột 1 */}
 						<div style={{ flex: 1 }}>
-								<p><strong>Môn thi:</strong> {exam.subjectName ?? "Chưa có dữ liệu"}</p>
-								<p><strong>Loại đề thi:</strong> {exam.examType}</p>
+								<p><strong>Môn thi:</strong> {organizeExam.subjectName ?? "Chưa có dữ liệu"}</p>
+								<p><strong>Loại đề thi:</strong> {organizeExam.examType}</p>
 						</div>
 
 						{/* Cột 2 */}
 						<div style={{ flex: 1 }}>
-							<p><strong>Thời gian làm bài:</strong> {exam.duration} phút</p>
+							<p><strong>Thời gian làm bài:</strong> {organizeExam.duration} phút</p>
 							{/* Chỉ hiển thị examSet khi loại đề là "exam" */}
-							{exam.examType === "exam" && (
-								<p><strong>Bộ đề thi:</strong> {exam.exams?.length > 0 ? exam.examSet.join(", ") : "Chưa có dữ liệu"}</p>
+							{organizeExam.examType === "exam" && (
+								<p><strong>Bộ đề thi:</strong> {organizeExam.exams?.length > 0 ? organizeExam.examSet.join(", ") : "Chưa có dữ liệu"}</p>
 							)}
 
 							{/* Chỉ hiển thị tổng số câu hỏi khi loại đề là "auto" */}
-							{exam.examType === "auto" && (
-								<p><strong>Tổng số câu hỏi:</strong> {exam.totalQuestion ?? "Chưa có dữ liệu"}</p>
+							{organizeExam.examType === "auto" && (
+								<p><strong>Tổng số câu hỏi:</strong> {organizeExam.totalQuestions ?? "Chưa có dữ liệu"}</p>
 							)}
 						</div>
 
 						{/* Cột 3 - Hiển thị thông tin đặc biệt */}
 						<div style={{ flex: 1 }}>
-							{(exam.examType === "matrix" || exam.examType === "auto") && (
-								<p><strong>Điểm tối đa:</strong> {exam.maxScore}</p>
+							{(organizeExam.examType === "matrix" || organizeExam.examType === "auto") && (
+								<p><strong>Điểm tối đa:</strong> {organizeExam.maxScore}</p>
 							)}
-							{exam.examType === "matrix"  && (
-									<p><strong>Ma trận đề:</strong> {exam.matrixName ?? "Chưa có dữ liệu"}</p>
+							{organizeExam.examType === "matrix"  && (
+									<p><strong>Ma trận đề:</strong> {organizeExam.matrixName ?? "Chưa có dữ liệu"}</p>
 							)}
 						</div>
 					</div>
 				</div>
-			))}
-		</div>
-			<div className="tbl-shadow">
-					<div className="account-actions mt-2 ms-1">
-					<div className="search-container">
-						<SearchBox></SearchBox>
-					</div>
-					<button className="btn btn-primary me-2" style={{fontSize: "14px"}} onClick={handleAddNew}>
-						<i className="fas fa-plus me-2"></i>
-						Thêm mới
-					</button>
-				</div>
+			</div>
+			<div className="tbl-shadow p-3">
+				<div className="sample-card-header d-flex justify-content-between align-items-center mb-2">
+          <div className='left-header d-flex align-items-center'>
+            <div className="search-box rounded d-flex align-items-center">
+              <i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
+              <input
+                type="text"
+                className="search-input w-100"
+                placeholder="Tìm kiếm..."
+                value={keyword}
+                onChange={handleKeywordChange}
+              />
+            </div>
+          </div>
+
+          <div className='right-header'>
+            <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={preAddNew}>
+              <i className="fas fa-plus me-2"></i>
+              Thêm mới
+            </button>
+          </div>
+        </div>
 
 				<div className="session-table-container mt-3">
 				<div className="table-responsive">
@@ -332,10 +350,18 @@ const SessionPage = () => {
 					</table>
 				</div>
 				<div className="d-flex justify-content-end mb-2">
-					<Pagination count={10} color="primary" shape="rounded"></Pagination>
+					{ totalCount > 0 && (
+						<Pagination
+							count={Math.ceil(totalCount / pageSize)}
+							shape="rounded"
+							page={page}
+							onChange={(e, value) => setPage(value)}
+							color="primary"
+						/>
+					)}
 				</div>
-				</div>	
-			</div>
+			</div>	
+		</div>
 			
 
 			{/* Form thêm tài khoản */}

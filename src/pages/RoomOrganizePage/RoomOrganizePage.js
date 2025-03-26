@@ -9,62 +9,48 @@ import { DataGrid } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import ReactSelect  from 'react-select';
-
-const listQuestionBank = [
-	{
-		roomId: "ROOM101",
-		roomName: "401",
-		roomLocation: "Tòa A",
-		supervisorId: "SUP123",
-		supervisorName: "Hoàng Nguyên Vũ",
-		roomOrganizeStatus: "Active",
-		candidates: []
-	},
-	{
-		roomId: "ROOM102",
-		roomName: "402",
-		roomLocation: "Tòa B",
-		supervisorId: "SUP124",
-		supervisorName: "Ngô Đức Thuận",
-		roomOrganizeStatus: "Active",
-		candidates: []
-	}
-];
-
-const subjectOptions = [
-	{ value: 'Tư tưởng Hồ Chí Minh', label: 'Tư tưởng Hồ Chí Minh' },
-	{ value: 'Yêu cầu phần mềm', label: 'Yêu cầu phần mềm' },
-	{ value: 'Giải tích', label: 'Giải tích' },
-];
+import ApiService from "../../services/apiService";
 
 const RoomOrganizePage = () => {
 	const [showForm, setShowForm] = useState(false);
 	const [editingAccount, setEditingAccount] = useState(null);
-	const paginationModel = { page: 0, pageSize: 5 };
 	const inputRef = useRef(null);
-	const [rows, setRows] = useState();
-	// const {sessionId} = useParams();
-	const { organizeId, sessionId } = useParams();
-	const location = useLocation();
-	const { sessionName} = location.state || {};
-	const organizeExamName = location.state?.organizeExamName || localStorage.getItem("organizeExamName");
 
-	console.error("organizeId:", organizeId);
-	console.error("organizeName:", organizeExamName);
-	useEffect(() => {
-		setRows(
-		  listQuestionBank.map(room => ({
-			...room, // Giữ nguyên dữ liệu của room
-		  }))
-		);
-	  }, []);
-	
-	useEffect(() => {
-		if (showForm && inputRef.current) {
-				inputRef.current.focus();
+	const { organizeId, sessionId } = useParams();
+
+	const [roomsOrganize, setRoomsOrganize] = useState([]);
+	const [organizeExamName, setOrganizeExamName] = useState("");
+	const [sessionName, setSessionName] = useState("");
+	const [keyword, setKeyword] = useState("");
+	const [page, setPage] = useState(1);
+	const [pageSize, setPageSize] = useState(10);
+	const [isLoading, setIsLoading] = useState(false);
+	const [totalCount, setTotalCount] = useState(0);
+	const [subjectOptions, setSubjectOptions] = useState([]);
+
+	const handleKeywordChange = (e) => {
+    setKeyword(e.target.value);
+    setPage(1);
+  };
+
+	const fetchData = async () => {
+		try {
+			const response = await ApiService.get("/organize-exams/rooms", {
+				params: { orgExamId: organizeId, ssId: sessionId, keyword, page, pageSize },
+			});
+			setRoomsOrganize(response.data.rooms);
+			setTotalCount(response.data.totalCount);
+			setOrganizeExamName(response.data.organizeExamName);
+			setSessionName(response.data.sessionName);
+		} catch (error) {
+			console.error("Failed to fetch data", error);
 		}
-		}, [showForm]);
-	
+	};
+
+	useEffect(() => {
+		fetchData();
+	}, [organizeId, sessionId, keyword, page, pageSize]);
+		
 	const [formData, setFormData] = useState({
 		roomId: "",
 		roomName: "",
@@ -72,16 +58,22 @@ const RoomOrganizePage = () => {
 		candidateList: "",
 	});
 
-	const handleAddNew = () => {
-	setEditingAccount(null); 
-	setFormData({
-		roomId: "",
-		roomName: "",
-		supervisorId: "",
-		candidateList: "",
-	});
-	setTimeout(() => setShowForm(true), 0); 
+	const preAddNew = () => {
+		setEditingAccount(null); 
+		setFormData({
+			roomId: "",
+			roomName: "",
+			supervisorId: "",
+			candidateList: "",
+		});
+		setShowForm(true);
 	};
+	
+	useEffect(() => {
+		if (showForm && inputRef.current) {
+				inputRef.current.focus();
+		}
+		}, [showForm]);
 
 	const handleSubmit = (e) => {
 			e.preventDefault();
@@ -145,7 +137,7 @@ const RoomOrganizePage = () => {
 			// Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
 			setRows((prevRows) =>
 			  prevRows.map((row) =>
-				row.roomId === id ? { ...row, roomOrganizeStatus: newStatus } : row
+				row.roomId === id ? { ...row, roomStatus: newStatus } : row
 			  )
 			);
 			console.log("organizeExamId được đổi status:", id)
@@ -178,15 +170,28 @@ const RoomOrganizePage = () => {
 				<span className="breadcrumb-current">{sessionName}</span>
 			</nav>
 
-			<div className="tbl-shadow">
-				<div className="account-actions p-2">
-					<div className="search-container">
-							<SearchBox></SearchBox>
-					</div>
-					<button className="add-btn" onClick={handleAddNew}>
-							Thêm mới
-					</button>
-				</div>
+			<div className="tbl-shadow p-3">
+				<div className="sample-card-header d-flex justify-content-between align-items-center mb-2">
+          <div className='left-header d-flex align-items-center'>
+            <div className="search-box rounded d-flex align-items-center">
+              <i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
+              <input
+                type="text"
+                className="search-input w-100"
+                placeholder="Tìm kiếm..."
+                value={keyword}
+                onChange={handleKeywordChange}
+              />
+            </div>
+          </div>
+
+          <div className='right-header'>
+            <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={preAddNew}>
+              <i className="fas fa-plus me-2"></i>
+              Thêm mới
+            </button>
+          </div>
+        </div>
 
 				<div className="room-organize-table-container mt-3">
 					<div className="table-responsive">
@@ -203,20 +208,15 @@ const RoomOrganizePage = () => {
 								</tr>
 							</thead>
 							<tbody style={{fontSize: "14px"}}>
-								{listQuestionBank.map((item, index) => (
+								{roomsOrganize.map((item, index) => (
 									<tr key={item.roomId} className="align-middle">
 										<td className="text-center">{index + 1}</td>
 										<td>{item.roomId}</td>
-										<td>{item.roomName} ({item.roomLocation})</td>
+										<td>{item.roomName} - {item.roomLocation}</td>
 										<td>{item.supervisorName}</td>
 										<td>
 											<Link className="text-hover-primary"
-												to={`/staff/organize/${organizeId}/${sessionId}/${item.roomId}`}
-												state={{ 
-													roomName: item.roomName,
-													sessionName: sessionName,
-													organizeExamName: organizeExamName  // Truyền thêm organizeExamName
-												}}
+												to={`/staff/organize/${organizeId}/${sessionId}/${item.roomInSessionId}`}
 												style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
 											>
 												Danh sách thí sinh
@@ -228,9 +228,9 @@ const RoomOrganizePage = () => {
 													className="form-check-input"
 													type="checkbox"
 													role="switch"
-													checked={item.roomOrganizeStatus.toLowerCase() === "active"}
+													checked={item.roomStatus.toLowerCase() === "active"}
 													onChange={() =>
-														handleToggleStatus(item.roomId, item.roomOrganizeStatus)
+														handleToggleStatus(item.roomId, item.roomStatus)
 													}
 												/>
 											</div>
@@ -249,7 +249,15 @@ const RoomOrganizePage = () => {
 						</table>
 					</div>
 					<div className="d-flex justify-content-end mb-2">
-						<Pagination count={10} color="primary" shape="rounded" />        
+						{ totalCount > 0 && (
+							<Pagination
+								count={Math.ceil(totalCount / pageSize)}
+								shape="rounded"
+								page={page}
+								onChange={(e, value) => setPage(value)}
+								color="primary"
+							/>
+						)}
 					</div>
 				</div>	
 			</div>
