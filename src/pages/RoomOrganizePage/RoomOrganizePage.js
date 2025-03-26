@@ -13,7 +13,7 @@ import ApiService from "../../services/apiService";
 
 const RoomOrganizePage = () => {
 	const [showForm, setShowForm] = useState(false);
-	const [editingAccount, setEditingAccount] = useState(null);
+	const [editingRoomOrganize, setEditingRoomOrganize] = useState(null);
 	const inputRef = useRef(null);
 
 	const { organizeId, sessionId } = useParams();
@@ -26,7 +26,44 @@ const RoomOrganizePage = () => {
 	const [pageSize, setPageSize] = useState(10);
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalCount, setTotalCount] = useState(0);
-	const [subjectOptions, setSubjectOptions] = useState([]);
+	const [roomOptions, setRoomOptions] = useState([]);
+	const [supervisorOptions, setSupervisorOptions] = useState([]);
+	const [candidateGroupOptions, setCandidateGroupOptions] = useState([]);
+
+	useEffect(() => {
+		const fetchRoomOptions = async () => {
+			try {
+				const response = await ApiService.get("/rooms/get-options");
+				setRoomOptions(response.data.map((room) => ({
+					value: room.roomId,
+					label: `${room.roomName} - ${room.roomLocation}`,
+				})));
+			} catch (error) {
+				console.error("Failed to fetch room options", error);
+			}
+		};
+
+		fetchRoomOptions();
+	}, []);
+
+	useEffect(() => {
+		const fetchSupervisorOptions = async () => {
+			try {
+				const response = await ApiService.get("/users/get-by-role", {
+					params: { role: "supervisor" },
+				});
+				setSupervisorOptions(response.data.map((staff) => ({
+					value: staff.userId,
+					label: `${staff.userCode} - ${staff.fullName}`,
+				})));
+			} catch (error) {
+				console.error("Failed to fetch supervisor options", error);
+			}
+		};
+
+		fetchSupervisorOptions();
+	}, []);
+
 
 	const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
@@ -50,6 +87,8 @@ const RoomOrganizePage = () => {
 	useEffect(() => {
 		fetchData();
 	}, [organizeId, sessionId, keyword, page, pageSize]);
+
+	
 		
 	const [formData, setFormData] = useState({
 		roomId: "",
@@ -59,7 +98,7 @@ const RoomOrganizePage = () => {
 	});
 
 	const preAddNew = () => {
-		setEditingAccount(null); 
+		setEditingRoomOrganize(null); 
 		setFormData({
 			roomId: "",
 			roomName: "",
@@ -73,22 +112,30 @@ const RoomOrganizePage = () => {
 		if (showForm && inputRef.current) {
 				inputRef.current.focus();
 		}
-		}, [showForm]);
+	}, [showForm]);
 
 	const handleSubmit = (e) => {
-			e.preventDefault();
-			console.log("Dữ liệu thêm mới:", formData);
-			setShowForm(false);
+		e.preventDefault();
+		console.log("Dữ liệu thêm mới:", formData);
+		if (editingRoomOrganize) {
+			// Gọi API cập nhật
+			console.log("Gọi API cập nhật");
+		} else {
+			// Gọi API thêm mới
+			console.log("Gọi API thêm mới");
+		}
+		resetForm();
+		setShowForm(false);
 	};
 
-	const handleEdit = (account) => {
-			setFormData({
-				roomId: account.roomId,
-				roomName: account.roomName,
-				supervisorId: account.supervisorId,
-			});
-			setEditingAccount(account);
-			setShowForm(true);
+	const preEdit = (account) => {
+		setFormData({
+			roomId: account.roomId,
+			roomName: account.roomName,
+			supervisorId: account.supervisorId,
+		});
+		setEditingRoomOrganize(account);
+		setShowForm(true);
 	};
 	
 	const handleDelete = (id) => {
@@ -149,6 +196,16 @@ const RoomOrganizePage = () => {
 		  }
 		});
 	};
+
+	const resetForm = () => {
+		setFormData({
+			roomId: "",
+			roomName: "",
+			supervisorId: "",
+			candidateList: "",
+		});
+		setEditingRoomOrganize(null);
+	}
 
 	return (
 		<div className="exam-management-page">
@@ -236,7 +293,7 @@ const RoomOrganizePage = () => {
 											</div>
 										</td>
 										<td className="text-center">
-											<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}  onClick={() => handleEdit(item)}>
+											<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}  onClick={() => preEdit(item)}>
 												<i className="fas fa-edit text-white "></i>
 											</button>
 											<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}  onClick={() => handleDelete(item.roomId)}>
@@ -279,7 +336,7 @@ const RoomOrganizePage = () => {
 						}}
 						onSubmit={handleSubmit}
 					>
-						<p className="text-align fw-bold">{editingAccount ? "Chỉnh sửa thông tin ca thi" : "Thêm phòng thi"}</p>
+						<p className="text-align fw-bold">{editingRoomOrganize ? "Chỉnh sửa thông tin ca thi" : "Thêm phòng thi"}</p>
 						<Grid container spacing={2}>										
 						<Grid item xs={12}>
 						<ReactSelect
@@ -288,7 +345,7 @@ const RoomOrganizePage = () => {
 								classNamePrefix="select"
 								placeholder="Phòng thi"
 								name="color"
-								options={subjectOptions}
+								options={roomOptions}
 								styles={{
 									control: (base) => ({
 										...base,
@@ -316,7 +373,7 @@ const RoomOrganizePage = () => {
 									classNamePrefix="select"
 									placeholder="Giám thị"
 									name="color"
-									options={subjectOptions}
+									options={supervisorOptions}
 									styles={{
 										control: (base) => ({
 											...base,
@@ -351,7 +408,7 @@ const RoomOrganizePage = () => {
 										classNamePrefix="select"
 										placeholder="Nhóm thí sinh"
 										name="color"
-										options={subjectOptions}
+										options={roomOptions}
 										styles={{
 											control: (base) => ({
 												...base,
@@ -389,7 +446,7 @@ const RoomOrganizePage = () => {
 												color="primary"
 												fullWidth
 										>
-												{editingAccount ? "Cập nhật" : "Lưu"}
+												{editingRoomOrganize ? "Cập nhật" : "Lưu"}
 										</Button>
 								</Grid>
 								<Grid item xs={6}>

@@ -161,30 +161,38 @@ const OrganizeExamPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Dữ liệu thêm mới:", formData);
-		try {
-			await ApiService.post("/organize-exams", formData);
-			fetchData();
-		} catch (error) {
-			console.error("Failed to add organize exam", error);
+		if (editingOrganizeExam) {
+			try {
+				await ApiService.put(`/organize-exams/${editingOrganizeExam.id}`, formData);
+				fetchData();
+			} catch (error) {
+				console.error("Failed to update organize exam", error);
+			}
+		} else {
+			try {
+				await ApiService.post("/organize-exams", formData);
+				fetchData();
+			} catch (error) {
+				console.error("Failed to add organize exam", error);
+			}
 		}
 
 		resetForm();
   };
 
-  const preEdit = (account) => {
+  const preEdit = (organizeExam) => {
     setFormData({
-      organizeExamName: account.organizeExamName,
-      subjectId: account.subjectId,
-      examType: account.examType,
-      examSet: account.examSet,
-      matrixId: account.matrixId,
-      duration: account.duration,
-      maxScore: account.maxScore,
-			totalQuestions: account.totalQuestions,
-      organizeExamStatus: account.organizeExamStatus,
+      organizeExamName: organizeExam.organizeExamName,
+      subjectId: organizeExam.subjectId,
+      examType: organizeExam.examType,
+      examSet: organizeExam.examSet,
+      matrixId: organizeExam.matrixId,
+      duration: organizeExam.duration,
+      maxScore: organizeExam.maxScore,
+			totalQuestions: organizeExam.totalQuestions,
+      organizeExamStatus: organizeExam.organizeExamStatus,
     });
-    setEditingOrganizeExam(account);
+    setEditingOrganizeExam(organizeExam);
     setShowForm(true);
   };
   

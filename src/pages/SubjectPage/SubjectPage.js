@@ -96,7 +96,7 @@ const SubjectPage = () => {
     setShowForm(false);
   };
 
-  const handlePreEdit = (subject) => {
+  const preEdit = (subject) => {
     setFormData({ subjectName: subject.subjectName });
     setEditingSubject(subject);
     setShowForm(true);
@@ -192,7 +192,7 @@ const SubjectPage = () => {
                   </td>
                   <td className="text-center">{item.totalQuestionBanks}</td>
                   <td className="text-center">
-                    <button className="btn btn-primary btn-sm" onClick={() => handlePreEdit(item)}>
+                    <button className="btn btn-primary btn-sm" onClick={() => preEdit(item)}>
                       <i className="fas fa-edit text-white"></i>
                     </button>
                     <button className="btn btn-danger btn-sm ms-2">

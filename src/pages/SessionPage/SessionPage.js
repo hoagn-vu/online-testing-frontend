@@ -67,18 +67,20 @@ const SessionPage = () => {
 	
 	const [formData, setFormData] = useState({
 		sessionId: "",
+		sessionName: "",
 		activeAt: "",
 		roomList: "",
-		sessionStatus: "active",
+		sessionStatus: "inactive",
 	});
 	
 	const preAddNew = () => {
 		setEditingAccount(null); 
 		setFormData({
 			sessionId: "",
+			sessionName: "",
 			activeAt: "",
 			roomList: "",
-			sessionStatus: "active",
+			sessionStatus: "inactive",
 		});
 		setTimeout(() => setShowForm(true), 0); 
 	};
@@ -110,19 +112,38 @@ const SessionPage = () => {
 		});
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 		console.log("Dữ liệu thêm mới:", formData);
+		if (editingAccount) {
+			try {
+				await ApiService.put(`/organize-exams/${organizeId}/sessions/${formData.sessionId}`, formData);
+				fetchData();
+			}
+			catch (error) {
+				console.error("Failed to update session: ", error);
+			}
+		} else {
+			try {
+				await ApiService.post(`/organize-exams/${organizeId}/sessions`, formData);
+				fetchData();
+			} catch (error) {
+				console.error("Failed to  add new session: ", error);
+			}
+		}
+
+		resetForm();
 		setShowForm(false);
 	};
 
-	const handleEdit = (account) => {
+	const preEdit = (session) => {
 		setFormData({
-			sessionId: account.sessionId,
-			activeAt: account.activeAt,
-			sessionStatus: account.sessionStatus,
+			sessionId: session.sessionId,
+			sessionName: session.sessionName,
+			activeAt: session.activeAt,
+			sessionStatus: session.sessionStatus,
 		});
-		setEditingAccount(account);
+		setEditingAccount(session);
 		setShowForm(true);
 	};
 	
@@ -179,6 +200,17 @@ const SessionPage = () => {
 			}
 		});
 	};
+
+	const resetForm = () => {
+		setFormData({
+			sessionId: "",
+			sessionName: "",
+			activeAt: "",
+			roomList: "",
+			sessionStatus: "inactive",
+		});
+		setEditingAccount(null);
+	}
 
 	return (
 		<div className="exam-management-page">
@@ -286,7 +318,7 @@ const SessionPage = () => {
 						<tbody style={{ fontSize: "14px" }}>
 							{listSession.length === 0 ? (
 								<tr>
-									<td colSpan="6" className="text-center fw-semibold text-muted"
+									<td colSpan="7" className="text-center fw-semibold text-muted"
 											style={{ height: "100px", verticalAlign: "middle" }}>
 										Không có dữ liệu
 									</td>
@@ -324,7 +356,6 @@ const SessionPage = () => {
 												</div>
 											</td>
 
-
 											<td className="text-center">
 												<Link className="text-hover-primary"
 														to={`/staff/organize/monitor/${organizeId}/${session.sessionId}`}
@@ -334,7 +365,7 @@ const SessionPage = () => {
 											</td>
 											<td>
 												<button className="btn btn-primary btn-sm" style={{ width: "35px", height: "35px" }}
-																onClick={() => handleEdit(session)}>
+																onClick={() => preEdit(session)}>
 													<i className="fas fa-edit text-white"></i>
 												</button>
 												<button className="btn btn-danger btn-sm ms-2" style={{ width: "35px", height: "35px" }}
@@ -391,10 +422,10 @@ const SessionPage = () => {
 									fullWidth
 									label="Ca thi"
 									required
-									value={formData.sessionId}
+									value={formData.sessionName}
 									inputRef={inputRef}
 									onChange={(e) =>
-									setFormData({ ...formData, sessionId: e.target.value })
+									setFormData({ ...formData, sessionName: e.target.value })
 									}
 									sx={{
 										"& .MuiInputBase-input": {
