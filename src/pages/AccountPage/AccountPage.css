@@ -280,6 +280,10 @@
   font-size: 14px;
 }
 
+.input-height {
+  height: 47px;
+}
+
 @media (max-width: 760px) {
   .account-page {
     width: 100%;
