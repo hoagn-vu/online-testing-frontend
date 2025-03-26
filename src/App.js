@@ -95,7 +95,7 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="organize" element={<OrganizeExamPage />} />
           <Route path="organize/report/:organizeId" element={<ReportEachOrganizePage />} />
-          <Route path="organize/:id" element={<SessionPage />} />
+          <Route path="organize/:organizeId" element={<SessionPage />} />
           <Route path="organize/:organizeId/:sessionId" element={<RoomOrganizePage />} />
           <Route path="organize/monitor/:organizeId/:sessionId" element={<MonitorOrganizePage />} />
           <Route path="organize/score/:organizeId/:sessionId" element={<ScoreTableSessionPage />} />

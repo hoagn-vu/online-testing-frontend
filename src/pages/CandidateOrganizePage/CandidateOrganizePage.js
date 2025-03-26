@@ -2,68 +2,67 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import "./CandidateOrganizePage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
-import {Chip, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
+import {Chip, Box, Button, Grid, MenuItem, Select, Pagination, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
 import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import ReactSelect  from 'react-select';
-
-const listCandidate = [
-  {
-    candidateId: "CAND001",
-    userCode: "BIT220172",
-    fullName: "Hoàng Nguyên Vũ",
-    gender: "Nam",
-    dateOfBirth: "21/05/2003",
-    examId: "EXAM123"
-  },
-	{
-    candidateId: "CAND002",
-    userCode: "BIT220089",
-    fullName: "Phan Thị Phương Linh",
-    gender: "Nữ",
-    dateOfBirth: "08/01/2004",
-    examId: "EXAM124"
-  },
-  {
-    candidateId: "CAND003",
-    userCode: "BIT220149",
-    fullName: "Ngô Đức Thuận",
-    gender: "Nam",
-    dateOfBirth: "21/05/2004",
-    examId: "EXAM124"
-  },
-];
+import ApiService from "../../services/apiService";
 
 const CandidateOrganizePage = () => {
   const [showForm, setShowForm] = useState(false);
-  const paginationModel = { page: 0, pageSize: 5 };
   const inputRef = useRef(null);
-	const location = useLocation();
-	const { roomName, sessionName, organizeExamName } = location.state || {};
-	// const organizeExamName = location.state?.organizeExamName || localStorage.getItem("organizeExamName");
-	const { organizeId, sessionId } = useParams();
-
-	console.log("CandidateOrganizePage - location.state:", location.state);
-	console.log("CandidateOrganizePage - sessionName:", sessionName);
-	console.log("CandidateOrganizePage - organizeExamName:", organizeExamName);
-	console.log("CandidateOrganizePage - roomName:", roomName);
-
+	const { organizeId, sessionId, roomId } = useParams();
 
 	const processData = (data) => {
 		return data.map((item) => {
-				const nameParts = item.fullName.trim().split(" ");
-				const firstName = nameParts.pop(); // Lấy phần cuối cùng là firstName
-				const lastName = nameParts.join(" "); // Phần còn lại là lastName
-				return {
-						...item,
-						firstName, 
-						lastName
-				};
+			const nameParts = item.candidateName.trim().split(" ");
+			const firstName = nameParts.pop(); // Lấy phần cuối cùng là firstName
+			const lastName = nameParts.join(" "); // Phần còn lại là lastName
+			return {
+				...item,
+				firstName, 
+				lastName
+			};
 		});
 	};
-	
-	const [rows, setRows] = useState(processData(listCandidate));
-	
+
+	const [listCandidate, setListCandidate] = useState([]);
+	const [organizeExamName, setOrganizeExamName] = useState("");
+	const [sessionName, setSessionName] = useState("");
+	const [roomName, setRoomName] = useState("");
+	const [keyword, setKeyword] = useState("");
+	const [page, setPage] = useState(1);
+	const [pageSize, setPageSize] = useState(10);
+	const [isLoading, setIsLoading] = useState(false);
+	const [totalCount, setTotalCount] = useState(0);
+
+	const handleKeywordChange = (e) => {
+    setKeyword(e.target.value);
+    setPage(1);
+  };
+
+	const fetchData = async () => {
+		setIsLoading(true);
+		try {
+			const response = await ApiService.get(`/organize-exams/candidates`, {
+				params: { orgExamId: organizeId, ssId: sessionId, rId: roomId, keyword, page, pageSize },
+			});
+			setListCandidate(response.data.candidates);
+			setOrganizeExamName(response.data.organizeExamName);
+			setSessionName(response.data.sessionName);
+			setRoomName(response.data.roomName);
+			setTotalCount(response.data.totalCount);
+		} catch (error) {
+			console.error("Failed to fetch data", error);
+		}
+
+		setIsLoading(false);
+	};
+
+	useEffect(() => {
+		fetchData();
+	}, [organizeId, sessionId, roomId, keyword, page, pageSize]);
+		
 	useEffect(() => {
 		if (showForm && inputRef.current) {
 						inputRef.current.focus();
@@ -74,11 +73,11 @@ const CandidateOrganizePage = () => {
 		candidateList: "",
 	});
 
-	const handleAddNew = () => {
-	setFormData({
-		candidateList: "",
-	});
-	setTimeout(() => setShowForm(true), 0); 
+	const preAddNew = () => {
+		setFormData({
+			candidateList: "",
+		});
+		setShowForm(true);
 	};
 
 	const handleSubmit = (e) => {
@@ -145,15 +144,27 @@ const CandidateOrganizePage = () => {
 			</nav>
 
 			<div className="tbl-shadow p-3">
-				<div className="account-actions">
-					<div className="search-container">
-						<SearchBox></SearchBox>
-					</div>
-					<button className="btn btn-primary" style={{fontSize: "14px"}} onClick={handleAddNew}>
-						<i className="fas fa-plus me-2"></i>
-						Thêm mới
-					</button>
-				</div>
+				<div className="sample-card-header d-flex justify-content-between align-items-center mb-2">
+          <div className='left-header d-flex align-items-center'>
+            <div className="search-box rounded d-flex align-items-center">
+              <i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
+              <input
+                type="text"
+                className="search-input w-100"
+                placeholder="Tìm kiếm..."
+                value={keyword}
+                onChange={handleKeywordChange}
+              />
+            </div>
+          </div>
+
+          <div className='right-header'>
+            <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={preAddNew}>
+              <i className="fas fa-plus me-2"></i>
+              Thêm mới
+            </button>
+          </div>
+        </div>
 
 				<div className="session-table-container mt-3">
 					<div className="table-responsive">
@@ -170,7 +181,7 @@ const CandidateOrganizePage = () => {
 								</tr>
 							</thead>
 							<tbody style={{fontSize: "14px"}}>
-								{processData(rows).length === 0 ? (
+								{processData(listCandidate).length === 0 ? (
 									<tr>
 										<td colSpan="7" className="text-center fw-semibold text-muted" 
 											style={{ height: "100px", verticalAlign: "middle" }}>
@@ -178,14 +189,14 @@ const CandidateOrganizePage = () => {
 										</td>
 									</tr>
 								) : (
-								processData(rows).map((item, index) => (
+								processData(listCandidate).map((item, index) => (
 									<tr key={item.candidateId} className="align-middle">
 										<td className="text-center">{index + 1}</td>
 										<td>{item.userCode}</td>
 										<td>{item.lastName}</td>
 										<td>{item.firstName}</td>
 										<td className="text-center">{item.dateOfBirth}</td>
-										<td className="text-center">{item.gender}</td>
+										<td className="text-center">{item.gender == "male" ? "Nam" : "Nữ"}</td>
 										<td>
 											<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}  onClick={() => handleDelete(item.candidateId)}>
 												<i className="fas fa-trash-alt"></i>
@@ -196,7 +207,18 @@ const CandidateOrganizePage = () => {
 							</tbody>
 						</table>
 					</div>
-					</div>	
+					<div className="d-flex justify-content-end mb-2">
+						{ totalCount > 0 && (
+							<Pagination
+								count={Math.ceil(totalCount / pageSize)}
+								shape="rounded"
+								page={page}
+								onChange={(e, value) => setPage(value)}
+								color="primary"
+							/>
+						)}
+					</div>
+				</div>
 			</div>
 
 			{/* Form thêm tài khoản */}
