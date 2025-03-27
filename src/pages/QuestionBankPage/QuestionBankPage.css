@@ -1,0 +1,46 @@
+.question-bank-table tr {
+  height: 60px;
+}
+
+/* .question-bank-table .title-row {
+  color: #8a8a8a;
+} */
+
+.question-bank-table td button {
+  width: 40px;
+}
+
+.text-hover-primary:hover {
+  color: #0d6efd !important;
+  cursor: pointer;
+}
+
+.question-bank-card-header .search-box {
+  width: 250px;
+  position: relative;
+  border: #dee2e6 solid 1px;
+  padding: 6px 12px;
+  background-color: white;
+}
+
+.question-bank-card-header .search-box:focus {
+  border: #0d6efd solid 1px !important;
+}
+
+.question-bank-card-header .search-box .search-input {
+  border: none;
+  outline: none;
+}
+
+.question-bank-card-header .search-box .search-input:focus {
+  border: none;
+  outline: none;
+}
+
+.question-bank-card-header .search-box .search-icon {
+  color: #ccc;
+}
+
+.question-bank-pagination ul li button {
+  font-family: Arial, sans-serif
+}

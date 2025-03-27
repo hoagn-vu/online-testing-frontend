@@ -1,0 +1,83 @@
+.organize-exam-table tr {
+  height: 60px;
+}
+
+.text-hover-primary:hover {
+  color: #0d6efd !important;
+  cursor: pointer;
+}
+
+.organize-exam-card-header .search-box {
+  width: 250px;
+  position: relative;
+  border: #dee2e6 solid 1px;
+  padding: 6px 12px;
+}
+
+.organize-exam-card-header .search-box .search-input {
+  border: none;
+  outline: none;
+}
+
+.organize-exam-card-header .search-box .search-input:focus {
+  border: none;
+  outline: none;
+}
+
+.organize-exam-card-header .search-box .search-icon {
+  color: #ccc;
+}
+
+.organize-exam-table tr {
+  height: 60px;
+}
+
+.text-hover-primary:hover {
+  color: #0d6efd !important;
+  cursor: pointer;
+}
+
+.organize-exam-card-header .search-box {
+  width: 250px;
+  position: relative;
+  border: #dee2e6 solid 1px;
+  padding: 6px 12px;
+}
+
+.organize-exam-card-header .search-box .search-input {
+  border: none;
+  outline: none;
+}
+
+.organize-exam-card-header .search-box .search-input:focus {
+  border: none;
+  outline: none;
+}
+
+.organize-exam-card-header .search-box .search-icon {
+  color: #ccc;
+}
+
+.sample-table {
+  font-size: 14px;
+}
+
+/* Xóa hết border */
+.tbl-organize-hover td{
+  /* border-collapse: collapse;
+  width: 100%; */
+  background-color: #ffff !important; /* Màu nền tổng thể của bảng */
+}
+
+
+.tbl-organize-hover tbody tr {
+  transition: all 0.1s ease-in-out;
+}
+
+/* Hiệu ứng hover: hàng có màu trắng và có box-shadow */
+.tbl-organize-hover tbody tr:hover {
+  background-color: white !important;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  transform: scale(1.001); /* Làm cho hàng to nhẹ khi hover */
+  cursor: pointer;
+}

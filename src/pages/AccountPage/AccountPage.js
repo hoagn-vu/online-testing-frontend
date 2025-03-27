@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation  } from "react-router-dom";
 import "./AccountPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import {Chip, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography } from "@mui/material";
+import {Chip, Box, Button, Grid, MenuItem, Pagination, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
@@ -12,46 +12,20 @@ import ApiService from "../../services/apiService";
 import CreatableSelect from "react-select/creatable";
 
 const AccountPage = () => {
-  const [dummyAccounts, setDummyAccounts] = useState({
+  const [listAccount, setListAccount] = useState({
     "Thí sinh": [],
     "Giám thị": [],
     "Quản trị viên": [],
     "Cán bộ phụ trách kỳ thi": [],
   });
 
+  const [listDisplay, setListDisplay] = useState([]);
+  const [selectedRole, setSelectedRole] = useState("Thí sinh");
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await ApiService.get("/users");
-        // response.data.users.forEach((user) => {
-        //   if (user.role === "candidate") {
-        //     setDummyAccounts((prev) => ({
-        //       ...prev,
-        //       "Thí sinh": [...prev["Thí sinh"], user],
-        //     }));
-        //   }
-        //   if (user.role === "supervisor") {
-        //     setDummyAccounts((prev) => ({
-        //       ...prev,
-        //       "Giám thị": [...prev["Giám thị"], user],
-        //     }));
-        //   }
-        //   if (user.role === "admin") {
-        //     setDummyAccounts((prev) => ({
-        //       ...prev,
-        //       "Quản trị viên": [...prev["Quản trị viên"], user],
-        //     }));
-        //   }
-        //   if (user.role === "staff") {
-        //     setDummyAccounts((prev) => ({
-        //       ...prev,
-        //       "Cán bộ phụ trách kỳ thi": [
-        //         ...prev["Cán bộ phụ trách kỳ thi"],
-        //         user,
-        //       ],
-        //     }));
-        //   }
-        // });
 
         const newAccounts = {
           "Thí sinh": [],
@@ -75,7 +49,7 @@ const AccountPage = () => {
           }
         });
 
-        setDummyAccounts(newAccounts);
+        setListAccount(newAccounts);
       } catch (error) {
         console.error("Lỗi lấy dữ liệu tài khoản:", error);
       }
@@ -84,94 +58,34 @@ const AccountPage = () => {
     fetchData();
   }, []);
 
-  const [selectedRole, setSelectedRole] = useState("Thí sinh");
+  useEffect(() => {
+    setSelectedRole("Thí sinh");
+    setListDisplay(listAccount["Thí sinh"]);
+  }, [listAccount]);
+
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const handleSelectItem = (e, id) => {
+    if (e.target.checked) {
+      setSelectedItems([...selectedItems, id]);
+    } else {
+      setSelectedItems(selectedItems.filter((item) => item !== id));
+    }
+  };
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedItems(listAccount.map((item) => item.id));
+    } else {
+      setSelectedItems([]);
+    }
+  };
+
   const [showForm, setShowForm] = useState(false);
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [editingAccount, setEditingAccount] = useState(null);
   const [accountToDelete, setAccountToDelete] = useState(null);
-  const [rows, setRows] = useState(Object.values(dummyAccounts).flat());
-  const filteredRows = dummyAccounts[selectedRole] || [];
-
-  const columns = [
-    { field: "id", headerName: "#", width: 10 },
-    { field: "userCode", headerName: "Mã", minWidth: 130, flex: 0.02 },
-    { field: "fullName", headerName: "Họ tên", minWidth: 150, flex: 0.1 },
-    { field: "dateOfBirth", headerName: "Ngày sinh", type: "datetime", width: 120, headerAlign: "center",},
-    {
-      field: "gender",
-      headerName: "Giới tính",
-      width: 100,
-      align: "center", 
-      headerAlign: "center",
-    },
-    { field: "userName", headerName: "username", minWidth: 120 },
-    {
-      field: "accountStatus",
-      headerName: "Trạng thái",
-      width: 160,
-      renderCell: (params) => (
-        <Select
-          value={params.row.status || "active"}
-          onChange={(e) => handleStatusChange(params.row.id, e.target.value)}
-          size="small"
-          sx={{
-            minWidth: 120, 
-            fontSize: "15px", 
-            padding: "0px", 
-          }}
-        >
-          <MenuItem value="active">Active</MenuItem>
-          <MenuItem value="disabled">Disabled</MenuItem>
-        </Select>
-      ),
-    },
-    // Chỉ hiển thị cột "Nhóm" nếu vai trò là "Thí sinh"
-    ...(selectedRole === "Thí sinh"
-      ? [
-          {
-            field: "groupName",
-            headerName: "Nhóm",
-            width: 180,
-            flex: 0.1,
-            headerAlign: "center",
-            renderCell: (params) => (
-              <Box sx={{ 
-                display: "flex",
-                gap: 0.5,
-                flexWrap: "wrap",
-                alignItems: "center", 
-                justifyContent: "center", 
-                height: "100%", 
-              }}>
-                {params.value?.map((group, index) => (
-                  <Chip key={index} label={group} size="small" color="primary" />
-                ))}
-              </Box>
-            ),
-          },
-        ]
-      : []),
-    {
-      field: "actions",
-      headerName: "Thao tác",
-      width: 130,
-      sortable: false,
-      align: "center", 
-      headerAlign: "center",
-      renderCell: (params) => (
-        <>
-          <IconButton color="primary" onClick={() => handleEdit(params.row)}>
-            <EditIcon />
-          </IconButton>
-          <IconButton color="error" onClick={() => handleDelete(params.row.id)}>
-            <DeleteIcon />
-          </IconButton>
-        </>
-      ),
-    },
-  ];
-
-  const paginationModel = { page: 0, pageSize: 5 };
+  const [rows, setRows] = useState(Object.values(listAccount).flat());  
 
   const permissionOptions = [
     "Quản lý kỳ thi",
@@ -180,11 +94,6 @@ const AccountPage = () => {
     "Quản lý ma trận đề thi",
     "Quản lý phòng thi",
   ];
-  useEffect(() => {
-    // Chuyển đổi object thành mảng
-    const mergedRows = Object.values(dummyAccounts).flat();
-    setRows(mergedRows);
-  }, []);
 
   const handleStatusChange = (id, newStatus) => {
     setRows(
@@ -325,6 +234,22 @@ const AccountPage = () => {
   };
 
   const handleRoleChange = (role) => {
+    switch (role) {
+      case "Thí sinh":
+        setListDisplay(listAccount["Thí sinh"]);
+        break;
+      case "Giám thị":
+        setListDisplay(listAccount["Giám thị"]);
+        break;
+      case "Quản trị viên":
+        setListDisplay(listAccount["Quản trị viên"]);
+        break;
+      case "Cán bộ phụ trách kỳ thi":
+        setListDisplay(listAccount["Cán bộ phụ trách kỳ thi"]);
+        break;
+      default:
+        break;
+    }
     setSelectedRole(role);
   };
 
@@ -337,111 +262,164 @@ const AccountPage = () => {
   const [showGroupForm, setShowGroupForm] = useState(false);
   const [selectedGroups, setSelectedGroups] = useState([]);
 
+  const handleToggleStatus = (id, currentStatus) => {
+    Swal.fire({
+      title: "Bạn có chắc muốn thay đổi trạng thái?",
+      text: "Trạng thái sẽ được cập nhật ngay sau khi xác nhận!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Xác nhận",
+      cancelButtonText: "Hủy",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const newStatus = currentStatus.toLowerCase() === "active" ? "disabled" : "active";
+
+        // Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
+        setRows((prevRows) =>
+          prevRows.map((row) =>
+            row.id === id ? { ...row, accountStatus: newStatus } : row
+          )
+        );
+        console.log("userId được đổi status:", id)
+        Swal.fire({
+          title: "Cập nhật thành công!",
+          text: `Trạng thái đã chuyển sang "${newStatus}".`,
+          icon: "success",
+        });
+      }
+    });
+  };
+  const location = useLocation();
+  const pathnames = location.pathname.split("/").filter((x) => x);
   return (
-    <div className="account-page">
+    <div className="sample-page">
       {/* Breadcrumbs */}
-      <nav className="breadcrumb-container">
-        <Link to="/" className="breadcrumb-link">
-          Home
-        </Link>
-        <span> / </span>
-        <span className="breadcrumb-current">Quản lý tài khoản</span>
+      <nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
+        <Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
+        
+        <span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+        <span className="breadcrumb-current"> Quản lý tài khoản</span>
       </nav>
+      <div className="tbl-shadow p-3 pt-1">
+        {/* Thanh tìm kiếm + Nút thêm mới + Upload */}
+        <div className="account-actions">
+          <div className="search-container">
+            <SearchBox></SearchBox>
+          </div>
+          <div className="role-selector">
 
-      {/* Thanh tìm kiếm + Nút thêm mới + Upload */}
-      <div className="account-actions">
-        <div className="search-container">
-          <SearchBox></SearchBox>
-        </div>
-        <div className="role-selector">
-          <button className="add-btn" onClick={handleAddNew}>
-            Thêm mới
-          </button>
-          <button
-            className="change-password-btn"
-            onClick={() => setShowPasswordForm(true)}
-          >
-            Đổi mật khẩu
-          </button>
-          <button className="upload-btn" onClick={handleUploadClick}>
-            Upload File
-          </button>
-          <button className="btn btn-primary" onClick={() => setShowGroupForm(true)}>
-            Thêm nhóm
-          </button>
-          <button className="btn btn-primary" >
-            Xóa nhóm
-          </button>
-        </div>
-      </div>
-
-      {/* Tabs để chọn loại tài khoản */}
-      <ul className="nav nav-tabs">
-        {Object.keys(dummyAccounts).map((role) => (
-          <li className="nav-item" key={role}>
-            <a
-              className={`nav-link ${selectedRole === role ? "active" : ""}`}
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                handleRoleChange(role);
-              }}
+            <button className="btn btn-primary me-0" style={{fontSize: "14px"}} onClick={handleAddNew}>
+              <i className="fas fa-plus me-2"></i>
+              Thêm mới
+            </button>
+            <button
+              className="change-password-btn btn-size align-items-center d-flex"
+              onClick={() => setShowPasswordForm(true)}
             >
-              {role}
-            </a>
-          </li>
-        ))}
-      </ul>
+              Đổi mật khẩu
+            </button>
+            <button className="upload-btn btn-size align-items-center d-flex" onClick={handleUploadClick}>
+              Upload File
+            </button>
+            <button className="btn btn-primary btn-size align-items-center d-flex" onClick={() => setShowGroupForm(true)}>
+              Thêm nhóm
+            </button>
+            <button className="btn btn-primary btn-size align-items-center d-flex" >
+              Xóa nhóm
+            </button>
+          </div>
+        </div>
 
-      <div className="account-table-container mt-3">
-        <Paper sx={{width: "100%" }}>
-          <DataGrid
-            rows={filteredRows}
-            columns={columns}
-            initialState={{
-              pagination: { paginationModel: { page: 0, pageSize: 5 } },
-            }}
-            pageSizeOptions={[5, 10]}
-            checkboxSelection
-            disableColumnResize 
-            disableExtendRowFullWidth
-            disableRowSelectionOnClick
-            localeText={{
-              noRowsLabel: "Không có dữ liệu", 
-            }}
-            sx={{
-              "& .MuiDataGrid-cell": {
-                whiteSpace: "normal", 
-                wordWrap: "break-word", 
-                lineHeight: "1.2", 
-                padding: "8px", 
-              },
-              "& .MuiDataGrid-columnHeaders": {
-                borderBottom: "2px solid #ccc", 
-              },
-              "& .MuiDataGrid-cell": {
-                borderRight: "1px solid #ddd", 
-              },
-              "& .MuiDataGrid-row:last-child .MuiDataGrid-cell": {
-                borderBottom: "none", 
-              },
-              "& .MuiTablePagination-displayedRows": {
-                textAlign: "center",        
-                marginTop: "16px",
-                marginLeft: "0px"
-              },
-              "& .MuiTablePagination-selectLabel": {
-                marginTop: "13px",
-                marginLeft: "0px"
-              },
-              "& .MuiTablePagination-select": {
-                marginLeft: "0px",
-              } 
-            }}
-          />
-        </Paper>
+        {/* Tabs để chọn loại tài khoản */}
+        <ul className="nav nav-tabs">
+          {Object.keys(listAccount).map((role) => (
+            <li className="nav-item" key={role}>
+              <a
+                className={`nav-link ${selectedRole === role ? "active" : ""}`}
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleRoleChange(role);
+                }}
+              >
+                {role}
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <div className="table-responsive">
+          <table className="table sample-table table-hover tbl-organize-hover">
+            <thead>
+              <tr className="align-middle">
+                <th scope="col" className="text-center title-row" style={{ width: "50px"}}>
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    onChange={handleSelectAll}
+                    checked={selectedItems.length === listAccount.length && listAccount.length > 0}
+                  />
+                </th>
+                <th scope="col" className="title-row">Mã</th>
+                <th scope="col" className="title-row">Tài khoản</th>
+                <th scope="col" className="title-row">Họ tên</th>
+                <th className="text-center">Ngày sinh</th>
+                <th className="text-center">Giới tính</th>
+                <th className="text-center">Nhóm</th>
+                <th className="text-center">Trạng thái</th>
+                <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              {listDisplay.map((item, index) => (
+                <tr key={item.id} className="align-middle">
+                  <td className=" text-center" style={{ width: "50px" }}>
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      onChange={(e) => handleSelectItem(e, item.questionBankId)}
+                      checked={selectedItems.includes(item.questionBankId)}
+                    />
+                  </td>
+                  <td>{item.userCode}</td>
+                  <td>{item.username}</td>
+                  <td>{item.fullName}</td>
+                  <td className="text-center">{item.dateOfBirth}</td>
+                  <td className="text-center">{item.gender}</td>
+                  <td className="text-center">{item.groupName}</td>
+                  <td>
+                    <div className="form-check form-switch d-flex justify-content-center">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        role="switch"
+                        checked={item.accountStatus.toLowerCase() === "active"}
+                        onChange={() =>
+                          handleToggleStatus(item.id, item.accountStatus)
+                        }
+                      />
+                    </div>
+                  </td>
+                  <td className="text-center">
+                    <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
+                      <i className="fas fa-edit text-white " onClick={handleEdit}></i>
+                    </button>
+                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
+                      <i className="fas fa-trash-alt"></i>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="sample-pagination d-flex justify-content-end align-items-center mb-2">
+          <Pagination count={10} color="primary" shape="rounded" />
+        </div>
       </div>
-
       {/* Form thêm tài khoản */}
       {showForm && (
         <div className="form-overlay">
@@ -457,7 +435,7 @@ const AccountPage = () => {
             }}
             onSubmit={handleSubmit}
           >
-            <p className="text-align fw-bold">
+            <p className="fw-bold">
               {editingAccount ? "Chỉnh sửa tài khoản" : "Thêm tài khoản mới"}
             </p>
 
@@ -705,11 +683,12 @@ const AccountPage = () => {
       {/* Form Đổi mật khẩu */}
       {showPasswordForm && (
         <div className="form-overlay">
-          <div className="form-container">
-            <h3>Đổi mật khẩu</h3>
+          <div className="form-container" style={{width: "40%"}}>
+            <h6 className="fw-bold align-items-left">Đổi mật khẩu</h6>
             <form onSubmit={handlePasswordSubmit}>
               <label>Chọn vai trò:</label>
               <select
+                className="input-height"
                 onChange={(e) =>
                   setPasswordData({ ...passwordData, role: e.target.value })
                 }
@@ -724,6 +703,7 @@ const AccountPage = () => {
 
               <label>Mật khẩu mới:</label>
               <input
+                className="input-height"
                 type="password"
                 required
                 onChange={(e) =>
@@ -736,6 +716,7 @@ const AccountPage = () => {
 
               <label>Xác nhận mật khẩu:</label>
               <input
+                className="input-height"
                 type="password"
                 required
                 onChange={(e) =>
@@ -745,11 +726,12 @@ const AccountPage = () => {
                   })
                 }
               />
-
-              <button type="submit">Lưu</button>
-              <button type="button" onClick={() => setShowPasswordForm(false)}>
-                Hủy
-              </button>
+              <div className="d-flex mt-2">
+                <button type="submit" style={{width: "100%"}}>Lưu</button>
+                <button type="button" style={{width: "100%"}} onClick={() => setShowPasswordForm(false)}>
+                  Hủy
+                </button>
+              </div>
             </form>
           </div>
         </div>
@@ -766,11 +748,13 @@ const AccountPage = () => {
               onChange={setSelectedGroups}
             />
 
-            {/* Nút Đóng */}
-            <button type="submit">Lưu</button>
-            <button type="button" onClick={() => setShowGroupForm(false)}>
-              Hủy
-            </button>
+            <div className="d-flex">
+              <button type="submit" style={{width: "100%"}}>Lưu</button>
+              <button type="button" style={{width: "100%"}} onClick={() => setShowGroupForm(false)}>
+                Hủy
+              </button>
+
+            </div>
           </div>
         </div>
       )}

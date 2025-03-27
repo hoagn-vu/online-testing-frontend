@@ -1,12 +1,3 @@
-.list-question-container {
-    width: 100%;
-    box-sizing: border-box;
-    overflow-y: auto;
-    padding-left: 35px;
-    padding-right: 15px;
-    padding-top: 15px;
-    font-size: 14px;
-}
 
 .list-question-container button {
     font-size: 14px;
@@ -31,13 +22,25 @@
     text-decoration: underline;
 }
 
-.breadcrumb-current {
+/* .breadcrumb-current {
     font-weight: bold;
     color: #343a40;
-}
+} */
 
 .tag-level{
     font-size: 13px;
     color: rgb(112, 112, 110);
 }
 
+.list-question-container .search-box {
+    width: 250px;
+    position: relative;
+    border: #dee2e6 solid 1px;
+    padding: 6px 12px;
+    background-color: white;
+}
+
+.list-question-container .search-box .search-input {
+    border: none;
+    outline: none;
+}

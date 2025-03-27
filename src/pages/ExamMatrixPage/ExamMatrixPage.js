@@ -1,72 +1,51 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import './ExamMatrixPage.css'
-import {Box, Button, Grid, MenuItem, Select, IconButton, TextField } from "@mui/material";
-import Paper from "@mui/material/Paper";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import { DataGrid } from "@mui/x-data-grid";
+import {Box, Button, Grid, MenuItem, Select, IconButton, TextField, Pagination } from "@mui/material";
 import Swal from "sweetalert2";
-import SearchBox from "../../components/SearchBox/SearchBox";
-
-// Dữ liệu mẫu
-const listExamMatrix = [
-    {
-        "id": "matrix_001",
-        "questionBankId": "812004",
-        "matrixName": "Đề thi Toán học kỳ 1",
-        "matrixStatus": "Active",
-        "totalGeneratedExams": 10,
-        "subjectId": "math_101",
-        "matrixTags": [
-          {
-            "tagName": "Nhận biết",
-            "questionCount": 15,
-            "tagScore": 0.1
-          },
-          {
-            "tagName": "Thông hiểu",
-            "questionCount": 15,
-            "tagScore": 0.1
-          },
-          {
-            "tagName": "Vận dụng cao",
-            "questionCount": 15,
-            "tagScore": 0.1
-          }
-        ],
-        "examId": [
-          "exam_001",
-          "exam_002",
-          "exam_003",
-          "exam_004",
-          "exam_005"
-        ]
-      }
-      
-];
+import ApiService from "../../services/apiService";
 
 const ExamMatrixPage = () => {
+  const [listExamMatrix, setListExamMatrix] = useState([]);
+
   const [showForm, setShowForm] = useState(false);
   const [editingAccount, setEditingAccount] = useState(null);
   const inputRef = useRef(null);
-  // const [rows, setRows] = useState(Object.values(listExamMatrix).flat());
-  const [rows, setRows] = useState([...listExamMatrix]);
 
   useEffect(() => {
-    console.log("Dữ liệu rows:", rows);
-      if (showForm && inputRef.current) {
-        inputRef.current.focus();
+    const fetchData = async () => {
+      try {
+        const response = await ApiService.get("/exam-matrices");
+        setListExamMatrix(response.data.examMatrices);
+      } catch (error) {
+        console.error("Lỗi lấy dữ liệu:", error);
       }
-      }, [showForm]);
+    };
 
-  // const handleStatusChange = (id, newStatus) => {
-  //   const updatedRows = rows.map((row) =>
-  //     row.id === id ? { ...row, matrixStatus: newStatus } : row
-  //   );
-  //   console.log("Cập nhật trạng thái:", updatedRows);
-  //   setRows(updatedRows);
-  // };
+    fetchData();
+  }, []);
+
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const handleSelectItem = (e, id) => {
+    if (e.target.checked) {
+      setSelectedItems([...selectedItems, id]);
+    } else {
+      setSelectedItems(selectedItems.filter((item) => item !== id));
+    }
+  };
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedItems(listExamMatrix.map((item) => item.id));
+    } else {
+      setSelectedItems([]);
+    }
+  };
+
+  const handleAddNew = () => {
+    console.log("Thêm mới");
+  };
 
   const handleStatusChange = (id, newStatus) => {
     Swal.fire({
@@ -136,124 +115,87 @@ const ExamMatrixPage = () => {
       }
     });
   };
-  const columns = [
-    { field: "stt", headerName: "#", width: 15, align: "center", headerAlign: "center", },
-    { 
-        field: "matrixName", 
-        headerName: "Ma trận đề thi", 
-        width: 1090, flex: 0.1, 
-    },
-    { 
-        field: "subjectId", 
-        headerName: "Phân môn", 
-        width: 1090, flex: 0.1, 
-    },
-    { 
-        field: "questionBankId", 
-        headerName: "Ngân hàng câu hỏi", 
-        width: 1090, flex: 0.1, 
-    },
-    {
-        field: "matrixStatus",
-        headerName: "Trạng thái",
-        width: 160,
-        renderCell: (params) => (
-        <Select
-        value={(params.row.matrixStatus || "Active").toLowerCase()}  
-        onChange={(e) => handleStatusChange(params.row.id, e.target.value)}
-            size="small"
-            sx={{
-            minWidth: 120, 
-            fontSize: "15px", 
-            padding: "0px", 
-            }}
-        >
-            <MenuItem value="active">Active</MenuItem>
-            <MenuItem value="disabled">Disabled</MenuItem>
-        </Select>
-        ),
-    },
-    {
-      field: "actions",
-      headerName: "Thao tác",
-      width: 130,
-      sortable: false,
-      renderCell: (params) => (
-        <>
-          <IconButton color="primary" onClick={() => handleEdit(params.row)}>
-              <EditIcon />
-          </IconButton>
-          <IconButton color="error" onClick={() => handleDelete(params.row.id)}>
-              <DeleteIcon />
-          </IconButton>
-        </>
-      ),
-    },
-  ];
+
 
   return (
-      <div className="question-bank-page">
-          {/* Breadcrumb */}
-          <nav>
-              <Link to="/admin">Home</Link> / 
-              <span className="breadcrumb-current">Quản lý ma trận đề</span>
-          </nav>
+    <div className="exam-matrix-page">
+      {/* Breadcrumb */}
+      <nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
+        <Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
+        
+        <span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+        <span className="breadcrumb-current"> Quản lý ma trận đề</span>
+      </nav>
 
-          <div className="account-actions mt-4">
-              <div className="search-container">
-                  <SearchBox></SearchBox>
-              </div>
-              <Link className="add-btn btn link-btn d-flex align-items-center" to="/admin/matrix-detail">
-                  Thêm mới
-              </Link>
-          </div>
-
-          {/* Hiển thị bảng theo vai trò đã chọn */}
-          <div className="subject-table-container mt-3">
-              <Paper sx={{ width: "100%" }}>
-              <DataGrid
-                  rows={rows}
-                  columns={columns}
-                  initialState={{
-                  pagination: { paginationModel: { page: 0, pageSize: 5 } },
-                  }}
-                  pageSizeOptions={[5, 10]}
-                  disableColumnResize 
-                  disableExtendRowFullWidth
-                  disableRowSelectionOnClick
-                  getRowId={(row) => row.id}
-                  sx={{
-                  "& .MuiDataGrid-cell": {
-                      whiteSpace: "normal", 
-                      wordWrap: "break-word",
-                      lineHeight: "1.2", 
-                      padding: "8px",
-                  },
-                  "& .MuiDataGrid-columnHeaders": {
-                      borderBottom: "2px solid #ccc", 
-                  },
-                  "& .MuiDataGrid-cell": {
-                      borderRight: "1px solid #ddd", 
-                  },
-                  "& .MuiDataGrid-row:last-child .MuiDataGrid-cell": {
-                      borderBottom: "none", 
-                  },
-                  "& .MuiTablePagination-displayedRows": {
-                    textAlign: "center",    
-                    marginTop: "16px",
-                    marginLeft: "0px"
-                  },
-                  "& .MuiTablePagination-selectLabel": {
-                    marginTop: "13px",
-                    marginLeft: "0px"
-                  },
-                  "& .MuiTablePagination-select": {
-                    marginLeft: "0px",
-                  }      
-                }}
+      <div className="tbl-shadow p-3">
+        <div className="sample-card-header d-flex justify-content-between align-items-center mb-3">
+          <div className='left-header d-flex align-items-center'>
+            <div className="search-box me-2 rounded d-flex align-items-center">
+              <i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
+              <input
+                type="text"
+                className="search-input w-100"
+                placeholder="Tìm kiếm..."
+                // value={searchTerm}
+                // onChange={handleChangeSearch}
               />
-              </Paper>
+            </div>
           </div>
+
+          <div className='right-header'>
+            <Link className="add-btn btn link-btn d-flex align-items-center" to="/staff/matrix-detail">
+              <i className="fas fa-plus me-2"></i>
+              Thêm mới
+            </Link>
+          </div>
+        </div>
+
+        <div className="table-responsive">
+          <table className="table sample-table table-hover tbl-organize-hover">
+            <thead>
+              <tr className="align-middle">
+                <th className="text-center" style={{ width: "50px"}}>STT</th>
+                <th>Ma trận</th>
+                <th>Phân môn</th>
+                <th>Bộ câu hỏi</th>
+                <th className="text-center">Số lượng đề tạo sinh</th>
+                <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              {listExamMatrix.map((item, index) => (
+                <tr key={item.questionBankId} className="align-middle">
+                  <td className="text-center">{index + 1}</td>
+                  <td >
+                    <Link className="text-hover-primary"
+                      to={`/staff/`} 
+                      style={{ textDecoration: "none", cursor: "pointer", color: "black" }}
+                    >
+                      {item.matrixName}
+                    </Link>
+                  </td>
+                  <td></td>
+                  <td></td>
+                  <td className="text-center"></td>
+                  <td className="text-center">
+                    <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
+                      <i className="fas fa-edit text-white "></i>
+                    </button>
+                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
+                      <i className="fas fa-trash-alt"></i>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="sample-pagination d-flex justify-content-end align-items-center">
+          <Pagination count={10} color="primary"  shape="rounded"/>             
+        </div>
+      </div>
+
           {/* Form thêm tài khoản */}
           {showForm && (
             <div className="form-overlay">

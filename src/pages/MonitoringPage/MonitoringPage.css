@@ -1,0 +1,56 @@
+.home-super-page {
+    padding-top: 100px;
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: #f4f6f9;
+    min-height: 100vh;
+}
+  
+.monitor-tbl .custom-table td {
+    align-items: center;
+    justify-content: center;
+    padding: 15px 0px 15px 0px;
+    margin: 0px;
+}
+
+.custom-table td {
+    align-items: center;
+    justify-content: center;
+    padding: 15px 0px 15px 0px;
+    margin: 0px;
+}
+
+.custom-table th, .custom-table td {
+    vertical-align: middle; 
+    text-align: center; 
+}
+
+.custom-table th:nth-child(3), 
+.custom-table th:nth-child(4) {
+    text-align: left !important; 
+    padding-left: 10px;
+}
+
+.custom-table td:nth-child(3),
+.custom-table td:nth-child(4) {
+    text-align: left !important; 
+    padding-right: 8px;
+    padding-left: 10px;
+}
+
+.custom-table th {
+    color: black;
+}
+
+.custom-table {
+    margin: auto; 
+}
+
+.custom-header th{
+    background-color: #c6e0f8 !important; /* Màu xanh Bootstrap */
+    padding: 15px;
+}
+
+.custom-table, .custom-table th, .custom-table td {
+    border: 1px solid black !important; /* Viền đen dày */
+}

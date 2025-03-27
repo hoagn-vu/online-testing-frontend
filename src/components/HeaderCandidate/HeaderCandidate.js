@@ -1,13 +1,27 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaChevronDown } from "react-icons/fa";
-// Import icon
 import "./HeaderCandidate.css";
-import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../../redux/authSlice";
+import { Link, useNavigate } from "react-router-dom";
+import { authApi } from "../../services/authApi";
 
-const HeaderCandidate = ({ username, avatarUrl, logoUrl }) => {
+const HeaderCandidate = ({ avatarUrl, logoUrl }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  const user = useSelector((state) => state.auth.user);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    localStorage.removeItem("accessToken");
+    dispatch(authApi.util.resetApiState());
+    navigate("/");
+  };
 
   return (
     <div className="header-candidate-container">
@@ -31,7 +45,7 @@ const HeaderCandidate = ({ username, avatarUrl, logoUrl }) => {
           </Link>
         </nav>
         <img src={avatarUrl} alt="Avatar" className="avatar" />
-        <span className="username">{username}</span>
+        <span className="username">{user?.username}</span>
 
         {/* Nút mở dropdown */}
         <button className="dropdown-btn" onClick={() => setIsOpen(!isOpen)}>
@@ -42,7 +56,7 @@ const HeaderCandidate = ({ username, avatarUrl, logoUrl }) => {
         {isOpen && (
           <ul className="dropdown-menu show position-absolute end-0 mt-2">
             <li>
-              <a className="dropdown-item" href="#">
+              <a className="dropdown-item" onClick={handleLogout}>
                 Đăng xuất
               </a>
             </li>
