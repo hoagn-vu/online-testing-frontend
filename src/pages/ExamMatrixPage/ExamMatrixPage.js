@@ -8,40 +8,37 @@ import ApiService from "../../services/apiService";
 const ExamMatrixPage = () => {
   const [listExamMatrix, setListExamMatrix] = useState([]);
 
+  const [keyword, setKeyword] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(100);
+  const [isLoading, setIsLoading] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+
+  const handleKeywordChange = (e) => {
+    setKeyword(e.target.value);
+    setPage(1);
+  };
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await ApiService.get("/exam-matrices", {
+        params: { keyword, page, pageSize },
+      });
+      setListExamMatrix(response.data.examMatrices);
+    } catch (error) {
+      console.error("Lỗi lấy dữ liệu:", error);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [keyword, page, pageSize]);
+
   const [showForm, setShowForm] = useState(false);
   const [editingAccount, setEditingAccount] = useState(null);
   const inputRef = useRef(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await ApiService.get("/exam-matrices");
-        setListExamMatrix(response.data.examMatrices);
-      } catch (error) {
-        console.error("Lỗi lấy dữ liệu:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const [selectedItems, setSelectedItems] = useState([]);
-
-  const handleSelectItem = (e, id) => {
-    if (e.target.checked) {
-      setSelectedItems([...selectedItems, id]);
-    } else {
-      setSelectedItems(selectedItems.filter((item) => item !== id));
-    }
-  };
-
-  const handleSelectAll = (e) => {
-    if (e.target.checked) {
-      setSelectedItems(listExamMatrix.map((item) => item.id));
-    } else {
-      setSelectedItems([]);
-    }
-  };
 
   const handleAddNew = () => {
     console.log("Thêm mới");
@@ -121,10 +118,10 @@ const ExamMatrixPage = () => {
     <div className="exam-matrix-page">
       {/* Breadcrumb */}
       <nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
-        <Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
+        <Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i></Link> 
         
         <span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
-        <span className="breadcrumb-current"> Quản lý ma trận đề</span>
+        <span className="breadcrumb-current">Quản lý ma trận đề</span>
       </nav>
 
       <div className="tbl-shadow p-3">
@@ -136,8 +133,8 @@ const ExamMatrixPage = () => {
                 type="text"
                 className="search-input w-100"
                 placeholder="Tìm kiếm..."
-                // value={searchTerm}
-                // onChange={handleChangeSearch}
+                value={keyword}
+                onChange={handleKeywordChange}
               />
             </div>
           </div>

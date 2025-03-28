@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Paper } from "@mui/material";
 import PropTypes from 'prop-types';
 
 const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestions, difficultyData }) => {
+  // useEffect(() => {
+  //   console.log("from matrix both", data);
+  // }, [data]);
+
   return (
     <Box display="flex" gap={2} className="mt-3 w-full" justifyContent="space-between">
       {/* Bảng câu hỏi */}
@@ -40,34 +44,34 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
                       <div className="d-flex align-items-center justify-content-center gap-1">
                         <input
                           type="number"
-                          value={level.selectedCount}
+                          value={level.questionCount}
                           min="0"
-                          max={level.totalQuestionTag}
+                          max={level.total}
                           onChange={(e) =>
-                            handleInputChange(chapterIndex, levelIndex, "selectedCount", Number(e.target.value))
+                            handleInputChange(chapterIndex, levelIndex, "questionCount", Number(e.target.value))
                           }
                           className="border p-1 text-center"
                           style={{ width: "50px" }}
                         />
-                        <span>/ {String(level.totalQuestionTag).padStart(2, "0")}</span>
+                        <span>/ {String(level.total).padStart(2, "0")}</span>
                       </div>
                     </td>
                     <td className="border p-2 text-center" style={{ minWidth: "70px" }}>Câu</td>
                     <td className="border p-2 text-center">
                       <input
                         type="number"
-                        value={level.pointPerQuestion}
+                        value={level.scorePerQuestion}
                         min="0"
                         step="0.1"
                         onChange={(e) =>
-                          handleInputChange(chapterIndex, levelIndex, "pointPerQuestion", Number(e.target.value))
+                          handleInputChange(chapterIndex, levelIndex, "scorePerQuestion", Number(e.target.value))
                         }
                         className="border p-1 text-center"
                         style={{ width: "50px" }}
                       />
                     </td>
                     <td className="border p-2 text-center">
-                        {(level.selectedCount * level.pointPerQuestion).toFixed(2)}
+                        {(level.questionCount * level.scorePerQuestion).toFixed(2)}
                     </td>
                   </tr>
                 ))}
@@ -81,7 +85,7 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
               <td className="border p-2 text-center">
                 {data.reduce((total, chapter) => 
                 total + chapter.levels.reduce((sum, level) => 
-                sum + (level.selectedCount * level.pointPerQuestion), 0), 0).toFixed(2)}
+                sum + (level.questionCount * level.scorePerQuestion), 0), 0).toFixed(2)}
               </td>
             </tr>
           </tbody>
@@ -102,7 +106,7 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
             {difficultyData.map((row, index) => (
               <tr key={index}>
                 <td style={{ border: "1px solid #ddd", padding: "8px" }}>{row.level}</td>
-                <td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "center" }}>{row.count}</td>
+                <td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "center" }}>{row.questionCount}</td>
               </tr>
             ))}
           </tbody>

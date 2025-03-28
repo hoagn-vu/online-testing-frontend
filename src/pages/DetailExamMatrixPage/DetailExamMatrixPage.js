@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, use } from "react";
 import { Link } from "react-router-dom";
 import SelectRe from 'react-select';
 import './DetailExamMatrixPage.css'
@@ -14,15 +14,7 @@ import Checkbox from '@mui/material/Checkbox';
 import MatrixBoth from "../../components/MatrixBoth/MatrixBoth";
 import MatrixChapter from "../../components/MatrixChapter/MatrixChapter";
 import MatrixLevel from "../../components/MatrixLevel/MatrixLevel";
-
-// Dữ liệu mẫu cho dropdown
-const colourOptions = [
-    { value: 'red', label: 'Tư tưởng Hồ Chí Minh Tư tưởng Hồ Chí Minh Tư ' },
-    { value: 'blue', label: 'Blue' },
-    { value: 'green', label: 'Green' },
-    { value: 'yellow', label: 'Yellow' },
-    { value: 'purple', label: 'Purple' },
-  ];
+import ApiService from "../../services/apiService";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -38,105 +30,108 @@ const MenuProps = {
 const names = ['Chuyên đề','Mức độ',];
 
 const DetailExamMatrixPage = () => {
-	// const [personName, setPersonName] = React.useState([]);
-	const [personName, setPersonName] = useState([]);
+	const [subjectOptions, setSubjectOptions] = useState([]);
+	const [subjectChosen, setSubjectChosen] = useState(null);
+	const [bankOptions, setBankOptions] = useState([]);
+	const [bankChosen, setBankChosen] = useState(null);
+	const [tagClassification, setTagClassification] = useState([]);
+	const [data, setData] = useState([]);
+	const [matrixName, setMatrixName] = useState("");
 
-	const [levelDif, setLevelDif] = useState([
-		{
-			chapter : "Chương 3",
-			level : "",
-			totalQuestionTag: 10,
-			questionCount: 0,
-		},
-		{
-				chapter : "Chương 2",
-				level : "Nhận biết",
-				totalQuestionTag: 5,
-				questionCount: 0,
-		},
-		{
-				chapter : "Chương 2",
-				level : "Thông hiểu",
-				totalQuestionTag: 5,
-				questionCount: 0,
-		},
-		{
-				chapter : "Chương 2",
-				level : "Vận dụng cao",
-				totalQuestionTag: 8,
-				questionCount: 0,
-		},
-		{
-				chapter : "Chương 1",
-				level : "Nhận biết",
-				totalQuestionTag: 5,
-				questionCount: 0,
+	useEffect(() => {
+		const fetchSubjectOptions = async () => {
+			try {
+				const response = await ApiService.get("/subjects/options");
+				setSubjectOptions(response.data.map((item) => ({ value: item.id, label: item.subjectName })));
+			} catch (error) {
+				console.error("Failed to fetch subject options: ", error);
+			}
+		};
+
+		fetchSubjectOptions();
+	}, []);
+
+	useEffect(() => {
+		const fetchBankOptions = async () => {
+			try {
+				const response = await ApiService.get("/subjects/question-bank-options", {
+					params: { subjectId: subjectChosen },
+				});
+				setBankOptions(response.data.map((item) => ({ value: item.questionBankId, label: item.questionBankName })));
+			} catch (error) {
+				console.error("Failed to fetch bank options: ", error);
+			}
+		};
+
+		if (subjectChosen) {
+			fetchBankOptions();
 		}
-	]);
+	}, [subjectChosen]);
+
+	useEffect(() => {
+		const fetchTagsClassification = async () => {
+			try {
+				const response = await ApiService.get("/subjects/questions/tags-classification", {
+					params: { subjectId: subjectChosen, questionBankId: bankChosen },
+				});
+				setTagClassification(response.data.map((item) => ({ ...item, questionCount: 0 })));
+				// console.log("Tag classification: ", response.data.map((item) => ({ ...item, questionCount: 0 })));
+			} catch (error) {
+				console.error("Failed to fetch tag classification: ", error);
+			}
+		};
+
+		if (subjectChosen && bankChosen) {
+			fetchTagsClassification();
+		}
+	}, [subjectChosen, bankChosen]);
+
+	const [personName, setPersonName] = useState([]);
 
   const handleChange = (event) => {
     const {
       target: { value },
     } = event;
     setPersonName(
-      // On autofill we get a stringified value.
       typeof value === 'string' ? value.split(',') : value,
     );
   };
 
-	const groupedData = levelDif.reduce((acc, item) => {
-    const existing = acc.find((entry) => entry.chapter === item.chapter);
-    if (existing) {
-      existing.levels.push({ level: item.level || "Không xác định", totalQuestionTag: item.totalQuestionTag });
-    } else {
-      acc.push({ chapter: item.chapter, levels: [{ level: item.level || "Không xác định", totalQuestionTag: item.totalQuestionTag }] });
-    }
-    return acc;
-  }, []);
-
-  const [data, setData] = useState(
-    groupedData.map((item) => ({
-      ...item,
-      levels: item.levels.map((level) => ({ ...level, selectedCount: 0, pointPerQuestion: 0 }))
-    }))
-  );
+	useEffect(() => {
+		const groupedData = tagClassification.reduce((acc, item) => {
+			const existing = acc.find((entry) => entry.chapter === item.chapter);
+			if (existing) {
+				existing.levels.push({ level: item.level || "Không xác định", total: item.total });
+			} else {
+				acc.push({ chapter: item.chapter, levels: [{ level: item.level || "Không xác định", total: item.total }] });
+			}
+			return acc;
+		}, []);
+	
+		setData(
+			groupedData.map((item) => ({
+				...item,
+				levels: item.levels.map((level) => ({ ...level, questionCount: 0, scorePerQuestion: 0 }))
+			}))
+		);
+	}, [tagClassification]);
 
 	const handleInputChange = (chapterIndex, levelIndex, field, value) => {
     setData((prevData) => {
-        const newData = [...prevData]; // Tạo bản sao của data
-        if (!newData[chapterIndex] || !newData[chapterIndex].levels[levelIndex]) {
-            console.error("Invalid index:", chapterIndex, levelIndex);
-            return prevData;
-        }
-        newData[chapterIndex].levels[levelIndex][field] = value; // Cập nhật giá trị
-        return newData;
+			const newData = [...prevData]; // Tạo bản sao của data
+			if (!newData[chapterIndex] || !newData[chapterIndex].levels[levelIndex]) {
+				console.error("Invalid index:", chapterIndex, levelIndex);
+				return prevData;
+			}
+			newData[chapterIndex].levels[levelIndex][field] = value; // Cập nhật giá trị
+			return newData;
     });
-};
+	};
 	
 	const totalSelectedQuestions = data.reduce(
-		(sum, item) => sum + item.levels.reduce((subSum, level) => subSum + level.selectedCount, 0),
+		(sum, item) => sum + item.levels.reduce((subSum, level) => subSum + level.questionCount, 0),
 		0
 	);
-
-	const aggregateDifficultyData = () => {
-		const difficultyMap = {};
-	
-		levelDif.forEach((item) => {
-			const level = item.level.trim() === "" ? "Không xác định" : item.level;
-	
-			if (!difficultyMap[level]) {
-				difficultyMap[level] = 0;
-			}
-			difficultyMap[level] += item.selectedCount; // Dùng selectedCount thay vì totalQuestionTag
-		});
-	
-		return Object.entries(difficultyMap).map(([level, count]) => ({
-			level,
-			count,
-		}));
-	};
-		
-	// const difficultyData = aggregateDifficultyData();
 
 	const [difficultyData, setDifficultyData] = useState([]);
 
@@ -148,81 +143,67 @@ const DetailExamMatrixPage = () => {
 			item.levels.forEach((level) => {
 				const existing = newDifficultyData.find((d) => d.level === level.level);
 				if (existing) {
-					existing.count += level.selectedCount; // Cập nhật số lượng
+					existing.questionCount += level.questionCount;
 				} else {
-					newDifficultyData.push({ level: level.level, count: level.selectedCount });
+					newDifficultyData.push({ level: level.level, questionCount: level.questionCount });
 				}
 			});
 		});
 
 		setDifficultyData(newDifficultyData);
 	}, [data]); // Chạy lại mỗi khi `data` thay đổi
-
-	// Matrix Chapter
-	const [chapterSummary, setChapterSummary] = useState([]);
-
-	const handleInputChangeChapter = (index, field, value) => {
-		setChapterSummary((prevSummary) =>
-			prevSummary.map((item, i) =>
-				i === index ? { ...item, [field]: value } : item
-			)
-		);
-	};
-
-	const calculateSelectedQuestionsChapter = (data) => {
-		return data.reduce((total, chapter) => {
-			return total + (chapter.questions?.filter(q => q.selected).length || 0);
-		}, 0);
-	};
-	
-	const GroupDataChapter = (data) => {
-		return data.reduce((acc, item) => {
-			const existing = acc.find((entry) => entry.chapter === item.chapter);
-			if (existing) {
-				existing.totalQuestionTag += item.totalQuestionTag;
-			} else {
-				acc.push({ chapter: item.chapter, totalQuestionTag: item.totalQuestionTag, levels: [] });
-			}
-			return acc;
-		}, []);
-	};
-	
-	const [dataChapter, setDataChapter] = useState(
-		GroupDataChapter(data).map((item) => ({
-			...item,
-			levels: item.levels.map((level) => ({
-				...level,
-				selectedCount: 0,
-				pointPerQuestion: 0
-			}))
-		}))
-	);
-	
-	// const totalSelectedQuestionsChapter = data.reduce((sum, item) => {
-	// 	return sum + item.levels.reduce((subSum, level) => subSum + level.selectedCount, 0);
-	// }, 0);
 	
 	// Tính tổng số câu hỏi đã chọn trong tất cả chương
-  const totalSelectedQuestionsChapter = levelDif.reduce(
+  const totalSelectedQuestionsChapter = tagClassification.reduce(
     (sum, item) => sum + item.questionCount,
     0
   );
 
-	const totalSelectedQuestionsLevel = levelDif.reduce(
+	const totalSelectedQuestionsLevel = tagClassification.reduce(
 		(sum, item) => sum + item.questionCount,
 		0
 	);
+
+	const handleSaveMatrix = async () => {
+		if (!matrixName || !subjectChosen || !bankChosen || !data.length) {
+			alert("Vui lòng chọn môn học, ngân hàng câu hỏi và nhập dữ liệu.");
+			return;
+		}
 	
+		const examMatrixData = {
+			matrixName: matrixName,
+			subjectId: subjectChosen,
+			questionBankId: bankChosen,
+			matrixTags: data.flatMap((item) =>
+				item.levels.map((level) => ({
+					chapter: item.chapter,
+					level: level.level,
+					questionCount: level.questionCount,
+					scorePerQuestion: level.scorePerQuestion
+				}))
+			),
+		};
+	
+		try {
+			const response = await ApiService.post("/exam-matrices", examMatrixData);
+			console.log("Lưu thành công: ", response.data);
+			alert("Lưu thành công!");
+		} catch (error) {
+			console.error("Lỗi khi lưu ma trận đề: ", error);
+			alert("Lưu thất bại!");
+		}
+	};
+		
 	return (
 		<div className="detail-matrix-page">
 			{/* Breadcrumb */}
 			<nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
-				<Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
+				<Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i></Link> 
 				<span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
 				<span className="breadcrumb-between">
 					<Link to="/staff/matrix-exam" className="breadcrumb-between">Quản lý ma trận đề</Link></span>
 					<span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
-				<span className="breadcrumb-current"> Thêm mới</span>
+				<span className="breadcrumb-current">Thêm mới</span>
 			</nav>
 
 			<div className="d-flex mt-4">
@@ -230,7 +211,8 @@ const DetailExamMatrixPage = () => {
 					<TextField
 						required
 						id="outlined-size-small"
-						defaultValue=""
+						value={matrixName}
+						onChange={(e) => setMatrixName(e.target.value)}
 						size="small"
 						label="Tên ma trận đề thi"
 						sx={{
@@ -246,9 +228,10 @@ const DetailExamMatrixPage = () => {
 					<SelectRe
 						className="basic-single ms-2"
 						classNamePrefix="select"
-						placeholder="Chọn ngân hàng câu hỏi"
+						placeholder="Chọn phân môn"
 						name="color"
-						options={colourOptions}
+						options={subjectOptions}
+						onChange={(option) => setSubjectChosen(option?.value)}
 						styles={{
 								control: (base) => ({
 										...base,
@@ -273,29 +256,60 @@ const DetailExamMatrixPage = () => {
 								}),
 						}}
 					/>
-<FormControl sx={{ ml: 1, width: 250 }} size="small">
-  <InputLabel id="demo-multiple-checkbox-label">Phân loại</InputLabel>
-  <Select
-    labelId="demo-multiple-checkbox-label"
-    id="demo-multiple-checkbox"
-    multiple
-    value={personName}
-    onChange={handleChange}
-    input={<OutlinedInput label="Phân theo" />}
-    renderValue={(selected) => selected.join(', ')}
-    MenuProps={MenuProps}
-  >
-    {names.map((name) => (
-      <MenuItem key={name} value={name}>
-        <Checkbox checked={personName.includes(name)} />
-        <ListItemText primary={name} />
-      </MenuItem>
-    ))}
-  </Select>
-</FormControl>
+					<SelectRe
+						className="basic-single ms-2"
+						classNamePrefix="select"
+						placeholder="Chọn bộ câu hỏi"
+						name="color"
+						options={bankOptions}
+						onChange={(option) => setBankChosen(option?.value)}
+						styles={{
+								control: (base) => ({
+										...base,
+										width: "250px", // Cố định chiều rộng
+										maxWidth: "250px",
+										height: "40px", // Tăng chiều cao
+								}),
+								menu: (base) => ({
+										...base,
+										width: "250px", // Cố định chiều rộng của dropdown
+								}),
+								valueContainer: (base) => ({
+										...base,
+										overflow: "hidden",
+										textOverflow: "ellipsis",
+										whiteSpace: "nowrap",
+										fontSize: "14px",
+								}),
+								placeholder: (base) => ({
+										...base,
+										fontSize: "14px", // Cỡ chữ của placeholder (label)
+								}),
+						}}
+					/>
+					<FormControl sx={{ ml: 1, width: 250 }} size="small">
+						<InputLabel id="demo-multiple-checkbox-label">Phân loại</InputLabel>
+						<Select
+							labelId="demo-multiple-checkbox-label"
+							id="demo-multiple-checkbox"
+							multiple
+							value={personName}
+							onChange={handleChange}
+							input={<OutlinedInput label="Phân theo" />}
+							renderValue={(selected) => selected.join(', ')}
+							MenuProps={MenuProps}
+						>
+							{names.map((name) => (
+								<MenuItem key={name} value={name}>
+									<Checkbox checked={personName.includes(name)} />
+									<ListItemText primary={name} />
+								</MenuItem>
+							))}
+						</Select>
+					</FormControl>
 				</div>
 				<div className="d-flex ms-auto">
-					<button className="add-btn" >
+					<button className="add-btn" onClick={handleSaveMatrix}>
 						Lưu
 					</button>
 				</div>
@@ -310,13 +324,13 @@ const DetailExamMatrixPage = () => {
 				/>
 			) : personName.includes("Chuyên đề") ? (
 				<MatrixChapter
-					data={levelDif}
+					data={tagClassification}
 					personName={personName}
 					totalSelectedQuestions={totalSelectedQuestionsChapter}
 				/>
 			) : personName.includes("Mức độ") ? (
 				<MatrixLevel
-					data={levelDif}
+					data={tagClassification}
 					personName={personName}
 					totalSelectedQuestions={totalSelectedQuestionsLevel}
 				/>

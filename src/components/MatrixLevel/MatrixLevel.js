@@ -18,7 +18,7 @@ const MatrixLevel = ({ data }) => {
           };
         }
         levelSummary[item.level].totalSelected += item.questionCount;
-        levelSummary[item.level].totalQuestions += item.totalQuestionTag;
+        levelSummary[item.level].totalQuestions += item.total;
       });
   
     return Object.values(levelSummary);
