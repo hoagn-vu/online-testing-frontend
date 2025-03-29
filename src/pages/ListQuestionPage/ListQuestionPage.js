@@ -7,6 +7,7 @@ import CreatableSelect from "react-select/creatable";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ApiService from "../../services/apiService";
 import { useSelector } from "react-redux";
+import { CircularProgress, Typography, Box } from "@mui/material";
 
 const ListQuestionPage = () => {
 	const user = useSelector((state) => state.auth.user);
@@ -22,6 +23,9 @@ const ListQuestionPage = () => {
 	const [pageSize, setPageSize] = useState(100);
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalCount, setTotalCount] = useState(0);
+
+	const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
@@ -64,45 +68,66 @@ const ListQuestionPage = () => {
 	});
 
 	const handleUploadfile = async () => {
-		const { value: file } = await Swal.fire({
-				title: "Chọn file",
-				input: "file",
-				inputAttributes: {
-						accept: ".docx,.txt",
-						"aria-label": "Tải lên",
-				},
-		});
+    const { value: file } = await Swal.fire({
+        title: "Chọn file",
+        input: "file",
+        inputAttributes: {
+            accept: ".docx,.txt",
+            "aria-label": "Tải lên",
+        },
+    });
 
-		if (file) {
-				const formData = new FormData();
-				formData.append("file", file);
+    if (file) {
+        const formData = new FormData();
+        formData.append("file", file);
 
-				try {
-						const response = await ApiService.post(`/file/upload-file-question`, formData, {
-								params: { subjectId: subjectId, questionBankId: questionBankId },
-								headers: {
-									"Content-Type": "multipart/form-data",
-							},
-						});
+        setIsUploading(true);
+        setUploadProgress(0);
+        document.getElementById("uploadModal").classList.add("show");
+        document.getElementById("uploadModal").style.display = "block";
 
-						// if (!response.ok) {
-						// 		throw new Error("Upload thất bại");
-						// }
+        try {
+            const response = await ApiService.post(`/file/upload-file-question`, formData, {
+                params: { subjectId, questionBankId },
+                headers: { "Content-Type": "multipart/form-data" },
+                onUploadProgress: (progressEvent) => {
+                    if (progressEvent.total) {
+                        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
 
-						Swal.fire({
-								title: "Tải lên thành công",
-								icon: "success",
-						});
-						fetchData();
-				} catch (error) {
-						Swal.fire({
-								title: "Lỗi",
-								text: error.message,
-								icon: "error",
-						});
-				}
-		}
+                        setUploadProgress((prevProgress) => {
+                            // Tăng từ từ, nhưng không nhảy đột ngột
+                            if (percentCompleted > prevProgress) {
+                                return percentCompleted < 99 ? percentCompleted : 99;
+                            }
+                            return prevProgress;
+                        });
+                    }
+                },
+            });
+
+            setUploadProgress(100); // Khi hoàn thành, đặt 100%
+
+            Swal.fire({
+                title: "Tải lên thành công",
+                icon: "success",
+            });
+
+            fetchData();
+        } catch (error) {
+            Swal.fire({
+                title: "Lỗi",
+                text: error.message,
+                icon: "error",
+            });
+        }
+
+        document.getElementById("uploadModal").classList.remove("show");
+        document.getElementById("uploadModal").style.display = "none";
+        setIsUploading(false);
+        setUploadProgress(0);
+    }
 };
+
 
 	const [editQuestionId, setEditQuestionId] = useState(null);
 	const [shuffleQuestion, setShuffleQuestion] = useState(false);
@@ -303,6 +328,38 @@ const ListQuestionPage = () => {
 					<button className="upload-btn ms-2" onClick={handleUploadfile}>
 						Upload File
 					</button>
+					<div className="modal fade" id="uploadModal" tabIndex="-1" aria-hidden="true"
+					style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+					>
+                <div className="modal-dialog modal-dialog-centered small-modal" >
+                    <div className="modal-content text-center p-4 container" style={{ width: "500px" }}>
+										<div className="modal-body">
+                {/* Vòng tròn tiến trình MUI */}
+                <Box sx={{ position: "relative", display: "inline-flex" }}>
+                    <CircularProgress variant="determinate" value={uploadProgress} size={80} />
+                    <Box
+                        sx={{
+
+                            top: 0,
+                            left: 0,
+                            bottom: 0,
+                            right: 0,
+                            position: "absolute",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                    >
+                        <Typography variant="caption" component="div" sx={{ color: "text.secondary", fontSize: "18px" }}>
+                            {`${uploadProgress}%`}
+                        </Typography>
+                    </Box>
+                </Box>
+                <p className="mt-3">Đang tải lên...</p>
+            </div>
+                    </div>
+                </div>
+            </div>
 				</div>
 			</div>
 
