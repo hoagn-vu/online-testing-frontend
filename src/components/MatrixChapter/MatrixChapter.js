@@ -18,7 +18,7 @@ const MatrixChapter = ({ data }) => {
               };
             }
             chapterSummary[item.chapter].totalSelected += item.questionCount;
-            chapterSummary[item.chapter].totalQuestions += item.totalQuestionTag;
+            chapterSummary[item.chapter].totalQuestions += item.total;
           });
       
         return Object.values(chapterSummary);
