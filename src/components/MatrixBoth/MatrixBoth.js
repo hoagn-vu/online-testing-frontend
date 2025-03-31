@@ -9,7 +9,6 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
 
   return (
     <Box display="flex" gap={2} className="mt-3 w-full" justifyContent="space-between">
-      {/* Bảng câu hỏi */}
       <div className="table-responsive" style={{ flex: "1" }}>
         <table className="table w-full border border-gray-300">
           <thead>
@@ -20,12 +19,11 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
               <th className="border p-2 text-center">Số lượng chọn / Tổng</th>
               <th className="border p-2 text-center">Đơn vị</th>
               <th className="border p-2 text-center">Điểm/Câu</th>
-              <th className="border p-2 text-center">Tổng điểm</th> {/* Thêm cột mới */}
-
+              <th className="border p-2 text-center">Tổng điểm</th>
             </tr>
           </thead>
           <tbody>
-            {data.map((item, chapterIndex) => (
+            {data && data.map((item, chapterIndex) => (
               <React.Fragment key={chapterIndex}>
                 {item.levels.map((level, levelIndex) => (
                   <tr key={`${chapterIndex}-${levelIndex}`} className="border">

@@ -10,7 +10,7 @@ const ExamMatrixPage = () => {
 
   const [keyword, setKeyword] = useState("");
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(100);
+  const [pageSize, setPageSize] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
 
@@ -26,6 +26,7 @@ const ExamMatrixPage = () => {
         params: { keyword, page, pageSize },
       });
       setListExamMatrix(response.data.examMatrices);
+      setTotalCount(response.data.totalCount)
     } catch (error) {
       console.error("Lỗi lấy dữ liệu:", error);
     }
@@ -113,7 +114,6 @@ const ExamMatrixPage = () => {
     });
   };
 
-
   return (
     <div className="exam-matrix-page">
       {/* Breadcrumb */}
@@ -155,7 +155,7 @@ const ExamMatrixPage = () => {
                 <th>Ma trận</th>
                 <th>Phân môn</th>
                 <th>Bộ câu hỏi</th>
-                <th className="text-center">Số lượng đề tạo sinh</th>
+                <th style={{ width: "200px"}}>Số lượng đề tạo sinh</th>
                 <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
               </tr>
             </thead>
@@ -171,9 +171,9 @@ const ExamMatrixPage = () => {
                       {item.matrixName}
                     </Link>
                   </td>
-                  <td></td>
-                  <td></td>
-                  <td className="text-center"></td>
+                  <td>{item.subjectName}</td>
+                  <td>{item.questionBankName}</td>
+                  <td>{item.totalGeneratedExams}</td>
                   <td className="text-center">
                     <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
                       <i className="fas fa-edit text-white "></i>
@@ -189,7 +189,15 @@ const ExamMatrixPage = () => {
         </div>
 
         <div className="sample-pagination d-flex justify-content-end align-items-center">
-          <Pagination count={10} color="primary"  shape="rounded"/>             
+          { totalCount > 0 && (
+            <Pagination
+              count={Math.ceil(totalCount / pageSize)}
+              shape="rounded"
+              page={page}
+              onChange={(e, value) => setPage(value)}
+              color="primary"
+            />
+          )}
         </div>
       </div>
 
