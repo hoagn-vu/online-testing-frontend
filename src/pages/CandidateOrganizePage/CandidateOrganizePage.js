@@ -135,7 +135,7 @@ const CandidateOrganizePage = () => {
 				<span className="breadcrumb-between">
 				<Link 
 					to={`/staff/organize/${organizeId}/${sessionId}`} 
-					state={{ sessionName: sessionName }} 
+					state={{ sessionName: sessionName }}
 					className="breadcrumb-between">
 					{sessionName}
 				</Link></span>

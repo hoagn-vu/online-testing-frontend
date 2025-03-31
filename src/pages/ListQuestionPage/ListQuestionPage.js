@@ -17,6 +17,8 @@ const ListQuestionPage = () => {
 	const [ questionBankName, setQuestionBankName ] = useState("");	
 
 	const [ questions, setQuestions ] = useState([]);
+	const [allChapters, setAllChapters] = useState([]);
+	const [allLevels, setAllLevels] = useState([]);
 
 	const [keyword, setKeyword] = useState("");
 	const [page, setPage] = useState(1);
@@ -36,12 +38,14 @@ const ListQuestionPage = () => {
 		setIsLoading(true);
 		try {
 			const response = await ApiService.get("/subjects/questions", {
-				params: { subId: subjectId, qbId: questionBankId },
+				params: { subId: subjectId, qbId: questionBankId, keyword: keyword, page: page, pageSize: pageSize },
 			});
 			setQuestions(response.data.questions);
 			setSubjectName(response.data.subjectName);
 			setQuestionBankName(response.data.questionBankName);
 			setTotalCount(response.data.totalCount);
+			setAllChapters(response.data.allChapter.map((chapter) => ({ value: chapter, label: chapter })));
+			setAllLevels(response.data.allLevel.map((level) => ({ value: level, label: level })));
 		} catch (error) {
 			console.error("Failed to fetch data:", error);
 		}
@@ -281,15 +285,6 @@ const ListQuestionPage = () => {
 		});
 	};
 
-	// Danh sách tất cả chương & mức độ từ `questions`
-	const allChapters = [
-		...new Set(questions.map(q => q.tags?.[0]).filter(Boolean))
-	].map(chapter => ({ label: chapter, value: chapter }));
-
-	const allLevels = [
-		...new Set(questions.map(q => q.tags?.[1]).filter(Boolean))
-	].map(level => ({ label: level, value: level }));
-
 	return (
 		<div className=" list-question-container">
 			{/* Breadcrumb */}
@@ -455,8 +450,8 @@ const ListQuestionPage = () => {
 									menuPortalTarget={document.body}
 									placeholder="Chọn chuyên đề kiến thức"
 									styles={{
-											menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-											container: (provided) => ({ ...provided, flex: 1 })
+										menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+										container: (provided) => ({ ...provided, flex: 1 })
 									}}
 								/>
 							</div>
@@ -471,8 +466,8 @@ const ListQuestionPage = () => {
 									menuPortalTarget={document.body}
 									placeholder="Chọn mức độ"
 									styles={{
-											menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-											container: (provided) => ({ ...provided, flex: 1 })
+										menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+										container: (provided) => ({ ...provided, flex: 1 })
 									}}
 								/>
 							</div>

@@ -13,35 +13,65 @@ import ApiService from "../../services/apiService";
 
 const ExamManagementPage = () => {
 	const [listExam, setListExam] = useState([]);
+	const [keyword, setKeyword] = useState("");
+	const [page, setPage] = useState(1);
+	const [pageSize, setPageSize] = useState(10);
+	const [isLoading, setIsLoading] = useState(false);
+	const [totalCount, setTotalCount] = useState(0);
+	const [subjectOptions, setSubjectOptions] = useState([]);
+	const [questionBankOptions, setQuestionBankOptions] = useState([]);
 
-	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const response = await ApiService.get("/exams");
-				setListExam(response.data.exams);
-			} catch (error) {
-				console.error("Lỗi lấy dữ liệu:", error);
-			}
-		};
+	const handleKeywordChange = (e) => {
+    setKeyword(e.target.value);
+    setPage(1);
+  };
 
-		fetchData();
-	}, []);
-
-	const [selectedItems, setSelectedItems] = useState([]);
-
-	const handleSelectItem = (e, id) => {
-		if (e.target.checked) {
-			setSelectedItems([...selectedItems, id]);
-		} else {
-			setSelectedItems(selectedItems.filter((item) => item !== id));
+	const fetchData = async () => {
+		try {
+			const response = await ApiService.get("/exams", {
+        params: { keyword, page, pageSize },
+      });
+			setListExam(response.data.exams);
+			setTotalCount(response.data.totalCount);
+		} catch (error) {
+			console.error("Lỗi lấy dữ liệu:", error);
 		}
 	};
 
-	const handleSelectAll = (e) => {
-		if (e.target.checked) {
-			setSelectedItems(listExam.map((item) => item.id));
-		} else {
-			setSelectedItems([]);
+	useEffect(() => {
+		fetchData();
+	}, [keyword, page, pageSize]);
+
+	useEffect(() => {
+		const fetchSubjectOptions = async () => {
+			try {
+				const response = await ApiService.get("/subjects");
+				setSubjectOptions(response.data.subjects.map((subject) => ({
+					value: subject.id,
+					label: subject.subjectName,
+				})));
+			} catch (error) {
+				console.error("Failed to fetch subjects", error);
+			}
+		};
+		fetchSubjectOptions();
+	}, []);
+
+	const fetchQuestionBankOptions = async (subjectId) => {
+		if (!subjectId) {
+			return;
+		}
+		try {
+			const response = await ApiService.get("/subjects/question-bank-options", {
+				params: { subjectId: subjectId },
+			});
+
+			setQuestionBankOptions(response.data.map((questionBank) => ({
+				value: questionBank.questionBankId,
+				label: questionBank.questionBankName,
+			})));
+		} catch (error) {
+			console.error("Failed to fetch question banks", error);
 		}
 	};
 
@@ -77,23 +107,23 @@ const ExamManagementPage = () => {
 	};
 
   const [formData, setFormData] = useState({
-  examCode: "",
-  examName: "",
-  subjectId: "",
-	questionBankId: "",
-  examStatus: "active",
-  });
-
-  const handleAddNew = () => {
-  setEditingAccount(null); // Đảm bảo không ở chế độ chỉnh sửa
-  setFormData({
-    examCode: "",
+		examCode: "",
 		examName: "",
 		subjectId: "",
 		questionBankId: "",
-		examStatus: "active",
+		examStatus: "available",
   });
-  setTimeout(() => setShowForm(true), 0); // Đợi React cập nhật state rồi mới hiển thị form
+
+  const preAddNew = () => {
+		setEditingAccount(null); // Đảm bảo không ở chế độ chỉnh sửa
+		setFormData({
+			examCode: "",
+			examName: "",
+			subjectId: "",
+			questionBankId: "",
+			examStatus: "available",
+		});
+		setShowForm(true)
   };
 
   const handlePermissionChange = (permission) => {
@@ -160,27 +190,27 @@ const ExamManagementPage = () => {
 
 
 			<div className="tbl-shadow p-3">
-				<div className="sample-card-header d-flex justify-content-between align-items-center mb-3">
-					<div className='left-header d-flex align-items-center'>
-						<div className="search-box me-2 rounded d-flex align-items-center">
-							<i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
-							<input
-								type="text"
-								className="search-input w-100"
-								placeholder="Tìm kiếm..."
-								// value={searchTerm}
-								// onChange={handleChangeSearch}
-							/>
-						</div>
-					</div>
+				<div className="sample-card-header d-flex justify-content-between align-items-center mb-2">
+          <div className='left-header d-flex align-items-center'>
+            <div className="search-box rounded d-flex align-items-center">
+              <i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
+              <input
+                type="text"
+                className="search-input w-100"
+                placeholder="Tìm kiếm..."
+                value={keyword}
+                onChange={handleKeywordChange}
+              />
+            </div>
+          </div>
 
-					<div className='right-header'>
-						<button className="btn btn-primary" style={{fontSize: "14px"}} onClick={handleAddNew}>
-							<i className="fas fa-plus me-2"></i>
-							Thêm mới
-						</button>
-					</div>
-				</div>
+          <div className='right-header'>
+            <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={preAddNew}>
+              <i className="fas fa-plus me-2"></i>
+              Thêm mới
+            </button>
+          </div>
+        </div>
 
 				<div className="table-responsive">
 					<table className="table sample-table table-hover tbl-organize-hover">
@@ -224,9 +254,16 @@ const ExamManagementPage = () => {
 				</div>
 
 				<div className="sample-pagination d-flex justify-content-end align-items-center">
-					<Pagination count={10} color="primary" shape="rounded"/>        
+					{ totalCount > 0 && (
+						<Pagination
+							count={Math.ceil(totalCount / pageSize)}
+							shape="rounded"
+							page={page}
+							onChange={(e, value) => setPage(value)}
+							color="primary"
+						/>
+					)}
 				</div>
-
 			</div>
 
 			
@@ -313,6 +350,10 @@ const ExamManagementPage = () => {
 										placeholder="Chọn phân môn"
 										name="color"
 										options={subjectOptions}
+										onChange={(selected) => {
+											fetchQuestionBankOptions(selected?.value);
+											setFormData({ ...formData, subjectId: selected.value });
+										}}										
 										isDisabled={editingAccount}
 										styles={{
 											control: (base) => ({
@@ -348,7 +389,7 @@ const ExamManagementPage = () => {
 										classNamePrefix="select"
 										placeholder="Chọn ngân hàng câu hỏi"
 										name="color"
-										options={bankOptions}
+										options={questionBankOptions}
 										isDisabled={editingAccount}
 										styles={{
 											control: (base) => ({
