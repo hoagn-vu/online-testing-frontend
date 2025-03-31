@@ -31,14 +31,14 @@ import { logout } from "../../redux/authSlice";
 const drawerWidth = 250;
 
 const menuItems = [
-  { title: "Trang chủ", icon: <InboxIcon className='icon-color'/>, path: "/staff/dashboard", role: ["user", "admin"] },
-  { title: "Quản lý tài khoản", icon: <MailIcon className='icon-color'/>, path: "/staff/accountmanage", role: ["user"] },
-  { title: "Quản lý kỳ thi", icon: <InboxIcon className='icon-color'/>, path: "/staff/organize", role: ["user", "admin"] },
-  { title: "Ngân hàng câu hỏi", icon: <MailIcon className='icon-color'/>, path: "/staff/question", role: ["user"] },
-  { title: "Quản lý ma trận đề", icon: <InboxIcon className='icon-color'/>, path: "/staff/matrix-exam", role: ["user", "admin"] },
-  { title: "Quản lý đề thi", icon: <MailIcon className='icon-color'/>, path: "/staff/exam", role: ["user"] },
-  { title: "Quản lý phòng thi", icon: <InboxIcon className='icon-color'/>, path: "/staff/room", role: ["user", "admin"] },
-  { title: "Nhật ký sử dụng", icon: <MailIcon className='icon-color'/>, path: "/staff/log", role: ["user"] },
+  { title: "Trang chủ", icon: <i className="fa-solid fa-chart-column icon-color" aria-hidden="true"></i>, path: "/staff/dashboard", role: ["user", "admin"] },
+  { title: "Quản lý tài khoản", icon: <i className="fa-solid fa-user-gear icon-color"></i>, path: "/staff/accountmanage", role: ["user"] },
+  { title: "Quản lý kỳ thi", icon: <i className="fa-solid fa-calendar-check icon-color"></i>, path: "/staff/organize", role: ["user", "admin"] },
+  { title: "Ngân hàng câu hỏi", icon: <i className="fa-solid fa-database icon-color"></i>, path: "/staff/question", role: ["user"] },
+  { title: "Quản lý ma trận đề", icon: <i className="fa-solid fa-table icon-color"></i>, path: "/staff/matrix-exam", role: ["user", "admin"] },
+  { title: "Quản lý đề thi", icon: <i className="fa-solid fa-file-lines icon-color"></i>, path: "/staff/exam", role: ["user"] },
+  { title: "Quản lý phòng thi", icon: <i className="fa-solid fa-school icon-color"></i>, path: "/staff/room", role: ["user", "admin"] },
+  { title: "Nhật ký sử dụng", icon: <i className="fa-solid fa-book icon-color"></i>, path: "/staff/log", role: ["user"] },
 ];
 
 const openedMixin = (theme) => ({
