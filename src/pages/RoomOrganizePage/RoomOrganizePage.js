@@ -270,7 +270,7 @@ const RoomOrganizePage = () => {
 										<td className="text-center">{index + 1}</td>
 										<td>{item.roomInSessionId}</td>
 										<td>{item.roomName} - {item.roomLocation}</td>
-										<td>{item.supervisorName}</td>
+										<td>{item.supervisors[0].supervisorName}</td>
 										<td>
 											<Link className="text-hover-primary"
 												to={`/staff/organize/${organizeId}/${sessionId}/${item.roomInSessionId}`}
