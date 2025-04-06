@@ -81,3 +81,11 @@
   transform: scale(1.001); /* Làm cho hàng to nhẹ khi hover */
   cursor: pointer;
 }
+
+.report-hover:hover {
+  text-decoration: underline;
+}
+
+.report-hover {
+  text-decoration: none;
+}

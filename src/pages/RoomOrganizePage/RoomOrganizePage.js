@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useParams, useLocation } from "react-router-dom";
+import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import "./RoomOrganizePage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -29,6 +29,7 @@ const RoomOrganizePage = () => {
 	const [roomOptions, setRoomOptions] = useState([]);
 	const [supervisorOptions, setSupervisorOptions] = useState([]);
 	const [candidateGroupOptions, setCandidateGroupOptions] = useState([]);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchRoomOptions = async () => {
@@ -255,12 +256,11 @@ const RoomOrganizePage = () => {
 						<table className="table sample-table tbl-organize-hover table-hover">
 							<thead style={{fontSize: "14px"}}>
 								<tr className="align-middle fw-medium">
-									<th scope="col" className="title-row text-center">STT</th> 
-									<th scope="col" className="title-row">Mã phòng</th>
-									<th scope="col" className="title-row">Phòng</th>
-									<th scope="col" className="title-row">Giám thị</th>
-									<th scope="col" className="title-row">Thí sinh</th>
-									<th scope="col" className="title-row text-center">Trạng thái</th>
+									<th className="title-row text-center">STT</th> 
+									<th className="title-row">Phòng</th>
+									<th className="title-row">Giám thị</th>
+									<th className="text-center">Thí sinh</th>
+									<th className="title-row text-center">Trạng thái</th>
 									<th className="text-center">Thao tác</th>
 								</tr>
 							</thead>
@@ -268,16 +268,27 @@ const RoomOrganizePage = () => {
 								{roomsOrganize.map((item, index) => (
 									<tr key={item.roomInSessionId} className="align-middle">
 										<td className="text-center">{index + 1}</td>
-										<td>{item.roomInSessionId}</td>
-										<td>{item.roomName} - {item.roomLocation}</td>
-										<td>{item.supervisorName}</td>
-										<td>
-											<Link className="text-hover-primary"
-												to={`/staff/organize/${organizeId}/${sessionId}/${item.roomInSessionId}`}
-												style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
-											>
-												Danh sách thí sinh
-											</Link>
+										<td
+											onClick={() => navigate(`/staff/organize/${organizeId}/${sessionId}/${item.roomInSessionId}`, {
+											})}
+											style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+										>
+											{item.roomName} - {item.roomLocation}
+										</td>
+										<td
+											onClick={() => navigate(`/staff/organize/${organizeId}/${sessionId}/${item.roomInSessionId}`, {
+											})}
+											style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+										>
+											{item.supervisorName}
+										</td>
+										<td
+											onClick={() => navigate(`/staff/organize/${organizeId}/${sessionId}/${item.roomInSessionId}`, {
+											})}
+											style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+											className="text-hover-primary text-center"
+										>
+											Danh sách thí sinh
 										</td>
 										<td>
 											<div className="form-check form-switch d-flex justify-content-center">

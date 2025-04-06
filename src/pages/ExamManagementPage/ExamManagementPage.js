@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import './ExamManagementPage.css'
 import { Box, Button, Grid, IconButton, TextField, Pagination, MenuItem, Select} from "@mui/material";
 import Paper from "@mui/material/Paper";
@@ -20,7 +20,7 @@ const ExamManagementPage = () => {
 	const [totalCount, setTotalCount] = useState(0);
 	const [subjectOptions, setSubjectOptions] = useState([]);
 	const [questionBankOptions, setQuestionBankOptions] = useState([]);
-
+	const navigate = useNavigate();
 	const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
     setPage(1);
@@ -228,25 +228,44 @@ const ExamManagementPage = () => {
 							{listExam.map((item, index) => (
 								<tr key={item.id} className="align-middle">
 									<td className=" text-center">{index +1} </td>
-									<td >
-										<Link className="text-hover-primary"
-											to={`/staff/`} 
-											style={{ textDecoration: "none", cursor: "pointer", color: "black" }}
-										>
-											{item.examCode}
-										</Link>
+									<td
+										onClick={() => navigate(`/exam/${item.id}`, {
+										})}
+										style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+										className="text-hover-primary"
+									>
+										{item.examCode}
 									</td>
-									<td className=" text-hover-primary">{item.examName}</td>
-									<td>{item.subjectName}</td>
-									<td>{item.questionBankName}</td>
+									<td
+										onClick={() => navigate(`/exam/${item.id}`, {
+										})}
+										style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+										className="text-hover-primary"
+									>
+										{item.examName}
+									</td>
+									<td
+										onClick={() => navigate(`/exam/${item.id}`, {
+										})}
+										style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+									>
+										{item.subjectName}
+									</td>
+									<td
+										onClick={() => navigate(`/exam/${item.id}`, {
+										})}
+										style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+									>
+										{item.questionBankName}
+									</td>
 									<td className="text-center">
-					<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
-						<i className="fas fa-edit text-white "></i>
-					</button>
-					<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
-						<i className="fas fa-trash-alt"></i>
-					</button>
-					</td>
+										<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
+											<i className="fas fa-edit text-white "></i>
+										</button>
+										<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
+											<i className="fas fa-trash-alt"></i>
+										</button>
+									</td>
 								</tr>
 							))}
 						</tbody>

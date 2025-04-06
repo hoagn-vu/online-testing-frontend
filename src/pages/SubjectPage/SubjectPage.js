@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./SubjectPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -20,7 +20,7 @@ const SubjectPage = () => {
 
   const [showForm, setShowForm] = useState(false);
   const [editingSubject, setEditingSubject] = useState(null);
-
+  const navigate = useNavigate();
   const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
     setPage(1);
@@ -182,15 +182,22 @@ const SubjectPage = () => {
               ) : listSubject.map((item, index) => (  
                 <tr key={item.id} className="align-middle">
                   <td className="text-center">{index + 1}</td>
-                  <td>
-                    <Link className="text-hover-primary"
-                      to={`/staff/question/${item.id}`} 
-                      style={{ textDecoration: "none", cursor: "pointer", color: "black" }}
-                    >
-                      {item.subjectName}
-                    </Link>
+                  <td
+                    onClick={() => navigate(`/staff/question/${item.id}`, {
+                    })}
+                    style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+                    className="text-hover-primary"
+                  >
+                    {item.subjectName}
                   </td>
-                  <td className="text-center">{item.totalQuestionBanks}</td>
+                  <td
+                    onClick={() => navigate(`/staff/question/${item.id}`, {
+                    })}
+                    style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+                    className="text-center"
+                  >
+                    {item.totalQuestionBanks}
+                  </td>
                   <td className="text-center">
                     <button className="btn btn-primary btn-sm" onClick={() => preEdit(item)}>
                       <i className="fas fa-edit text-white"></i>

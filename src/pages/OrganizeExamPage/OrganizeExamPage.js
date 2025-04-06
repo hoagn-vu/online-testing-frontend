@@ -22,6 +22,7 @@ const OrganizeExamPage = () => {
 	const [totalCount, setTotalCount] = useState(0);
 	const [subjectOptions, setSubjectOptions] = useState([]);
 	const [questionBankOptions, setQuestionBankOptions] = useState([]);
+	const navigate = useNavigate();
 	const [typeOptions, setTypeOptions] = useState([
 		{ value: "matrix", label: "Ma trận" },
 		{ value: "auto", label: "Ngẫu nhiên" },
@@ -292,22 +293,74 @@ const OrganizeExamPage = () => {
 							<tbody>
 								{listOrganizeExam.map((item, index) => (
 									<tr key={item.id} className="align-middle">
-										<td className="text-center">{index + 1}</td>
-										<td>
-											<Link className="text-hover-primary"
-												to={`/staff/organize/${encodeURIComponent(item.id)}`}
-												state={{ organizeExamName: item.organizeExamName }}
-												style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
-											>
-												{item.organizeExamName}
-											</Link>
+										<td
+											onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
+												state: { organizeExamName: item.organizeExamName },
+											})}
+											style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+											className="text-center"
+										>
+											{index + 1}
 										</td>
-										<td>{item.subjectName}</td>
-										<td>{item.examType}</td>
-										<td>{item.examType === "Ma trận" || item.examType === "Ngẫu nhiên" ? "-" : item.examSet?.join(", ") || "-"}</td>
-										<td>{item.examType === "Đề thi" || item.examType === "Ngẫu nhiên" ? "-" : item.matrixId || "-"}</td>
-										<td className="text-center">{item.duration}</td>
-										<td className="text-center">{item.maxScore}</td>
+										<td
+											onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
+												state: { organizeExamName: item.organizeExamName },
+											})}
+											style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+											className="text-hover-primary"
+										>
+											{item.organizeExamName}
+										</td>
+										<td
+											onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
+												state: { organizeExamName: item.organizeExamName },
+											})}
+											style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+										>
+											{item.subjectName}
+										</td>
+										<td
+											onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
+												state: { organizeExamName: item.organizeExamName },
+											})}
+											style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+										>
+											{item.examType}
+										</td>
+										<td
+											onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
+												state: { organizeExamName: item.organizeExamName },
+											})}
+											style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+										>
+											{item.examType === "Ma trận" || item.examType === "Ngẫu nhiên" ? "-" : item.examSet?.join(", ") || "-"}										
+										</td>
+										<td
+											onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
+												state: { organizeExamName: item.organizeExamName },
+											})}
+											style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+										>
+											{item.examType === "Đề thi" || item.examType === "Ngẫu nhiên" ? "-" : item.matrixId || "-"}
+										</td>
+										<td
+											onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
+												state: { organizeExamName: item.organizeExamName },
+											})}
+											style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+											className="text-center"
+										>
+											{item.duration}
+										</td>
+										<td
+											onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
+												state: { organizeExamName: item.organizeExamName },
+											})}
+											style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+											className="text-center"
+										>
+											{item.maxScore}
+										</td>
 										<td>
 										<div className="form-check form-switch d-flex justify-content-center">
 											<input
@@ -324,7 +377,8 @@ const OrganizeExamPage = () => {
 										<td className="text-center">
 											<Link
 												to={`/staff/organize/report/${item.id}`}     
-												style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
+												style={{ color: "blue", cursor: "pointer" }}
+												className="report-hover"
 											>
 												Chi tiết
 											</Link>
