@@ -94,7 +94,7 @@ const LogPage = () => {
             <option value="Xóa">Xóa</option>
           </select>
 
-            <input type="date" className="search-box" />
+            <input type="date" className="date-log" />
             <button className="add-btn d-flex filter-btn align-items-center">
               <i className="fas fa-filter me-2 mt-1 "></i>
               Lọc
