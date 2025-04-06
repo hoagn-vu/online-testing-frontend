@@ -426,7 +426,7 @@ const OrganizeExamPage = () => {
 							}}
 							onSubmit={handleSubmit}
 						>
-							<p className="text-align fw-bold">
+							<p className=" fw-bold">
 								{editingOrganizeExam ? "Chỉnh sửa thông tin kỳ thi" : "Tạo kỳ thi"}
 							</p>
 	
@@ -638,8 +638,8 @@ const OrganizeExamPage = () => {
 									/>
 								</Grid>
                 )}
-                {selectedType === "auto" && (
-									<Grid container spacing={2}>		
+                {selectedType === "auto" && (								
+									<Grid container spacing={2} sx={{marginLeft:"0px", marginTop: "0px"}}>		
 										<Grid item xs={6}>
 										<ReactSelect
 											fullWidth
@@ -656,14 +656,12 @@ const OrganizeExamPage = () => {
 												control: (base) => ({
 													...base,
 													width: "275px", // Cố định chiều rộng
-													minWidth: "275px",
-													maxWidth: "250px",
 													height: "48px", // Tăng chiều cao
-													minHeight: "40px",
 												}),
 												menu: (base) => ({
 													...base,
-													width: "250px", // Cố định chiều rộng của dropdown
+													width: "100%", // Cố định chiều rộng của dropdown
+													zIndex: 9999,
 												}),
 												valueContainer: (base) => ({
 													...base,
@@ -690,6 +688,8 @@ const OrganizeExamPage = () => {
 													setFormData({ ...formData, totalQuestions: e.target.value })
 												}
 												sx={{
+													position: "relative", 
+   												zIndex: 0, 
 													"& .MuiInputBase-input": {
 														fontSize: "14px",
 														paddingBottom: "11px",
