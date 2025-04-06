@@ -185,7 +185,7 @@ const ExamManagementPage = () => {
 				<Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
 				
 				<span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
-				<span className="breadcrumb-current"> Quản lý đề thi</span>
+				<span className="breadcrumb-current">Quản lý đề thi</span>
 			</nav>
 
 
