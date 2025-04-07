@@ -10,11 +10,7 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
   return (
     <Box display="flex" gap={2} className="mt-3 w-full" justifyContent="space-between" >
       <div className="table-responsive " 
-        style={{
-          flex: "1",
-          fontSize: "14px",
-        }}
-      >
+        style={{ flex: "1", fontSize: "14px", }}>
         <table className="table w-full border border-gray-300" >
           <thead>
             <tr className="bg-gray-200">

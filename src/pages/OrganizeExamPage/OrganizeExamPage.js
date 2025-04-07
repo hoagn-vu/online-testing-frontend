@@ -277,12 +277,12 @@ const OrganizeExamPage = () => {
 						<table className="table organize-exam-table sample-table tbl-organize-hover table-hover" style={{fontSize: "14px"}}>
 							<thead>
 								<tr className="align-middle fw-medium">
-									<th scope="col" className="text-center">STT</th>
-									<th scope="col" className="title-row">Kỳ thi</th>
-									<th scope="col" className="title-row">Phân môn</th>
-									<th scope="col" className="title-row">Loại</th>
-									<th scope="col" className="title-row">Đề thi</th>
-									<th scope="col" className="title-row">Ma trận</th>
+									<th>STT</th>
+									<th>Kỳ thi</th>
+									<th>Phân môn</th>
+									<th>Loại</th>
+									<th>Đề thi</th>
+									<th>Ma trận</th>
 									<th className="text-center">Thời gian (M)</th>
 									<th className="text-center">Điểm</th>
 									<th className="text-center">Trạng thái</th>

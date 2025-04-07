@@ -30,6 +30,7 @@ import MonitorOrganizePage from "./pages/MonitorOrganizePage/MonitorOrganizePage
 import ScoreTableSessionPage from "./pages/ScoreTableSessionPage/ScoreTableSessionPage";
 import ReportEachOrganizePage from "./pages/ReportEachOrganizePage/ReportEachOrganizePage";
 import Admin2Layout from "./layouts/Admin2Layout/Admin2Layout";
+import ExamCreationPage from "./pages/AddOrganizeExam/AddOrganizeExam";
 
 import NotFound from "./pages/NotFound/NotFound";
 
@@ -109,6 +110,7 @@ function App() {
           <Route path="exam/:examId" element={<DetailExamPage />} />
           <Route path="room" element={<RoomManagementPage />} />
           <Route path="log" element={<LogPage />} />
+          <Route path="create" element={<ExamCreationPage />} />
         </Route>
       </Routes>
 
