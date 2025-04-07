@@ -110,7 +110,6 @@ function App() {
           <Route path="exam/:examId" element={<DetailExamPage />} />
           <Route path="room" element={<RoomManagementPage />} />
           <Route path="log" element={<LogPage />} />
-          <Route path="create" element={<ExamCreationPage />} />
         </Route>
       </Routes>
 
