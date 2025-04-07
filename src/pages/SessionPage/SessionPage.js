@@ -380,8 +380,8 @@ const SessionPage = () => {
 														checked={session.sessionStatus === "Active" || "available"}
 														onChange={() => handleToggleStatus(session.sessionId, session.sessionStatus)}
 													/>
-													<span className={`badge ms-2 ${session.sessionStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
-														{session.sessionStatus === "Active" || "available" ? "Hoạt động" : "Không hoạt động"}
+													<span className={`badge ms-2 mt-1 ${session.sessionStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
+														{session.sessionStatus === "Active" || "available" ? "Kích hoạt" : "Đóng"}
 													</span>
 												</div>
 											</td>

@@ -377,7 +377,7 @@ const OrganizeExamPage = () => {
 													{item.maxScore}
 												</td>
 												<td>
-												<div className="form-check form-switch d-flex justify-content-center">
+												<div className="form-check form-switch d-flex align-items-center justify-content-center" >
 													<input
 														className="form-check-input"
 														type="checkbox"
@@ -387,6 +387,9 @@ const OrganizeExamPage = () => {
 															handleToggleStatus(item.id, item.organizeExamStatus)
 														}
 													/>
+													<span className={`badge ms-2 mt-1 ${item.organizeExamStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
+														{item.organizeExamStatus === "Active" || "available" ? "Kích hoạt" : "Đóng"}
+													</span>
 												</div>
 											</td>
 												<td className="text-center">

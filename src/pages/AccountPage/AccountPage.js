@@ -390,7 +390,7 @@ const AccountPage = () => {
                   <td className="text-center">{item.gender}</td>
                   <td className="text-center">{item.groupName}</td>
                   <td>
-                    <div className="form-check form-switch d-flex justify-content-center">
+                    <div className="form-check form-switch d-flex align-items-center justify-content-center">
                       <input
                         className="form-check-input"
                         type="checkbox"
@@ -400,6 +400,9 @@ const AccountPage = () => {
                           handleToggleStatus(item.id, item.accountStatus)
                         }
                       />
+                      <span className={`badge ms-2 mt-1 ${item.accountStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
+                        {item.accountStatus === "Active" || "available" ? "Hoạt động" : "Không hoạt động"}
+                      </span>
                     </div>
                   </td>
                   <td className="text-center">
