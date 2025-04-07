@@ -140,7 +140,7 @@ const ExamMatrixPage = () => {
           </div>
 
           <div className='right-header'>
-            <Link className="add-btn btn link-btn d-flex align-items-center" to="/staff/matrix-detail">
+            <Link className="add-btn btn link-btn d-flex align-items-center" to="/staff/matrix-exam/matrix-detail">
               <i className="fas fa-plus me-2"></i>
               Thêm mới
             </Link>

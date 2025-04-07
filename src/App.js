@@ -104,7 +104,7 @@ function App() {
           <Route path="question/:subjectId" element={<QuestionBankPage />} />
           <Route path="question/:subjectId/:questionBankId" element={<ListQuestionPage />} />
           <Route path="matrix-exam" element={<ExamMatrixPage />} />
-          <Route path="matrix-detail" element={<DetailExamMatrixPage />} />
+          <Route path="matrix-exam/matrix-detail" element={<DetailExamMatrixPage />} />
           <Route path="exam" element={<ExamManagementPage />} />
           <Route path="exam/:examId" element={<DetailExamPage />} />
           <Route path="room" element={<RoomManagementPage />} />

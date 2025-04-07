@@ -35,7 +35,7 @@ const MatrixChapter = ({ data }) => {
     return (
         <Box display="flex" gap={2} className="mt-3 w-full" justifyContent="space-between">
           {/* Bảng tổng hợp câu hỏi */}
-          <div className="table-responsive" style={{ flex: "1" }}>
+          <div className="table-responsive" style={{ flex: "1", fontSize: "14px" }}>
             <table className="table w-full border border-gray-300">
               <thead>
                 <tr className="bg-gray-200">
@@ -91,7 +91,7 @@ const MatrixChapter = ({ data }) => {
           </div>
     
           {/* Bảng thống kê theo chương */}
-          <Paper sx={{ padding: 2, height: "100%", width: "250px" }}>
+          <Paper sx={{ padding: 2, height: "100%", width: "250px", fontSize: "14px"  }}>
             <h5 className="justify-content-center d-flex">Thống kê theo chương</h5>
             <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #ddd" }}>
               <thead>

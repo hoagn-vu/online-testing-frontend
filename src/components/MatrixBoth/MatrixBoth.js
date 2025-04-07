@@ -8,9 +8,14 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
   // }, [data]);
 
   return (
-    <Box display="flex" gap={2} className="mt-3 w-full" justifyContent="space-between">
-      <div className="table-responsive" style={{ flex: "1" }}>
-        <table className="table w-full border border-gray-300">
+    <Box display="flex" gap={2} className="mt-3 w-full" justifyContent="space-between" >
+      <div className="table-responsive " 
+        style={{
+          flex: "1",
+          fontSize: "14px",
+        }}
+      >
+        <table className="table w-full border border-gray-300" >
           <thead>
             <tr className="bg-gray-200">
               <th className="border p-2">STT</th>
@@ -91,13 +96,13 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
       </div>
 
       {/* Bảng thống kê */}
-      <Paper sx={{ padding: 2, height: "100%", width: "250px" }}>
+      <Paper sx={{ padding: 2, height: "100%", width: "250px", fontSize: "14px" }}>
         <h5 className="justify-content-center d-flex">Thống kê</h5>
-        <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #ddd" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #ddd", backgroundColor: "#FFFF" }}>
           <thead>
             <tr>
-              <th style={{ border: "1px solid #ddd", textAlign: "left", padding: "8px", minWidth: "130px" }}>Mức độ</th>
-              <th style={{ border: "1px solid #ddd", textAlign: "center", padding: "8px" }}>Số lượng</th>
+              <th style={{ border: "1px solid #ddd", textAlign: "left", padding: "8px", minWidth: "130px", backgroundColor: "#FFFF" }}>Mức độ</th>
+              <th style={{ border: "1px solid #ddd", textAlign: "center", padding: "8px", backgroundColor: "#FFFF" }}>Số lượng</th>
             </tr>
           </thead>
           <tbody>
