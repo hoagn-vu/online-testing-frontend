@@ -292,16 +292,16 @@ const ExamManagementPage = () => {
 						<Box
 							component="form"
 							sx={{
-								width: "600px",
+								width: "700px",
 								backgroundColor: "white",
-								p: 2,
+								p: 3.8,
 								borderRadius: "8px",
 								boxShadow: 3,
 								mx: "auto",
 							}}
 							onSubmit={handleSubmit}
 						>
-							<p className="text-align fw-bold">
+							<p className="fw-bold" style={{fontSize: "18px"}}>
 								{editingAccount ? "Chỉnh sửa thông tin đề thi" : "Tạo đề thi"}
 							</p>
 	
@@ -361,7 +361,7 @@ const ExamManagementPage = () => {
 										}}
 									/>
 								</Grid>
-								<Grid item xs={6}>
+								<Grid item xs={12}>
 									<ReactSelect
 										fullWidth
 										className="basic-single "
@@ -377,15 +377,7 @@ const ExamManagementPage = () => {
 										styles={{
 											control: (base) => ({
 												...base,
-												width: "275px", // Cố định chiều rộng
-												minWidth: "275px",
-												maxWidth: "250px",
 												height: "48px", // Tăng chiều cao
-												minHeight: "40px",
-											}),
-											menu: (base) => ({
-												...base,
-												width: "250px", // Cố định chiều rộng của dropdown
 											}),
 											valueContainer: (base) => ({
 												...base,
@@ -401,7 +393,7 @@ const ExamManagementPage = () => {
 										}}
 									/>
 								</Grid>
-								<Grid item xs={6}>
+								<Grid item xs={12}>
 									<ReactSelect
 										fullWidth
 										className="basic-single "
@@ -413,15 +405,7 @@ const ExamManagementPage = () => {
 										styles={{
 											control: (base) => ({
 												...base,
-												width: "275px", // Cố định chiều rộng
-												minWidth: "275px",
-												maxWidth: "250px",
 												height: "48px", // Tăng chiều cao
-												minHeight: "40px",
-											}),
-											menu: (base) => ({
-												...base,
-												width: "250px", // Cố định chiều rộng của dropdown
 											}),
 											valueContainer: (base) => ({
 												...base,
@@ -439,7 +423,7 @@ const ExamManagementPage = () => {
 								</Grid>
 							</Grid>		
 							{/* Buttons */}
-							<Grid container spacing={2} sx={{ mt: 2 }}>
+							<Grid container spacing={2} sx={{ mt: 1 }}>
 								<Grid item xs={6}>
 									<Button
 										type="submit"

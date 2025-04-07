@@ -426,9 +426,9 @@ const AccountPage = () => {
           <Box
             component="form"
             sx={{
-              width: "600px",
+              width: "800px",
               backgroundColor: "white",
-              p: 2,
+              p: 4,
               borderRadius: "8px",
               boxShadow: 3,
               mx: "auto",
@@ -654,7 +654,7 @@ const AccountPage = () => {
             )}
 
             {/* Buttons */}
-            <Grid container spacing={2} sx={{ mt: 2 }}>
+            <Grid container spacing={2} sx={{ mt: 1 }}>
               <Grid item xs={6}>
                 <Button
                   type="submit"
@@ -739,8 +739,8 @@ const AccountPage = () => {
       {/* Form Chọn nhóm */}
       {showGroupForm && (
         <div className="form-overlay">
-          <div className="form-container">
-            <h3>Chọn nhóm</h3>
+          <div className="form-container p-4" style={{width: "500px"}}>
+            <h3 className="fw-bold">Chọn nhóm</h3>
             <CreatableSelect
               isMulti
               options={colourOptions}

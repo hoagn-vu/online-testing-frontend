@@ -233,10 +233,9 @@ const SubjectPage = () => {
             <Box
                 component="form"
                 sx={{
-                    minWidth: "500px",
-                    minHeight: "200px",
+                    width: "700px",
                     backgroundColor: "white",
-                    p: 2,
+                    p: 3.8,
                     borderRadius: "8px",
                     boxShadow: 3,
                     mx: "auto",
@@ -244,7 +243,7 @@ const SubjectPage = () => {
                 onSubmit={handleSubmit}
             >
                 {/* Add your form content here */}
-                <p className="text-align fw-bold">
+                <p className="fw-bold">
                     {editingSubject ? "Chỉnh sửa phân môn" : "Thêm phân môn"}
                 </p>
 
@@ -290,7 +289,7 @@ const SubjectPage = () => {
                     />
                 </Grid>
 
-                <Grid container spacing={2} sx={{ mt: 2 }}>
+                <Grid container spacing={2} sx={{ mt: 1 }}>
                     <Grid item xs={6}>
                         <Button type="submit" variant="contained" color="primary" fullWidth >
                             {editingSubject ? "Cập nhật" : "Lưu"}

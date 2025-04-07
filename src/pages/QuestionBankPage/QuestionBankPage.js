@@ -241,17 +241,16 @@ const QuestionBankPage = () => {
                 <Box
                     component="form"
                     sx={{
-                        minWidth: "500px",
-                        minHeight: "200px",
+                        minWidth: "700px",
                         backgroundColor: "white",
-                        p: 2,
+                        p: 3.8,
                         borderRadius: "8px",
                         boxShadow: 3,
                         mx: "auto",
                     }}
                     onSubmit={handleSubmit}
                 >
-                    <p className="text-align fw-bold">
+                    <p className="fw-bold">
                     {editingBank ? "Chỉnh sửa bộ câu hỏi" : "Thêm bộ câu hỏi"}
                     </p>
 
@@ -276,7 +275,7 @@ const QuestionBankPage = () => {
                     </Grid>
 
                     {/* Buttons */}
-                    <Grid container spacing={2} sx={{ mt: 2 }}>
+                    <Grid container spacing={2} sx={{ mt: 1}}>
                     <Grid item xs={6}>
                         <Button
                         type="submit"

@@ -250,21 +250,21 @@ const RoomManagementPage = () => {
           <Box
             component="form"
             sx={{
-              width: "600px",
+              width: "750px",
               backgroundColor: "white",
-              p: 2,
+              p: 3.8,
               borderRadius: "8px",
               boxShadow: 3,
               mx: "auto",
             }}
             onSubmit={handleSubmit}
           >
-            <p className="text-align fw-bold">
-              {editingAccount ? "Chỉnh sửa tài khoản" : "Thêm tài khoản mới"}
+            <p className="fw-bold mb-3" style={{fontSize: "18px"}}>
+              {editingAccount ? "Chỉnh sửa phòng thi" : "Thêm phòng thi"}
             </p>
 
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
                   label="Tên phòng"
@@ -283,7 +283,7 @@ const RoomManagementPage = () => {
                   }}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
                   label="Địa điểm"
@@ -306,6 +306,7 @@ const RoomManagementPage = () => {
                 <TextField
                   fullWidth
                   label="Số lượng"
+                  type="number"
                   value={formData.roomCapacity}
                   onChange={(e) =>
                     setFormData({ ...formData, dob: e.target.value })
@@ -346,7 +347,7 @@ const RoomManagementPage = () => {
 
 
             {/* Buttons */}
-            <Grid container spacing={2} sx={{ mt: 2 }}>
+            <Grid container spacing={2} sx={{ mt: 1 }}>
               <Grid item xs={6}>
                 <Button
                   type="submit"
