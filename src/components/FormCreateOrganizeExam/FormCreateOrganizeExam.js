@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Box, Grid, TextField, Button, Typography, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -33,6 +33,11 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions, questionBankOptions, sub
   const [selectedType, setSelectedType] = useState(null);
   const inputRef = useRef(null);
 
+	useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   // Xử lý thêm ca thi mới
   const addSession = () => {
@@ -95,32 +100,32 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions, questionBankOptions, sub
           <Grid container spacing={2}>
 						<Grid item xs={12}>
 							<TextField
-									fullWidth
-									label="Tên kỳ thi"
-									required
-									value={examData.organizeExamName}
-									inputRef={inputRef}
-									onChange={(e) => setExamData({...examData, organizeExamName: e.target.value})}
-									sx={{
-											"& .MuiInputBase-input": { 
-													fontSize: "14px", 
-													padding: "8px 12px", // Thêm padding để text không dính sát viền
-											},
-											"& .MuiInputLabel-root": {
-													fontSize: "14px",
-													width: "100%",
-													left: "0",
-													top: "2px", // Đã điều chỉnh từ 0px lên 10px
-													"&.Mui-focused": {
-															transform: "translate(13px, -3px) scale(0.75)", // Điều chỉnh khi focus
-													},
-											},
-											"& .MuiInputBase-root": {
-													height: "40px",
-													fontSize: "14px",
-													marginTop: "8px", // Thêm margin top để tạo khoảng cách
-											},
-									}}
+								fullWidth
+								label="Tên kỳ thi"
+								required
+								value={examData.organizeExamName}
+								inputRef={inputRef}
+								onChange={(e) => setExamData({...examData, organizeExamName: e.target.value})}
+								sx={{
+										"& .MuiInputBase-input": { 
+												fontSize: "14px", 
+												padding: "8px 12px", // Thêm padding để text không dính sát viền
+										},
+										"& .MuiInputLabel-root": {
+												fontSize: "14px",
+												width: "100%",
+												left: "0",
+												top: "2px", // Đã điều chỉnh từ 0px lên 10px
+												"&.Mui-focused": {
+														transform: "translate(13px, -3px) scale(0.75)", // Điều chỉnh khi focus
+												},
+										},
+										"& .MuiInputBase-root": {
+												height: "40px",
+												fontSize: "14px",
+												marginTop: "8px", // Thêm margin top để tạo khoảng cách
+										},
+								}}
 							/>
 						</Grid>
             
