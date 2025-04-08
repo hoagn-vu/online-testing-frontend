@@ -38,7 +38,12 @@ const DetailExamMatrixPage = () => {
 	const [tagClassification, setTagClassification] = useState([]);
 	const [data, setData] = useState([]);
 	const [matrixName, setMatrixName] = useState("");
-
+	const inputRef = useRef(null);
+	useEffect(() => {
+		if (inputRef.current) {
+			inputRef.current.focus();
+		}
+	}, []);
 	useEffect(() => {
 		const fetchSubjectOptions = async () => {
 			try {
@@ -253,6 +258,7 @@ const DetailExamMatrixPage = () => {
 						value={matrixName}
 						onChange={(e) => setMatrixName(e.target.value)}
 						size="small"
+						inputRef={inputRef}
 						label="Tên ma trận đề thi"
 						sx={{
 							"& .MuiOutlinedInput-root": {

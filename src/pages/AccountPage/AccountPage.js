@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation  } from "react-router-dom";
 import "./AccountPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -12,6 +12,7 @@ import ApiService from "../../services/apiService";
 import CreatableSelect from "react-select/creatable";
 
 const AccountPage = () => {
+  const inputRef = useRef(null);
   const [listAccount, setListAccount] = useState({
     "Thí sinh": [],
     "Giám thị": [],
@@ -21,6 +22,7 @@ const AccountPage = () => {
 
   const [listDisplay, setListDisplay] = useState([]);
   const [selectedRole, setSelectedRole] = useState("Thí sinh");
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -86,6 +88,12 @@ const AccountPage = () => {
   const [editingAccount, setEditingAccount] = useState(null);
   const [accountToDelete, setAccountToDelete] = useState(null);
   const [rows, setRows] = useState(Object.values(listAccount).flat());  
+
+  useEffect(() => {
+    if (showForm && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [showForm]);
 
   const permissionOptions = [
     "Quản lý kỳ thi",
@@ -449,6 +457,7 @@ const AccountPage = () => {
                   fullWidth
                   label="Mã"
                   required
+                  inputRef={inputRef}
                   value={formData.userCode}
                   onChange={(e) =>
                     setFormData({ ...formData, userCode: e.target.value })

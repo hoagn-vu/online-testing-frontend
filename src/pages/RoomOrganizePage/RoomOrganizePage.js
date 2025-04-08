@@ -32,6 +32,12 @@ const RoomOrganizePage = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
+		if (showForm && inputRef.current) {
+			inputRef.current.focus();
+		}
+	}, [showForm]);
+
+	useEffect(() => {
 		const fetchRoomOptions = async () => {
 			try {
 				const response = await ApiService.get("/rooms/get-options");
@@ -388,26 +394,20 @@ const RoomOrganizePage = () => {
 								}}
 							/>
 						</Grid>
-							<Grid item xs={6}>
+							<Grid item xs={12}>
 							<ReactSelect
 									fullWidth
 									className="basic-single "
 									classNamePrefix="select"
 									placeholder="Giám thị"
 									name="color"
+									inputRef={inputRef}
 									options={supervisorOptions}
 									styles={{
 										control: (base) => ({
 											...base,
-											width: "275px", // Cố định chiều rộng
-											minWidth: "275px",
-											maxWidth: "250px",
 											height: "48px", // Tăng chiều cao
 											minHeight: "40px",
-										}),
-										menu: (base) => ({
-											...base,
-											width: "250px", // Cố định chiều rộng của dropdown
 										}),
 										valueContainer: (base) => ({
 											...base,
@@ -423,7 +423,7 @@ const RoomOrganizePage = () => {
 									}}
 								/>
 							</Grid>
-							<Grid item xs={6}>
+							{/* <Grid item xs={6}>
 								<ReactSelect
 										fullWidth
 										className="basic-single "
@@ -457,7 +457,7 @@ const RoomOrganizePage = () => {
 											}),
 										}}
 								/>
-							</Grid>
+							</Grid> */}
 						</Grid>		
 						{/* Buttons */}
 						<Grid container spacing={2} sx={{ mt: 2 }}>
