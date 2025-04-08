@@ -313,7 +313,7 @@ const SessionPage = () => {
 								<th scope="col" className="title-row">Phòng thi</th>
 								<th scope="col" className="title-row">Trạng thái</th>
 								<th scope="col" className="title-row text-center">Giám sát</th>
-								<th scope="col" className="title-row">Thao tác</th>
+								<th className="text-center">Thao tác</th>
 							</tr>
 						</thead>
 						<tbody style={{ fontSize: "14px" }}>
@@ -393,7 +393,7 @@ const SessionPage = () => {
 													Giám sát
 												</Link>
 											</td>
-											<td>
+											<td className="text-center">
 												<button className="btn btn-primary btn-sm" style={{ width: "35px", height: "35px" }}
 																onClick={() => preEdit(session)}>
 													<i className="fas fa-edit text-white"></i>
