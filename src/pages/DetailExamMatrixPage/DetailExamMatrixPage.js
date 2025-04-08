@@ -15,6 +15,7 @@ import MatrixBoth from "../../components/MatrixBoth/MatrixBoth";
 import MatrixChapter from "../../components/MatrixChapter/MatrixChapter";
 import MatrixLevel from "../../components/MatrixLevel/MatrixLevel";
 import ApiService from "../../services/apiService";
+import Swal from "sweetalert2";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -165,10 +166,42 @@ const DetailExamMatrixPage = () => {
 	);
 
 	const handleSaveMatrix = async () => {
-		if (!matrixName || !subjectChosen || !bankChosen || !data.length) {
-			alert("Vui lòng chọn môn học, ngân hàng câu hỏi và nhập dữ liệu.");
+		if (!matrixName) {
+			Swal.fire({
+				icon: "warning",
+				title: "Thiếu tên ma trận!",
+				text: "Vui lòng nhập tên ma trận đề thi.",
+			});
 			return;
 		}
+		
+		if (!subjectChosen) {
+			Swal.fire({
+				icon: "warning",
+				title: "Chưa chọn môn học!",
+				text: "Vui lòng chọn môn học.",
+			});
+			return;
+		}
+		
+		if (!bankChosen) {
+			Swal.fire({
+				icon: "warning",
+				title: "Chưa chọn ngân hàng câu hỏi!",
+				text: "Vui lòng chọn ngân hàng câu hỏi.",
+			});
+			return;
+		}
+		
+		if (!data.length) {
+			Swal.fire({
+				icon: "warning",
+				title: "Dữ liệu ma trận trống!",
+				text: "Vui lòng nhập dữ liệu cho ma trận đề thi.",
+			});
+			return;
+		}
+		
 	
 		const examMatrixData = {
 			matrixName: matrixName,
@@ -187,7 +220,13 @@ const DetailExamMatrixPage = () => {
 		try {
 			const response = await ApiService.post("/exam-matrices", examMatrixData);
 			console.log("Lưu thành công: ", response.data);
-			alert("Lưu thành công!");
+			Swal.fire({
+				icon: "success",
+				title: "Lưu thành công!",
+				text: "Ma trận đề thi đã được lưu.",
+			});
+			
+			// alert("Lưu thành công!");
 		} catch (error) {
 			console.error("Lỗi khi lưu ma trận đề: ", error);
 			alert("Lưu thất bại!");
