@@ -292,7 +292,7 @@ const OrganizeExamPage = () => {
 								<table className="table organize-exam-table sample-table tbl-organize-hover table-hover" style={{fontSize: "14px"}}>
 									<thead>
 										<tr className="align-middle fw-medium">
-											<th>STT</th>
+											<th className="text-center">STT</th>
 											<th>Kỳ thi</th>
 											<th>Phân môn</th>
 											<th>Loại</th>
