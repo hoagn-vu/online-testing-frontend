@@ -303,16 +303,6 @@ const RoomOrganizePage = () => {
 											className="text-hover-primary text-center"
 										>
 											Danh sách thí sinh
-// 										<td>{item.roomInSessionId}</td>
-// 										<td>{item.roomName} - {item.roomLocation}</td>
-// 										<td>{item.supervisors[0].supervisorName}</td>
-// 										<td>
-// 											<Link className="text-hover-primary"
-// 												to={`/staff/organize/${organizeId}/${sessionId}/${item.roomInSessionId}`}
-// 												style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
-// 											>
-// 												Danh sách thí sinh
-// 											</Link>
 										</td>
 										<td>
 											<div className="form-check form-switch d-flex align-items-center justify-content-center">
