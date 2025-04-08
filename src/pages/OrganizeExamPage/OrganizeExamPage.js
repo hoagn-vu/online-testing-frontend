@@ -292,7 +292,7 @@ const OrganizeExamPage = () => {
 								<table className="table organize-exam-table sample-table tbl-organize-hover table-hover" style={{fontSize: "14px"}}>
 									<thead>
 										<tr className="align-middle fw-medium">
-											<th>STT</th>
+											<th className="text-center">STT</th>
 											<th>Kỳ thi</th>
 											<th>Phân môn</th>
 											<th>Loại</th>
@@ -306,7 +306,15 @@ const OrganizeExamPage = () => {
 										</tr>
 									</thead>
 									<tbody>
-										{listOrganizeExam.map((item, index) => (
+									{listOrganizeExam.length === 0 ? (
+										<tr>
+											<td colSpan="11" className="text-center fw-semibold text-muted"
+													style={{ height: "100px", verticalAlign: "middle" }}>
+												Không có dữ liệu
+											</td>
+										</tr>
+									) : (
+										listOrganizeExam.map((item, index) => (
 											<tr key={item.id} className="align-middle">
 												<td
 													onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
@@ -410,7 +418,7 @@ const OrganizeExamPage = () => {
 													</button>
 												</td>
 											</tr>
-										))}
+										)))}
 									</tbody>
 								</table>
 							</div>

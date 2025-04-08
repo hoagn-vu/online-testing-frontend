@@ -236,7 +236,7 @@ const CandidateOrganizePage = () => {
 						}}
 						onSubmit={handleSubmit}
 					>
-						<p className="text-align fw-bold">Thêm thí sinh vào phòng thi</p>
+						<p className="fw-bold">Thêm thí sinh vào phòng thi</p>
 						<Grid container>	
 							<Grid item xs={12}>									
 								<TextField
@@ -244,6 +244,7 @@ const CandidateOrganizePage = () => {
 									label="Nhập mã sinh viên"
 									placeholder="Nhập mã sinh viên"
 									multiline
+									inputRef={inputRef}
 									maxRows={10}
 									sx={{
 										width: "100%",

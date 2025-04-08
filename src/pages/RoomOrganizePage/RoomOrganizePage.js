@@ -32,6 +32,12 @@ const RoomOrganizePage = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
+		if (showForm && inputRef.current) {
+			inputRef.current.focus();
+		}
+	}, [showForm]);
+
+	useEffect(() => {
 		const fetchRoomOptions = async () => {
 			try {
 				const response = await ApiService.get("/rooms/get-options");
@@ -265,7 +271,15 @@ const RoomOrganizePage = () => {
 								</tr>
 							</thead>
 							<tbody style={{fontSize: "14px"}}>
-								{roomsOrganize.map((item, index) => (
+							{roomsOrganize.length === 0 ? (
+								<tr>
+									<td colSpan="6" className="text-center fw-semibold text-muted"
+											style={{ height: "100px", verticalAlign: "middle" }}>
+										Không có dữ liệu
+									</td>
+								</tr>
+							) : (
+								roomsOrganize.map((item, index) => (
 									<tr key={item.roomInSessionId} className="align-middle">
 										<td className="text-center">{index + 1}</td>
 										<td
@@ -325,7 +339,7 @@ const RoomOrganizePage = () => {
 											</button>
 										</td>
 									</tr>
-								))}
+								)))}
 							</tbody>
 						</table>
 					</div>
@@ -390,26 +404,20 @@ const RoomOrganizePage = () => {
 								}}
 							/>
 						</Grid>
-							<Grid item xs={6}>
+							<Grid item xs={12}>
 							<ReactSelect
 									fullWidth
 									className="basic-single "
 									classNamePrefix="select"
 									placeholder="Giám thị"
 									name="color"
+									inputRef={inputRef}
 									options={supervisorOptions}
 									styles={{
 										control: (base) => ({
 											...base,
-											width: "275px", // Cố định chiều rộng
-											minWidth: "275px",
-											maxWidth: "250px",
 											height: "48px", // Tăng chiều cao
 											minHeight: "40px",
-										}),
-										menu: (base) => ({
-											...base,
-											width: "250px", // Cố định chiều rộng của dropdown
 										}),
 										valueContainer: (base) => ({
 											...base,
@@ -425,7 +433,7 @@ const RoomOrganizePage = () => {
 									}}
 								/>
 							</Grid>
-							<Grid item xs={6}>
+							{/* <Grid item xs={6}>
 								<ReactSelect
 										fullWidth
 										className="basic-single "
@@ -459,7 +467,7 @@ const RoomOrganizePage = () => {
 											}),
 										}}
 								/>
-							</Grid>
+							</Grid> */}
 						</Grid>		
 						{/* Buttons */}
 						<Grid container spacing={2} sx={{ mt: 2 }}>

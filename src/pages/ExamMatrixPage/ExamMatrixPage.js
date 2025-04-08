@@ -160,7 +160,15 @@ const ExamMatrixPage = () => {
               </tr>
             </thead>
             <tbody>
-              {listExamMatrix.map((item, index) => (
+            {listExamMatrix.length === 0 ? (
+								<tr>
+									<td colSpan="6" className="text-center fw-semibold text-muted"
+											style={{ height: "100px", verticalAlign: "middle" }}>
+										Không có dữ liệu
+									</td>
+								</tr>
+							) : (
+              listExamMatrix.map((item, index) => (
                 <tr key={item.questionBankId} className="align-middle">
                   <td className="text-center">{index + 1}</td>
                   <td >
@@ -183,7 +191,7 @@ const ExamMatrixPage = () => {
                     </button>
                   </td>
                 </tr>
-              ))}
+              )))}
             </tbody>
           </table>
         </div>

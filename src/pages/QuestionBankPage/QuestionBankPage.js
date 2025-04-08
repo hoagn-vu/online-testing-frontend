@@ -179,7 +179,15 @@ const QuestionBankPage = () => {
               </tr>
             </thead>
             <tbody>
-              {listQuestionBank.map((item, index) => (
+            {listQuestionBank.length === 0 ? (
+								<tr>
+									<td colSpan="4" className="text-center fw-semibold text-muted"
+											style={{ height: "100px", verticalAlign: "middle" }}>
+										Không có dữ liệu
+									</td>
+								</tr>
+							) : (
+              listQuestionBank.map((item, index) => (
                 <tr key={item.questionBankId} className="align-middle">
                   <td className="text-center">{index+1}</td>
                   <td
@@ -217,7 +225,7 @@ const QuestionBankPage = () => {
                     </button>
                   </td>
                 </tr>
-              ))}
+              )))}
             </tbody>
           </table>
         </div>
