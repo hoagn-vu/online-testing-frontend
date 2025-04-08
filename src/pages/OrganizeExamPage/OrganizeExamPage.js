@@ -116,7 +116,7 @@ const OrganizeExamPage = () => {
 			duration: "",
 			maxScore: 10,
 			totalQuestions: "",
-			organizeExamStatus: "active",
+			organizeExamStatus: "closed",
 		});
 		setShowForm(true);
 	};	
@@ -144,7 +144,7 @@ const OrganizeExamPage = () => {
       cancelButtonText: "Hủy",
     }).then((result) => {
       if (result.isConfirmed) {
-        const newStatus = currentStatus.toLowerCase() === "active" ? "disabled" : "active";
+        const newStatus = currentStatus.toLowerCase() === "active" ? "closed" : "active";
 
         // Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
         setRows((prevRows) =>

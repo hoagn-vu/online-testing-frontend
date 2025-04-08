@@ -125,7 +125,7 @@ function App() {
           <Route path="home" element={<HomeCandidate />} />
           <Route path="history" element={<HistoryCandidatePage />} />
           <Route path="result" element={<ResultCandidatePage />} />
-          <Route path="take-exam/:organizeExamId" element={<TakeExamPage />} />
+          <Route path="take-exam/:organizeExamId/:sessionId/:roomId" element={<TakeExamPage />} />
         </Route>
       </Routes>
 

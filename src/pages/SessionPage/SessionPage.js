@@ -18,7 +18,7 @@ const SessionPage = () => {
 	const { organizeId } = useParams();
 
 	const [showForm, setShowForm] = useState(false);
-	const [editingAccount, setEditingAccount] = useState(null);
+	const [editingSession, setEditingSession] = useState(null);
 	const inputRef = useRef(null);
 	const [organizeExamName, setOrganizeExamName] = useState("");
 	const navigate = useNavigate();
@@ -71,17 +71,17 @@ const SessionPage = () => {
 		sessionName: "",
 		activeAt: "",
 		roomList: "",
-		sessionStatus: "inactive",
+		sessionStatus: "closed",
 	});
 	
 	const preAddNew = () => {
-		setEditingAccount(null); 
+		setEditingSession(null); 
 		setFormData({
 			sessionId: "",
 			sessionName: "",
 			activeAt: "",
 			roomList: "",
-			sessionStatus: "inactive",
+			sessionStatus: "closed",
 		});
 		setTimeout(() => setShowForm(true), 0); 
 	};
@@ -116,7 +116,7 @@ const SessionPage = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		console.log("Dữ liệu thêm mới:", formData);
-		if (editingAccount) {
+		if (editingSession) {
 			try {
 				await ApiService.put(`/organize-exams/${organizeId}/sessions/${formData.sessionId}`, formData);
 				fetchData();
@@ -144,7 +144,7 @@ const SessionPage = () => {
 			activeAt: session.activeAt,
 			sessionStatus: session.sessionStatus,
 		});
-		setEditingAccount(session);
+		setEditingSession(session);
 		setShowForm(true);
 	};
 	
@@ -208,9 +208,9 @@ const SessionPage = () => {
 			sessionName: "",
 			activeAt: "",
 			roomList: "",
-			sessionStatus: "inactive",
+			sessionStatus: "closed",
 		});
-		setEditingAccount(null);
+		setEditingSession(null);
 	}
 
 	return (
@@ -443,7 +443,7 @@ const SessionPage = () => {
 						onSubmit={handleSubmit}
 					>
 						<p className="text-align fw-bold">
-								{editingAccount ? "Chỉnh sửa thông tin ca thi" : "Tạo ca thi"}
+								{editingSession ? "Chỉnh sửa thông tin ca thi" : "Tạo ca thi"}
 						</p>
 
 						<Grid container spacing={2}>										
@@ -505,7 +505,7 @@ const SessionPage = () => {
 										color="primary"
 										fullWidth
 									>
-										{editingAccount ? "Cập nhật" : "Lưu"}
+										{editingSession ? "Cập nhật" : "Lưu"}
 									</Button>
 								</Grid>
 								<Grid item xs={6}>

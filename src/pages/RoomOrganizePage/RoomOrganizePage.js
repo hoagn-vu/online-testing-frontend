@@ -130,6 +130,23 @@ const RoomOrganizePage = () => {
 		} else {
 			// Gọi API thêm mới
 			console.log("Gọi API thêm mới");
+			try {
+				ApiService.post(`/organize-exams/${organizeId}/sessions/${sessionId}/rooms`, 
+					{
+						roomId: formData.roomId,
+						supervisorId: formData.supervisorId,
+					})
+					.then((response) => {
+						console.log("Thêm mới thành công:", response.data);
+						fetchData(); // Cập nhật lại danh sách sau khi thêm mới
+					})
+					.catch((error) => {
+						console.error("Thêm mới thất bại:", error);
+					});
+			}
+			catch (error) {
+				console.error("Thêm mới thất bại:", error);
+			}
 		}
 		resetForm();
 		setShowForm(false);
@@ -374,6 +391,9 @@ const RoomOrganizePage = () => {
 								placeholder="Phòng thi"
 								name="color"
 								options={roomOptions}
+								onChange={(selectedOption) => {
+									setFormData({ ...formData, roomId: selectedOption.value });
+								}}
 								styles={{
 									control: (base) => ({
 										...base,

@@ -11,13 +11,17 @@ const HomeCandidate = () => {
   const user = useSelector((state) => state.auth.user);
 
   const navigate = useNavigate();
+  const [preOrganizeExamId, setPreOrganizeExamId] = useState(null);
+  const [preOrganizeExamName, setPreOrganizeExamName] = useState(null);
+  const [preSessionId, setPreSessionId] = useState(null);
+  const [preRoomId, setPreRoomId] = useState(null);
 
   const [exams, setExams] = useState([]);
   useEffect(() => {
     const fetchExam = async () => {
       try {
-        const response = await ApiService.get("/organize-exams/candidate-get-list", {
-          params: { candidateId: user.id },
+        const response = await ApiService.get("/process-take-exams/activate-exam", {
+          params: { userId: user.id },
         });
         setExams(response.data);
       } catch (error) {
@@ -28,15 +32,43 @@ const HomeCandidate = () => {
     fetchExam();
   }, [user.id]);
 
-  const [selectedExam, setSelectedExam] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
   // Xử lý khi nhấn vào bài thi
-  const handleExamClick = (examId) => {
-    // setSelectedExam(exam);
+  const handleExamClick = (organizeExamId, sessionId, roomId) => {
     // setShowModal(true);
-    navigate("/candidate/take-exam/" + examId);
+    handleFullscreen(); 
+    navigate(`/candidate/take-exam/${organizeExamId}/${sessionId}/${roomId}`);
+
   };
+
+  const handleFullscreen = () => {
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen();
+    } else if (document.documentElement.mozRequestFullScreen) {
+      document.documentElement.mozRequestFullScreen();
+    } else if (document.documentElement.webkitRequestFullscreen) {
+      document.documentElement.webkitRequestFullscreen();
+    } else if (document.documentElement.msRequestFullscreen) {
+      document.documentElement.msRequestFullscreen();
+    }
+  };
+
+  const preTakeExam = (organizeExamId, organizeExamName, sessionId, roomId) => {
+    setPreOrganizeExamId(organizeExamId);
+    setPreOrganizeExamName(organizeExamName);
+    setPreSessionId(sessionId);
+    setPreRoomId(roomId);
+    setShowModal(true);
+  }
+
+  const resetForm = () => {
+    setPreOrganizeExamId(null);
+    setPreOrganizeExamName(null);
+    setPreSessionId(null);
+    setPreRoomId(null);
+    setShowModal(false);
+  }
 
   return (
     <div className="home-candi-page">
@@ -66,12 +98,12 @@ const HomeCandidate = () => {
             <ul className="space-y-2 detail-list-exam">
               {exams.map((exam, index) => (
                 <ol
-                  key={exam.id}
+                  key={index}
                   className="flex items-center space-x-2 text-blue-600 cursor-pointer p-0 pt-3"
                 >
                   <div
                     className="cursor-pointer baithi cursor-pointer d-flex align-items-center"
-                    onClick={() => handleExamClick(exam.id)}
+                    onClick={() => preTakeExam(exam.organizeExamId, exam.organizeExamName , exam.sessionId, exam.roomId)}
                   >
                     <FaFileAlt className="text-blue-400 icon me-2" />
                     <span>{exam.organizeExamName}</span>
@@ -92,7 +124,7 @@ const HomeCandidate = () => {
           <Modal.Body className="text-center">
             <h5 className="fw-bold pb-2">Xác nhận làm bài thi</h5>
             <p>
-              Bạn chuẩn bị thực hiện bài thi: <strong>{selectedExam}</strong>
+              Bạn chuẩn bị thực hiện bài thi: <strong>{preOrganizeExamName}</strong>
             </p>
             <p>Trình duyệt sẽ vào chế độ toàn màn hình</p>
             <p className="text-danger">
@@ -102,15 +134,11 @@ const HomeCandidate = () => {
           <Modal.Footer className="d-flex justify-content-center">
             <Button
               variant="primary"
-              onClick={() => {
-                setShowModal(false);
-                console.log(`Bắt đầu bài thi: ${selectedExam}`);
-                // Điều hướng sang trang làm bài
-              }}
+              onClick={() => handleExamClick(preOrganizeExamId, preSessionId, preRoomId)}
             >
               Bắt đầu
             </Button>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>
+            <Button variant="secondary" onClick={() => resetForm()}>
               Quay lại
             </Button>
           </Modal.Footer>

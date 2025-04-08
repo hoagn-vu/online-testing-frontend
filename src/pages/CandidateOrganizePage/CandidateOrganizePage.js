@@ -12,6 +12,7 @@ const CandidateOrganizePage = () => {
   const [showForm, setShowForm] = useState(false);
   const inputRef = useRef(null);
 	const { organizeId, sessionId, roomId } = useParams();
+	const [candidateListStr, setCandidateListStr] = useState("");
 
 	const processData = (data) => {
 		return data.map((item) => {
@@ -65,26 +66,57 @@ const CandidateOrganizePage = () => {
 		
 	useEffect(() => {
 		if (showForm && inputRef.current) {
-						inputRef.current.focus();
+			inputRef.current.focus();
 		}
 		}, [showForm]);
 	
 	const [formData, setFormData] = useState({
-		candidateList: "",
+		userCodes: [],
 	});
 
 	const preAddNew = () => {
 		setFormData({
-			candidateList: "",
+			userCodes: [],
 		});
 		setShowForm(true);
 	};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		console.log("Dữ liệu thêm mới:", formData);
-		setShowForm(false);
+	
+		const userCodes = candidateListStr
+			.split('\n')
+			.map(item => item.trim())
+			.filter(item => item !== '');
+	
+		const payload = { userCodes };
+	
+		ApiService.post(`/organize-exams/${organizeId}/sessions/${sessionId}/rooms/${roomId}/candidates`, payload)
+			.then(() => {
+				Swal.fire({
+					title: "Thêm thí sinh thành công!",
+					text: "Thí sinh đã được thêm vào phòng thi.",
+					icon: "success",
+					confirmButtonText: "OK",
+				}).then(() => {
+					fetchData();
+				});
+			})
+			.catch((error) => {
+				console.error("Thêm thí sinh thất bại:", error);
+				Swal.fire({
+					title: "Thêm thí sinh thất bại!",
+					text: "Vui lòng kiểm tra lại thông tin.",
+					icon: "error",
+					confirmButtonText: "OK",
+				});
+			})
+			.finally(() => {
+				resetForm();
+				setShowForm(false);
+			});
 	};
+	
 	
 	const handleDelete = (id) => {
 			Swal.fire({
@@ -114,6 +146,13 @@ const CandidateOrganizePage = () => {
 				}
 			});
 	};
+
+	const resetForm = () => {
+		setFormData({
+			userCodes: [],
+		});
+
+	}
 	
 	return (
 		<div className="exam-management-page">
@@ -243,6 +282,8 @@ const CandidateOrganizePage = () => {
 									id="outlined-multiline-flexible"
 									label="Nhập mã sinh viên"
 									placeholder="Nhập mã sinh viên"
+									value={candidateListStr}
+									onChange={(e) => setCandidateListStr(e.target.value)}
 									multiline
 									inputRef={inputRef}
 									maxRows={10}
