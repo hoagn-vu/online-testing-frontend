@@ -206,7 +206,15 @@ const RoomManagementPage = () => {
               </tr>
             </thead>
             <tbody>
-              {listRoom.map((item, index) => (
+            {listRoom.length === 0 ? (
+								<tr>
+									<td colSpan="6" className="text-center fw-semibold text-muted"
+											style={{ height: "100px", verticalAlign: "middle" }}>
+										Không có dữ liệu
+									</td>
+								</tr>
+							) : (
+              listRoom.map((item, index) => (
                 <tr key={item.id} className="align-middle">
                   <td className=" text-center" style={{ width: "50px" }}>{index + 1}</td>
                   <td>{item.roomName}</td>
@@ -237,7 +245,7 @@ const RoomManagementPage = () => {
                     </button>
                   </td>
                 </tr>
-              ))}
+              )))}
             </tbody>
           </table>
         </div>

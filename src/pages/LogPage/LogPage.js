@@ -117,7 +117,15 @@ const LogPage = () => {
                 </tr>
               </thead>
               <tbody style={{ fontSize: "14px" }}>
-                {logs.map((log, index) => (
+                {logs.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" className="text-center fw-semibold text-muted"
+                        style={{ height: "100px", verticalAlign: "middle" }}>
+                      Không có dữ liệu
+                    </td>
+                  </tr>
+                ) : (
+                logs.map((log, index) => (
                   <tr key={log.logId} className="align-middle" >
                     <td className="text-center">{index + 1}</td>
                     <td>{new Date(log.logAt).toLocaleString()}</td>
@@ -133,7 +141,7 @@ const LogPage = () => {
                     <td>{log.fullName}</td>
                     <td>{log.logDetail}</td>
                   </tr>
-                ))}
+                )))}
               </tbody>
             </table>
           </div>
