@@ -276,6 +276,7 @@ const ListQuestionPage = () => {
 		}).then((result) => {
 			if (result.isConfirmed) {
 				console.log("Xóa tài khoản có ID:", id);
+				setQuestions(prev => prev.filter(question => question.questionId !== id));
 				Swal.fire({
 				title: "Đã xóa!",
 				text: "Câu hỏi đã bị xóa.",
@@ -419,7 +420,7 @@ const ListQuestionPage = () => {
 														<button className="btn btn-primary me-2" onClick={() => preEditQuestion(question)}>
 																Edit
 														</button>
-														<button className="btn btn-danger" onClick={() => handleDelete()}>
+														<button className="btn btn-danger" onClick={() => handleDelete(question.questionId)}>
 																Delete
 														</button>
 												</div>

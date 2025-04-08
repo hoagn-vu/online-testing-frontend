@@ -137,14 +137,14 @@ const RoomManagementPage = () => {
       cancelButtonText: "Hủy",
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log("Xóa tài khoản có ID:", id);
+        console.log("Xóa phòng thi có ID:", id);
 
         Swal.fire({
           title: "Đã xóa!",
-          text: "Tài khoản đã bị xóa.",
+          text: "Phòng thi đã bị xóa.",
           icon: "success",
         });
-        setRows(rows.filter((row) => row.id !== id));
+        setListRoom(prev => prev.filter(room => room.id !== id));
       }
     });
   };
@@ -257,7 +257,7 @@ const RoomManagementPage = () => {
                     <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
                       <i className="fas fa-edit text-white "></i>
                     </button>
-                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
+                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}} onClick={() => handleDelete(item.id)}>
                       <i className="fas fa-trash-alt"></i>
                     </button>
                   </td>

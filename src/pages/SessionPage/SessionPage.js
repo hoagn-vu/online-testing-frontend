@@ -164,10 +164,10 @@ const SessionPage = () => {
 
 			Swal.fire({
 				title: "Đã xóa!",
-				text: "Tài khoản đã bị xóa.",
+				text: "Ca thi đã bị xóa.",
 				icon: "success",
 			});
-			setRows(rows.filter((row) => row.sessionId !== id));
+      setListSession(prev => prev.filter(session => session.sessionId !== id));
 			}
 		});
 	};

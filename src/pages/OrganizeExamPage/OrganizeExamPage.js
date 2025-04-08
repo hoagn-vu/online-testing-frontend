@@ -24,6 +24,7 @@ const OrganizeExamPage = () => {
 	const [questionBankOptions, setQuestionBankOptions] = useState([]);
 	const navigate = useNavigate();
 	const [showFormCreate, setShowFormCreate] = useState(false);
+	const [listDisplay, setListDisplay] = useState([]);
 
 	const [typeOptions, setTypeOptions] = useState([
 		{ value: "matrix", label: "Ma trận" },
@@ -212,13 +213,14 @@ const OrganizeExamPage = () => {
     }).then((result) => {
       if (result.isConfirmed) {
       console.log("Xóa tài khoản có ID:", id);
+			setListOrganizeExam(prev => prev.filter(item => item.id !== id));
 
+	  	setListDisplay(prev => prev.filter(item => item.id !== id));
       Swal.fire({
         title: "Đã xóa!",
-        text: "Tài khoản đã bị xóa.",
+        text: "Kỳ thi đã bị xóa.",
         icon: "success",
       });
-      setRows(rows.filter((row) => row.id !== id));
       }
     });
   };
@@ -413,7 +415,7 @@ const OrganizeExamPage = () => {
 													<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}} onClick={() => preEdit(item)}>
 														<i className="fas fa-edit text-white "></i>
 													</button>
-													<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
+													<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}} onClick={() => handleDelete(item.id)}>
 														<i className="fas fa-trash-alt"></i>
 													</button>
 												</td>

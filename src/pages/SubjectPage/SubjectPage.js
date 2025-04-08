@@ -102,23 +102,29 @@ const SubjectPage = () => {
     setShowForm(true);
   };
 
-    const handleDelete = (id) => {
+  const handleDelete = (subjectId) => {
+    Swal.fire({
+      title: "Bạn có chắc chắn xóa?",
+      text: "Bạn sẽ không thể hoàn tác hành động này!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Xóa",
+      cancelButtonText: "Hủy",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Xóa phân môn khỏi danh sách
+        setListSubject(prev => prev.filter(subject => subject.id !== subjectId));
+        
         Swal.fire({
-            title: "Bạn có chắc chắn xóa?",
-            text: "Bạn sẽ không thể hoàn tác hành động này!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Xóa",
-            cancelButtonText: "Hủy",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                setRows(rows.filter((row) => row.id !== id));
-                Swal.fire("Đã xóa!", "Phân môn đã bị xóa.", "success");
-            }
+          title: "Đã xóa!",
+          text: "Phân môn đã bị xóa.",
+          icon: "success",
         });
-    };
+      }
+    });
+  };
 
   // useEffect(() => {
   //     if (showForm && inputRef.current) {
@@ -202,7 +208,7 @@ const SubjectPage = () => {
                     <button className="btn btn-primary btn-sm" style={{ width: "35px", height: "35px" }} onClick={() => preEdit(item)}>
                       <i className="fas fa-edit text-white"></i>
                     </button>
-                    <button className="btn btn-danger btn-sm ms-2" style={{ width: "35px", height: "35px" }}>
+                    <button className="btn btn-danger btn-sm ms-2" style={{ width: "35px", height: "35px" }} onClick={() => handleDelete(item.id)}>
                       <i className="fas fa-trash-alt"></i>
                     </button>
                   </td>

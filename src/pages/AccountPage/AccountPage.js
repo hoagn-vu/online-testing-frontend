@@ -230,7 +230,7 @@ const AccountPage = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         console.log("Xóa tài khoản có ID:", id);
-
+        setListDisplay(prev => prev.filter(item => item.id !== id));
         Swal.fire({
           title: "Đã xóa!",
           text: "Tài khoản đã bị xóa.",
@@ -459,7 +459,7 @@ const AccountPage = () => {
                     <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
                       <i className="fas fa-edit text-white " onClick={handleEdit}></i>
                     </button>
-                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
+                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}} onClick={() => handleDelete(item.id)}>
                       <i className="fas fa-trash-alt"></i>
                     </button>
                   </td>
