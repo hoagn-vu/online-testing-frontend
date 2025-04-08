@@ -23,8 +23,8 @@ const HeaderSupervisor = ({ username, avatarUrl, logoUrl }) => {
           </Link>
         </nav>
         
-        <img src={avatarUrl} alt="Avatar" className="avatar" />
-        <span className="username">{username}</span>
+        <img src={avatarUrl} alt="Avatar" className="avatar" onClick={() => setIsOpen(!isOpen)} style={{ cursor: "pointer" }}/>
+        <span className="username" onClick={() => setIsOpen(!isOpen)} style={{ cursor: "pointer" }}>{username}</span>
 
         {/* Nút mở dropdown */}
         <button className="dropdown-btn" onClick={() => setIsOpen(!isOpen)}>
@@ -33,13 +33,18 @@ const HeaderSupervisor = ({ username, avatarUrl, logoUrl }) => {
 
         {/* Dropdown menu */}
         {isOpen && (
-          <ul className="dropdown-menu show position-absolute end-0 mt-2">
-            <li>
-              <a className="dropdown-item" href="#">
-                Đăng xuất
-              </a>
-            </li>
-          </ul>
+          <ul className="dropdown-menu show position-absolute end-0 mt-2 custom-dropdown">
+          <li>
+            <a
+              className="dropdown-item d-flex justify-content-between align-items-center"
+              onClick={handleLogout}
+              style={{ gap: "8px" }}
+            >
+              <span>Đăng xuất</span>
+              <i className="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+            </a>
+          </li>
+        </ul>
         )}
       </div>
     </div>

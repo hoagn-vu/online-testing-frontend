@@ -167,7 +167,7 @@ const RoomManagementPage = () => {
       <nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
         <Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
         <span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
-        <span className="breadcrumb-current"> Quản lý phòng thi</span>
+        <span className="breadcrumb-current">Quản lý phòng thi</span>
       </nav>
 
       <div className="tbl-shadow p-3">
@@ -213,7 +213,7 @@ const RoomManagementPage = () => {
                   <td>{item.roomLocation}</td>
                   <td className="text-center">{item.roomCapacity}</td>
                   <td>
-                    <div className="form-check form-switch d-flex justify-content-center">
+                    <div className="form-check form-switch d-flex align-items-center justify-content-center">
                       <input
                         className="form-check-input"
                         type="checkbox"
@@ -223,6 +223,9 @@ const RoomManagementPage = () => {
                           handleToggleStatus(item.id, item.roomStatus)
                         }
                       />
+                      <span className={`badge ms-2 mt-1 ${item.roomStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
+                        {item.roomStatus === "Active" || "available" ? "Hoạt động" : "Không hoạt động"}
+                      </span>
                     </div>
                   </td>
                   <td className="text-center">
@@ -250,21 +253,21 @@ const RoomManagementPage = () => {
           <Box
             component="form"
             sx={{
-              width: "600px",
+              width: "750px",
               backgroundColor: "white",
-              p: 2,
+              p: 3.8,
               borderRadius: "8px",
               boxShadow: 3,
               mx: "auto",
             }}
             onSubmit={handleSubmit}
           >
-            <p className="text-align fw-bold">
-              {editingAccount ? "Chỉnh sửa tài khoản" : "Thêm tài khoản mới"}
+            <p className="fw-bold mb-3" style={{fontSize: "18px"}}>
+              {editingAccount ? "Chỉnh sửa phòng thi" : "Thêm phòng thi"}
             </p>
 
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
                   label="Tên phòng"
@@ -283,7 +286,7 @@ const RoomManagementPage = () => {
                   }}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
                   label="Địa điểm"
@@ -306,6 +309,7 @@ const RoomManagementPage = () => {
                 <TextField
                   fullWidth
                   label="Số lượng"
+                  type="number"
                   value={formData.roomCapacity}
                   onChange={(e) =>
                     setFormData({ ...formData, dob: e.target.value })
@@ -346,7 +350,7 @@ const RoomManagementPage = () => {
 
 
             {/* Buttons */}
-            <Grid container spacing={2} sx={{ mt: 2 }}>
+            <Grid container spacing={2} sx={{ mt: 1 }}>
               <Grid item xs={6}>
                 <Button
                   type="submit"

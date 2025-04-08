@@ -293,3 +293,7 @@
     transition: width 0.3s ease-in-out;
   }
 }
+
+.swal2-container {
+  z-index: 99999;
+}

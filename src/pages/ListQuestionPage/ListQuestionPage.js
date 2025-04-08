@@ -441,7 +441,7 @@ const ListQuestionPage = () => {
 					<div className="modal-body">
 						<div className="d-flex" style={{ display: "flex", width: "100%", gap: "10px" }}>
 							<div style={{ flex: 1 }}>
-								<p className="mb-0">Chọn chuyên đề kiến thức:</p>
+								<p className="mb-1">Chọn chuyên đề kiến thức:</p>
 								<CreatableSelect
 									isClearable
 									options={allChapters}
@@ -457,7 +457,7 @@ const ListQuestionPage = () => {
 							</div>
 
 							<div style={{ flex: 1 }}>
-								<p className="mb-0">Mức độ:</p>
+								<p className="mb-1">Mức độ:</p>
 								<CreatableSelect
 									isClearable
 									options={allLevels}
@@ -474,7 +474,7 @@ const ListQuestionPage = () => {
 
 						</div>
 							<div>
-								<p className="mb-0 mt-2"> <span style={{ color: "red" }}>*</span> Câu hỏi:</p>
+								<p className="mb-1 mt-2"> <span style={{ color: "red" }}>*</span> Câu hỏi:</p>
 								<textarea
 									type="text"
 									className="form-control mb-2"

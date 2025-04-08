@@ -11,10 +11,10 @@ import SearchBox from "../../components/SearchBox/SearchBox";
 import ApiService from "../../services/apiService";
 import CreatableSelect from "react-select/creatable";
 import ReactSelect  from 'react-select';
+import FormCreateOrganizeExam from "../../components/FormCreateOrganizeExam/FormCreateOrganizeExam";
 
 const OrganizeExamPage = () => {
   const [listOrganizeExam, setListOrganizeExam] = useState([]);
-
 	const [keyword, setKeyword] = useState("");
 	const [page, setPage] = useState(1);
 	const [pageSize, setPageSize] = useState(10);
@@ -22,6 +22,9 @@ const OrganizeExamPage = () => {
 	const [totalCount, setTotalCount] = useState(0);
 	const [subjectOptions, setSubjectOptions] = useState([]);
 	const [questionBankOptions, setQuestionBankOptions] = useState([]);
+	const navigate = useNavigate();
+	const [showFormCreate, setShowFormCreate] = useState(false);
+
 	const [typeOptions, setTypeOptions] = useState([
 		{ value: "matrix", label: "Ma trận" },
 		{ value: "auto", label: "Ngẫu nhiên" },
@@ -247,115 +250,184 @@ const OrganizeExamPage = () => {
 				<span className="breadcrumb-current">Quản lý kỳ thi</span>
 			</nav>
 
-			<div className="tbl-shadow p-3">
-				<div className="sample-card-header d-flex justify-content-between align-items-center mb-2">
-          <div className='left-header d-flex align-items-center'>
-            <div className="search-box rounded d-flex align-items-center">
-              <i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
-              <input
-                type="text"
-                className="search-input w-100"
-                placeholder="Tìm kiếm..."
-                value={keyword}
-                onChange={handleKeywordChange}
-              />
-            </div>
-          </div>
+			{showFormCreate ? (
+				<FormCreateOrganizeExam 
+					onClose={() => setShowFormCreate(false)}
+					typeOptions={typeOptions}
+					questionBankOptions={questionBankOptions}
+					subjectOptions={subjectOptions}
+				/>
+			) : (
+				<>
+					<div className="tbl-shadow p-3">
+						<div className="sample-card-header d-flex justify-content-between align-items-center mb-2">
+							<div className='left-header d-flex align-items-center'>
+								<div className="search-box rounded d-flex align-items-center">
+									<i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
+									<input
+										type="text"
+										className="search-input w-100"
+										placeholder="Tìm kiếm..."
+										value={keyword}
+										onChange={handleKeywordChange}
+									/>
+								</div>
+							</div>
 
-          <div className='right-header'>
-            <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={preAddNew}>
-              <i className="fas fa-plus me-2"></i>
-              Thêm mới
-            </button>
-          </div>
-        </div>
+							<div className='right-header'>
+								<button className="btn btn-primary" style={{fontSize: "14px"}} onClick={preAddNew}>
+									<i className="fas fa-plus me-2"></i>
+									Thêm mới
+								</button>
+								<button className="btn btn-primary" style={{fontSize: "14px"}} onClick={() => setShowFormCreate(true)}>
+									<i className="fas fa-plus me-2"></i>
+									Thêm mới mới
+								</button>
+							</div>
+						</div>
 
-				{/* Hiển thị bảng theo vai trò đã chọn */}
-				<div className="organize-examtable-container mt-3">
-					<div className="table-responsive">
-						<table className="table organize-exam-table sample-table tbl-organize-hover table-hover" style={{fontSize: "14px"}}>
-							<thead>
-								<tr className="align-middle fw-medium">
-									<th scope="col" className="text-center">STT</th>
-									<th scope="col" className="title-row">Kỳ thi</th>
-									<th scope="col" className="title-row">Phân môn</th>
-									<th scope="col" className="title-row">Loại</th>
-									<th scope="col" className="title-row">Đề thi</th>
-									<th scope="col" className="title-row">Ma trận</th>
-									<th className="text-center">Thời gian (M)</th>
-									<th className="text-center">Điểm</th>
-									<th className="text-center">Trạng thái</th>
-									<th className="text-center">Báo cáo</th>
-									<th className="text-center">Thao tác</th>
-								</tr>
-							</thead>
-							<tbody>
-								{listOrganizeExam.map((item, index) => (
-									<tr key={item.id} className="align-middle">
-										<td className="text-center">{index + 1}</td>
-										<td>
-											<Link className="text-hover-primary"
-												to={`/staff/organize/${encodeURIComponent(item.id)}`}
-												state={{ organizeExamName: item.organizeExamName }}
-												style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
-											>
-												{item.organizeExamName}
-											</Link>
-										</td>
-										<td>{item.subjectName}</td>
-										<td>{item.examType}</td>
-										<td>{item.examType === "Ma trận" || item.examType === "Ngẫu nhiên" ? "-" : item.examSet?.join(", ") || "-"}</td>
-										<td>{item.examType === "Đề thi" || item.examType === "Ngẫu nhiên" ? "-" : item.matrixId || "-"}</td>
-										<td className="text-center">{item.duration}</td>
-										<td className="text-center">{item.maxScore}</td>
-										<td>
-										<div className="form-check form-switch d-flex justify-content-center">
-											<input
-												className="form-check-input"
-												type="checkbox"
-												role="switch"
-												checked={item.organizeExamStatus.toLowerCase() === "active"}
-												onChange={() =>
-													handleToggleStatus(item.id, item.organizeExamStatus)
-												}
-											/>
-										</div>
-									</td>
-										<td className="text-center">
-											<Link
-												to={`/staff/organize/report/${item.id}`}     
-												style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}
-											>
-												Chi tiết
-											</Link>
-										</td>
-										<td className="text-center">
-											<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}} onClick={() => preEdit(item)}>
-												<i className="fas fa-edit text-white "></i>
-											</button>
-											<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
-												<i className="fas fa-trash-alt"></i>
-											</button>
-										</td>
-									</tr>
-								))}
-							</tbody>
-						</table>
+						{/* Hiển thị bảng theo vai trò đã chọn */}
+						<div className="organize-examtable-container mt-3">
+							<div className="table-responsive">
+								<table className="table organize-exam-table sample-table tbl-organize-hover table-hover" style={{fontSize: "14px"}}>
+									<thead>
+										<tr className="align-middle fw-medium">
+											<th>STT</th>
+											<th>Kỳ thi</th>
+											<th>Phân môn</th>
+											<th>Loại</th>
+											<th>Đề thi</th>
+											<th>Ma trận</th>
+											<th className="text-center">Thời gian (M)</th>
+											<th className="text-center">Điểm</th>
+											<th className="text-center">Trạng thái</th>
+											<th className="text-center">Báo cáo</th>
+											<th className="text-center">Thao tác</th>
+										</tr>
+									</thead>
+									<tbody>
+										{listOrganizeExam.map((item, index) => (
+											<tr key={item.id} className="align-middle">
+												<td
+													onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
+														state: { organizeExamName: item.organizeExamName },
+													})}
+													style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+													className="text-center"
+												>
+													{index + 1}
+												</td>
+												<td
+													onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
+														state: { organizeExamName: item.organizeExamName },
+													})}
+													style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+													className="text-hover-primary"
+												>
+													{item.organizeExamName}
+												</td>
+												<td
+													onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
+														state: { organizeExamName: item.organizeExamName },
+													})}
+													style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+												>
+													{item.subjectName}
+												</td>
+												<td
+													onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
+														state: { organizeExamName: item.organizeExamName },
+													})}
+													style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+												>
+													{item.examType}
+												</td>
+												<td
+													onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
+														state: { organizeExamName: item.organizeExamName },
+													})}
+													style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+												>
+													{item.examType === "Ma trận" || item.examType === "Ngẫu nhiên" ? "-" : item.examSet?.join(", ") || "-"}										
+												</td>
+												<td
+													onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
+														state: { organizeExamName: item.organizeExamName },
+													})}
+													style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+												>
+													{item.examType === "Đề thi" || item.examType === "Ngẫu nhiên" ? "-" : item.matrixId || "-"}
+												</td>
+												<td
+													onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
+														state: { organizeExamName: item.organizeExamName },
+													})}
+													style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+													className="text-center"
+												>
+													{item.duration}
+												</td>
+												<td
+													onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
+														state: { organizeExamName: item.organizeExamName },
+													})}
+													style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+													className="text-center"
+												>
+													{item.maxScore}
+												</td>
+												<td>
+												<div className="form-check form-switch d-flex align-items-center justify-content-center" >
+													<input
+														className="form-check-input"
+														type="checkbox"
+														role="switch"
+														checked={item.organizeExamStatus.toLowerCase() === "active"}
+														onChange={() =>
+															handleToggleStatus(item.id, item.organizeExamStatus)
+														}
+													/>
+													<span className={`badge ms-2 mt-1 ${item.organizeExamStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
+														{item.organizeExamStatus === "Active" || "available" ? "Kích hoạt" : "Đóng"}
+													</span>
+												</div>
+											</td>
+												<td className="text-center">
+													<Link
+														to={`/staff/organize/report/${item.id}`}     
+														style={{ color: "blue", cursor: "pointer" }}
+														className="report-hover"
+													>
+														Chi tiết
+													</Link>
+												</td>
+												<td className="text-center">
+													<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}} onClick={() => preEdit(item)}>
+														<i className="fas fa-edit text-white "></i>
+													</button>
+													<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
+														<i className="fas fa-trash-alt"></i>
+													</button>
+												</td>
+											</tr>
+										))}
+									</tbody>
+								</table>
+							</div>
+
+							<div className="organize-exampagination d-flex justify-content-end align-items-center">
+								{ totalCount > 0 && (
+									<Pagination
+										count={Math.ceil(totalCount / pageSize)}
+										shape="rounded"
+										page={page}
+										onChange={(e, value) => setPage(value)}
+										color="primary"
+									/>
+								)}
+							</div>
+						</div>
 					</div>
-
-					<div className="organize-exampagination d-flex justify-content-end align-items-center">
-						{ totalCount > 0 && (
-							<Pagination
-								count={Math.ceil(totalCount / pageSize)}
-								shape="rounded"
-								page={page}
-								onChange={(e, value) => setPage(value)}
-								color="primary"
-							/>
-						)}
-					</div>
-				</div>
-			</div>
 
       {/* Form thêm tài khoản */}
 				{showForm && (
@@ -372,7 +444,7 @@ const OrganizeExamPage = () => {
 							}}
 							onSubmit={handleSubmit}
 						>
-							<p className="text-align fw-bold">
+							<p className=" fw-bold">
 								{editingOrganizeExam ? "Chỉnh sửa thông tin kỳ thi" : "Tạo kỳ thi"}
 							</p>
 	
@@ -584,8 +656,8 @@ const OrganizeExamPage = () => {
 									/>
 								</Grid>
                 )}
-                {selectedType === "auto" && (
-									<Grid container spacing={2}>		
+                {selectedType === "auto" && (								
+									<Grid container spacing={2} sx={{marginLeft:"0px", marginTop: "0px"}}>		
 										<Grid item xs={6}>
 										<ReactSelect
 											fullWidth
@@ -602,14 +674,12 @@ const OrganizeExamPage = () => {
 												control: (base) => ({
 													...base,
 													width: "275px", // Cố định chiều rộng
-													minWidth: "275px",
-													maxWidth: "250px",
 													height: "48px", // Tăng chiều cao
-													minHeight: "40px",
 												}),
 												menu: (base) => ({
 													...base,
-													width: "250px", // Cố định chiều rộng của dropdown
+													width: "100%", // Cố định chiều rộng của dropdown
+													zIndex: 9999,
 												}),
 												valueContainer: (base) => ({
 													...base,
@@ -636,6 +706,8 @@ const OrganizeExamPage = () => {
 													setFormData({ ...formData, totalQuestions: e.target.value })
 												}
 												sx={{
+													position: "relative", 
+   												zIndex: 0, 
 													"& .MuiInputBase-input": {
 														fontSize: "14px",
 														paddingBottom: "11px",
@@ -673,6 +745,8 @@ const OrganizeExamPage = () => {
 						</Box>
 					</div>
 				)}
+				</>
+			)}
     </div>
   )
 }

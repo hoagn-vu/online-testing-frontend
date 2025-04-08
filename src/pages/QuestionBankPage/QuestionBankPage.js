@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import './QuestionBankPage.css'
 import { Box, Button, Grid, IconButton, TextField, Pagination } from "@mui/material";
 import Paper from "@mui/material/Paper";
@@ -21,7 +21,7 @@ const QuestionBankPage = () => {
   const [pageSize, setPageSize] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
-
+  const navigate = useNavigate();
   const [showForm, setShowForm] = useState(false);
   const [editingBank, setEditingBank] = useState(null);
 
@@ -182,16 +182,32 @@ const QuestionBankPage = () => {
               {listQuestionBank.map((item, index) => (
                 <tr key={item.questionBankId} className="align-middle">
                   <td className="text-center">{index+1}</td>
-                  <td >
-                    <Link className="text-hover-primary"
-                      to={`/staff/question/${subjectId}/${item.questionBankId}`} 
-                      state={{questionBankName: item.questionBankName}}
-                      style={{ textDecoration: "none", cursor: "pointer", color:"black" }}
-                    >
-                      {item.questionBankName}
-                    </Link>
+                  <td
+                    onClick={() => {
+                      navigate(`/staff/question/${subjectId}/${item.questionBankId}`, {
+                        state: {
+                          questionBankName: item.questionBankName,
+                        },
+                      });
+                    }}
+                    style={{ cursor: "pointer", color: "black" }}
+                    className="text-hover-primary"
+                  >
+                    {item.questionBankName}
                   </td>
-                  <td className="text-center">{item.totalQuestions}</td>
+                  <td
+                    onClick={() => {
+                      navigate(`/staff/question/${subjectId}/${item.questionBankId}`, {
+                        state: {
+                          questionBankName: item.questionBankName,
+                        },
+                      });
+                    }}
+                    style={{ cursor: "pointer", color: "black" }}
+                    className="text-center"
+                  >
+                    {item.totalQuestions}
+                  </td>
                   <td className="text-center">
                     <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}} onClick={() => handlePreEdit(item)}>
                       <i className="fas fa-edit text-white "></i>
@@ -225,17 +241,16 @@ const QuestionBankPage = () => {
                 <Box
                     component="form"
                     sx={{
-                        minWidth: "500px",
-                        minHeight: "200px",
+                        minWidth: "700px",
                         backgroundColor: "white",
-                        p: 2,
+                        p: 3.8,
                         borderRadius: "8px",
                         boxShadow: 3,
                         mx: "auto",
                     }}
                     onSubmit={handleSubmit}
                 >
-                    <p className="text-align fw-bold">
+                    <p className="fw-bold">
                     {editingBank ? "Chỉnh sửa bộ câu hỏi" : "Thêm bộ câu hỏi"}
                     </p>
 
@@ -260,7 +275,7 @@ const QuestionBankPage = () => {
                     </Grid>
 
                     {/* Buttons */}
-                    <Grid container spacing={2} sx={{ mt: 2 }}>
+                    <Grid container spacing={2} sx={{ mt: 1}}>
                     <Grid item xs={6}>
                         <Button
                         type="submit"

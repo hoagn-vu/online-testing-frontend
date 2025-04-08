@@ -152,22 +152,28 @@ export default function Admin2Layout() {
             </IconButton>
           </div>
 
-          <div className="user-info position-relative d-flex align-items-center">
+          <div className="user-info position-relative d-flex align-items-center" onClick={() => setIsOpen(!isOpen)} style={{ cursor: "pointer" }}>
             <img src={avatar} alt="Avatar" className="avatar" />
-            <span className="username text-white">{user?.username}</span>
-            <button className="dropdown-btn text-white" onClick={() => setIsOpen(!isOpen)}>
-              <FaChevronDown />
-            </button>
+            <span className="username text-white ms-2">{user?.username}</span>
+            <FaChevronDown className="text-white ms-2" />
+            
             {isOpen && (
-              <ul className="dropdown-menu show position-absolute end-0 mt-2">
-                <li>
-                  <a className="dropdown-item" onClick={handleLogout}>
-                    Đăng xuất
-                  </a>
-                </li>
-              </ul>
+              <ul className="dropdown-menu show position-absolute end-0 mt-2 custom-dropdown">
+              <li>
+                <a
+                  className="dropdown-item d-flex justify-content-between align-items-center"
+                  onClick={handleLogout}
+                  style={{ gap: "8px" }}
+                >
+                  <span>Đăng xuất</span>
+                  <i className="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+                </a>
+              </li>
+            </ul>
+            
             )}
           </div>
+
 
         </Toolbar>
       </AppBar>

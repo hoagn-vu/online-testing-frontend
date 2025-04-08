@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useLocation, useParams, useSearchParams  } from "react-router-dom";
+import { Link, useLocation, useParams, useSearchParams, useNavigate  } from "react-router-dom";
 import "./SessionPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -21,7 +21,8 @@ const SessionPage = () => {
 	const [editingAccount, setEditingAccount] = useState(null);
 	const inputRef = useRef(null);
 	const [organizeExamName, setOrganizeExamName] = useState("");
-
+	const navigate = useNavigate();
+	
 	const [organizeExam, setOrganizeExam] = useState([]);
 
 	useEffect(() => {
@@ -327,19 +328,48 @@ const SessionPage = () => {
 								listSession.map((session, sessionIndex) => (
 										<tr key={session.sessionId} className="align-middle">
 											<td className="text-center">{sessionIndex + 1}</td>
-											<td>{session.sessionName}</td>
-											<td>{dayjs(session.activeAt).format("DD/MM/YYYY HH:mm")}</td>
-											<td>
-												<Link className="text-hover-primary"
-														to={`/staff/organize/${organizeId}/${session.sessionId}`}
-														onClick={() => localStorage.setItem("organizeExamName", organizeExamName)}
-														state={{ 
+											<td
+												onClick={() => {
+													localStorage.setItem("organizeExamName", organizeExamName);
+													navigate(`/staff/organize/${organizeId}/${session.sessionId}`, {
+														state: {
 															sessionName: session.sessionName,
-															organizeExamName: organizeExamName  // Truyền thêm organizeExamName
-														}}
-														style={{ textDecoration: "none", color: "black", cursor: "pointer" }}>
-													Danh sách phòng thi
-												</Link>
+															organizeExamName: organizeExamName,
+														},
+													});
+												}}
+												style={{ cursor: "pointer", color: "black" }}
+											>
+												{session.sessionName}
+											</td>
+											<td
+												onClick={() => {
+													localStorage.setItem("organizeExamName", organizeExamName);
+													navigate(`/staff/organize/${organizeId}/${session.sessionId}`, {
+														state: {
+															sessionName: session.sessionName,
+															organizeExamName: organizeExamName,
+														},
+													});
+												}}
+												style={{ cursor: "pointer", color: "black" }}
+											>
+												{dayjs(session.activeAt).format("DD/MM/YYYY HH:mm")}
+											</td>
+											<td
+												onClick={() => {
+													localStorage.setItem("organizeExamName", organizeExamName);
+													navigate(`/staff/organize/${organizeId}/${session.sessionId}`, {
+														state: {
+															sessionName: session.sessionName,
+															organizeExamName: organizeExamName,
+														},
+													});
+												}}
+												style={{ cursor: "pointer", color: "black" }}
+												className="text-hover-primary"
+											>
+												Danh sách phòng thi
 											</td>
 											<td className="text-center">
 												<div className="form-check form-switch d-flex align-items-center justify-content-left">
@@ -350,16 +380,16 @@ const SessionPage = () => {
 														checked={session.sessionStatus === "Active" || "available"}
 														onChange={() => handleToggleStatus(session.sessionId, session.sessionStatus)}
 													/>
-													<span className={`badge ms-2 ${session.sessionStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
-														{session.sessionStatus === "Active" || "available" ? "Hoạt động" : "Không hoạt động"}
+													<span className={`badge ms-2 mt-1 ${session.sessionStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
+														{session.sessionStatus === "Active" || "available" ? "Kích hoạt" : "Đóng"}
 													</span>
 												</div>
 											</td>
 
 											<td className="text-center">
-												<Link className="text-hover-primary"
+												<Link className="text-hover-primary report-hover"
 														to={`/staff/organize/monitor/${organizeId}/${session.sessionId}`}
-														style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}>
+														style={{ color: "blue", cursor: "pointer" }}>
 													Giám sát
 												</Link>
 											</td>

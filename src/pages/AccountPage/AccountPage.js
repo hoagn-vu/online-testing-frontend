@@ -300,7 +300,7 @@ const AccountPage = () => {
         <Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
         
         <span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
-        <span className="breadcrumb-current"> Quản lý tài khoản</span>
+        <span className="breadcrumb-current">Quản lý tài khoản</span>
       </nav>
       <div className="tbl-shadow p-3 pt-1">
         {/* Thanh tìm kiếm + Nút thêm mới + Upload */}
@@ -390,7 +390,7 @@ const AccountPage = () => {
                   <td className="text-center">{item.gender}</td>
                   <td className="text-center">{item.groupName}</td>
                   <td>
-                    <div className="form-check form-switch d-flex justify-content-center">
+                    <div className="form-check form-switch d-flex align-items-center justify-content-center">
                       <input
                         className="form-check-input"
                         type="checkbox"
@@ -400,6 +400,9 @@ const AccountPage = () => {
                           handleToggleStatus(item.id, item.accountStatus)
                         }
                       />
+                      <span className={`badge ms-2 mt-1 ${item.accountStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
+                        {item.accountStatus === "Active" || "available" ? "Hoạt động" : "Không hoạt động"}
+                      </span>
                     </div>
                   </td>
                   <td className="text-center">
@@ -426,9 +429,9 @@ const AccountPage = () => {
           <Box
             component="form"
             sx={{
-              width: "600px",
+              width: "800px",
               backgroundColor: "white",
-              p: 2,
+              p: 4,
               borderRadius: "8px",
               boxShadow: 3,
               mx: "auto",
@@ -654,7 +657,7 @@ const AccountPage = () => {
             )}
 
             {/* Buttons */}
-            <Grid container spacing={2} sx={{ mt: 2 }}>
+            <Grid container spacing={2} sx={{ mt: 1 }}>
               <Grid item xs={6}>
                 <Button
                   type="submit"
@@ -739,8 +742,8 @@ const AccountPage = () => {
       {/* Form Chọn nhóm */}
       {showGroupForm && (
         <div className="form-overlay">
-          <div className="form-container">
-            <h3>Chọn nhóm</h3>
+          <div className="form-container p-4" style={{width: "500px"}}>
+            <h3 className="fw-bold">Chọn nhóm</h3>
             <CreatableSelect
               isMulti
               options={colourOptions}
