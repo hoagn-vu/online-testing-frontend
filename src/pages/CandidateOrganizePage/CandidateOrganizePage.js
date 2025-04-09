@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import ReactSelect  from 'react-select';
 import ApiService from "../../services/apiService";
+import { IdCard } from "lucide-react";
 
 const CandidateOrganizePage = () => {
   const [showForm, setShowForm] = useState(false);
@@ -130,17 +131,12 @@ const CandidateOrganizePage = () => {
 				cancelButtonText: "Hủy",
 			}).then((result) => {
 				if (result.isConfirmed) {
-					console.log("Xóa thí thi có ID:", id);
-
-					setRows(prevRows => {
-						const updatedRows = prevRows.filter(row => row.candidateId !== id);
-						console.log("Danh sách sau khi xóa:", updatedRows);
-						return updatedRows;
-					});
+					console.log("Xóa thí sinh có ID:", id);
+					setListCandidate(prev => prev.filter(candidate => candidate.candidateId !== id));
 
 					Swal.fire({
 						title: "Đã xóa!",
-						text: "Thí thi đã bị xóa.",
+						text: "Thí sinh đã bị xóa.",
 						icon: "success",
 					});
 				}

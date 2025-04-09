@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import ReactSelect  from 'react-select';
 import ApiService from "../../services/apiService";
+import { IdCardIcon } from "@radix-ui/react-icons";
 
 const RoomOrganizePage = () => {
 	const [showForm, setShowForm] = useState(false);
@@ -175,12 +176,9 @@ const RoomOrganizePage = () => {
 		}).then((result) => {
 			if (result.isConfirmed) {
 				console.log("Xóa phòng thi có ID:", id);
-	
-				setRows(prevRows => {
-					const updatedRows = prevRows.filter(row => row.roomId !== id);
-					console.log("Danh sách sau khi xóa:", updatedRows);
-					return updatedRows;
-				});
+				setRoomsOrganize(prev => prev.filter(room => room.roomId !== id));
+
+
 	
 				Swal.fire({
 					title: "Đã xóa!",

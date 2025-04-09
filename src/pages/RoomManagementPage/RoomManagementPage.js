@@ -12,20 +12,37 @@ import ApiService from "../../services/apiService";
 
 const RoomManagementPage = () => {
   const [listRoom, setListRoom] = useState([]);
+
+  const [keyword, setKeyword] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [isLoading, setIsLoading] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+
   const [rows, setRows] = useState([]);
 
+  const handleKeywordChange = (e) => {
+    setKeyword(e.target.value);
+    setPage(1);
+  };
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await ApiService.get("/rooms", {
+        params: { keyword, page, pageSize },
+      });
+      setListRoom(response.data.rooms);
+      setTotalCount(response.data.total);
+    } catch (error) {
+      console.error("Failed to fetch data: ", error);
+    }
+    setIsLoading(false);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await ApiService.get("/rooms");
-        setListRoom(response.data.rooms);
-        setRows(response.data.rooms);
-      } catch (error) {
-        console.error("Lỗi lấy dữ liệu: ", error);
-      }
-    };
     fetchData();
-  }, []);
+  }, [keyword, page, pageSize]);
 
   const [selectedItems, setSelectedItems] = useState([]);
 
@@ -120,14 +137,14 @@ const RoomManagementPage = () => {
       cancelButtonText: "Hủy",
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log("Xóa tài khoản có ID:", id);
+        console.log("Xóa phòng thi có ID:", id);
 
         Swal.fire({
           title: "Đã xóa!",
-          text: "Tài khoản đã bị xóa.",
+          text: "Phòng thi đã bị xóa.",
           icon: "success",
         });
-        setRows(rows.filter((row) => row.id !== id));
+        setListRoom(prev => prev.filter(room => room.id !== id));
       }
     });
   };
@@ -179,8 +196,8 @@ const RoomManagementPage = () => {
                 type="text"
                 className="search-input w-100"
                 placeholder="Tìm kiếm..."
-                // value={searchTerm}
-                // onChange={handleChangeSearch}
+                value={keyword}
+                onChange={handleKeywordChange}
               />
             </div>
           </div>
@@ -240,7 +257,7 @@ const RoomManagementPage = () => {
                     <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
                       <i className="fas fa-edit text-white "></i>
                     </button>
-                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
+                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}} onClick={() => handleDelete(item.id)}>
                       <i className="fas fa-trash-alt"></i>
                     </button>
                   </td>
@@ -251,7 +268,16 @@ const RoomManagementPage = () => {
         </div>
 
         <div className="sample-pagination d-flex justify-content-end align-items-center">
-            <Pagination count={10} color="primary" shape="rounded"/>        
+            {/* <Pagination count={10} color="primary" shape="rounded"/>         */}
+            { totalCount > 0 && (
+              <Pagination
+                count={Math.ceil(totalCount / pageSize)}
+                shape="rounded"
+                page={page}
+                onChange={(e, value) => setPage(value)}
+                color="primary"
+              />
+            )}
         </div>
       </div>
 

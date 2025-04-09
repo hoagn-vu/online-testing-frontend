@@ -110,30 +110,29 @@ const QuestionBankPage = () => {
   };
 
 
-    const handleDelete = (id) => {
+  const handleDelete = (questionBankId) => {
+    Swal.fire({
+      title: "Bạn có chắc chắn xóa?",
+      text: "Bạn sẽ không thể hoàn tác hành động này!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Xóa",
+      cancelButtonText: "Hủy",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Xóa ngân hàng câu hỏi khỏi danh sách
+        setListQuestionBank(prev => prev.filter(bank => bank.questionBankId !== questionBankId));
+                
         Swal.fire({
-        title: "Bạn có chắc chắn xóa?",
-        text: "Bạn sẽ không thể hoàn tác hành động này!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Xóa",
-        cancelButtonText: "Hủy",
-        }).then((result) => {
-        if (result.isConfirmed) {
-            // Xóa tài khoản ở đây (ví dụ: gọi API hoặc cập nhật state)
-            console.log("Xóa ngân hàng câu hỏi có ID:", id);
-
-            Swal.fire({
-            title: "Đã xóa!",
-            text: "Ngân hàng câu hỏi đã bị xóa.",
-            icon: "success",
-            });
-            setRows(rows.filter((row) => row.id !== id));
-        }
+          title: "Đã xóa!",
+          text: "Ngân hàng câu hỏi đã bị xóa.",
+          icon: "success",
         });
-    };
+      }
+    });
+  };
     return (
       <div className="question-bank-page">
       {/* Breadcrumb */}
@@ -220,7 +219,7 @@ const QuestionBankPage = () => {
                     <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}} onClick={() => handlePreEdit(item)}>
                       <i className="fas fa-edit text-white "></i>
                     </button>
-                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
+                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}} onClick={() => handleDelete(item.questionBankId)}>
                       <i className="fas fa-trash-alt"></i>
                     </button>
                   </td>

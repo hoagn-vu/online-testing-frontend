@@ -12,7 +12,15 @@ import ApiService from "../../services/apiService";
 import CreatableSelect from "react-select/creatable";
 
 const AccountPage = () => {
+  const [listAccountUser, setListAccountUser] = useState([]);
   const inputRef = useRef(null);
+
+  const [keyword, setKeyword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [pageSize, setPageSize] = useState(100);
+
   const [listAccount, setListAccount] = useState({
     "Thí sinh": [],
     "Giám thị": [],
@@ -23,42 +31,56 @@ const AccountPage = () => {
   const [listDisplay, setListDisplay] = useState([]);
   const [selectedRole, setSelectedRole] = useState("Thí sinh");
   
+  const handleKeywordChange = (e) => {
+    setKeyword(e.target.value);
+    setPage(1);
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await ApiService.get("/users");
-
-        const newAccounts = {
-          "Thí sinh": [],
-          "Giám thị": [],
-          "Quản trị viên": [],
-          "Cán bộ phụ trách kỳ thi": [],
-        };
-
-        response.data.users.forEach((user) => {
-          if (user.role === "candidate") {
-            newAccounts["Thí sinh"].push(user);
-          }
-          if (user.role === "supervisor") {
-            newAccounts["Giám thị"].push(user);
-          }
-          if (user.role === "admin") {
-            newAccounts["Quản trị viên"].push(user);
-          }
-          if (user.role === "staff") {
-            newAccounts["Cán bộ phụ trách kỳ thi"].push(user);
-          }
-        });
-
-        setListAccount(newAccounts);
-      } catch (error) {
-        console.error("Lỗi lấy dữ liệu tài khoản:", error);
-      }
-    };
-
     fetchData();
-  }, []);
+  }, [page, pageSize, keyword]); // phụ thuộc để tự động gọi lại khi có thay đổi  
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await ApiService.get("/users", {
+        params: { page, pageSize, keyword },
+      });
+  
+      // Cập nhật danh sách hiển thị theo phân trang
+      setListAccountUser(response.data.users);
+      setTotalCount(response.data.total);
+  
+      // Tạo object phân loại tài khoản
+      const newAccounts = {
+        "Thí sinh": [],
+        "Giám thị": [],
+        "Quản trị viên": [],
+        "Cán bộ phụ trách kỳ thi": [],
+      };
+  
+      response.data.users.forEach((user) => {
+        if (user.role === "candidate") {
+          newAccounts["Thí sinh"].push(user);
+        }
+        if (user.role === "supervisor") {
+          newAccounts["Giám thị"].push(user);
+        }
+        if (user.role === "admin") {
+          newAccounts["Quản trị viên"].push(user);
+        }
+        if (user.role === "staff") {
+          newAccounts["Cán bộ phụ trách kỳ thi"].push(user);
+        }
+      });
+  
+      setListAccount(newAccounts);
+    } catch (error) {
+      console.error("Lỗi khi lấy dữ liệu tài khoản:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };  
 
   useEffect(() => {
     setSelectedRole("Thí sinh");
@@ -208,7 +230,7 @@ const AccountPage = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         console.log("Xóa tài khoản có ID:", id);
-
+        setListDisplay(prev => prev.filter(item => item.id !== id));
         Swal.fire({
           title: "Đã xóa!",
           text: "Tài khoản đã bị xóa.",
@@ -314,10 +336,21 @@ const AccountPage = () => {
         {/* Thanh tìm kiếm + Nút thêm mới + Upload */}
         <div className="account-actions">
           <div className="search-container">
-            <SearchBox></SearchBox>
+          <div className="search-box d-flex align-items-center px-3" style={{ border: '1px solid #ddd', borderRadius: '8px', height: '40px', backgroundColor: '#fff', width: "250px" }}>
+            <i className="fa-solid fa-magnifying-glass me-2" style={{ fontSize: '14px', color: '#999' }}></i>
+            <input
+              type="text"
+              className="search-input border-0 w-100"
+              placeholder="Tìm kiếm..."
+              value={keyword}
+              onChange={handleKeywordChange}
+              style={{ outline: 'none', boxShadow: 'none', fontSize: '14px', color: '#333' }}
+            />
+          </div>
+
+            {/* <SearchBox></SearchBox> */}
           </div>
           <div className="role-selector">
-
             <button className="btn btn-primary me-0" style={{fontSize: "14px"}} onClick={handleAddNew}>
               <i className="fas fa-plus me-2"></i>
               Thêm mới
@@ -381,7 +414,16 @@ const AccountPage = () => {
               </tr>
             </thead>
             <tbody>
-              {listDisplay.map((item, index) => (
+            {isLoading ? (
+                <tr>
+                  <td colSpan="9" className="text-center">
+                    <div className="spinner-border text-primary" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                  </td>
+                </tr>
+              ) :
+              listDisplay.map((item, index) => (
                 <tr key={item.id} className="align-middle">
                   <td className=" text-center" style={{ width: "50px" }}>
                     <input
@@ -417,7 +459,7 @@ const AccountPage = () => {
                     <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
                       <i className="fas fa-edit text-white " onClick={handleEdit}></i>
                     </button>
-                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
+                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}} onClick={() => handleDelete(item.id)}>
                       <i className="fas fa-trash-alt"></i>
                     </button>
                   </td>
@@ -428,7 +470,16 @@ const AccountPage = () => {
         </div>
 
         <div className="sample-pagination d-flex justify-content-end align-items-center mb-2">
-          <Pagination count={10} color="primary" shape="rounded" />
+          {/* <Pagination count={10} color="primary" shape="rounded" /> */}
+          { totalCount > 0 && (
+            <Pagination
+              count={Math.ceil(totalCount / pageSize)}
+              shape="rounded"
+              page={page}
+              onChange={(e, value) => setPage(value)}
+              color="primary"
+            />
+          )}
         </div>
       </div>
       {/* Form thêm tài khoản */}

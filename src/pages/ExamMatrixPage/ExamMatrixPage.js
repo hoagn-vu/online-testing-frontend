@@ -109,7 +109,7 @@ const ExamMatrixPage = () => {
         text: "Ma trận đề thi đã bị xóa.",
         icon: "success",
       });
-      setRows(rows.filter((row) => row.id !== id));
+      setListExamMatrix(prev => prev.filter(matrix => matrix.id !== id));
       }
     });
   };
@@ -186,7 +186,7 @@ const ExamMatrixPage = () => {
                     <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
                       <i className="fas fa-edit text-white "></i>
                     </button>
-                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
+                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}} onClick={() => handleDelete(item.id)}> 
                       <i className="fas fa-trash-alt"></i>
                     </button>
                   </td>
