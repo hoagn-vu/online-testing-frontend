@@ -1,13 +1,28 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaChevronDown } from "react-icons/fa";
-// Import icon
 import "./HeaderSupervisor.css";
-import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../../redux/authSlice";
+import { Link, useNavigate } from "react-router-dom";
+import { authApi } from "../../services/authApi";
 
 const HeaderSupervisor = ({ username, avatarUrl, logoUrl }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  const user = useSelector((state) => state.auth.user);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    localStorage.removeItem("accessToken");
+    dispatch(authApi.util.resetApiState());
+    navigate("/");
+  };
 
   return (
     <div className="header-candidate-container">
@@ -24,7 +39,7 @@ const HeaderSupervisor = ({ username, avatarUrl, logoUrl }) => {
         </nav>
         
         <img src={avatarUrl} alt="Avatar" className="avatar" onClick={() => setIsOpen(!isOpen)} style={{ cursor: "pointer" }}/>
-        <span className="username" onClick={() => setIsOpen(!isOpen)} style={{ cursor: "pointer" }}>{username}</span>
+        <span className="username" onClick={() => setIsOpen(!isOpen)} style={{ cursor: "pointer" }}>{user.fullName}</span>
 
         {/* Nút mở dropdown */}
         <button className="dropdown-btn" onClick={() => setIsOpen(!isOpen)}>

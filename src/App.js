@@ -130,9 +130,13 @@ function App() {
       </Routes>
 
       <Routes>
-        <Route path="/supervisor" element={<SupervisorLayout />}>
+        <Route path="/supervisor" element={
+                      <ProtectedRoute allowedRoles={["supervisor"]}>
+<SupervisorLayout />
+</ProtectedRoute>
+}>
           <Route path="home" element={<SupervisorHomePage />} /> 
-          <Route path="monitor" element={<MonitoringPage />} /> 
+          <Route path="monitor/:organizeExamId/:sessionId/:roomId" element={<MonitoringPage />} /> 
         </Route>
       </Routes>
     </Router>

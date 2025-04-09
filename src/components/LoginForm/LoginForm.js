@@ -53,7 +53,7 @@ const LoginPage = () => {
       } else if (profileResult.role === 'staff') {
         navigate('/staff/dashboard');
       } else if (profileResult.role === 'supervisor') {
-        navigate('/staff/supervisor');
+        navigate('/supervisor/home');
       } else {
         navigate('/not-found');
       }
