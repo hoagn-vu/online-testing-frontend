@@ -27,8 +27,8 @@ const OrganizeExamPage = () => {
 	const [listDisplay, setListDisplay] = useState([]);
 
 	const [typeOptions, setTypeOptions] = useState([
-		{ value: "matrix", label: "Ma trận" },
 		{ value: "auto", label: "Ngẫu nhiên" },
+		{ value: "matrix", label: "Ma trận" },
 		{ value: "exams", label: "Đề thi" },
 	]);
   const [formData, setFormData] = useState({
@@ -117,7 +117,7 @@ const OrganizeExamPage = () => {
 			duration: "",
 			maxScore: 10,
 			totalQuestions: "",
-			organizeExamStatus: "closed",
+			organizeExamStatus: "active",
 		});
 		setShowForm(true);
 	};	
@@ -145,7 +145,7 @@ const OrganizeExamPage = () => {
       cancelButtonText: "Hủy",
     }).then((result) => {
       if (result.isConfirmed) {
-        const newStatus = currentStatus.toLowerCase() === "active" ? "closed" : "active";
+        const newStatus = currentStatus.toLowerCase() === "active" ? "active" : "active";
 
         // Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
         setRows((prevRows) =>
@@ -281,10 +281,10 @@ const OrganizeExamPage = () => {
 									<i className="fas fa-plus me-2"></i>
 									Thêm mới
 								</button>
-								<button className="btn btn-primary" style={{fontSize: "14px"}} onClick={() => setShowFormCreate(true)}>
+								{/* <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={() => setShowFormCreate(true)}>
 									<i className="fas fa-plus me-2"></i>
 									Thêm mới mới
-								</button>
+								</button> */}
 							</div>
 						</div>
 
