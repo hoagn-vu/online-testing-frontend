@@ -6,7 +6,7 @@ function MyCalendar() {
   const [date, setDate] = useState(new Date());
 
   return (
-    <div style={{ maxWidth: '350px', margin: 'auto', height: '1000px' }}>
+    <div style={{ maxWidth: '350px', margin: 'auto' }}>
       <Calendar
         onChange={setDate}
         value={date}
