@@ -108,7 +108,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
       '& .MuiDrawer-paper': {
         ...openedMixin(theme),
           backgroundColor: '#ffffff',
-          boxShadow: '5px 0px 15px 0px rgba(142, 142, 142, 0.25)',
+          boxShadow: '1px 0px 15px 0px rgba(142, 142, 142, 0.25)',
       },
     } : {
         ...closedMixin(theme),
@@ -313,8 +313,8 @@ export default function Admin2Layout() {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 1,
-          paddingTop: 2,
+          p: 0,
+          paddingTop: 0,
           backgroundColor: "#F8F9FA",
           minHeight: "100vh",
           transition: "margin 0.3s ease, width 0.3s ease",

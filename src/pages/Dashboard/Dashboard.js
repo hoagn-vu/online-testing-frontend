@@ -37,8 +37,8 @@ const Dashboard = () => {
   const dataPoints = [10, 20, 30, 25, 15, 35];
 
   return (
-    <div className="dashboard-page">
-      <div className="justify-between gap-0 w-full card-dash">
+    <div className="dashboard-page p-4">
+      <div className="justify-between gap-4 w-full card-dash">
         <CardDashboard
           title="Người dùng mới"
           value="+200"
