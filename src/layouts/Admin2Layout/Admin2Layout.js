@@ -24,19 +24,28 @@ import { FaChevronDown } from "react-icons/fa";
 import avatar from "../../assets/images/avar.jpg";
 import './Admin2Layout.css'
 import Tooltip from '@mui/material/Tooltip';
-
+import {Collapse} from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../redux/authSlice";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 
 const drawerWidth = 250;
 
 const menuItems = [
   { title: "Trang chủ", icon: <i className="fa-solid fa-chart-column icon-color" aria-hidden="true"></i>, path: "/staff/dashboard", role: ["user", "admin"] },
-  { title: "Quản lý tài khoản", icon: <i className="fa-solid fa-user-gear icon-color"></i>, path: "/staff/accountmanage", role: ["user"] },
+  { 
+    title: "Quản lý người dùng", 
+    icon: <i className="fa-solid fa-user-gear icon-color"></i>, 
+    path: "/staff/accountmanage", 
+    role: ["user"],
+    children: [
+      { title: "Nhóm người dùng", path: "/staff/accountmanage" },
+    ],
+  },
   { title: "Quản lý kỳ thi", icon: <i className="fa-solid fa-calendar-check icon-color"></i>, path: "/staff/organize", role: ["user", "admin"] },
   { title: "Ngân hàng câu hỏi", icon: <i className="fa-solid fa-database icon-color"></i>, path: "/staff/question", role: ["user"] },
   { title: "Quản lý ma trận đề", icon: <i className="fa-solid fa-table icon-color"></i>, path: "/staff/matrix-exam", role: ["user", "admin"] },
-  // { title: "Quản lý đề thi", icon: <i className="fa-solid fa-file-lines icon-color"></i>, path: "/staff/exam", role: ["user"] },
+  { title: "Quản lý đề thi", icon: <i className="fa-solid fa-file-lines icon-color"></i>, path: "/staff/exam", role: ["user"] },
   { title: "Quản lý phòng thi", icon: <i className="fa-solid fa-school icon-color"></i>, path: "/staff/room", role: ["user", "admin"] },
   { title: "Nhật ký sử dụng", icon: <i className="fa-solid fa-book icon-color"></i>, path: "/staff/log", role: ["user"] },
 ];
@@ -74,7 +83,6 @@ const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
 })(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
-  backgroundColor: '#1976d2',
   transition: theme.transitions.create(['width', 'margin'], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -97,10 +105,18 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     boxSizing: 'border-box',
     ...(open ? {
       ...openedMixin(theme),
-      '& .MuiDrawer-paper': openedMixin(theme),
+      '& .MuiDrawer-paper': {
+        ...openedMixin(theme),
+            backgroundColor: '#ffffff',
+    boxShadow: '5px 6px 15px 0px rgba(142, 142, 142, 0.25)',
+      },
     } : {
-      ...closedMixin(theme),
-      '& .MuiDrawer-paper': closedMixin(theme),
+        ...closedMixin(theme),
+        '& .MuiDrawer-paper': {
+          ...closedMixin(theme),
+              backgroundColor: '#ffffff',
+    boxShadow: '5px 6px 15px 0px rgba(142, 142, 142, 0.25)',
+        },
     }),
   })
 );
@@ -110,11 +126,12 @@ export default function Admin2Layout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [open, setOpen] = useState(true);
-
+  
   const handleDrawerOpen = () => setOpen(true);
   const handleDrawerClose = () => setOpen(false);
   const [isOpen, setIsOpen] = useState(false);
-
+  const [openMenus, setOpenMenus] = useState({});
+  
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 960) {
@@ -131,7 +148,7 @@ export default function Admin2Layout() {
   }, []);
 
   const dispatch = useDispatch();
-  
+ 
   const user = useSelector((state) => state.auth.user);
 
   const handleLogout = () => {
@@ -141,22 +158,41 @@ export default function Admin2Layout() {
     navigate("/");
   };
 
+
+  const handleToggle = (title) => {
+    setOpenMenus(prev => ({
+      ...prev,
+      [title]: !prev[title]
+    }));
+  };
+
+  const isMenuOpen = (item) =>
+    openMenus[item.title] !== undefined
+      ? openMenus[item.title]
+      : location.pathname.startsWith(item.path);
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar position="fixed" 
+        sx={{
+          backgroundColor: '#ffffff',
+          boxShadow: '5px 6px 15px 0px rgba(142, 142, 142, 0.25)',
+
+        }}
+        open={open}
+      >
         <Toolbar className='d-flex justify-content-between'>
           <div className='d-flex align-items-center'>
-            <IconButton color="inherit" onClick={handleDrawerOpen} edge="start" sx={{ marginRight: 5, ...(open && { display: 'none' }) }}>
+            <IconButton color="inherit" onClick={handleDrawerOpen} edge="start" sx={{ color: '#1764b0', marginRight: 5, ...(open && { display: 'none' }) }}>
               <MenuIcon />
             </IconButton>
           </div>
 
           <div className="user-info position-relative d-flex align-items-center" onClick={() => setIsOpen(!isOpen)} style={{ cursor: "pointer" }}>
             <img src={avatar} alt="Avatar" className="avatar" />
-            <span className="username text-white ms-2">{user?.username}</span>
-            <FaChevronDown className="text-white ms-2" />
-            
+            <span className="username ms-2">{user?.username}</span>
+            <i className="fa-solid fa-caret-down ms-2" aria-hidden="true" style={{ color: "black" }}></i>
             {isOpen && (
               <ul className="dropdown-menu show position-absolute end-0 mt-2 custom-dropdown">
               <li>
@@ -169,12 +205,9 @@ export default function Admin2Layout() {
                   <i className="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
                 </a>
               </li>
-            </ul>
-            
+            </ul>            
             )}
           </div>
-
-
         </Toolbar>
       </AppBar>
 
@@ -187,38 +220,101 @@ export default function Admin2Layout() {
         </DrawerHeader>
         <Divider />
         <List>
-        {menuItems.map((item) => (
-          <ListItem key={item.title} disablePadding>
-            <Tooltip title={!open ? item.title : ""} placement="right"
-              PopperProps={{
-                modifiers: [
-                  {
-                    name: "offset",
-                    options: {
-                    offset: [0, -13],
-                    },
-                  },
-                ],
-              }}
-            >
-              <ListItemButton 
-                onClick={() => navigate(item.path)} 
-                selected={location.pathname.startsWith(item.path)}
+          {menuItems.map((item) => (
+            <React.Fragment key={item.title}>
+              <ListItem disablePadding
+                sx={{
+                  ...(open === false && {
+                    mb: 1, // cách dọc giữa các icon khi thu gọn
+                  }),
+                }}
               >
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                {open && <ListItemText primary={item.title} />}
-              </ListItemButton>
-            </Tooltip>
-          </ListItem>
-        ))}
-      </List>
+                <Tooltip title={!open ? item.title : ""} placement="right"
+                  PopperProps={{
+                    modifiers: [
+                      {
+                        name: "offset",
+                        options: {
+                          offset: [0, -13], // đây là phần tạo khoảng cách
+                        },
+                      },
+                    ],
+                  }}
+                >
+                  <ListItemButton
+                    onClick={() => {
+                      if (item.children) {
+                        handleToggle(item.title);   // mở submenu
+                      }
+                      navigate(item.path);          // điều hướng
+                    }}
+                    selected={location.pathname.startsWith(item.path)}
+                    sx={{
+                      '&.Mui-selected': {
+                        borderLeft: '5px solid #1976D2',
+                        backgroundColor: '#f0f8ff',
+                      }
+                    }}
+                  >
+                    <ListItemIcon sx={{minWidth:'45px'}}>{item.icon}</ListItemIcon>
+                    {open && <ListItemText primary={item.title} />}
+                    {open && item.children && (isMenuOpen(item) ? <ExpandLess /> : <ExpandMore />)}
+                  </ListItemButton>
+                </Tooltip>
+              </ListItem>
+
+              {item.children && (
+                <Collapse in={isMenuOpen(item)} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    {item.children.map((subItem) => (
+                      <ListItemButton
+                        key={subItem.title}
+                        onClick={() => navigate(subItem.path)}
+                        selected={location.pathname === subItem.path}
+                        sx={{
+                          pl: 0,
+                          ml: '30px',
+                          py: 1,
+                          fontWeight: 'bold',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1,
+                          '&.Mui-selected': {
+                            backgroundColor: 'transparent',
+                            color: '#1976D2',
+                          },
+                          '&:hover': {
+                            backgroundColor: '#f5f5f5', // Hover nhẹ nếu bạn muốn
+                          },
+                        }}
+                      >
+                        {/* Thanh dọc xanh luôn hiển thị */}
+                        <Box
+                          sx={{
+                            width: '4px',
+                            height: '35px',
+                            backgroundColor: location.pathname === subItem.path ? '#1976D2' : '#1976D2', // xanh đậm nếu chọn, nhạt nếu không
+                            borderRadius: '2px',
+                            ml: '8px',
+                            mr: '8px',
+                          }}
+                        />
+                        <ListItemText primary={subItem.title} />
+                      </ListItemButton>
+                    ))}
+                  </List>
+                </Collapse>
+              )}
+            </React.Fragment>
+          ))}
+        </List>
       </Drawer>
       <Box 
         component="main"
         sx={{
           flexGrow: 1,
           p: 2,
-          backgroundColor: "#fdfdfd",
+          backgroundColor: "#F8F9FA",
           minHeight: "100vh",
           transition: "margin 0.3s ease, width 0.3s ease",
           marginLeft: open ? `${drawerWidth - 250}px` : `calc(${theme.spacing(0)} + 1px)`,
