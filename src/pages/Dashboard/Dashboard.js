@@ -33,8 +33,8 @@ ChartJS.register(
 
 const Dashboard = () => {
   // Thông tin linechart gian lận
-  const labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
-  const dataPoints = [10, 20, 30, 25, 15, 35];
+  const labels = ["0-1", "1-2", "2-3", "3-4", "4-5", "5-6", "6-7", "7-8", "8-9", "9-10"];
+  const dataPoints = [10, 20, 30, 65, 113, 155, 96, 35, 25, 15];
 
   return (
     <div className="dashboard-page p-4">
@@ -62,7 +62,7 @@ const Dashboard = () => {
       </div>
       {/* Biểu đồ đường - Gian lận qua từng kỳ thi */}
       <div className="content-1">
-        <div className="line-chart">
+        {/* <div className="line-chart">
           <LineChart
             title="Số lượng thí sinh gian lận"
             labels={labels}
@@ -71,14 +71,14 @@ const Dashboard = () => {
             width="100%"
             height="300px"
           />
-        </div>
+        </div> */}
         <div className="barchart-score">
           <BarChart
             title="Tỷ lệ phân bố điểm"
             labels={labels}
             dataPoints={dataPoints}
-            width="100%"
-            height="300px"
+            width="125%"
+            height="350px"
           />
         </div>
       </div>
