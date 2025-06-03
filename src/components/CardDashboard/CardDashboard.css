@@ -4,9 +4,10 @@
 }
 
 .frame-icon {
-    background-color: rgb(141, 222, 247);
+    background-color: #368DE4;
     padding: 4px 15px 8px 15px;
     border-radius: 8px;
-    color: black;
-    box-shadow: 1px 0 5px rgba(0, 0, 0, 0.2);
+    color: #ffff;
+    /* box-shadow: 1px 0 5px rgba(0, 0, 0, 0.2); */
+    box-shadow: 3px 3px 15px rgba(164, 163, 163, 0.3);
 }

@@ -8,7 +8,7 @@ const CardDashboard = ({ title, value, icon }) => {
   return (
     <div
       className="bg-white items-center justify-between p-3 d-flex card-dash"
-      style={{ boxShadow: "0px 4px 10px rgba(107, 106, 106, 0.1)" }}
+      style={{ boxShadow: "0px 4px 10px rgba(107, 106, 106, 0.1)", margin: '10px' }}
     >
       <div>
         <h6 className=" font-semibold">{title}</h6>

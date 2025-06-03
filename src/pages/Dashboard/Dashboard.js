@@ -38,7 +38,12 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-page">
-      <div className="justify-between gap-6 w-full card-dash">
+      <div className="justify-between gap-0 w-full card-dash">
+        <CardDashboard
+          title="Người dùng mới"
+          value="+200"
+          icon={<FaDollarSign />}
+        />
         <CardDashboard
           title="Người dùng mới"
           value="+200"
