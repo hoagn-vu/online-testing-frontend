@@ -19,11 +19,20 @@
     max-width: 66.66%;
 }
 
+.barchart-score {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 4px 4px 27px 0 rgba(181, 180, 180, 0.25);
+
+}
+
 .calendar {
     flex: 1;
     max-width: 33.33%;
     background-color: #fff;
     border-radius: 15px;
+    box-shadow: 4px 4px 27px 0 rgba(181, 180, 180, 0.25);
+
 }
 
 .react-calendar {

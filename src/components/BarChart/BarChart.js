@@ -74,7 +74,7 @@ const BarChart = ({ title, labels, dataPoints, width, height, isShowLegend=true,
         position: "bottom",
       },
       title: {
-        display: true,
+        display: false,
         text: title,
       },
     },
@@ -100,7 +100,6 @@ const BarChart = ({ title, labels, dataPoints, width, height, isShowLegend=true,
         width: width || "100%",
         height: height || "300px",
         borderRadius: "15px",
-        boxShadow: "4px 4px 27px 0 rgba(181, 180, 180, 0.25)",
       }}
     >
       {chartImage ? <img src={chartImage} alt="Biểu đồ" style={{ width: "100%" }} /> : <Bar ref={chartRef} data={data} options={options} />}

@@ -16,6 +16,7 @@ import MyCalendar from "../../components/Calender/Calender";
 import NotificationDashboard from "../../components/NotificationCard/NotificationCard";
 import { Link, useNavigate  } from "react-router-dom";
 import ApiService from "../../services/apiService";
+import ReactSelect from 'react-select';
 
 ChartJS.register(
   CategoryScale,
@@ -39,7 +40,8 @@ const Dashboard = () => {
   const [pageSize, setPageSize] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  
+  const subjectOptions = [/*...*/];
+
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -61,12 +63,12 @@ const Dashboard = () => {
     <div className="dashboard-page p-4">
       <div className="justify-between gap-4 w-full card-dash">
         <CardDashboard
-          title="Người dùng mới"
+          title="Số lượng thí sinh"
           value="+200"
           icon={<FaDollarSign />}
         />
         <CardDashboard
-          title="Người dùng mới"
+          title="Kỳ thi đã tổ chức"
           value="+200"
           icon={<FaDollarSign />}
         />
@@ -83,20 +85,58 @@ const Dashboard = () => {
       </div>
       {/* Biểu đồ đường - Gian lận qua từng kỳ thi */}
       <div className="content-1">
-        {/* <div className="line-chart">
-          <LineChart
-            title="Số lượng thí sinh gian lận"
-            labels={labels}
-            dataPoints={dataPoints}
-            color="rgba(255, 99, 132, 1)"
-            width="100%"
-            height="300px"
-          />
-        </div> */}
         <div className="left-panel">
           <div className="barchart-score">
+            <div className="d-flex justify-content-between align-items-center">
+              <div>
+                <p className="m-0 ps-3 pt-3 fw-bold">Tỷ lệ phân bố điểm: Giải tích 1</p>
+              </div>
+              <div className="d-flex gap-2 pt-3 pe-3">
+                {/* <select className="form-select form-select-sm" aria-label="Small select example"
+                  style={{width:'170px'}}
+                >
+                  <option selected>Môn học</option>
+                  <option value="1">Giải tích 1</option>
+                  <option value="2">Triết học</option>
+                  <option value="3">Thiết kế giao diện người dùng</option>
+                </select> */}
+                <ReactSelect
+                  className="basic-single"
+                  classNamePrefix="select"
+                  placeholder="Chọn phân môn"
+                  options={subjectOptions}
+                  onChange={(selectedOption) => 
+                    setExamData({...examData, subjectId: selectedOption?.value})
+                  }
+                  styles={{
+                    control: (base) => ({
+                      ...base,
+                      height: "30px",        // Chiều cao tổng thể
+                      fontSize: "13px",
+                      width: "200px",
+                      minHeight: "30px"
+                    }),
+                    valueContainer: (base) => ({
+                      ...base,
+                      height: "30px",
+                      padding: "0 8px",       // Tuỳ chỉnh padding nếu cần
+                      display: "flex",
+                      alignItems: "center",   // Căn giữa nội dung theo chiều dọc
+                    }),
+                    indicatorsContainer: (base) => ({
+                      ...base,
+                      height: "30px",
+                    }),
+                    menu: (base) => ({
+                      ...base,
+                      zIndex: 9999,
+                    }),
+                  }}								
+                />
+              </div>
+            </div>
             <BarChart
-              title="Tỷ lệ phân bố điểm"
+              title="Số lượng thí sinh"
               labels={labels}
               dataPoints={dataPoints}
               width="100%"
