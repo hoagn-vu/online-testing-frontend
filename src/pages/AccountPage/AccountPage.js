@@ -99,7 +99,7 @@ const AccountPage = () => {
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedItems(listAccount.map((item) => item.id));
+      setSelectedItems(listDisplay.map((item) => item.id));
     } else {
       setSelectedItems([]);
     }
@@ -125,21 +125,15 @@ const AccountPage = () => {
     "Quản lý phòng thi",
   ];
 
-  const handleStatusChange = (id, newStatus) => {
-    setRows(
-      rows.map((row) => (row.id === id ? { ...row, status: newStatus } : row))
-    );
-  };
-
   const [formData, setFormData] = useState({
     userCode: "",
     fullName: "",
     dateOfBirth: "",
-    gender: "Nam",
-    userName: "",
-    password: "",
+    gender: "male",
+    username: "",
+    // password: "",
     role: selectedRole,
-    status: "active",
+    accountStatus: "active",
     permissions: [],
   });
 
@@ -149,14 +143,14 @@ const AccountPage = () => {
       userCode: "",
       fullName: "",
       dateOfBirth: "",
-      gender: "Nam",
-      userName: "",
-      password: "",
-      role: selectedRole,
-      status: "active",
+      gender: "male",
+      username: "",
+      // password: "",
+      role: "candidate",
+      accountStatus: "active",
       permissions: [],
     });
-    setTimeout(() => setShowForm(true), 0);
+    setShowForm(true);
   };
 
   const [passwordData, setPasswordData] = useState({
@@ -192,30 +186,20 @@ const AccountPage = () => {
   };
 
   const handleEdit = (account) => {
-    setFormData({
-      userCode: account.userCode,
-      fullName: account.fullName,
-      dateOfBirth: account.dateOfBirth,
-      gender: account.gender,
-      userName: account.userName,
-      password: "", 
-      role: selectedRole,
-      status: account.status,
-      permissions: account.permissions || [],
-    });
-    setEditingAccount(account);
-    setShowForm(true);
-  };
-
-  const handleDeleteClick = (account) => {
-    setAccountToDelete(account);
-    setShowDeleteModal(true);
-  };
-
-  const confirmDelete = () => {
-    console.log(`Đã xóa tài khoản có ID: ${accountToDelete.id}`);
-    setShowDeleteModal(false); 
-  };
+  setEditingAccount(account);
+  setFormData({
+    userCode: account.userCode || "",
+    fullName: account.fullName || "",
+    dateOfBirth: account.dateOfBirth || "",
+    gender: account.gender || "Nam",
+    username: account.username || "",
+    // password: "", // Để rỗng vì lý do bảo mật
+    role: account.role || selectedRole, // Ưu tiên role của account
+    status: account.accountStatus || "active",
+    permissions: account.permissions || [],
+  });
+  setShowForm(true);
+};
 
   const handleDelete = (id) => {
     Swal.fire({
@@ -242,26 +226,36 @@ const AccountPage = () => {
   };
 
   const handleUploadClick = async () => {
-    const { value: file } = await Swal.fire({
-      title: "Chọn file",
-      input: "file",
-      inputAttributes: {
-        accept: "image/*",
-        "aria-label": "Tải ảnh lên",
-      },
-    });
+  const { value: file } = await Swal.fire({
+    title: "Chọn file",
+    input: "file",
+    inputAttributes: {
+      accept: "image/*",
+      "aria-label": "Tải ảnh lên",
+    },
+    showCancelButton: true,
+    confirmButtonText: "Tải lên",
+    cancelButtonText: "Hủy",
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    reverseButtons: true,
+    customClass: {
+      cancelButton: "cancel-btn", // Áp dụng class cho nút Hủy
+    },
+  });
 
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        Swal.fire({
-          title: "Tải lên thành công",
-          icon: "success",
-        });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      Swal.fire({
+        title: "Tải lên thành công",
+        icon: "success",
+        confirmButtonText: "Đồng ý",
+      });
+    };
+    reader.readAsDataURL(file);
+  }
+};
 
   const handleRoleChange = (role) => {
     switch (role) {
@@ -324,7 +318,7 @@ const AccountPage = () => {
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
   return (
-    <div className="sample-page">
+    <div className="sample-page p-4">
       {/* Breadcrumbs */}
       <nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
         <Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
@@ -336,21 +330,19 @@ const AccountPage = () => {
         {/* Thanh tìm kiếm + Nút thêm mới + Upload */}
         <div className="account-actions">
           <div className="search-container">
-          <div className="search-box d-flex align-items-center px-3" style={{ border: '1px solid #ddd', borderRadius: '8px', height: '40px', backgroundColor: '#fff', width: "250px" }}>
-            <i className="fa-solid fa-magnifying-glass me-2" style={{ fontSize: '14px', color: '#999' }}></i>
-            <input
-              type="text"
-              className="search-input border-0 w-100"
-              placeholder="Tìm kiếm..."
-              value={keyword}
-              onChange={handleKeywordChange}
-              style={{ outline: 'none', boxShadow: 'none', fontSize: '14px', color: '#333' }}
-            />
+            <div className="search-box d-flex align-items-center px-3" style={{ border: '1px solid #ddd', borderRadius: '8px', height: '40px', backgroundColor: '#fff', width: "250px" }}>
+              <i className="fa-solid fa-magnifying-glass me-2" style={{ fontSize: '14px', color: '#999' }}></i>
+              <input
+                type="text"
+                className="search-input border-0 w-100"
+                placeholder="Tìm kiếm..."
+                value={keyword}
+                onChange={handleKeywordChange}
+                style={{ outline: 'none', boxShadow: 'none', fontSize: '14px', color: '#333' }}
+              />
+            </div>
           </div>
-
-            {/* <SearchBox></SearchBox> */}
-          </div>
-          <div className="role-selector">
+          <div className="role-selector mb-4">
             <button className="btn btn-primary me-0" style={{fontSize: "14px"}} onClick={handleAddNew}>
               <i className="fas fa-plus me-2"></i>
               Thêm mới
@@ -364,17 +356,11 @@ const AccountPage = () => {
             <button className="upload-btn btn-size align-items-center d-flex" onClick={handleUploadClick}>
               Upload File
             </button>
-            <button className="btn btn-primary btn-size align-items-center d-flex" onClick={() => setShowGroupForm(true)}>
-              Thêm nhóm
-            </button>
-            <button className="btn btn-primary btn-size align-items-center d-flex" >
-              Xóa nhóm
-            </button>
           </div>
         </div>
 
         {/* Tabs để chọn loại tài khoản */}
-        <ul className="nav nav-tabs">
+        <ul className="nav nav-tabs ">
           {Object.keys(listAccount).map((role) => (
             <li className="nav-item" key={role}>
               <a
@@ -400,12 +386,12 @@ const AccountPage = () => {
                     className="form-check-input"
                     type="checkbox"
                     onChange={handleSelectAll}
-                    checked={selectedItems.length === listAccount.length && listAccount.length > 0}
-                  />
+                    checked={listDisplay.length > 0 && listDisplay.every((item) => selectedItems.includes(item.id))}                  />
                 </th>
                 <th scope="col" className="title-row">Mã</th>
                 <th scope="col" className="title-row">Tài khoản</th>
-                <th scope="col" className="title-row">Họ tên</th>
+                <th scope="col" className="title-row">Họ và tên đệm</th>
+                <th scope="col" className="title-row">Tên</th>
                 <th className="text-center">Ngày sinh</th>
                 <th className="text-center">Giới tính</th>
                 <th className="text-center">Nhóm</th>
@@ -429,12 +415,13 @@ const AccountPage = () => {
                     <input
                       className="form-check-input"
                       type="checkbox"
-                      onChange={(e) => handleSelectItem(e, item.questionBankId)}
-                      checked={selectedItems.includes(item.questionBankId)}
+                      onChange={(e) => handleSelectItem(e, item.id)}
+                      checked={selectedItems.includes(item.id)}
                     />
                   </td>
                   <td>{item.userCode}</td>
                   <td>{item.username}</td>
+                  <td>{item.fullName}</td>
                   <td>{item.fullName}</td>
                   <td className="text-center">{item.dateOfBirth}</td>
                   <td className="text-center">{item.gender}</td>
@@ -456,8 +443,8 @@ const AccountPage = () => {
                     </div>
                   </td>
                   <td className="text-center">
-                    <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
-                      <i className="fas fa-edit text-white " onClick={handleEdit}></i>
+                    <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}} onClick={() => handleEdit(item)}>
+                      <i className="fas fa-edit text-white "></i>
                     </button>
                     <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}} onClick={() => handleDelete(item.id)}>
                       <i className="fas fa-trash-alt"></i>
@@ -578,8 +565,8 @@ const AccountPage = () => {
                     "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
                   }}
                 >
-                  <MenuItem value="Nam">Nam</MenuItem>
-                  <MenuItem value="Nữ">Nữ</MenuItem>
+                  <MenuItem value="male">Nam</MenuItem>
+                  <MenuItem value="female">Nữ</MenuItem>
                 </TextField>
               </Grid>
 
@@ -588,9 +575,9 @@ const AccountPage = () => {
                 <TextField
                   fullWidth
                   label="Username"
-                  value={formData.userName}
+                  value={formData.username}
                   onChange={(e) =>
-                    setFormData({ ...formData, userName: e.target.value })
+                    setFormData({ ...formData, username: e.target.value })
                   }
                   sx={{
                     "& .MuiInputBase-input": {
@@ -605,7 +592,7 @@ const AccountPage = () => {
                 <TextField
                   fullWidth
                   label="Password"
-                  type="password"
+                  // type="password"
                   value={formData.password}
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
@@ -621,15 +608,15 @@ const AccountPage = () => {
               </Grid>
 
               {/* Trạng thái và Vai trò */}
-              <Grid item xs={6}>
+              {/* <Grid item xs={6}>
                 <TextField
                   fullWidth
                   select
                   label="Trạng thái"
                   required
-                  value={formData.status}
+                  value={formData.accountStatus}
                   onChange={(e) =>
-                    setFormData({ ...formData, status: e.target.value })
+                    setFormData({ ...formData, accountStatus: e.target.value })
                   }
                   sx={{
                     "& .MuiInputBase-input": {
@@ -642,9 +629,9 @@ const AccountPage = () => {
                   <MenuItem value="active">Active</MenuItem>
                   <MenuItem value="disabled">Disabled</MenuItem>
                 </TextField>
-              </Grid>
+              </Grid> */}
 
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
                   select
@@ -662,10 +649,10 @@ const AccountPage = () => {
                     "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
                   }}
                 >
-                  <MenuItem value="Thí sinh">Thí sinh</MenuItem>
-                  <MenuItem value="Giám thị">Giám thị</MenuItem>
-                  <MenuItem value="Quản trị viên">Quản trị viên</MenuItem>
-                  <MenuItem value="Cán bộ phụ trách kỳ thi">
+                  <MenuItem value="candidate">Thí sinh</MenuItem>
+                  <MenuItem value="supervisor">Giám thị</MenuItem>
+                  <MenuItem value="admin">Quản trị viên</MenuItem>
+                  <MenuItem value="staff">
                     Cán bộ phụ trách kỳ thi
                   </MenuItem>
                 </TextField>
@@ -673,7 +660,7 @@ const AccountPage = () => {
             </Grid>
 
             {/* Phân quyền nếu là Cán bộ phụ trách kỳ thi */}
-            {formData.role === "Cán bộ phụ trách kỳ thi" && (
+            {formData.role === "staff" && (
               <FormControl component="fieldset" sx={{ mt: 2 }}>
                 <label style={{ fontSize: "14px", fontWeight: "bold" }}>
                   Phân quyền:
@@ -717,25 +704,27 @@ const AccountPage = () => {
             )}
 
             {/* Buttons */}
-            <Grid container spacing={2} sx={{ mt: 1 }}>
-              <Grid item xs={6}>
+            <Grid container spacing={2} sx={{ mt: 1, justifyContent:"flex-end" }}>
+              <Grid item xs={3}>
+                <Button
+                  variant="outlined"
+                  color="inherit"
+                  fullWidth
+                  onClick={() => setShowForm(false)}
+                  sx={{ color: '#6c757d', borderColor: '#6c757d' }}
+                >
+                  Hủy
+                </Button>
+              </Grid>
+              <Grid item xs={3}>
                 <Button
                   type="submit"
                   variant="contained"
                   color="primary"
+                  sx={{ backgroundColor: 'rgb(48, 133, 214)' }}
                   fullWidth
                 >
                   {editingAccount ? "Cập nhật" : "Lưu"}
-                </Button>
-              </Grid>
-              <Grid item xs={6}>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  fullWidth
-                  onClick={() => setShowForm(false)}
-                >
-                  Hủy
                 </Button>
               </Grid>
             </Grid>
@@ -747,7 +736,7 @@ const AccountPage = () => {
       {showPasswordForm && (
         <div className="form-overlay">
           <div className="form-container" style={{width: "40%"}}>
-            <h6 className="fw-bold align-items-left">Đổi mật khẩu</h6>
+            <h6 className="fw-bold " style={{ textAlign: "left" }}>Đổi mật khẩu</h6>
             <form onSubmit={handlePasswordSubmit}>
               <label>Chọn vai trò:</label>
               <select
@@ -756,9 +745,9 @@ const AccountPage = () => {
                   setPasswordData({ ...passwordData, role: e.target.value })
                 }
               >
-                <option value="Thí sinh">Thí sinh</option>
-                <option value="Giám thị">Giám thị</option>
-                <option value="Cán bộ phụ trách kỳ thi">
+                <option value="candidate">Thí sinh</option>
+                <option value="supervisor">Giám thị</option>
+                <option value="staff">
                   Cán bộ phụ trách kỳ thi
                 </option>
                 <option value="Quản trị viên">Quản trị viên</option>
@@ -789,11 +778,12 @@ const AccountPage = () => {
                   })
                 }
               />
-              <div className="d-flex mt-2">
-                <button type="submit" style={{width: "100%"}}>Lưu</button>
-                <button type="button" style={{width: "100%"}} onClick={() => setShowPasswordForm(false)}>
+              <div className="d-flex mt-2" style={{ gap: "20px" }}>
+                <button className="cancel-btn" 
+                  style={{width: "100%", border: "1px solid #6c757d",}} onClick={() => setShowPasswordForm(false)}>
                   Hủy
                 </button>
+                <button className="btn btn-primary" style={{width: "100%"}}>Lưu</button>
               </div>
             </form>
           </div>
