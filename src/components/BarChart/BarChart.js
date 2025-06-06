@@ -50,8 +50,8 @@ const BarChart = ({ title, labels, dataPoints, width, height, isShowLegend=true,
       {
         label: title,
         data: dataPoints,
-        backgroundColor: "rgba(54, 162, 235)",
-        borderColor: "rgba(54, 162, 235, 1)",
+        backgroundColor: "#4A88D9",
+        borderColor: "#4A88D9",
         borderWidth: 1,
       },
     ],
@@ -71,10 +71,10 @@ const BarChart = ({ title, labels, dataPoints, width, height, isShowLegend=true,
     plugins: {
       legend: {
         display: isShowLegend,
-        position: "top",
+        position: "bottom",
       },
       title: {
-        display: true,
+        display: false,
         text: title,
       },
     },
@@ -95,12 +95,11 @@ const BarChart = ({ title, labels, dataPoints, width, height, isShowLegend=true,
 
   return (
     <div
-      className="bg-white  p-2"
+      className="bg-white p-3"
       style={{
         width: width || "100%",
         height: height || "300px",
         borderRadius: "15px",
-        boxShadow: "0px 1px 15px rgba(107, 106, 106, 0.1)",
       }}
     >
       {chartImage ? <img src={chartImage} alt="Biểu đồ" style={{ width: "100%" }} /> : <Bar ref={chartRef} data={data} options={options} />}

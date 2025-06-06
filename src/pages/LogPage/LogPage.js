@@ -79,7 +79,7 @@ const LogPage = () => {
       <nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
         <Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
         <span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
-        <span className="breadcrumb-current"> Nhật ký sử dụng</span>
+        <span className="breadcrumb-current">Nhật ký sử dụng</span>
       </nav>
 
       <div className="tbl-shadow p-3">
@@ -94,7 +94,7 @@ const LogPage = () => {
             <option value="Xóa">Xóa</option>
           </select>
 
-            <input type="date" className="search-box" />
+            <input type="date" className="date-log" />
             <button className="add-btn d-flex filter-btn align-items-center">
               <i className="fas fa-filter me-2 mt-1 "></i>
               Lọc
@@ -117,7 +117,15 @@ const LogPage = () => {
                 </tr>
               </thead>
               <tbody style={{ fontSize: "14px" }}>
-                {logs.map((log, index) => (
+                {logs.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" className="text-center fw-semibold text-muted"
+                        style={{ height: "100px", verticalAlign: "middle" }}>
+                      Không có dữ liệu
+                    </td>
+                  </tr>
+                ) : (
+                logs.map((log, index) => (
                   <tr key={log.logId} className="align-middle" >
                     <td className="text-center">{index + 1}</td>
                     <td>{new Date(log.logAt).toLocaleString()}</td>
@@ -133,7 +141,7 @@ const LogPage = () => {
                     <td>{log.fullName}</td>
                     <td>{log.logDetail}</td>
                   </tr>
-                ))}
+                )))}
               </tbody>
             </table>
           </div>

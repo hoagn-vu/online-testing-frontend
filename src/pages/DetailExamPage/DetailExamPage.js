@@ -297,7 +297,7 @@ const DetailExamPage = () => {
 												<ArrowDropDownIcon />
 											</button>
 												<div>
-													<h6 className="d-flex align-items-center">{question.questionText}</h6>
+													<h6 className="d-flex align-items-center">{question.questionText}<span className="ms-1" style={{fontSize: "13px", color: "#70706E"}}>1 điểm</span></h6>
 													{question.tags.slice(1).map((tag, index) => (
 														<p className="m-0 tag-level" key={index}>{tag}</p>
 													))}

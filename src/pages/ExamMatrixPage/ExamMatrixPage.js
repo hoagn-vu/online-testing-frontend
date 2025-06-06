@@ -109,7 +109,7 @@ const ExamMatrixPage = () => {
         text: "Ma trận đề thi đã bị xóa.",
         icon: "success",
       });
-      setRows(rows.filter((row) => row.id !== id));
+      setListExamMatrix(prev => prev.filter(matrix => matrix.id !== id));
       }
     });
   };
@@ -140,7 +140,7 @@ const ExamMatrixPage = () => {
           </div>
 
           <div className='right-header'>
-            <Link className="add-btn btn link-btn d-flex align-items-center" to="/staff/matrix-detail">
+            <Link className="add-btn btn link-btn d-flex align-items-center" to="/staff/matrix-exam/matrix-detail">
               <i className="fas fa-plus me-2"></i>
               Thêm mới
             </Link>
@@ -160,7 +160,15 @@ const ExamMatrixPage = () => {
               </tr>
             </thead>
             <tbody>
-              {listExamMatrix.map((item, index) => (
+            {listExamMatrix.length === 0 ? (
+								<tr>
+									<td colSpan="6" className="text-center fw-semibold text-muted"
+											style={{ height: "100px", verticalAlign: "middle" }}>
+										Không có dữ liệu
+									</td>
+								</tr>
+							) : (
+              listExamMatrix.map((item, index) => (
                 <tr key={item.questionBankId} className="align-middle">
                   <td className="text-center">{index + 1}</td>
                   <td >
@@ -178,12 +186,12 @@ const ExamMatrixPage = () => {
                     <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
                       <i className="fas fa-edit text-white "></i>
                     </button>
-                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
+                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}} onClick={() => handleDelete(item.id)}> 
                       <i className="fas fa-trash-alt"></i>
                     </button>
                   </td>
                 </tr>
-              ))}
+              )))}
             </tbody>
           </table>
         </div>

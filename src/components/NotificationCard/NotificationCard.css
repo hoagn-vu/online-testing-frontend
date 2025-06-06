@@ -1,0 +1,13 @@
+.notification-icon {
+    background-color: #EEEEEE;
+    height: 40px;
+    width: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;    
+    justify-content: center; 
+}
+
+.fs-14 {
+    font-size: 14px;
+}

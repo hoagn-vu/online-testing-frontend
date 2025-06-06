@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useParams, useLocation } from "react-router-dom";
+import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import "./RoomOrganizePage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import ReactSelect  from 'react-select';
 import ApiService from "../../services/apiService";
+import { IdCardIcon } from "@radix-ui/react-icons";
 
 const RoomOrganizePage = () => {
 	const [showForm, setShowForm] = useState(false);
@@ -29,6 +30,13 @@ const RoomOrganizePage = () => {
 	const [roomOptions, setRoomOptions] = useState([]);
 	const [supervisorOptions, setSupervisorOptions] = useState([]);
 	const [candidateGroupOptions, setCandidateGroupOptions] = useState([]);
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (showForm && inputRef.current) {
+			inputRef.current.focus();
+		}
+	}, [showForm]);
 
 	useEffect(() => {
 		const fetchRoomOptions = async () => {
@@ -151,12 +159,9 @@ const RoomOrganizePage = () => {
 		}).then((result) => {
 			if (result.isConfirmed) {
 				console.log("Xóa phòng thi có ID:", id);
-	
-				setRows(prevRows => {
-					const updatedRows = prevRows.filter(row => row.roomId !== id);
-					console.log("Danh sách sau khi xóa:", updatedRows);
-					return updatedRows;
-				});
+				setRoomsOrganize(prev => prev.filter(room => room.roomId !== id));
+
+
 	
 				Swal.fire({
 					title: "Đã xóa!",
@@ -255,32 +260,50 @@ const RoomOrganizePage = () => {
 						<table className="table sample-table tbl-organize-hover table-hover">
 							<thead style={{fontSize: "14px"}}>
 								<tr className="align-middle fw-medium">
-									<th scope="col" className="title-row text-center">STT</th> 
-									<th scope="col" className="title-row">Mã phòng</th>
-									<th scope="col" className="title-row">Phòng</th>
-									<th scope="col" className="title-row">Giám thị</th>
-									<th scope="col" className="title-row">Thí sinh</th>
-									<th scope="col" className="title-row text-center">Trạng thái</th>
+									<th className="title-row text-center">STT</th> 
+									<th className="title-row">Phòng</th>
+									<th className="title-row">Giám thị</th>
+									<th className="text-center">Thí sinh</th>
+									<th className="title-row text-center">Trạng thái</th>
 									<th className="text-center">Thao tác</th>
 								</tr>
 							</thead>
 							<tbody style={{fontSize: "14px"}}>
-								{roomsOrganize.map((item, index) => (
+							{roomsOrganize.length === 0 ? (
+								<tr>
+									<td colSpan="6" className="text-center fw-semibold text-muted"
+											style={{ height: "100px", verticalAlign: "middle" }}>
+										Không có dữ liệu
+									</td>
+								</tr>
+							) : (
+								roomsOrganize.map((item, index) => (
 									<tr key={item.roomInSessionId} className="align-middle">
 										<td className="text-center">{index + 1}</td>
-										<td>{item.roomInSessionId}</td>
-										<td>{item.roomName} - {item.roomLocation}</td>
-										<td>{item.supervisorName}</td>
-										<td>
-											<Link className="text-hover-primary"
-												to={`/staff/organize/${organizeId}/${sessionId}/${item.roomInSessionId}`}
-												style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
-											>
-												Danh sách thí sinh
-											</Link>
+										<td
+											onClick={() => navigate(`/staff/organize/${organizeId}/${sessionId}/${item.roomInSessionId}`, {
+											})}
+											style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+										>
+											{item.roomName} - {item.roomLocation}
+										</td>
+										<td
+											onClick={() => navigate(`/staff/organize/${organizeId}/${sessionId}/${item.roomInSessionId}`, {
+											})}
+											style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+										>
+											{item.supervisorName}
+										</td>
+										<td
+											onClick={() => navigate(`/staff/organize/${organizeId}/${sessionId}/${item.roomInSessionId}`, {
+											})}
+											style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+											className="text-hover-primary text-center"
+										>
+											Danh sách thí sinh
 										</td>
 										<td>
-											<div className="form-check form-switch d-flex justify-content-center">
+											<div className="form-check form-switch d-flex align-items-center justify-content-center">
 												<input
 													className="form-check-input"
 													type="checkbox"
@@ -290,6 +313,9 @@ const RoomOrganizePage = () => {
 														handleToggleStatus(item.roomId, item.roomStatus)
 													}
 												/>
+												<span className={`badge ms-2 mt-1 ${item.roomStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
+													{item.roomStatus === "Active" || "available" ? "Kích hoạt" : "Đóng"}
+												</span>
 											</div>
 										</td>
 										<td className="text-center">
@@ -301,7 +327,7 @@ const RoomOrganizePage = () => {
 											</button>
 										</td>
 									</tr>
-								))}
+								)))}
 							</tbody>
 						</table>
 					</div>
@@ -366,26 +392,20 @@ const RoomOrganizePage = () => {
 								}}
 							/>
 						</Grid>
-							<Grid item xs={6}>
+							<Grid item xs={12}>
 							<ReactSelect
 									fullWidth
 									className="basic-single "
 									classNamePrefix="select"
 									placeholder="Giám thị"
 									name="color"
+									inputRef={inputRef}
 									options={supervisorOptions}
 									styles={{
 										control: (base) => ({
 											...base,
-											width: "275px", // Cố định chiều rộng
-											minWidth: "275px",
-											maxWidth: "250px",
 											height: "48px", // Tăng chiều cao
 											minHeight: "40px",
-										}),
-										menu: (base) => ({
-											...base,
-											width: "250px", // Cố định chiều rộng của dropdown
 										}),
 										valueContainer: (base) => ({
 											...base,
@@ -401,7 +421,7 @@ const RoomOrganizePage = () => {
 									}}
 								/>
 							</Grid>
-							<Grid item xs={6}>
+							{/* <Grid item xs={6}>
 								<ReactSelect
 										fullWidth
 										className="basic-single "
@@ -435,7 +455,7 @@ const RoomOrganizePage = () => {
 											}),
 										}}
 								/>
-							</Grid>
+							</Grid> */}
 						</Grid>		
 						{/* Buttons */}
 						<Grid container spacing={2} sx={{ mt: 2 }}>

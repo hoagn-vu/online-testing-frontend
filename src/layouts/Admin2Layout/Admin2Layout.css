@@ -2,3 +2,11 @@
     color: #1976d2;
     font-size: 18px;
 }
+
+.custom-dropdown {
+    min-width: auto;       /* Cho phép co lại */
+    width: 160px;          /* Chỉnh chiều dài theo ý bạn */
+    padding: 0.25rem 0;    /* Thu gọn padding */
+    transform: translateX(10px); /* đẩy sang phải */
+  }
+  

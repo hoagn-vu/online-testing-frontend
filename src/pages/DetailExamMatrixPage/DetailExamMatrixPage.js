@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, use } from "react";
 import { Link } from "react-router-dom";
 import SelectRe from 'react-select';
 import './DetailExamMatrixPage.css'
-import {Select, Box, Button, Grid, IconButton, Input, TextField, MenuItem, Typography } from "@mui/material";
+import {Select, Box, Button, Grid, IconButton, Input, TextField, MenuItem, Autocomplete } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -15,6 +15,7 @@ import MatrixBoth from "../../components/MatrixBoth/MatrixBoth";
 import MatrixChapter from "../../components/MatrixChapter/MatrixChapter";
 import MatrixLevel from "../../components/MatrixLevel/MatrixLevel";
 import ApiService from "../../services/apiService";
+import Swal from "sweetalert2";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -37,7 +38,12 @@ const DetailExamMatrixPage = () => {
 	const [tagClassification, setTagClassification] = useState([]);
 	const [data, setData] = useState([]);
 	const [matrixName, setMatrixName] = useState("");
-
+	const inputRef = useRef(null);
+	useEffect(() => {
+		if (inputRef.current) {
+			inputRef.current.focus();
+		}
+	}, []);
 	useEffect(() => {
 		const fetchSubjectOptions = async () => {
 			try {
@@ -165,10 +171,42 @@ const DetailExamMatrixPage = () => {
 	);
 
 	const handleSaveMatrix = async () => {
-		if (!matrixName || !subjectChosen || !bankChosen || !data.length) {
-			alert("Vui lòng chọn môn học, ngân hàng câu hỏi và nhập dữ liệu.");
+		if (!matrixName) {
+			Swal.fire({
+				icon: "warning",
+				title: "Thiếu tên ma trận!",
+				text: "Vui lòng nhập tên ma trận đề thi.",
+			});
 			return;
 		}
+		
+		if (!subjectChosen) {
+			Swal.fire({
+				icon: "warning",
+				title: "Chưa chọn môn học!",
+				text: "Vui lòng chọn môn học.",
+			});
+			return;
+		}
+		
+		if (!bankChosen) {
+			Swal.fire({
+				icon: "warning",
+				title: "Chưa chọn ngân hàng câu hỏi!",
+				text: "Vui lòng chọn ngân hàng câu hỏi.",
+			});
+			return;
+		}
+		
+		if (!data.length) {
+			Swal.fire({
+				icon: "warning",
+				title: "Dữ liệu ma trận trống!",
+				text: "Vui lòng nhập dữ liệu cho ma trận đề thi.",
+			});
+			return;
+		}
+		
 	
 		const examMatrixData = {
 			matrixName: matrixName,
@@ -187,7 +225,13 @@ const DetailExamMatrixPage = () => {
 		try {
 			const response = await ApiService.post("/exam-matrices", examMatrixData);
 			console.log("Lưu thành công: ", response.data);
-			alert("Lưu thành công!");
+			Swal.fire({
+				icon: "success",
+				title: "Lưu thành công!",
+				text: "Ma trận đề thi đã được lưu.",
+			});
+			
+			// alert("Lưu thành công!");
 		} catch (error) {
 			console.error("Lỗi khi lưu ma trận đề: ", error);
 			alert("Lưu thất bại!");
@@ -214,18 +258,53 @@ const DetailExamMatrixPage = () => {
 						value={matrixName}
 						onChange={(e) => setMatrixName(e.target.value)}
 						size="small"
+						inputRef={inputRef}
 						label="Tên ma trận đề thi"
 						sx={{
 							"& .MuiOutlinedInput-root": {
 								minHeight: "40px",
 								minWidth: "250px",
+								fontSize: "14px",
 							},
 							"& .MuiInputLabel-root": {
 								fontSize: "14px",
 							},
 						}}
 					/>
-					<SelectRe
+					
+					<Autocomplete
+						className="ms-2"
+						options={subjectOptions} // dạng: [{ label: 'Toán 1', value: 'toan1' }, ...]
+						getOptionLabel={(option) => option.label}
+						onChange={(event, newValue) => setSubjectChosen(newValue?.value)}
+						renderInput={(params) => (
+							<TextField
+								{...params}
+								label="Chọn phân môn"
+								size="small"
+								sx={{
+									width: 250,
+									"& .MuiInputBase-root": {
+										height: "40px",
+									},
+									"& label": {
+										fontSize: "14px",
+									},
+									"& input": {
+										fontSize: "14px",
+									},
+								}}
+							/>
+						)}
+						slotProps={{
+							paper: {
+								sx: {
+									fontSize: "14px", // ✅ Cỡ chữ dropdown
+								},
+							},
+						}}
+					/>
+					{/* <SelectRe
 						className="basic-single ms-2"
 						classNamePrefix="select"
 						placeholder="Chọn phân môn"
@@ -255,8 +334,43 @@ const DetailExamMatrixPage = () => {
 										fontSize: "14px", // Cỡ chữ của placeholder (label)
 								}),
 						}}
+					/> */}
+
+					<Autocomplete
+						className="ms-2"
+						options={bankOptions} 
+						getOptionLabel={(option) => option.label}
+						onChange={(event, newValue) => setBankChosen(newValue?.value)}
+						renderInput={(params) => (
+							<TextField
+								{...params}
+								label="Chọn bộ câu hỏi"
+								size="small"
+								sx={{
+									width: 250,
+									"& .MuiInputBase-root": {
+										height: "40px",
+										fontSize: "14px",
+									},
+									"& label": {
+										fontSize: "14px",
+									},
+									"& input": {
+										fontSize: "14px",
+									},
+								}}
+							/>
+						)}
+						slotProps={{
+							paper: {
+								sx: {
+									fontSize: "14px", // ✅ Cỡ chữ dropdown
+								},
+							},
+						}}
 					/>
-					<SelectRe
+{/* 
+					<SelectRe	
 						className="basic-single ms-2"
 						classNamePrefix="select"
 						placeholder="Chọn bộ câu hỏi"
@@ -286,31 +400,66 @@ const DetailExamMatrixPage = () => {
 										fontSize: "14px", // Cỡ chữ của placeholder (label)
 								}),
 						}}
-					/>
+					/> */}
+
 					<FormControl sx={{ ml: 1, width: 250 }} size="small">
-						<InputLabel id="demo-multiple-checkbox-label">Phân loại</InputLabel>
+					<InputLabel
+							id="demo-multiple-checkbox-label"
+							sx={{ fontSize: "14px" }}
+						>
+							Phân theo
+						</InputLabel>						
 						<Select
 							labelId="demo-multiple-checkbox-label"
 							id="demo-multiple-checkbox"
 							multiple
 							value={personName}
 							onChange={handleChange}
-							input={<OutlinedInput label="Phân theo" />}
+							input={
+								<OutlinedInput
+									label="Phân theo"
+									sx={{
+										"& .MuiInputBase-input": {
+											fontSize: "14px", // Font trong input
+										},
+										"& .MuiInputLabel-root": {
+											fontSize: "14px", // Label hiển thị
+										},
+									}}
+								/>
+							}
 							renderValue={(selected) => selected.join(', ')}
-							MenuProps={MenuProps}
+							MenuProps={{
+								PaperProps: {
+									style: {
+										width: 200, //Chiều rộng dropdown
+									},
+								},
+							}}
+							sx={{
+								width: "205px",
+								height: "40px",
+								fontSize: "14px",
+							}}
 						>
 							{names.map((name) => (
-								<MenuItem key={name} value={name}>
+								<MenuItem key={name} value={name} sx={{ fontSize: "14px", height: "50px" }}>
 									<Checkbox checked={personName.includes(name)} />
-									<ListItemText primary={name} />
+									<ListItemText
+										primary={name}
+										primaryTypographyProps={{ fontSize: "14px" }}
+									/>
 								</MenuItem>
 							))}
 						</Select>
 					</FormControl>
 				</div>
 				<div className="d-flex ms-auto">
-					<button className="add-btn" onClick={handleSaveMatrix}>
-						Lưu
+					<button className="add-btn" onClick={handleSaveMatrix}
+									style={{width: "109px"}}
+					>
+						<i className="fas fa-plus me-2"></i>
+						Thêm mới
 					</button>
 				</div>
 			</div>

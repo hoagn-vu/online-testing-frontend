@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./SubjectPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -20,7 +20,7 @@ const SubjectPage = () => {
 
   const [showForm, setShowForm] = useState(false);
   const [editingSubject, setEditingSubject] = useState(null);
-
+  const navigate = useNavigate();
   const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
     setPage(1);
@@ -102,23 +102,29 @@ const SubjectPage = () => {
     setShowForm(true);
   };
 
-    const handleDelete = (id) => {
+  const handleDelete = (subjectId) => {
+    Swal.fire({
+      title: "Bạn có chắc chắn xóa?",
+      text: "Bạn sẽ không thể hoàn tác hành động này!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Xóa",
+      cancelButtonText: "Hủy",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Xóa phân môn khỏi danh sách
+        setListSubject(prev => prev.filter(subject => subject.id !== subjectId));
+        
         Swal.fire({
-            title: "Bạn có chắc chắn xóa?",
-            text: "Bạn sẽ không thể hoàn tác hành động này!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Xóa",
-            cancelButtonText: "Hủy",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                setRows(rows.filter((row) => row.id !== id));
-                Swal.fire("Đã xóa!", "Phân môn đã bị xóa.", "success");
-            }
+          title: "Đã xóa!",
+          text: "Phân môn đã bị xóa.",
+          icon: "success",
         });
-    };
+      }
+    });
+  };
 
   // useEffect(() => {
   //     if (showForm && inputRef.current) {
@@ -134,7 +140,7 @@ const SubjectPage = () => {
         <Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
         
         <span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
-        <span className="breadcrumb-current"> Ngân hàng câu hỏi</span>
+        <span className="breadcrumb-current">Ngân hàng câu hỏi</span>
       </nav>
 
       <div className="tbl-shadow p-3">
@@ -182,20 +188,27 @@ const SubjectPage = () => {
               ) : listSubject.map((item, index) => (  
                 <tr key={item.id} className="align-middle">
                   <td className="text-center">{index + 1}</td>
-                  <td>
-                    <Link className="text-hover-primary"
-                      to={`/staff/question/${item.id}`} 
-                      style={{ textDecoration: "none", cursor: "pointer", color: "black" }}
-                    >
-                      {item.subjectName}
-                    </Link>
+                  <td
+                    onClick={() => navigate(`/staff/question/${item.id}`, {
+                    })}
+                    style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+                    className="text-hover-primary"
+                  >
+                    {item.subjectName}
                   </td>
-                  <td className="text-center">{item.totalQuestionBanks}</td>
+                  <td
+                    onClick={() => navigate(`/staff/question/${item.id}`, {
+                    })}
+                    style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+                    className="text-center"
+                  >
+                    {item.totalQuestionBanks}
+                  </td>
                   <td className="text-center">
-                    <button className="btn btn-primary btn-sm" onClick={() => preEdit(item)}>
+                    <button className="btn btn-primary btn-sm" style={{ width: "35px", height: "35px" }} onClick={() => preEdit(item)}>
                       <i className="fas fa-edit text-white"></i>
                     </button>
-                    <button className="btn btn-danger btn-sm ms-2">
+                    <button className="btn btn-danger btn-sm ms-2" style={{ width: "35px", height: "35px" }} onClick={() => handleDelete(item.id)}>
                       <i className="fas fa-trash-alt"></i>
                     </button>
                   </td>
@@ -226,10 +239,9 @@ const SubjectPage = () => {
             <Box
                 component="form"
                 sx={{
-                    minWidth: "500px",
-                    minHeight: "200px",
+                    width: "700px",
                     backgroundColor: "white",
-                    p: 2,
+                    p: 3.8,
                     borderRadius: "8px",
                     boxShadow: 3,
                     mx: "auto",
@@ -237,7 +249,7 @@ const SubjectPage = () => {
                 onSubmit={handleSubmit}
             >
                 {/* Add your form content here */}
-                <p className="text-align fw-bold">
+                <p className="fw-bold">
                     {editingSubject ? "Chỉnh sửa phân môn" : "Thêm phân môn"}
                 </p>
 
@@ -283,7 +295,7 @@ const SubjectPage = () => {
                     />
                 </Grid>
 
-                <Grid container spacing={2} sx={{ mt: 2 }}>
+                <Grid container spacing={2} sx={{ mt: 1 }}>
                     <Grid item xs={6}>
                         <Button type="submit" variant="contained" color="primary" fullWidth >
                             {editingSubject ? "Cập nhật" : "Lưu"}

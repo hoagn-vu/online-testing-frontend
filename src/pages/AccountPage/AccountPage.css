@@ -1,31 +1,40 @@
-/* Thanh chọn vai trò */
-.role-tabs {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
+.custom-tabs {
+  border-bottom: 1px solid #dee2e6; /* Xám nhạt */
 }
 
-.role-tab {
-  padding: 8px 15px;
-  border: 1px solid #ccc;
-  background-color: white;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.role-tab.active {
-  background-color: #007bff;
-  color: white;
+.custom-tabs .nav-link {
   border: none;
+  color: black;
+  font-weight: 500;
+  margin-right: 20px;
+}
+
+.custom-tabs .nav-link.active {
+  border-bottom: 2px solid #007bff; /* màu xanh Bootstrap */
+  color: #007bff;
+  font-weight: 600;
+}
+
+.custom-tabs .nav-link:hover {
+  color: #007bff;
+}
+
+/* Tab không được chọn: màu đen */
+.nav-tabs .nav-link {
+  color: black;
+}
+
+/* Tab đang được chọn: màu xanh */
+.nav-tabs .nav-link.active {
+  color: #007bff;
+  font-weight: 600;
 }
 
 /* Đảm bảo bảng tài khoản không tràn ra ngoài */
 .account-table-container {
   width: 100%;
-
 }
 
-/* Định dạng lại bảng để phù hợp với giao diện admin */
 .account-table {
   width: 100%;
   border-collapse: collapse;
@@ -43,14 +52,12 @@
 
 .breadcrumb-link:hover {
   text-decoration: underline;
-  color: #007bff;
+  color: #1976D2;
 }
 
 .breadcrumb-current {
-  background-color: #ececec;
-  padding: 8px 10px 6px 10px;
-  border-radius: 15px;
-  color: #007bff;
+  color: #1976D2;
+  font-weight: 600;
 }
 
 .breadcrumb-between {
@@ -60,7 +67,7 @@
 
 .breadcrumb-between:hover {
   text-decoration: underline;
-  color: #007bff;
+  color: #1976D2;
 }
 
 .account-actions {
@@ -153,7 +160,6 @@
   margin-left: 10px;
 }
 
-/* Điều chỉnh bảng */
 .account-table-container {
   margin-top: 0px;
 }
@@ -164,7 +170,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Màn che mờ */
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -210,17 +216,6 @@
   cursor: pointer;
 }
 
-.form-container button[type="submit"] {
-  background: #007bff;
-  color: white;
-}
-
-.form-container button[type="button"] {
-  background: #dc3545;
-  color: white;
-  margin-left: 10px;
-}
-
 .form-container button:hover {
   opacity: 0.9;
 }
@@ -239,7 +234,6 @@
   cursor: pointer;
 }
 
-/* Xóa */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -258,22 +252,16 @@
   justify-content: space-around;
 }
 
-.confirm-btn {
-  background: red;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
 .cancel-btn {
-  background: gray;
-  color: white;
+  color: #6c757d !important;
+  background: white !important;
   padding: 10px 15px;
-  border: none;
-  cursor: pointer;
+  cursor: pointer !important;
   border-radius: 5px;
+  border-color: #6c757d !important;
+  border: 1px solid #6c757d !important;
+  text-align: center !important;
+  display: inline-block !important;
 }
 
 .btn-size {
@@ -292,4 +280,8 @@
     padding-left: 60px;
     transition: width 0.3s ease-in-out;
   }
+}
+
+.swal2-container {
+  z-index: 99999;
 }

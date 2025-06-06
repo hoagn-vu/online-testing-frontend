@@ -26,24 +26,49 @@ const MatrixLevel = ({ data }) => {
   
 
   // Xử lý thay đổi input (Số lượng chọn, Điểm/câu)
+  // const handleInputChangeLevel = (index, key, value) => {
+  //   const newLevelData = [...levelData];
+  //   newLevelData[index][key] = value;
+  //   setLevelData(newLevelData);
+  // };
   const handleInputChangeLevel = (index, key, value) => {
     const newLevelData = [...levelData];
-    newLevelData[index][key] = value;
+  
+    if (key === "pointsPerQuestion") {
+      const currentTotal = levelData.reduce((sum, item, i) =>
+        i === index ? sum : sum + item.pointsPerQuestion, 0
+      );
+  
+      if (currentTotal + value > maxTotalPointsLevel) {
+        alert("Tổng điểm vượt quá giới hạn đã đặt!");
+        return;
+      }
+  
+      newLevelData[index][key] = value;
+    } else {
+      newLevelData[index][key] = value;
+    }
+  
     setLevelData(newLevelData);
-  };
+  }; 
+
+  const [maxTotalPointsLevel, setMaxTotalPoints] = useState(() =>
+    data?.reduce((sum, item) => sum + item.questionCount * 1, 0).toFixed(1)
+  ); 
 
   return (
     <Box display="flex" gap={2} className="mt-3 w-full" justifyContent="space-between">
       {/* Bảng tổng hợp câu hỏi theo mức độ */}
-      <div className="table-responsive" style={{ flex: "1" }}>
+      <div className="table-responsive" style={{ flex: "1", fontSize: "14px" }}>
         <table className="table w-full border border-gray-300">
           <thead>
             <tr className="bg-gray-200">
               <th className="border p-2">STT</th>
               <th className="border p-2">Mức độ</th>
               <th className="border p-2 text-center">Số lượng chọn / Tổng</th>
-              <th className="border p-2 text-center">Điểm/Câu</th>
+              <th className="border p-2 text-center">Đơn vị</th>
               <th className="border p-2 text-center">Tổng Điểm</th>
+              <th className="border p-2 text-center">Điểm/Câu</th>
             </tr>
           </thead>
           <tbody>
@@ -58,40 +83,58 @@ const MatrixLevel = ({ data }) => {
                     min="0"
                     max={item.totalQuestions}
                     onChange={(e) => handleInputChangeLevel(index, "totalSelected", Number(e.target.value))}
+                    onKeyDown={(e) => {
+                      if ([".", ",", "e"].includes(e.key)) {
+                        e.preventDefault(); // Chặn nhập số thập phân và ký tự không hợp lệ
+                      }
+                    }}
                     className="border p-1 text-center"
-                    style={{ width: "50px" }}
+                    style={{ width: "60px" }}
                   /> / {item.totalQuestions}
                 </td>
+                <td className="text-center">Câu</td>
                 <td className="border p-2 text-center">
                   <input
                     type="number"
-                    value={item.pointsPerQuestion}
+                    value={item.pointsPerQuestion.toFixed(1)}
                     min="0"
                     step="0.1"
                     onChange={(e) => handleInputChangeLevel(index, "pointsPerQuestion", Number(e.target.value))}
                     className="border p-1 text-center"
-                    style={{ width: "50px" }}
+                    style={{ width: "60px" }}
                   />
                 </td>
                 <td className="border p-2 text-center">
-                  {(item.totalSelected * item.pointsPerQuestion).toFixed(2)}
+                  {(item.pointsPerQuestion / item.totalSelected).toFixed(2)}
                 </td>
               </tr>
             ))}
             <tr className="bg-gray-300 font-semibold">
               <td className="border p-2 text-center" colSpan="2">Tổng</td>
               <td className="border p-2 text-center">{levelData.reduce((sum, item) => sum + item.totalSelected, 0)}</td>
-              <td className="border p-2 text-center">-</td>
+              <td className="border p-2 text-center">Câu</td>
               <td className="border p-2 text-center">
-                {levelData.reduce((sum, item) => sum + item.totalSelected * item.pointsPerQuestion, 0).toFixed(2)}
-              </td>
+                  <input
+                    type="number"
+                    value={maxTotalPointsLevel}
+                    min="0"
+                    step="0.1"
+                    onChange={(e) => setMaxTotalPoints(Number(e.target.value))}
+                    className="border p-1 text-center"
+                    style={{ width: "60px" }}
+                  />
+                </td>
+              {/* <td className="border p-2 text-center">
+                {levelData.reduce((sum, item) => sum + item.pointsPerQuestion, 0).toFixed(2)}
+              </td> */}
+              <td className="border p-2 text-center">-</td>
             </tr>
           </tbody>
         </table>
       </div>
 
       {/* Bảng thống kê theo mức độ */}
-      <Paper sx={{ padding: 2, height: "100%", width: "250px" }}>
+      <Paper sx={{ padding: 2, height: "100%", width: "250px", fontSize: "14px"  }}>
         <h5 className="justify-content-center d-flex">Thống kê theo mức độ</h5>
         <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #ddd" }}>
           <thead>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import './ExamManagementPage.css'
 import { Box, Button, Grid, IconButton, TextField, Pagination, MenuItem, Select} from "@mui/material";
 import Paper from "@mui/material/Paper";
@@ -20,7 +20,7 @@ const ExamManagementPage = () => {
 	const [totalCount, setTotalCount] = useState(0);
 	const [subjectOptions, setSubjectOptions] = useState([]);
 	const [questionBankOptions, setQuestionBankOptions] = useState([]);
-
+	const navigate = useNavigate();
 	const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
     setPage(1);
@@ -185,7 +185,7 @@ const ExamManagementPage = () => {
 				<Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
 				
 				<span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
-				<span className="breadcrumb-current"> Quản lý đề thi</span>
+				<span className="breadcrumb-current">Quản lý đề thi</span>
 			</nav>
 
 
@@ -225,30 +225,57 @@ const ExamManagementPage = () => {
 							</tr>
 						</thead>
 						<tbody>
-							{listExam.map((item, index) => (
+						{listExam.length === 0 ? (
+								<tr>
+									<td colSpan="6" className="text-center fw-semibold text-muted"
+											style={{ height: "100px", verticalAlign: "middle" }}>
+										Không có dữ liệu
+									</td>
+								</tr>
+							) : (
+							listExam.map((item, index) => (
 								<tr key={item.id} className="align-middle">
 									<td className=" text-center">{index +1} </td>
-									<td >
-										<Link className="text-hover-primary"
-											to={`/staff/`} 
-											style={{ textDecoration: "none", cursor: "pointer", color: "black" }}
-										>
-											{item.examCode}
-										</Link>
+									<td
+										onClick={() => navigate(`/exam/${item.id}`, {
+										})}
+										style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+										className="text-hover-primary"
+									>
+										{item.examCode}
 									</td>
-									<td className=" text-hover-primary">{item.examName}</td>
-									<td>{item.subjectName}</td>
-									<td>{item.questionBankName}</td>
+									<td
+										onClick={() => navigate(`/exam/${item.id}`, {
+										})}
+										style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+										className="text-hover-primary"
+									>
+										{item.examName}
+									</td>
+									<td
+										onClick={() => navigate(`/exam/${item.id}`, {
+										})}
+										style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+									>
+										{item.subjectName}
+									</td>
+									<td
+										onClick={() => navigate(`/exam/${item.id}`, {
+										})}
+										style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+									>
+										{item.questionBankName}
+									</td>
 									<td className="text-center">
-					<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
-						<i className="fas fa-edit text-white "></i>
-					</button>
-					<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
-						<i className="fas fa-trash-alt"></i>
-					</button>
-					</td>
+										<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
+											<i className="fas fa-edit text-white "></i>
+										</button>
+										<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
+											<i className="fas fa-trash-alt"></i>
+										</button>
+									</td>
 								</tr>
-							))}
+							)))}
 						</tbody>
 					</table>
 				</div>
@@ -273,16 +300,16 @@ const ExamManagementPage = () => {
 						<Box
 							component="form"
 							sx={{
-								width: "600px",
+								width: "700px",
 								backgroundColor: "white",
-								p: 2,
+								p: 3.8,
 								borderRadius: "8px",
 								boxShadow: 3,
 								mx: "auto",
 							}}
 							onSubmit={handleSubmit}
 						>
-							<p className="text-align fw-bold">
+							<p className="fw-bold" style={{fontSize: "18px"}}>
 								{editingAccount ? "Chỉnh sửa thông tin đề thi" : "Tạo đề thi"}
 							</p>
 	
@@ -342,7 +369,7 @@ const ExamManagementPage = () => {
 										}}
 									/>
 								</Grid>
-								<Grid item xs={6}>
+								<Grid item xs={12}>
 									<ReactSelect
 										fullWidth
 										className="basic-single "
@@ -358,15 +385,7 @@ const ExamManagementPage = () => {
 										styles={{
 											control: (base) => ({
 												...base,
-												width: "275px", // Cố định chiều rộng
-												minWidth: "275px",
-												maxWidth: "250px",
 												height: "48px", // Tăng chiều cao
-												minHeight: "40px",
-											}),
-											menu: (base) => ({
-												...base,
-												width: "250px", // Cố định chiều rộng của dropdown
 											}),
 											valueContainer: (base) => ({
 												...base,
@@ -382,7 +401,7 @@ const ExamManagementPage = () => {
 										}}
 									/>
 								</Grid>
-								<Grid item xs={6}>
+								<Grid item xs={12}>
 									<ReactSelect
 										fullWidth
 										className="basic-single "
@@ -394,15 +413,7 @@ const ExamManagementPage = () => {
 										styles={{
 											control: (base) => ({
 												...base,
-												width: "275px", // Cố định chiều rộng
-												minWidth: "275px",
-												maxWidth: "250px",
 												height: "48px", // Tăng chiều cao
-												minHeight: "40px",
-											}),
-											menu: (base) => ({
-												...base,
-												width: "250px", // Cố định chiều rộng của dropdown
 											}),
 											valueContainer: (base) => ({
 												...base,
@@ -420,7 +431,7 @@ const ExamManagementPage = () => {
 								</Grid>
 							</Grid>		
 							{/* Buttons */}
-							<Grid container spacing={2} sx={{ mt: 2 }}>
+							<Grid container spacing={2} sx={{ mt: 1 }}>
 								<Grid item xs={6}>
 									<Button
 										type="submit"

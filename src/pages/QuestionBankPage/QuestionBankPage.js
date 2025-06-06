@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import './QuestionBankPage.css'
 import { Box, Button, Grid, IconButton, TextField, Pagination } from "@mui/material";
 import Paper from "@mui/material/Paper";
@@ -21,7 +21,7 @@ const QuestionBankPage = () => {
   const [pageSize, setPageSize] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
-
+  const navigate = useNavigate();
   const [showForm, setShowForm] = useState(false);
   const [editingBank, setEditingBank] = useState(null);
 
@@ -110,30 +110,29 @@ const QuestionBankPage = () => {
   };
 
 
-    const handleDelete = (id) => {
+  const handleDelete = (questionBankId) => {
+    Swal.fire({
+      title: "Bạn có chắc chắn xóa?",
+      text: "Bạn sẽ không thể hoàn tác hành động này!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Xóa",
+      cancelButtonText: "Hủy",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Xóa ngân hàng câu hỏi khỏi danh sách
+        setListQuestionBank(prev => prev.filter(bank => bank.questionBankId !== questionBankId));
+                
         Swal.fire({
-        title: "Bạn có chắc chắn xóa?",
-        text: "Bạn sẽ không thể hoàn tác hành động này!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Xóa",
-        cancelButtonText: "Hủy",
-        }).then((result) => {
-        if (result.isConfirmed) {
-            // Xóa tài khoản ở đây (ví dụ: gọi API hoặc cập nhật state)
-            console.log("Xóa ngân hàng câu hỏi có ID:", id);
-
-            Swal.fire({
-            title: "Đã xóa!",
-            text: "Ngân hàng câu hỏi đã bị xóa.",
-            icon: "success",
-            });
-            setRows(rows.filter((row) => row.id !== id));
-        }
+          title: "Đã xóa!",
+          text: "Ngân hàng câu hỏi đã bị xóa.",
+          icon: "success",
         });
-    };
+      }
+    });
+  };
     return (
       <div className="question-bank-page">
       {/* Breadcrumb */}
@@ -179,29 +178,53 @@ const QuestionBankPage = () => {
               </tr>
             </thead>
             <tbody>
-              {listQuestionBank.map((item, index) => (
+            {listQuestionBank.length === 0 ? (
+								<tr>
+									<td colSpan="4" className="text-center fw-semibold text-muted"
+											style={{ height: "100px", verticalAlign: "middle" }}>
+										Không có dữ liệu
+									</td>
+								</tr>
+							) : (
+              listQuestionBank.map((item, index) => (
                 <tr key={item.questionBankId} className="align-middle">
                   <td className="text-center">{index+1}</td>
-                  <td >
-                    <Link className="text-hover-primary"
-                      to={`/staff/question/${subjectId}/${item.questionBankId}`} 
-                      state={{questionBankName: item.questionBankName}}
-                      style={{ textDecoration: "none", cursor: "pointer", color:"black" }}
-                    >
-                      {item.questionBankName}
-                    </Link>
+                  <td
+                    onClick={() => {
+                      navigate(`/staff/question/${subjectId}/${item.questionBankId}`, {
+                        state: {
+                          questionBankName: item.questionBankName,
+                        },
+                      });
+                    }}
+                    style={{ cursor: "pointer", color: "black" }}
+                    className="text-hover-primary"
+                  >
+                    {item.questionBankName}
                   </td>
-                  <td className="text-center">{item.totalQuestions}</td>
+                  <td
+                    onClick={() => {
+                      navigate(`/staff/question/${subjectId}/${item.questionBankId}`, {
+                        state: {
+                          questionBankName: item.questionBankName,
+                        },
+                      });
+                    }}
+                    style={{ cursor: "pointer", color: "black" }}
+                    className="text-center"
+                  >
+                    {item.totalQuestions}
+                  </td>
                   <td className="text-center">
                     <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}} onClick={() => handlePreEdit(item)}>
                       <i className="fas fa-edit text-white "></i>
                     </button>
-                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
+                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}} onClick={() => handleDelete(item.questionBankId)}>
                       <i className="fas fa-trash-alt"></i>
                     </button>
                   </td>
                 </tr>
-              ))}
+              )))}
             </tbody>
           </table>
         </div>
@@ -225,17 +248,16 @@ const QuestionBankPage = () => {
                 <Box
                     component="form"
                     sx={{
-                        minWidth: "500px",
-                        minHeight: "200px",
+                        minWidth: "700px",
                         backgroundColor: "white",
-                        p: 2,
+                        p: 3.8,
                         borderRadius: "8px",
                         boxShadow: 3,
                         mx: "auto",
                     }}
                     onSubmit={handleSubmit}
                 >
-                    <p className="text-align fw-bold">
+                    <p className="fw-bold">
                     {editingBank ? "Chỉnh sửa bộ câu hỏi" : "Thêm bộ câu hỏi"}
                     </p>
 
@@ -260,7 +282,7 @@ const QuestionBankPage = () => {
                     </Grid>
 
                     {/* Buttons */}
-                    <Grid container spacing={2} sx={{ mt: 2 }}>
+                    <Grid container spacing={2} sx={{ mt: 1}}>
                     <Grid item xs={6}>
                         <Button
                         type="submit"

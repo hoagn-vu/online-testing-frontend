@@ -91,23 +91,23 @@ const ListQuestionPage = () => {
         document.getElementById("uploadModal").style.display = "block";
 
         try {
-            const response = await ApiService.post(`/file/upload-file-question`, formData, {
-                params: { subjectId, questionBankId },
-                headers: { "Content-Type": "multipart/form-data" },
-                onUploadProgress: (progressEvent) => {
-                    if (progressEvent.total) {
-                        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+					const response = await ApiService.post(`/file/upload-file-question`, formData, {
+						params: { subjectId, questionBankId },
+						headers: { "Content-Type": "multipart/form-data" },
+						onUploadProgress: (progressEvent) => {
+							if (progressEvent.total) {
+								const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
 
-                        setUploadProgress((prevProgress) => {
-                            // Tăng từ từ, nhưng không nhảy đột ngột
-                            if (percentCompleted > prevProgress) {
-                                return percentCompleted < 99 ? percentCompleted : 99;
-                            }
-                            return prevProgress;
-                        });
-                    }
-                },
-            });
+								setUploadProgress((prevProgress) => {
+									// Tăng từ từ, nhưng không nhảy đột ngột
+									if (percentCompleted > prevProgress) {
+											return percentCompleted < 99 ? percentCompleted : 99;
+									}
+									return prevProgress;
+								});
+							}
+							},
+					});
 
             setUploadProgress(100); // Khi hoàn thành, đặt 100%
 
@@ -119,9 +119,9 @@ const ListQuestionPage = () => {
             fetchData();
         } catch (error) {
             Swal.fire({
-                title: "Lỗi",
-                text: error.message,
-                icon: "error",
+							title: "Lỗi",
+							text: error.message,
+							icon: "error",
             });
         }
 
@@ -276,6 +276,7 @@ const ListQuestionPage = () => {
 		}).then((result) => {
 			if (result.isConfirmed) {
 				console.log("Xóa tài khoản có ID:", id);
+				setQuestions(prev => prev.filter(question => question.questionId !== id));
 				Swal.fire({
 				title: "Đã xóa!",
 				text: "Câu hỏi đã bị xóa.",
@@ -376,7 +377,18 @@ const ListQuestionPage = () => {
 							</ul>
 					</div>
 			))} */}
-			{Object.entries(groupedQuestions).map(([chapter, levels]) => (
+			{Object.keys(groupedQuestions).length === 0 ? (
+				<div
+				className="d-flex align-items-center justify-content-center"
+				style={{ minHeight: "350px" }} // Hoặc bạn có thể dùng height: "60vh"
+			>
+				<div className="text-center p-4 rounded shadow-sm bg-light text-muted" style={{ width: "400px"}}>
+					<i className="fa-solid fa-circle-info fa-2x mb-2"></i>
+					<h5>Không có dữ liệu</h5>
+				</div>
+			</div>
+			) : (
+			Object.entries(groupedQuestions).map(([chapter, levels]) => (
 				<div key={chapter}>
 					<h4 className="mt-4 mb-3">{chapter}</h4>
 					{Object.entries(levels).map(([level, questions]) => (
@@ -408,7 +420,7 @@ const ListQuestionPage = () => {
 														<button className="btn btn-primary me-2" onClick={() => preEditQuestion(question)}>
 																Edit
 														</button>
-														<button className="btn btn-danger" onClick={() => handleDelete()}>
+														<button className="btn btn-danger" onClick={() => handleDelete(question.questionId)}>
 																Delete
 														</button>
 												</div>
@@ -428,7 +440,7 @@ const ListQuestionPage = () => {
 						</div>
 					))}
 				</div>
-			))}
+			)))}
 
 		{/* Modal Bootstrap thuần */}
 		<div className="modal fade" id="questionModal" tabIndex="-1" aria-hidden="true">
@@ -441,7 +453,7 @@ const ListQuestionPage = () => {
 					<div className="modal-body">
 						<div className="d-flex" style={{ display: "flex", width: "100%", gap: "10px" }}>
 							<div style={{ flex: 1 }}>
-								<p className="mb-0">Chọn chuyên đề kiến thức:</p>
+								<p className="mb-1">Chọn chuyên đề kiến thức:</p>
 								<CreatableSelect
 									isClearable
 									options={allChapters}
@@ -457,7 +469,7 @@ const ListQuestionPage = () => {
 							</div>
 
 							<div style={{ flex: 1 }}>
-								<p className="mb-0">Mức độ:</p>
+								<p className="mb-1">Mức độ:</p>
 								<CreatableSelect
 									isClearable
 									options={allLevels}
@@ -474,7 +486,7 @@ const ListQuestionPage = () => {
 
 						</div>
 							<div>
-								<p className="mb-0 mt-2"> <span style={{ color: "red" }}>*</span> Câu hỏi:</p>
+								<p className="mb-1 mt-2"> <span style={{ color: "red" }}>*</span> Câu hỏi:</p>
 								<textarea
 									type="text"
 									className="form-control mb-2"

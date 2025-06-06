@@ -12,20 +12,37 @@ import ApiService from "../../services/apiService";
 
 const RoomManagementPage = () => {
   const [listRoom, setListRoom] = useState([]);
+
+  const [keyword, setKeyword] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [isLoading, setIsLoading] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+
   const [rows, setRows] = useState([]);
 
+  const handleKeywordChange = (e) => {
+    setKeyword(e.target.value);
+    setPage(1);
+  };
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await ApiService.get("/rooms", {
+        params: { keyword, page, pageSize },
+      });
+      setListRoom(response.data.rooms);
+      setTotalCount(response.data.total);
+    } catch (error) {
+      console.error("Failed to fetch data: ", error);
+    }
+    setIsLoading(false);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await ApiService.get("/rooms");
-        setListRoom(response.data.rooms);
-        setRows(response.data.rooms);
-      } catch (error) {
-        console.error("Lỗi lấy dữ liệu: ", error);
-      }
-    };
     fetchData();
-  }, []);
+  }, [keyword, page, pageSize]);
 
   const [selectedItems, setSelectedItems] = useState([]);
 
@@ -120,14 +137,14 @@ const RoomManagementPage = () => {
       cancelButtonText: "Hủy",
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log("Xóa tài khoản có ID:", id);
+        console.log("Xóa phòng thi có ID:", id);
 
         Swal.fire({
           title: "Đã xóa!",
-          text: "Tài khoản đã bị xóa.",
+          text: "Phòng thi đã bị xóa.",
           icon: "success",
         });
-        setRows(rows.filter((row) => row.id !== id));
+        setListRoom(prev => prev.filter(room => room.id !== id));
       }
     });
   };
@@ -167,7 +184,7 @@ const RoomManagementPage = () => {
       <nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
         <Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
         <span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
-        <span className="breadcrumb-current"> Quản lý phòng thi</span>
+        <span className="breadcrumb-current">Quản lý phòng thi</span>
       </nav>
 
       <div className="tbl-shadow p-3">
@@ -179,8 +196,8 @@ const RoomManagementPage = () => {
                 type="text"
                 className="search-input w-100"
                 placeholder="Tìm kiếm..."
-                // value={searchTerm}
-                // onChange={handleChangeSearch}
+                value={keyword}
+                onChange={handleKeywordChange}
               />
             </div>
           </div>
@@ -206,14 +223,22 @@ const RoomManagementPage = () => {
               </tr>
             </thead>
             <tbody>
-              {listRoom.map((item, index) => (
+            {listRoom.length === 0 ? (
+								<tr>
+									<td colSpan="6" className="text-center fw-semibold text-muted"
+											style={{ height: "100px", verticalAlign: "middle" }}>
+										Không có dữ liệu
+									</td>
+								</tr>
+							) : (
+              listRoom.map((item, index) => (
                 <tr key={item.id} className="align-middle">
                   <td className=" text-center" style={{ width: "50px" }}>{index + 1}</td>
                   <td>{item.roomName}</td>
                   <td>{item.roomLocation}</td>
                   <td className="text-center">{item.roomCapacity}</td>
                   <td>
-                    <div className="form-check form-switch d-flex justify-content-center">
+                    <div className="form-check form-switch d-flex align-items-center justify-content-center">
                       <input
                         className="form-check-input"
                         type="checkbox"
@@ -223,24 +248,36 @@ const RoomManagementPage = () => {
                           handleToggleStatus(item.id, item.roomStatus)
                         }
                       />
+                      <span className={`badge ms-2 mt-1 ${item.roomStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
+                        {item.roomStatus === "Active" || "available" ? "Hoạt động" : "Không hoạt động"}
+                      </span>
                     </div>
                   </td>
                   <td className="text-center">
                     <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
                       <i className="fas fa-edit text-white "></i>
                     </button>
-                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
+                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}} onClick={() => handleDelete(item.id)}>
                       <i className="fas fa-trash-alt"></i>
                     </button>
                   </td>
                 </tr>
-              ))}
+              )))}
             </tbody>
           </table>
         </div>
 
         <div className="sample-pagination d-flex justify-content-end align-items-center">
-            <Pagination count={10} color="primary" shape="rounded"/>        
+            {/* <Pagination count={10} color="primary" shape="rounded"/>         */}
+            { totalCount > 0 && (
+              <Pagination
+                count={Math.ceil(totalCount / pageSize)}
+                shape="rounded"
+                page={page}
+                onChange={(e, value) => setPage(value)}
+                color="primary"
+              />
+            )}
         </div>
       </div>
 
@@ -250,21 +287,21 @@ const RoomManagementPage = () => {
           <Box
             component="form"
             sx={{
-              width: "600px",
+              width: "750px",
               backgroundColor: "white",
-              p: 2,
+              p: 3.8,
               borderRadius: "8px",
               boxShadow: 3,
               mx: "auto",
             }}
             onSubmit={handleSubmit}
           >
-            <p className="text-align fw-bold">
-              {editingAccount ? "Chỉnh sửa tài khoản" : "Thêm tài khoản mới"}
+            <p className="fw-bold mb-3" style={{fontSize: "18px"}}>
+              {editingAccount ? "Chỉnh sửa phòng thi" : "Thêm phòng thi"}
             </p>
 
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
                   label="Tên phòng"
@@ -283,7 +320,7 @@ const RoomManagementPage = () => {
                   }}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
                   label="Địa điểm"
@@ -306,6 +343,7 @@ const RoomManagementPage = () => {
                 <TextField
                   fullWidth
                   label="Số lượng"
+                  type="number"
                   value={formData.roomCapacity}
                   onChange={(e) =>
                     setFormData({ ...formData, dob: e.target.value })
@@ -346,7 +384,7 @@ const RoomManagementPage = () => {
 
 
             {/* Buttons */}
-            <Grid container spacing={2} sx={{ mt: 2 }}>
+            <Grid container spacing={2} sx={{ mt: 1 }}>
               <Grid item xs={6}>
                 <Button
                   type="submit"

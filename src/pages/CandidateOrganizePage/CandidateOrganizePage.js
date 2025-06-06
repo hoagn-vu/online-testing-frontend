@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import ReactSelect  from 'react-select';
 import ApiService from "../../services/apiService";
+import { IdCard } from "lucide-react";
 
 const CandidateOrganizePage = () => {
   const [showForm, setShowForm] = useState(false);
@@ -98,17 +99,12 @@ const CandidateOrganizePage = () => {
 				cancelButtonText: "Hủy",
 			}).then((result) => {
 				if (result.isConfirmed) {
-					console.log("Xóa thí thi có ID:", id);
-
-					setRows(prevRows => {
-						const updatedRows = prevRows.filter(row => row.candidateId !== id);
-						console.log("Danh sách sau khi xóa:", updatedRows);
-						return updatedRows;
-					});
+					console.log("Xóa thí sinh có ID:", id);
+					setListCandidate(prev => prev.filter(candidate => candidate.candidateId !== id));
 
 					Swal.fire({
 						title: "Đã xóa!",
-						text: "Thí thi đã bị xóa.",
+						text: "Thí sinh đã bị xóa.",
 						icon: "success",
 					});
 				}
@@ -236,7 +232,7 @@ const CandidateOrganizePage = () => {
 						}}
 						onSubmit={handleSubmit}
 					>
-						<p className="text-align fw-bold">Thêm thí sinh vào phòng thi</p>
+						<p className="fw-bold">Thêm thí sinh vào phòng thi</p>
 						<Grid container>	
 							<Grid item xs={12}>									
 								<TextField
@@ -244,6 +240,7 @@ const CandidateOrganizePage = () => {
 									label="Nhập mã sinh viên"
 									placeholder="Nhập mã sinh viên"
 									multiline
+									inputRef={inputRef}
 									maxRows={10}
 									sx={{
 										width: "100%",

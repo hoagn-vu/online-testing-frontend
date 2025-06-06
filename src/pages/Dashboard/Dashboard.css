@@ -3,21 +3,46 @@
     box-sizing: border-box;
     overflow-y: auto;
     background-color: #F8F9FA;
-    height: 100%;
 }
 
 .content-1 {
     display: flex;
     justify-content: space-between; /* Hoặc center nếu muốn */
-    align-items: center; /* Căn giữa theo chiều dọc */
+    align-items: flex-start; /* Căn giữa theo chiều dọc */
     gap: 20px; /* Khoảng cách giữa 2 biểu đồ */
     width: 100%;
     margin-top: 20px;
 }
 
-.content-1 > div {
-    flex: 1; /* Chia đều không gian */
-    max-width: 50%; /* Giữ mỗi biểu đồ trong phạm vi 50% */
+.left-panel {
+    flex: 2;
+    max-width: 66.66%;
+}
+
+.barchart-score {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 4px 4px 27px 0 rgba(181, 180, 180, 0.25);
+
+}
+
+.calendar {
+    flex: 1;
+    max-width: 33.33%;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 4px 4px 27px 0 rgba(181, 180, 180, 0.25);
+
+}
+
+.react-calendar {
+  border: none !important;
+  box-shadow: none;
+}
+
+.react-calendar__month-view__weekdays__weekday abbr {
+  text-decoration: none !important;
+  border-bottom: none !important;
 }
 
 .card-dash {
@@ -31,6 +56,20 @@
 
 .line-chart {
     border-radius: 15px;
+}
+
+.all-btn {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 4px 4px 27px 0 rgba(181, 180, 180, 0.25);
+
+}
+
+.organize-dash{
+    border-radius: 15px;
+    background-color: #fff;
+    box-shadow: 4px 4px 27px 0 rgba(181, 180, 180, 0.25);
+;
 }
 
 @media (max-width: 760px) {
