@@ -59,10 +59,16 @@
 }
 
 .all-btn {
-    background-color: #fff;
+    /* background-color: #fff;
     border-radius: 8px;
-    box-shadow: 4px 4px 27px 0 rgba(181, 180, 180, 0.25);
+    box-shadow: 4px 4px 27px 0 rgba(181, 180, 180, 0.25); */
+  cursor: pointer !important;
+  transition: background-color 0.3s !important;
+}
 
+.all-btn:hover {
+  color: #545454 !important;
+  border-bottom: 2px solid #606060 !important;
 }
 
 .organize-dash{

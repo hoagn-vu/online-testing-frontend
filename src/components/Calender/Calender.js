@@ -10,7 +10,6 @@ function MyCalendar() {
       <Calendar
         onChange={setDate}
         value={date}
-        locale="vi-VN"
       />
       {/* <p>Ngày bạn chọn: {date.toLocaleDateString('vi-VN')}</p> */}
     </div>
