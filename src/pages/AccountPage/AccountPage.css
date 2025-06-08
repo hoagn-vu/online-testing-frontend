@@ -264,6 +264,22 @@
   display: inline-block !important;
 }
 
+.cancel-btn:hover {
+  background-color: #f6f6f6 !important; 
+  transition: all 0.3s ease !important;
+  box-shadow: 1.5px 3px 5px 0px rgba(100, 100, 100, 0.25) !important;
+}
+
+.save-btn-hover {
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+
+}
+
+.save-btn-hover:hover {
+  background-color: #2b78c1 !important;
+  box-shadow: 1.5px 3px 5px 0px rgba(32, 32, 32, 0.25) !important; 
+}
+
 .btn-size {
   font-size: 14px;
 }

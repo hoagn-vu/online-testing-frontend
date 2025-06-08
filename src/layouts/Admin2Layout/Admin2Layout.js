@@ -315,6 +315,7 @@ export default function Admin2Layout() {
           flexGrow: 1,
           p: 0,
           paddingTop: 0,
+          // backgroundColor: "#F8F9FA",
           backgroundColor: "#F8F9FA",
           minHeight: "100vh",
           transition: "margin 0.3s ease, width 0.3s ease",

@@ -241,6 +241,7 @@ const AccountPage = () => {
     reverseButtons: true,
     customClass: {
       cancelButton: "cancel-btn", // Áp dụng class cho nút Hủy
+      confirmButton: "save-btn-hover",
     },
   });
 
@@ -711,6 +712,7 @@ const AccountPage = () => {
                   color="inherit"
                   fullWidth
                   onClick={() => setShowForm(false)}
+                  className="cancel-btn"
                   sx={{ color: '#6c757d', borderColor: '#6c757d' }}
                 >
                   Hủy
@@ -779,11 +781,11 @@ const AccountPage = () => {
                 }
               />
               <div className="d-flex mt-2" style={{ gap: "20px" }}>
-                <button className="cancel-btn" 
+                <button className="btn cancel-btn" 
                   style={{width: "100%", border: "1px solid #6c757d",}} onClick={() => setShowPasswordForm(false)}>
                   Hủy
                 </button>
-                <button className="btn btn-primary" style={{width: "100%"}}>Lưu</button>
+                <button className="btn btn-primary save-btn-hover" style={{width: "100%", backgroundColor: 'rgb(48, 133, 214)'}}>Lưu</button>
               </div>
             </form>
           </div>
