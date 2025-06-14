@@ -162,10 +162,10 @@ const QuestionBankPage = () => {
           </div>
 
           <div className='right-header'>
-            <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={handlePreAddNew}>
+            <AddButton onClick={handlePreAddNew}>
               <i className="fas fa-plus me-2"></i>
               Thêm mới
-            </button>
+            </AddButton>
           </div>
         </div>
 

@@ -297,10 +297,10 @@ const SessionPage = () => {
           </div>
 
           <div className='right-header'>
-            <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={preAddNew}>
-              <i className="fas fa-plus me-2"></i>
-              Thêm mới
-            </button>
+						<AddButton onClick={preAddNew}>
+							<i className="fas fa-plus me-2"></i>
+								Thêm mới
+						</AddButton>
           </div>
         </div>
 

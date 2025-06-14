@@ -13,6 +13,7 @@ import ApiService from "../../services/apiService";
 import { IdCardIcon } from "@radix-ui/react-icons";
 import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
+import { Add } from "@mui/icons-material";
 
 const RoomOrganizePage = () => {
 	const [showForm, setShowForm] = useState(false);
@@ -250,10 +251,10 @@ const RoomOrganizePage = () => {
           </div>
 
           <div className='right-header'>
-            <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={preAddNew}>
-              <i className="fas fa-plus me-2"></i>
+						<AddButton onClick={preAddNew}>
+							<i className="fas fa-plus me-2"></i>
               Thêm mới
-            </button>
+						</AddButton>
           </div>
         </div>
 
