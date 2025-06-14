@@ -14,6 +14,7 @@ import { IdCardIcon } from "@radix-ui/react-icons";
 import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
 import { Add } from "@mui/icons-material";
+import FormDivideStudent from "../../components/FormDivideStudent/FormDivideStudent";
 
 const RoomOrganizePage = () => {
 	const [showForm, setShowForm] = useState(false);
@@ -34,6 +35,7 @@ const RoomOrganizePage = () => {
 	const [supervisorOptions, setSupervisorOptions] = useState([]);
 	const [candidateGroupOptions, setCandidateGroupOptions] = useState([]);
 	const navigate = useNavigate();
+	const [showFormDivide, setShowFormDivide] = useState(false);
 
 	useEffect(() => {
 		if (showForm && inputRef.current) {
@@ -235,6 +237,13 @@ const RoomOrganizePage = () => {
 				<span className="breadcrumb-current">{sessionName}</span>
 			</nav>
 
+			{showFormDivide ? (
+				<FormDivideStudent 
+					onClose={() => setShowFormDivide(false)}
+
+				/>
+			) : (
+				<>
 			<div className="tbl-shadow p-3">
 				<div className="sample-card-header d-flex justify-content-between align-items-center mb-2">
           <div className='left-header d-flex align-items-center'>
@@ -251,6 +260,10 @@ const RoomOrganizePage = () => {
           </div>
 
           <div className='right-header'>
+						<AddButton onClick={() => setShowFormDivide(true)}>
+							<i className="fas fa-plus me-2"></i>
+              Thêm mới mới
+						</AddButton>
 						<AddButton onClick={preAddNew}>
 							<i className="fas fa-plus me-2"></i>
               Thêm mới
@@ -476,10 +489,12 @@ const RoomOrganizePage = () => {
 								</Grid>
 						</Grid>
 					</Box>
-				</div>
+					</div>
+				)}
+				</>
 			)}
-		</div>
-	)
+    </div>
+  )
 }
 
 export default RoomOrganizePage;
