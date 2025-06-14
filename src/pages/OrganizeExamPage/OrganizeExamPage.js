@@ -12,6 +12,9 @@ import ApiService from "../../services/apiService";
 import CreatableSelect from "react-select/creatable";
 import ReactSelect  from 'react-select';
 import FormCreateOrganizeExam from "../../components/FormCreateOrganizeExam/FormCreateOrganizeExam";
+import AddButton from "../../components/AddButton/AddButton";
+import CancelButton from "../../components/CancelButton/CancelButton";
+import { Add } from "@mui/icons-material";
 
 const OrganizeExamPage = () => {
   const [listOrganizeExam, setListOrganizeExam] = useState([]);
@@ -243,7 +246,7 @@ const OrganizeExamPage = () => {
 	};
 
   return (
-    <div className="exam-management-page">
+    <div className="p-4">
       {/* Breadcrumb */}
 			<nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
 				<Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
@@ -276,14 +279,13 @@ const OrganizeExamPage = () => {
 								</div>
 							</div>
 
-							<div className='right-header'>
+							<div className='right-header d-flex'>
+								<AddButton onClick={() => setShowFormCreate(true)}>
+									<i className="fas fa-plus me-2"></i> Thêm mới
+								</AddButton>
 								<button className="btn btn-primary" style={{fontSize: "14px"}} onClick={preAddNew}>
 									<i className="fas fa-plus me-2"></i>
 									Thêm mới
-								</button>
-								<button className="btn btn-primary" style={{fontSize: "14px"}} onClick={() => setShowFormCreate(true)}>
-									<i className="fas fa-plus me-2"></i>
-									Thêm mới mới
 								</button>
 							</div>
 						</div>
@@ -445,16 +447,16 @@ const OrganizeExamPage = () => {
 						<Box
 							component="form"
 							sx={{
-								width: "600px",
+								width: "650px",
 								backgroundColor: "white",
-								p: 2,
+								p: 3,
 								borderRadius: "8px",
 								boxShadow: 3,
 								mx: "auto",
 							}}
 							onSubmit={handleSubmit}
 						>
-							<p className=" fw-bold">
+							<p className="fw-bold mb-4">
 								{editingOrganizeExam ? "Chỉnh sửa thông tin kỳ thi" : "Tạo kỳ thi"}
 							</p>
 	
@@ -531,9 +533,9 @@ const OrganizeExamPage = () => {
 										styles={{
 											control: (base) => ({
 												...base,
-												width: "275px", // Cố định chiều rộng
-												minWidth: "275px",
-												maxWidth: "250px",
+												width: "292px", // Cố định chiều rộng
+												minWidth: "292px",
+												maxWidth: "260px",
 												height: "48px", // Tăng chiều cao
 												minHeight: "40px",
 											}),
@@ -573,8 +575,8 @@ const OrganizeExamPage = () => {
 										styles={{
 											control: (base) => ({
 												...base,
-												width: "275px", // Cố định chiều rộng
-												minWidth: "275px",
+												width: "292px", // Cố định chiều rộng
+												minWidth: "292px",
 												maxWidth: "250px",
 												height: "48px", // Tăng chiều cao
 												minHeight: "40px",
@@ -730,26 +732,16 @@ const OrganizeExamPage = () => {
                 )}
 							</Grid>		
 							{/* Buttons */}
-							<Grid container spacing={2} sx={{ mt: 2 }}>
-								<Grid item xs={6}>
-									<Button
-										type="submit"
-										variant="contained"
-										color="primary"
-										fullWidth
-									>
-										{editingOrganizeExam ? "Cập nhật" : "Lưu"}
-									</Button>
-								</Grid>
-								<Grid item xs={6}>
-									<Button
-										variant="outlined"
-										color="secondary"
-										fullWidth
-										onClick={() => resetForm()}
-									>
+							<Grid container spacing={2} sx={{ mt: 1, justifyContent:"flex-end" }}>
+								<Grid item xs={3}>
+									<CancelButton style={{width: "100%"}} onClick={() => resetForm()}>
 										Hủy
-									</Button>
+									</CancelButton>
+								</Grid>
+								<Grid item xs={3}>
+									<AddButton style={{width: "100%"}}>
+										{editingOrganizeExam ? "Cập nhật" : "Lưu"}
+									</AddButton>
 								</Grid>
 							</Grid>
 						</Box>

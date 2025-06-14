@@ -13,6 +13,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
 import ApiService from "../../services/apiService";
+import AddButton from "../../components/AddButton/AddButton";
+import CancelButton from "../../components/CancelButton/CancelButton";
 
 const SessionPage = () => {
 	const { organizeId } = useParams();
@@ -214,7 +216,7 @@ const SessionPage = () => {
 	}
 
 	return (
-		<div className="exam-management-page">
+		<div className="p-4">
 			{/* Breadcrumb */}
 			<nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
 				<Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
@@ -433,7 +435,7 @@ const SessionPage = () => {
 						sx={{
 							width: "600px",
 							backgroundColor: "white",
-							p: 2,
+							p: 3,
 							borderRadius: "8px",
 							boxShadow: 3,
 							mx: "auto",
@@ -442,7 +444,7 @@ const SessionPage = () => {
 						}}
 						onSubmit={handleSubmit}
 					>
-						<p className="text-align fw-bold">
+						<p className="fw-bold mb-4">
 								{editingAccount ? "Chỉnh sửa thông tin ca thi" : "Tạo ca thi"}
 						</p>
 
@@ -497,26 +499,16 @@ const SessionPage = () => {
 						</Grid>
 							</Grid>		
 							{/* Buttons */}
-							<Grid container spacing={2} sx={{ mt: 2 }}>
-								<Grid item xs={6}>
-									<Button
-										type="submit"
-										variant="contained"
-										color="primary"
-										fullWidth
-									>
-										{editingAccount ? "Cập nhật" : "Lưu"}
-									</Button>
+							<Grid container spacing={2} sx={{ mt: 1, justifyContent: "flex-end" }}>
+								<Grid item xs={3}>
+									<CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>
+										Hủy
+									</CancelButton>
 								</Grid>
-								<Grid item xs={6}>
-									<Button
-										variant="outlined"
-										color="secondary"
-										fullWidth
-										onClick={() => setShowForm(false)}
-									>
-											Hủy
-									</Button>
+								<Grid item xs={3}>
+									<AddButton style={{width: "100%"}}>
+										{editingAccount ? "Cập nhật" : "Lưu"}
+									</AddButton>
 								</Grid>
 							</Grid>
 					</Box>

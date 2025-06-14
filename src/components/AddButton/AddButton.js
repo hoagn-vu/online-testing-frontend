@@ -3,12 +3,16 @@ import "./AddButton.css";
 import PropTypes from "prop-types";
 
 
-function AddButton({ onClick, children, style }) {
+function AddButton({ onClick, className = "", children, style, ...rest }) {
   return (
-    <button className="add-btn" 
+    <button 
+      className={`add-btn ${className}`}
       style={{fontSize: "14px",...style}} 
-      onClick={onClick} >
+      onClick={onClick}
+      {...rest}
+    >
       {children}
+
     </button>
   );
 }
@@ -17,6 +21,7 @@ AddButton.propTypes = {
   onClick: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired, 
   style: PropTypes.object,
+  className: PropTypes.string,
 };
 
 export default AddButton;

@@ -8,6 +8,8 @@ import { DataGrid } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import ApiService from "../../services/apiService";
+import AddButton from "../../components/AddButton/AddButton";
+import CancelButton from "../../components/CancelButton/CancelButton";
 
 const SubjectPage = () => {
   const [listSubject, setListSubject] = useState([]);
@@ -134,7 +136,7 @@ const SubjectPage = () => {
 
 
   return (
-    <div className="subject-page">
+    <div className="p-4">
       {/* Breadcrumbs */}
       <nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
         <Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
@@ -237,76 +239,74 @@ const SubjectPage = () => {
         <div className="form-overlay">
           <React.Fragment>
             <Box
-                component="form"
-                sx={{
-                    width: "700px",
-                    backgroundColor: "white",
-                    p: 3.8,
-                    borderRadius: "8px",
-                    boxShadow: 3,
-                    mx: "auto",
-                }}
-                onSubmit={handleSubmit}
+              component="form"
+              sx={{
+                  width: "700px",
+                  backgroundColor: "white",
+                  p: 3,
+                  borderRadius: "8px",
+                  boxShadow: 3,
+                  mx: "auto",
+              }}
+              onSubmit={handleSubmit}
             >
-                {/* Add your form content here */}
-                <p className="fw-bold">
-                    {editingSubject ? "Chỉnh sửa phân môn" : "Thêm phân môn"}
-                </p>
+              {/* Add your form content here */}
+              <p className="fw-bold">
+                  {editingSubject ? "Chỉnh sửa phân môn" : "Thêm phân môn"}
+              </p>
 
-                <Grid container>
-                    <TextField
-                        fullWidth
-                        label="Tên phân môn"
-                        required
-                        value={formData.subjectName}
-                        onChange={(e) =>
-                            setFormData({ ...formData, subjectName: e.target.value })
-                        }
-                        inputRef={inputRef}
-                        sx={{
-                            "& .MuiDataGrid-cell": {
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                                lineHeight: "1.2",
-                                padding: "8px",
-                            },
-                            "& .MuiDataGrid-columnHeaders": {
-                                borderBottom: "2px solid #ccc",
-                            },
-                            "& .MuiDataGrid-cell": {
-                                borderRight: "1px solid #ddd",
-                            },
-                            "& .MuiDataGrid-row:last-child .MuiDataGrid-cell": {
-                                borderBottom: "none",
-                            },
-                            "& .MuiTablePagination-displayedRows": {
-                                textAlign: "center",        // Căn giữa chữ "1-1 of 1"
-                                marginTop: "16px",
-                                marginLeft: "0px"
-                            },
-                            "& .MuiTablePagination-selectLabel": {
-                                marginTop: "13px",
-                                marginLeft: "0px"
-                            },
-                            "& .MuiTablePagination-select": {
-                                marginLeft: "0px",
-                            } 
-                        }}
-                    />
-                </Grid>
+              <Grid container>
+                <TextField
+                  fullWidth
+                  label="Tên phân môn"
+                  required
+                  value={formData.subjectName}
+                  onChange={(e) =>
+                    setFormData({ ...formData, subjectName: e.target.value })
+                  }
+                  inputRef={inputRef}
+                  sx={{
+                    "& .MuiDataGrid-cell": {
+                        whiteSpace: "normal",
+                        wordWrap: "break-word",
+                        lineHeight: "1.2",
+                        padding: "8px",
+                    },
+                    "& .MuiDataGrid-columnHeaders": {
+                        borderBottom: "2px solid #ccc",
+                    },
+                    "& .MuiDataGrid-cell": {
+                        borderRight: "1px solid #ddd",
+                    },
+                    "& .MuiDataGrid-row:last-child .MuiDataGrid-cell": {
+                        borderBottom: "none",
+                    },
+                    "& .MuiTablePagination-displayedRows": {
+                        textAlign: "center",        // Căn giữa chữ "1-1 of 1"
+                        marginTop: "16px",
+                        marginLeft: "0px"
+                    },
+                    "& .MuiTablePagination-selectLabel": {
+                        marginTop: "13px",
+                        marginLeft: "0px"
+                    },
+                    "& .MuiTablePagination-select": {
+                        marginLeft: "0px",
+                    } 
+                  }}
+                />
+              </Grid>
 
-                <Grid container spacing={2} sx={{ mt: 1 }}>
-                    <Grid item xs={6}>
-                        <Button type="submit" variant="contained" color="primary" fullWidth >
-                            {editingSubject ? "Cập nhật" : "Lưu"}
-                        </Button>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Button variant="outlined" color="secondary" fullWidth onClick={() => setShowForm(false)}>
-                            Hủy
-                        </Button>
-                    </Grid>
+              <Grid container spacing={2} sx={{mt: 1, justifyContent: "flex-end"}}>
+                <Grid item xs={3}>
+                  <CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>Hủy</CancelButton>
                 </Grid>
+                <Grid item xs={3}>
+                  <AddButton style={{width: "100%"}}>
+                    {editingSubject ? "Cập nhật" : "Lưu"}
+                  </AddButton>
+                </Grid>
+              </Grid>
             </Box>
           </React.Fragment>
         </div>

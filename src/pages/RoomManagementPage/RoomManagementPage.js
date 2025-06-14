@@ -9,6 +9,9 @@ import { DataGrid } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import ApiService from "../../services/apiService";
+import AddButton from "../../components/AddButton/AddButton";
+import CancelButton from "../../components/CancelButton/CancelButton";
+import { Add } from "@mui/icons-material";
 
 const RoomManagementPage = () => {
   const [listRoom, setListRoom] = useState([]);
@@ -180,7 +183,7 @@ const RoomManagementPage = () => {
   };
 
   return (
-    <div className="room-page">
+    <div className="p-4">
       <nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
         <Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
         <span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
@@ -203,10 +206,10 @@ const RoomManagementPage = () => {
           </div>
 
           <div className='right-header'>
-            <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={handleAddNew}>
+            <AddButton onClick={handleAddNew}>
               <i className="fas fa-plus me-2"></i>
               Thêm mới
-            </button>
+            </AddButton>
           </div>
         </div>
 
@@ -289,7 +292,7 @@ const RoomManagementPage = () => {
             sx={{
               width: "750px",
               backgroundColor: "white",
-              p: 3.8,
+              p: 3,
               borderRadius: "8px",
               boxShadow: 3,
               mx: "auto",
@@ -384,26 +387,14 @@ const RoomManagementPage = () => {
 
 
             {/* Buttons */}
-            <Grid container spacing={2} sx={{ mt: 1 }}>
-              <Grid item xs={6}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                >
-                  {editingAccount ? "Cập nhật" : "Lưu"}
-                </Button>
+            <Grid container spacing={2} sx={{ mt: 1, justifyContent:"flex-end" }}>
+              <Grid item xs={3}>
+                <CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>Hủy</CancelButton>
               </Grid>
-              <Grid item xs={6}>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  fullWidth
-                  onClick={() => setShowForm(false)}
-                >
-                  Hủy
-                </Button>
+              <Grid item xs={3}>
+                <AddButton style={{width: "100%"}}>
+                  {editingAccount ? "Cập nhật" : "Lưu"}
+                </AddButton>
               </Grid>
             </Grid>
           </Box>

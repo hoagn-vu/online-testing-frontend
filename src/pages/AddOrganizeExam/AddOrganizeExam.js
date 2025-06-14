@@ -7,6 +7,7 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import ReactSelect from 'react-select';
+import AddButton from "../../components/AddButton/AddButton";
 
 const ExamCreationPage = () => {
   // State cho thông tin kỳ thi
@@ -434,9 +435,9 @@ const ExamCreationPage = () => {
           <Button variant="outlined" color="secondary">
             Hủy
           </Button>
-          <Button type="submit" variant="contained" color="primary">
-            Tạo kỳ thi
-          </Button>
+          <AddButton >
+            <i className="fas fa-plus me-2"></i> Tạo kỳ thi
+          </AddButton>
         </Box>
       </Box>
     </Box>

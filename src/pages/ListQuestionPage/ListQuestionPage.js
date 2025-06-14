@@ -8,6 +8,8 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ApiService from "../../services/apiService";
 import { useSelector } from "react-redux";
 import { CircularProgress, Typography, Box } from "@mui/material";
+import AddButton from "../../components/AddButton/AddButton";
+import CancelButton from "../../components/CancelButton/CancelButton";
 
 const ListQuestionPage = () => {
 	const user = useSelector((state) => state.auth.user);
@@ -287,75 +289,76 @@ const ListQuestionPage = () => {
 	};
 
 	return (
-		<div className=" list-question-container">
+		<div className="p-4">
 			{/* Breadcrumb */}
 			<nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
 				<Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
-				<span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+				<span className="ms-3 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
 				<span className="breadcrumb-between"> <Link to="/staff/question" className="breadcrumb-between">Ngân hàng câu hỏi</Link></span>
-				<span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+				<span className="ms-3 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
 				<span className="breadcrumb-between"><Link to={`/staff/question/${subjectId}`} className="breadcrumb-between">{subjectName}</Link></span>
-				<span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+				<span className="ms-3 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
 				<span className="breadcrumb-current">{questionBankName}</span>
 			</nav>
-	
+
 			<div className="d-flex">
-				<div className="search-container">
-					<div className="search-box me-2 rounded d-flex align-items-center">
-              <i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
-              <input
-                type="text"
-                className="search-input w-100"
-                placeholder="Tìm kiếm..."
-                value={keyword}
-                onChange={handleKeywordChange}
-              />
-            </div>
+				<div className="sample-card-header d-flex justify-content-between align-items-center mb-2">
+					<div className='left-header d-flex align-items-center'>
+						<div className="search-box rounded d-flex align-items-center">
+							<i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
+							<input
+								type="text"
+								className="search-input w-100"
+								placeholder="Tìm kiếm..."
+								value={keyword}
+								onChange={handleKeywordChange}
+							/>
+						</div>
+					</div>
 				</div>
 				<div className="d-flex justify-content-end ms-auto">
-					<button
-						className="btn btn-success"
+					<AddButton 
 						data-bs-toggle="modal"
 						data-bs-target="#questionModal"
 						onClick={() => { preAddQuestion(); }}
 					>
-						Thêm câu hỏi mới
-					</button>
-					<button className="upload-btn ms-2" onClick={handleUploadfile}>
-						Upload File
-					</button>
+						<i className="fas fa-plus me-2"></i>Thêm câu hỏi
+					</AddButton>
+					<AddButton className="upload-btn-hover" style={{backgroundColor: "#28A745", marginLeft: "10px"}} onClick={handleUploadfile}>
+						<i className="fas fa-upload me-2"></i>Upload File
+					</AddButton>
 					<div className="modal fade" id="uploadModal" tabIndex="-1" aria-hidden="true"
 					style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
 					>
-                <div className="modal-dialog modal-dialog-centered small-modal" >
-                    <div className="modal-content text-center p-4 container" style={{ width: "500px" }}>
-										<div className="modal-body">
-                {/* Vòng tròn tiến trình MUI */}
-                <Box sx={{ position: "relative", display: "inline-flex" }}>
-                    <CircularProgress variant="determinate" value={uploadProgress} size={80} />
-                    <Box
-                        sx={{
+						<div className="modal-dialog modal-dialog-centered small-modal" >
+							<div className="modal-content text-center p-4 container" style={{ width: "500px" }}>
+								<div className="modal-body">
+										{/* Vòng tròn tiến trình MUI */}
+										<Box sx={{ position: "relative", display: "inline-flex" }}>
+											<CircularProgress variant="determinate" value={uploadProgress} size={80} />
+											<Box
+													sx={{
 
-                            top: 0,
-                            left: 0,
-                            bottom: 0,
-                            right: 0,
-                            position: "absolute",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                        }}
-                    >
-                        <Typography variant="caption" component="div" sx={{ color: "text.secondary", fontSize: "18px" }}>
-                            {`${uploadProgress}%`}
-                        </Typography>
-                    </Box>
-                </Box>
-                <p className="mt-3">Đang tải lên...</p>
-            </div>
-                    </div>
-                </div>
-            </div>
+															top: 0,
+															left: 0,
+															bottom: 0,
+															right: 0,
+															position: "absolute",
+															display: "flex",
+															alignItems: "center",
+															justifyContent: "center",
+													}}
+											>
+													<Typography variant="caption" component="div" sx={{ color: "text.secondary", fontSize: "18px" }}>
+															{`${uploadProgress}%`}
+													</Typography>
+											</Box>
+										</Box>
+										<p className="mt-3">Đang tải lên...</p>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 
@@ -397,42 +400,41 @@ const ListQuestionPage = () => {
 								{questions.map((question) => (
 									<div key={question.questionId} className="card mb-2">
 										<div className="card-header d-flex justify-content-between ps-2">
-												<div className="d-flex ">
-														<button 
-																className="btn btn-link text-decoration-none position p-0 pe-1 "
-																style={{color: "black"}}
-																data-bs-toggle="collapse" 
-																data-bs-target={`#collapse-${question.questionId}`}
-																aria-expanded="false"
-																aria-controls={`collapse-${question.questionId}`}
-														>            
-																<ArrowDropDownIcon />
-														</button>
-														<div className="d-flex flex-column justify-content-center">
-															<h6 className="mb-0">{question.questionText}</h6>
-															{question.tags?.slice(1).map((tag, index) => (
-																<p className="m-0 tag-level" key={index}>{tag}</p>
-															))}
-														</div>
-
+											<div className="d-flex ">
+												<button 
+														className="btn btn-link text-decoration-none position p-0 pe-1 "
+														style={{color: "black"}}
+														data-bs-toggle="collapse" 
+														data-bs-target={`#collapse-${question.questionId}`}
+														aria-expanded="false"
+														aria-controls={`collapse-${question.questionId}`}
+												>            
+														<ArrowDropDownIcon />
+												</button>
+												<div className="d-flex flex-column justify-content-center">
+													<h6 className="mb-0">{question.questionText}</h6>
+													{question.tags?.slice(1).map((tag, index) => (
+														<p className="m-0 tag-level" key={index}>{tag}</p>
+													))}
 												</div>
-												<div className="d-flex" style={{ marginLeft: "50px" }}>
-														<button className="btn btn-primary me-2" onClick={() => preEditQuestion(question)}>
-																Edit
-														</button>
-														<button className="btn btn-danger" onClick={() => handleDelete(question.questionId)}>
-																Delete
-														</button>
-												</div>
+											</div>
+											<div className="d-flex" style={{ marginLeft: "50px" }}>
+												<button className="btn btn-primary me-2" style={{ fontSize: "14px" }} onClick={() => preEditQuestion(question)}>
+														Edit
+												</button>
+												<button className="btn btn-danger" style={{ fontSize: "14px" }} onClick={() => handleDelete(question.questionId)}>
+														Delete
+												</button>
+											</div>
 										</div>
 										<div id={`collapse-${question.questionId}`} className="collapse show">
-												<ul className="list-group" style={{ borderRadius: "0 0 5px 5px" }}>
-														{question.options.map((option, index) => (
-																<li key={index} className={option.isCorrect ? "list-group-item list-group-item-success" : "list-group-item"}>
-																		{option.optionText}
-																</li>
-														))}
-												</ul>
+											<ul className="list-group" style={{ borderRadius: "0 0 5px 5px" }}>
+												{question.options.map((option, index) => (
+													<li key={index} className={option.isCorrect ? "list-group-item list-group-item-success" : "list-group-item"}>
+														{option.optionText}
+													</li>
+												))}
+											</ul>
 										</div>
 									</div>
 								))}
@@ -445,10 +447,10 @@ const ListQuestionPage = () => {
 		{/* Modal Bootstrap thuần */}
 		<div className="modal fade" id="questionModal" tabIndex="-1" aria-hidden="true">
 			<div className="modal-dialog modal-dialog-centered modal-xl">
-				<div className="modal-content">
+				<div className="modal-content p-3">
 					<div className="modal-header">
-							<h5 className="modal-title">{editQuestionId ? "Chỉnh sửa câu hỏi" : "Thêm câu hỏi mới"}</h5>
-							<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						<h5 className="modal-title">{editQuestionId ? "Chỉnh sửa câu hỏi" : "Thêm câu hỏi mới"}</h5>
+						<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div className="modal-body">
 						<div className="d-flex" style={{ display: "flex", width: "100%", gap: "10px" }}>
@@ -494,7 +496,6 @@ const ListQuestionPage = () => {
 									value={newQuestion.questionText}
 									onChange={(e) => setNewQuestion({ ...newQuestion, questionText: e.target.value })}
 								/>
-
 							</div>
 							<div className="form-check mt-0 mb-2">
 								<input
@@ -543,18 +544,16 @@ const ListQuestionPage = () => {
 									</button>
 								</div>
 							))}
-							<button className="btn btn-outline-secondary mt-1" onClick={handleAddOption}>
+							<button className="btn btn-outline-secondary mt-1" style={{fontSize: "14px"}} onClick={handleAddOption}>
 								<i className="fa-solid fa-plus me-2"></i>
 								Thêm đáp án
 							</button>
 						</div>
 						<div className="modal-footer">
-							<button className="btn btn-success" onClick={handleSaveQuestion}>
+							<CancelButton style={{width: "100px"}} id="closeModalBtn"data-bs-dismiss="modal">Hủy</CancelButton>
+							<AddButton style={{width: "100px"}} onClick={handleSaveQuestion}>
 								{editQuestionId ? "Cập nhật" : "Lưu"}
-							</button>
-							<button id="closeModalBtn" className="btn btn-danger" data-bs-dismiss="modal">
-								Hủy
-							</button>
+							</AddButton>
 						</div>
 					</div>
 				</div>

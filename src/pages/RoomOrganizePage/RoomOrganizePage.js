@@ -11,6 +11,8 @@ import SearchBox from "../../components/SearchBox/SearchBox";
 import ReactSelect  from 'react-select';
 import ApiService from "../../services/apiService";
 import { IdCardIcon } from "@radix-ui/react-icons";
+import AddButton from "../../components/AddButton/AddButton";
+import CancelButton from "../../components/CancelButton/CancelButton";
 
 const RoomOrganizePage = () => {
 	const [showForm, setShowForm] = useState(false);
@@ -213,7 +215,7 @@ const RoomOrganizePage = () => {
 	}
 
 	return (
-		<div className="exam-management-page">
+		<div className="p-4">
 			{/* Breadcrumb */}
 			<nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
 				<Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
@@ -353,7 +355,7 @@ const RoomOrganizePage = () => {
 						sx={{
 							width: "600px",
 							backgroundColor: "white",
-							p: 2,
+							p: 3,
 							borderRadius: "8px",
 							boxShadow: 3,
 							mx: "auto",
@@ -362,7 +364,9 @@ const RoomOrganizePage = () => {
 						}}
 						onSubmit={handleSubmit}
 					>
-						<p className="text-align fw-bold">{editingRoomOrganize ? "Chỉnh sửa thông tin ca thi" : "Thêm phòng thi"}</p>
+						<p className="fw-bold mb-4">
+							{editingRoomOrganize ? "Chỉnh sửa thông tin phòng thi" : "Thêm phòng thi"}
+						</p>
 						<Grid container spacing={2}>										
 						<Grid item xs={12}>
 						<ReactSelect
@@ -458,24 +462,16 @@ const RoomOrganizePage = () => {
 							</Grid> */}
 						</Grid>		
 						{/* Buttons */}
-						<Grid container spacing={2} sx={{ mt: 2 }}>
-								<Grid item xs={6}>
-										<Button
-												type="submit"
-												variant="contained"
-												color="primary"
-												fullWidth
-										>
-												{editingRoomOrganize ? "Cập nhật" : "Lưu"}
-										</Button>
+						<Grid container spacing={2} sx={{ mt: 1, justifyContent: "flex-end" }}>
+								<Grid item xs={3}>
+									<CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>
+										Hủy
+									</CancelButton>
 								</Grid>
-								<Grid item xs={6}>
-										<Button
-											variant="outlined"
-											color="secondary"
-											fullWidth
-											onClick={() => setShowForm(false)}
-										> Hủy </Button>
+								<Grid item xs={3}>
+									<AddButton style={{width: "100%"}}>
+										{editingRoomOrganize ? "Cập nhật" : "Lưu"}
+									</AddButton>
 								</Grid>
 						</Grid>
 					</Box>
