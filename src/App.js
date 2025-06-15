@@ -39,6 +39,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from "prop-types";
 import { setUser } from './redux/authSlice';
 
+import Login2 from "./pages/Login2/Login2";
+
 function App() {
   const accessToken = useSelector((state) => state.auth.accessToken) || localStorage.getItem("accessToken");
   const dispatch = useDispatch();
@@ -80,7 +82,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LoginPage />} />
+        <Route path="/" element={<Login2 />} />
         <Route path="/not-found" element={<NotFound />} />
       </Routes>
       <Routes>

@@ -2,3 +2,7 @@
     text-decoration: underline;
     cursor: pointer;
 }
+
+.table-wrapper {
+  overflow-x: hidden;
+}

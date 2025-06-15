@@ -25,6 +25,82 @@ const FormDivideStudent = ({ onClose }) => {
     { label: "22AI2 - 45 thí sinh" },
     { label: "23IT1 - 50 thí sinh" },
   ];
+
+  const students = [
+    {
+      mssv: "BIT220172",
+      ho: "Phạm Thị Phương",
+      ten: "Linh",
+      ngaySinh: "08/01/2004",
+      gioiTinh: "Nữ",
+      dieuKien: "Đủ"
+    },
+    {
+      mssv: "BIT220173",
+      ho: "Hoàng Nguyên",
+      ten: "Vũ",
+      ngaySinh: "10/05/2004",
+      gioiTinh: "Nữ",
+      dieuKien: "Đủ"
+    },
+    {
+      mssv: "BIT220174",
+      ho: "Ngô Đức",
+      ten: "Thuận",
+      ngaySinh: "12/12/2003",
+      gioiTinh: "Nam",
+      dieuKien: "Không"
+    },
+    {
+      mssv: "BIT220174",
+      ho: "Ngô Đức",
+      ten: "Thuận",
+      ngaySinh: "12/12/2003",
+      gioiTinh: "Nam",
+      dieuKien: "Không"
+    },
+    {
+      mssv: "BIT220174",
+      ho: "Ngô Đức",
+      ten: "Thuận",
+      ngaySinh: "12/12/2003",
+      gioiTinh: "Nam",
+      dieuKien: "Không"
+    },
+    {
+      mssv: "BIT220174",
+      ho: "Ngô Đức",
+      ten: "Thuận",
+      ngaySinh: "12/12/2003",
+      gioiTinh: "Nam",
+      dieuKien: "Không"
+    },
+    {
+      mssv: "BIT220174",
+      ho: "Ngô Đức",
+      ten: "Thuận",
+      ngaySinh: "12/12/2003",
+      gioiTinh: "Nam",
+      dieuKien: "Không"
+    },
+    {
+      mssv: "BIT220174",
+      ho: "Ngô Đức",
+      ten: "Thuận",
+      ngaySinh: "12/12/2003",
+      gioiTinh: "Nam",
+      dieuKien: "Không"
+    },
+    {
+      mssv: "BIT220174",
+      ho: "Ngô Đức",
+      ten: "Thuận",
+      ngaySinh: "12/12/2003",
+      gioiTinh: "Nam",
+      dieuKien: "Không"
+    }
+  ];
+
   // State cho thông tin kỳ thi
   const [examData, setExamData] = useState({
     organizeExamName: '',
@@ -170,11 +246,99 @@ const FormDivideStudent = ({ onClose }) => {
                 <Typography className='fw-bold' variant="subtitle1" sx={{ fontSize: "16px" }}>
                   Phòng thi {index + 1}
                 </Typography>
-                <p className='link-hover' style={{ margin: 0, color:'#0000FF' }}>Chi tiết</p>
+                <p 
+                  className='link-hover' 
+                  style={{ margin: 0, color:'#0000FF' }}
+                  data-bs-toggle="modal"
+                  data-bs-target="#roomDetailModal"
+                >
+                  Chi tiết
+                </p>
               </div>
+              {/* Modal Bootstrap */}  
+              <div className="modal fade " id="roomDetailModal" tabIndex="-1" aria-labelledby="roomDetailModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-xl">
+                  <div className="modal-content p-3">
+                    <div className="modal-header">
+                      <h5 className="modal-title" id="roomDetailModalLabel">
+                        Phòng 101 - CS01 - 30 thí sinh
+                      </h5>
+                      <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
 
-							
-							
+                    <div className="sample-card-header d-flex justify-content-between align-items-center mt-3 ms-3">
+                      <div className='left-header d-flex align-items-center'>
+                        <div className="search-box rounded d-flex align-items-center">
+                          <i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
+                          <input
+                            type="text"
+                            className="search-input w-100"
+                            placeholder="Tìm kiếm..."
+                          />
+                        </div>
+                      </div>
+                      <div className='right-header d-flex me-3'>
+                        <AddButton onClick={() => setShowFormCreate(true)}>
+                          <i className="fas fa-plus me-2"></i> Thêm mới
+                        </AddButton>
+                        <AddButton className='ms-2' style={{ backgroundColor: "#dc3545", color: "#ffff", }}>
+                          <i className="fas fa-plus me-2"></i> Xóa
+                        </AddButton>
+                      </div>
+                    </div>
+
+                    <div className="modal-body">
+                      {/* Table danh sách thí sinh */}
+                      <div className="table-responsive table-wrapper" style={{ maxHeight: "400px", overflowY: "auto" }}>
+                        <table className="table sample-table table-hover tbl-organize-hover">
+                          <thead className="table-light">
+                            <tr className="align-middle">
+                              <th scope="col" className="text-center title-row" style={{ width: "50px"}}>
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                               />
+                              </th>
+                              <th scope="col">STT</th>
+                              <th scope="col">MSSV</th>
+                              <th scope="col">Họ và tên đệm</th>
+                              <th scope="col">Tên</th>
+                              <th scope="col">Ngày sinh</th>
+                              <th scope="col">Giới tính</th>
+                              <th scope="col">Điều kiện</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {students.map((student, index) => (
+                              <tr key={index}>
+                                <td className=" text-center align-middle" style={{ width: "50px" }}>
+                                  <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    onChange={(e) => handleSelectItem(e, item.id)}
+                                  />
+                                </td>
+                                <td className="align-middle">{index + 1}</td>
+                                <td className="align-middle">{student.mssv}</td>
+                                <td className="align-middle">{student.ho}</td>
+                                <td className="align-middle">{student.ten}</td>
+                                <td className="align-middle">{student.ngaySinh}</td>
+                                <td className="align-middle">{student.gioiTinh}</td>
+                                <td className="align-middle">{student.dieuKien}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <div className="modal-footer">
+                      <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                        Đóng
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
 							<Grid container spacing={2} alignItems="center">
 								<Grid item xs={4}>
                   <Autocomplete
