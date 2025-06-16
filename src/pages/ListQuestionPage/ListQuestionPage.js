@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import { CircularProgress, Typography, Box } from "@mui/material";
 import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
+import AiGenerate from "../../components/AiGenerate/AiGenerate";
 
 const ListQuestionPage = () => {
 	const user = useSelector((state) => state.auth.user);
@@ -30,6 +31,7 @@ const ListQuestionPage = () => {
 
 	const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
+	const [showAiGenerate, setShowAiGenerate] = useState(false);
 
   const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
@@ -301,6 +303,12 @@ const ListQuestionPage = () => {
 				<span className="breadcrumb-current">{questionBankName}</span>
 			</nav>
 
+			{showAiGenerate ? (
+				<AiGenerate 
+					onClose={() => setShowAiGenerate(false)}
+				/>
+			) : (
+				<>
 			<div className="d-flex">
 				<div className="sample-card-header d-flex justify-content-between align-items-center mb-2">
 					<div className='left-header d-flex align-items-center'>
@@ -326,6 +334,9 @@ const ListQuestionPage = () => {
 					</AddButton>
 					<AddButton className="upload-btn-hover" style={{backgroundColor: "#28A745", marginLeft: "10px"}} onClick={handleUploadfile}>
 						<i className="fas fa-upload me-2"></i>Upload File
+					</AddButton>
+					<AddButton className="ms-2" onClick={() => setShowAiGenerate(true)}>
+						<i className="fas fa-brain me-2"></i>AI sinh câu hỏi
 					</AddButton>
 					<div className="modal fade" id="uploadModal" tabIndex="-1" aria-hidden="true"
 					style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
@@ -558,8 +569,10 @@ const ListQuestionPage = () => {
 					</div>
 				</div>
 			</div>
-		</div>
-	);
-};
+				</>
+			)}
+    </div>
+  )
+}
 
 export default ListQuestionPage;
