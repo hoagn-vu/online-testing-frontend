@@ -31,7 +31,6 @@ import ScoreTableSessionPage from "./pages/ScoreTableSessionPage/ScoreTableSessi
 import ReportEachOrganizePage from "./pages/ReportEachOrganizePage/ReportEachOrganizePage";
 import Admin2Layout from "./layouts/Admin2Layout/Admin2Layout";
 import ExamCreationPage from "./pages/AddOrganizeExam/AddOrganizeExam";
-
 import NotFound from "./pages/NotFound/NotFound";
 
 import { authApi, useGetProfileQuery } from "./services/authApi";
