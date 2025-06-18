@@ -96,7 +96,7 @@ const LoginPage2 = () => {
         onSubmit={handleLogin}
       >
         <h2 className="text-center mb-1 fw-bold text-blue-holo mt-4">Chào mừng đến với CTEST</h2>
-        <p className='mb-4' style={{color: "#545454"}}>Đăng nhập để sử dụng CTEST</p>
+        <p className='mb-4' style={{color: "#545454"}}>Hãy đăng nhập để sử dụng CTEST nhé!</p>
 
         {errMsg && (
           <div className="alert alert-danger text-center p-2">{errMsg}</div>

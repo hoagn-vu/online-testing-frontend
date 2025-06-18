@@ -65,17 +65,17 @@ const Dashboard = () => {
         <CardDashboard
           title="Số lượng thí sinh"
           value="+200"
-          icon={<FaDollarSign />}
+          icon={<i className="fa-solid fa-users"></i>}
+        />
+        <CardDashboard
+          title="Cán bộ nhân viên"
+          value="+200"
+          icon={<i className="fa-solid fa-chalkboard-user"></i>}
         />
         <CardDashboard
           title="Kỳ thi đã tổ chức"
           value="+200"
-          icon={<FaDollarSign />}
-        />
-        <CardDashboard
-          title="Người dùng mới"
-          value="+200"
-          icon={<FaDollarSign />}
+          icon={<i className="fa-solid fa-calendar"></i>}
         />
         <CardDashboard
           title="Người dùng mới"
