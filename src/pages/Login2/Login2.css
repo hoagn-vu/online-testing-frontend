@@ -5,10 +5,13 @@
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
     background: none;
+    
 }
 
 .xanh-dam {
-    background-color: #e4f3ff;
+    /* background-color: #e4f3ff; */
+    /* background-color: #edf6fd; */
+    background-color: #f6fbff;
 }
 
 .login-img {

@@ -16,6 +16,8 @@ const Login2 = () => {
           <DotLottieReact
            // src="https://lottie.host/d96b7485-65fa-4a7e-bc74-c905acd780b1/Qbaf1xGHuq.lottie"
             src="https://lottie.host/15da4029-3bd9-46e1-9ce2-c36473d7d2c1/m1xY6H5Psl.lottie"
+          // src="https://lottie.host/3079ca32-9e94-421c-a27a-41f63d7e6090/nD7kBfgUUF.lottie"
+
             loop
             autoplay
           />
