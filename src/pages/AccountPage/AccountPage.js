@@ -299,6 +299,7 @@ const AccountPage = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         const newStatus = currentStatus.toLowerCase() === "active" ? "disabled" : "active";
+        const statusLabel = newStatus === "active" ? "Hoạt động" : "Không hoạt động";
 
         // Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
         setRows((prevRows) =>
@@ -309,7 +310,7 @@ const AccountPage = () => {
         console.log("userId được đổi status:", id)
         Swal.fire({
           title: "Cập nhật thành công!",
-          text: `Trạng thái đã chuyển sang "${newStatus}".`,
+          text: `Trạng thái đã chuyển sang "${statusLabel}".`,
           icon: "success",
         });
       }
@@ -427,30 +428,55 @@ const AccountPage = () => {
                   <td className="text-center">{item.dateOfBirth}</td>
                   <td className="text-center">{item.gender}</td>
                   <td className="text-center">{item.groupName}</td>
-                  <td>
-                    <div className="form-check form-switch d-flex align-items-center justify-content-center">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        role="switch"
-                        checked={item.accountStatus.toLowerCase() === "active"}
-                        onChange={() =>
-                          handleToggleStatus(item.id, item.accountStatus)
-                        }
-                      />
+                  <td className="text-center">
+                    <div className="d-flex align-items-center justify-content-center">
                       <span className={`badge ms-2 mt-1 ${item.accountStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
                         {item.accountStatus === "Active" || "available" ? "Hoạt động" : "Không hoạt động"}
                       </span>
                     </div>
                   </td>
-                  <td className="text-center">
-                    <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}} onClick={() => handleEdit(item)}>
-                      <i className="fas fa-edit text-white "></i>
-                    </button>
-                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}} onClick={() => handleDelete(item.id)}>
-                      <i className="fas fa-trash-alt"></i>
-                    </button>
+                  <td className="text-center align-middle">
+                    <div className="dropdown d-inline-block">
+                      <button
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        className="dropdown-toggle-icon"
+                      >
+                        <i className="fas fa-ellipsis-v"></i>
+                      </button>
+                      <ul className="dropdown-menu dropdown-menu-end"
+                        style={{
+                          right: "50%",
+                          transform: 'translate3d(-10px, 10px, 0px)',
+                        }}
+                      >
+                        <li className="tbl-action" onClick={() => handleEdit(item)}> 
+                          <button className="dropdown-item tbl-action" onClick={() => handleEdit(item)}>
+                             Chỉnh sửa
+                          </button>
+                        </li>
+                        <li className="tbl-action" onClick={() => handleDelete(item.id)}>
+                          <button className="dropdown-item tbl-action" onClick={() => handleDelete(item.id)}>
+                             Xoá
+                          </button>
+                        </li>
+                        <li className="tbl-action" onChange={() => handleToggleStatus(item.id, item.accountStatus)}>
+                          <button
+                            className="dropdown-item tbl-action"
+                            onClick={() =>
+                              handleToggleStatus(item.id, item.accountStatus)
+                            }
+                          >
+                            {item.accountStatus.toLowerCase() === "active"
+                              ? "Vô hiệu hoá"
+                              : "Kích hoạt"}
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
                   </td>
+
                 </tr>
               ))}
             </tbody>
