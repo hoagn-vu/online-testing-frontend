@@ -252,6 +252,33 @@
   height: 47px;
 }
 
+.dropdown-menu-custom {
+  right: 50% !important;
+  transform: translate3d(-20px, 10px, 10px) !important;
+}
+
+.tbl-action:hover {
+  background-color: #f0f8ff;
+}
+
+.dropdown-toggle-icon {
+  width: 35px;
+  height: 35px;
+  padding: 0;
+  border: none;
+  background: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-toggle-icon:hover {
+  background-color: #fafafa; /* xám nhạt */
+  cursor: pointer;
+}
+
 @media (max-width: 760px) {
   .account-page {
     width: 100%;

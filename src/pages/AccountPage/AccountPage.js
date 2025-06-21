@@ -445,7 +445,7 @@ const AccountPage = () => {
                       >
                         <i className="fas fa-ellipsis-v"></i>
                       </button>
-                      <ul className="dropdown-menu dropdown-menu-end"
+                      <ul className="dropdown-menu dropdown-menu-end dropdown-menu-custom"
                         style={{
                           right: "50%",
                           transform: 'translate3d(-10px, 10px, 0px)',
