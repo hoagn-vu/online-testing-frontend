@@ -166,8 +166,6 @@ const RoomOrganizePage = () => {
 				console.log("Xóa phòng thi có ID:", id);
 				setRoomsOrganize(prev => prev.filter(room => room.roomId !== id));
 
-
-	
 				Swal.fire({
 					title: "Đã xóa!",
 					text: "Phòng thi đã bị xóa.",
@@ -190,7 +188,8 @@ const RoomOrganizePage = () => {
 		}).then((result) => {
 		  if (result.isConfirmed) {
 			const newStatus = currentStatus.toLowerCase() === "active" ? "disabled" : "active";
-	
+			const statusLabel = newStatus === "active" ? "Kích hoạt" : "Đóng";
+
 			// Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
 			setRows((prevRows) =>
 			  prevRows.map((row) =>
@@ -200,7 +199,7 @@ const RoomOrganizePage = () => {
 			console.log("organizeExamId được đổi status:", id)
 			Swal.fire({
 			  title: "Cập nhật thành công!",
-			  text: `Trạng thái đã chuyển sang "${newStatus}".`,
+			  text: `Trạng thái đã chuyển sang "${statusLabel}".`,
 			  icon: "success",
 			});
 		  }
@@ -319,28 +318,52 @@ const RoomOrganizePage = () => {
 											Danh sách thí sinh
 										</td>
 										<td>
-											<div className="form-check form-switch d-flex align-items-center justify-content-center">
-												<input
-													className="form-check-input"
-													type="checkbox"
-													role="switch"
-													checked={item.roomStatus.toLowerCase() === "active"}
-													onChange={() =>
-														handleToggleStatus(item.roomId, item.roomStatus)
-													}
-												/>
-												<span className={`badge ms-2 mt-1 ${item.roomStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
+											<div className="d-flex align-items-center justify-content-center">
+												<span className={`badge mt-1 ${item.roomStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
 													{item.roomStatus === "Active" || "available" ? "Kích hoạt" : "Đóng"}
 												</span>
 											</div>
 										</td>
-										<td className="text-center">
-											<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}  onClick={() => preEdit(item)}>
-												<i className="fas fa-edit text-white "></i>
-											</button>
-											<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}  onClick={() => handleDelete(item.roomId)}>
-												<i className="fas fa-trash-alt"></i>
-											</button>
+										<td className="text-center align-middle">
+											<div className="dropdown d-inline-block">
+												<button
+													type="button"
+													data-bs-toggle="dropdown"
+													aria-expanded="false"
+													className="dropdown-toggle-icon"
+												>
+													<i className="fas fa-ellipsis-v"></i>
+												</button>
+												<ul className="dropdown-menu dropdown-menu-end dropdown-menu-custom "
+													style={{
+														right: "50%",
+														transform: 'translate3d(-10px, 10px, 0px)',
+													}}
+												>
+													<li className="tbl-action" onClick={() => preEdit(item)}> 
+														<button className="dropdown-item tbl-action" onClick={() => preEdit(item)}>
+															Chỉnh sửa
+														</button>
+													</li>
+													<li className="tbl-action" onClick={() => handleDelete(item.roomId)}>
+														<button className="dropdown-item tbl-action" onClick={() => handleDelete(item.roomId)}>
+															Xoá
+														</button>
+													</li>
+													<li className="tbl-action" onClick={() => handleToggleStatus(item.roomId, item.roomStatus)}>
+														<button
+															className="dropdown-item tbl-action"
+															onClick={() =>
+																handleToggleStatus(item.roomId, item.roomStatus)
+															}
+														>
+															{item.roomStatus.toLowerCase() === "active"
+																? "Đóng"
+																: "Kích hoạt"}
+														</button>
+													</li>
+												</ul>
+											</div>
 										</td>
 									</tr>
 								)))}
