@@ -39,7 +39,7 @@ const menuItems = [
     role: ["user"],
     children: [
       { title: "Danh sách người dùng", path: "/staff/accountmanage" },
-      { title: "Nhóm người dùng", path: "/staff/accountmanage-s" },
+      { title: "Nhóm người dùng", path: "/staff/groupuser" },
     ],
   },
   { title: "Quản lý kỳ thi", icon: <i className="fa-solid fa-calendar-check icon-color"></i>, path: "/staff/organize", role: ["user", "admin"] },
