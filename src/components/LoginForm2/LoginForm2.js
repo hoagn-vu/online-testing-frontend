@@ -147,7 +147,7 @@ const LoginPage2 = () => {
 
         <button
           type="submit"
-          className="btn w-100 fw-bold css-btn mt-3 mb-4"
+          className="btn w-100 fw-bold css-btn mb-1"
           disabled={isLoading}
         >
           {isLoading ? (
