@@ -218,12 +218,41 @@ const QuestionBankPage = () => {
                     {item.totalQuestions}
                   </td>
                   <td className="text-center">
-                    <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}} onClick={() => handlePreEdit(item)}>
-                      <i className="fas fa-edit text-white "></i>
-                    </button>
-                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}} onClick={() => handleDelete(item.questionBankId)}>
-                      <i className="fas fa-trash-alt"></i>
-                    </button>
+                    <div className="dropdown">
+                      <button
+                        className="btn btn-light btn-sm "
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        style={{
+                          width: "35px",
+                          height: "35px",
+                          padding: 0,
+                          background: "none",
+                          border: "none",
+                          boxShadow: "none",
+                        }}
+                      >
+                        <i className="fas fa-ellipsis-v"></i>
+                      </button>
+                      <ul className="dropdown-menu dropdown-menu-end dropdown-menu-custom "
+                        style={{
+                          right: "50%",
+                          transform: 'translate3d(-10px, 10px, 0px)',
+                        }}
+                      >
+                        <li className="tbl-action" onClick={() => handlePreEdit(item)}> 
+                          <button className="dropdown-item tbl-action" onClick={() => handlePreEdit(item)}>
+                             Chỉnh sửa
+                          </button>
+                        </li>
+                        <li className="tbl-action" onClick={() => handleDelete(item.questionBankId)}>
+                          <button className="dropdown-item tbl-action" onClick={() => handleDelete(item.questionBankId)}>
+                             Xoá
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
                   </td>
                 </tr>
               )))}
