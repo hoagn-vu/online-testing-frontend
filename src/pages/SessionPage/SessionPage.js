@@ -13,6 +13,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
 import ApiService from "../../services/apiService";
+import AddButton from "../../components/AddButton/AddButton";
+import CancelButton from "../../components/CancelButton/CancelButton";
 
 const SessionPage = () => {
 	const { organizeId } = useParams();
@@ -185,6 +187,7 @@ const SessionPage = () => {
 		}).then((result) => {
 			if (result.isConfirmed) {
 				const newStatus = currentStatus === "Active" ? "Disabled" : "Active";
+        const statusLabel = newStatus === "active" ? "Kích hoạt" : "Đóng";
 
 				// Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
 				setRows((prevRows) =>
@@ -195,7 +198,7 @@ const SessionPage = () => {
 				console.log("sessionId được đổi status:", id)
 				Swal.fire({
 					title: "Cập nhật thành công!",
-					text: `Trạng thái đã chuyển sang "${newStatus}".`,
+					text: `Trạng thái đã chuyển sang "${statusLabel}".`,
 					icon: "success",
 				});
 			}
@@ -214,7 +217,7 @@ const SessionPage = () => {
 	}
 
 	return (
-		<div className="exam-management-page">
+		<div className="p-4">
 			{/* Breadcrumb */}
 			<nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
 				<Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
@@ -295,10 +298,10 @@ const SessionPage = () => {
           </div>
 
           <div className='right-header'>
-            <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={preAddNew}>
-              <i className="fas fa-plus me-2"></i>
-              Thêm mới
-            </button>
+						<AddButton onClick={preAddNew}>
+							<i className="fas fa-plus me-2"></i>
+								Thêm mới
+						</AddButton>
           </div>
         </div>
 
@@ -372,20 +375,12 @@ const SessionPage = () => {
 												Danh sách phòng thi
 											</td>
 											<td className="text-center">
-												<div className="form-check form-switch d-flex align-items-center justify-content-left">
-													<input
-														className="form-check-input"
-														type="checkbox"
-														role="switch"
-														checked={session.sessionStatus === "Active" || "available"}
-														onChange={() => handleToggleStatus(session.sessionId, session.sessionStatus)}
-													/>
-													<span className={`badge ms-2 mt-1 ${session.sessionStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
+												<div className="d-flex align-items-center justify-content-left">
+													<span className={`badge mt-1 ${session.sessionStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
 														{session.sessionStatus === "Active" || "available" ? "Kích hoạt" : "Đóng"}
 													</span>
 												</div>
 											</td>
-
 											<td className="text-center">
 												<Link className="text-hover-primary report-hover"
 														to={`/staff/organize/monitor/${organizeId}/${session.sessionId}`}
@@ -393,15 +388,46 @@ const SessionPage = () => {
 													Giám sát
 												</Link>
 											</td>
-											<td className="text-center">
-												<button className="btn btn-primary btn-sm" style={{ width: "35px", height: "35px" }}
-																onClick={() => preEdit(session)}>
-													<i className="fas fa-edit text-white"></i>
-												</button>
-												<button className="btn btn-danger btn-sm ms-2" style={{ width: "35px", height: "35px" }}
-																onClick={() => handleDelete(session.sessionId)}>
-													<i className="fas fa-trash-alt"></i>
-												</button>
+											<td className="text-center align-middle">
+												<div className="dropdown d-inline-block">
+													<button
+														type="button"
+														data-bs-toggle="dropdown"
+														aria-expanded="false"
+														className="dropdown-toggle-icon"
+													>
+														<i className="fas fa-ellipsis-v"></i>
+													</button>
+													<ul className="dropdown-menu dropdown-menu-end dropdown-menu-custom "
+														style={{
+															right: "50%",
+															transform: 'translate3d(-10px, 10px, 0px)',
+														}}
+													>
+														<li className="tbl-action" onClick={() => preEdit(session)}> 
+															<button className="dropdown-item tbl-action" onClick={() => preEdit(session)}>
+																Chỉnh sửa
+															</button>
+														</li>
+														<li className="tbl-action" onClick={() => handleDelete(session.sessionId)}>
+															<button className="dropdown-item tbl-action" onClick={() => handleDelete(session.sessionId)}>
+																Xoá
+															</button>
+														</li>
+														<li className="tbl-action" onClick={() => handleToggleStatus(session.sessionId, session.sessionStatus)}>
+															<button
+																className="dropdown-item tbl-action"
+																onClick={() =>
+																	handleToggleStatus(session.sessionId, session.sessionStatus)
+																}
+															>
+																{session.sessionStatus.toLowerCase() === "active"
+																	? "Đóng"
+																	: "Kích hoạt"}
+															</button>
+														</li>
+													</ul>
+												</div>
 											</td>
 										</tr>
 									))
@@ -433,7 +459,7 @@ const SessionPage = () => {
 						sx={{
 							width: "600px",
 							backgroundColor: "white",
-							p: 2,
+							p: 3,
 							borderRadius: "8px",
 							boxShadow: 3,
 							mx: "auto",
@@ -442,7 +468,7 @@ const SessionPage = () => {
 						}}
 						onSubmit={handleSubmit}
 					>
-						<p className="text-align fw-bold">
+						<p className="fw-bold mb-4">
 								{editingAccount ? "Chỉnh sửa thông tin ca thi" : "Tạo ca thi"}
 						</p>
 
@@ -497,26 +523,16 @@ const SessionPage = () => {
 						</Grid>
 							</Grid>		
 							{/* Buttons */}
-							<Grid container spacing={2} sx={{ mt: 2 }}>
-								<Grid item xs={6}>
-									<Button
-										type="submit"
-										variant="contained"
-										color="primary"
-										fullWidth
-									>
-										{editingAccount ? "Cập nhật" : "Lưu"}
-									</Button>
+							<Grid container spacing={2} sx={{ mt: 1, justifyContent: "flex-end" }}>
+								<Grid item xs={3}>
+									<CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>
+										Hủy
+									</CancelButton>
 								</Grid>
-								<Grid item xs={6}>
-									<Button
-										variant="outlined"
-										color="secondary"
-										fullWidth
-										onClick={() => setShowForm(false)}
-									>
-											Hủy
-									</Button>
+								<Grid item xs={3}>
+									<AddButton style={{width: "100%"}}>
+										{editingAccount ? "Cập nhật" : "Lưu"}
+									</AddButton>
 								</Grid>
 							</Grid>
 					</Box>

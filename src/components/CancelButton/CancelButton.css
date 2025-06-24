@@ -1,0 +1,17 @@
+.cancel-btn {
+  background-color: #ffffff; /* xám nhạt */
+  color: rgba(0, 0, 0, 0.5); /* xám đậm */
+  border: 2px solid rgba(99, 100, 103, 0.3);
+  padding: 10px 24px;
+  font-weight: 500;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  
+}
+
+.cancel-btn:hover {
+  box-shadow: 0 0 0 3px rgba(156, 163, 175, 0.3), 
+              0 4px 10px rgba(0, 0, 0, 0.1);
+}

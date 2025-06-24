@@ -247,7 +247,7 @@ const DetailExamPage = () => {
 
 	
 	return (
-		<div className="container list-question-container me-0">
+		<div className="container list-question-container me-0 p-4">
 			{/* Breadcrumb */}
 			<nav className="breadcrumb">
 				<Link to="/admin">Home</Link> / 

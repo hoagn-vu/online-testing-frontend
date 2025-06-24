@@ -31,13 +31,15 @@ import ScoreTableSessionPage from "./pages/ScoreTableSessionPage/ScoreTableSessi
 import ReportEachOrganizePage from "./pages/ReportEachOrganizePage/ReportEachOrganizePage";
 import Admin2Layout from "./layouts/Admin2Layout/Admin2Layout";
 import ExamCreationPage from "./pages/AddOrganizeExam/AddOrganizeExam";
-
 import NotFound from "./pages/NotFound/NotFound";
+import GroupUserPage from "./pages/GroupUserPage/GroupUserPage";
 
 import { authApi, useGetProfileQuery } from "./services/authApi";
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from "prop-types";
 import { setUser } from './redux/authSlice';
+
+import Login2 from "./pages/Login2/Login2";
 
 function App() {
   const accessToken = useSelector((state) => state.auth.accessToken) || localStorage.getItem("accessToken");
@@ -80,7 +82,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LoginPage />} />
+        <Route path="/" element={<Login2 />} />
         <Route path="/not-found" element={<NotFound />} />
       </Routes>
       <Routes>
@@ -93,6 +95,7 @@ function App() {
           }
         >
           <Route path="accountmanage" element={<AccountPage />} />
+          <Route path="groupuser" element={<GroupUserPage />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="organize" element={<OrganizeExamPage />} />
           <Route path="organize/report/:organizeId" element={<ReportEachOrganizePage />} />

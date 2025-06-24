@@ -10,6 +10,8 @@ import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import ApiService from "../../services/apiService";
 import CreatableSelect from "react-select/creatable";
+import AddButton from "../../components/AddButton/AddButton";
+import CancelButton from "../../components/CancelButton/CancelButton";
 
 const AccountPage = () => {
   const [listAccountUser, setListAccountUser] = useState([]);
@@ -239,9 +241,7 @@ const AccountPage = () => {
     confirmButtonColor: "#3085d6",
     cancelButtonColor: "#d33",
     reverseButtons: true,
-    customClass: {
-      cancelButton: "cancel-btn", // Áp dụng class cho nút Hủy
-    },
+
   });
 
   if (file) {
@@ -299,6 +299,7 @@ const AccountPage = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         const newStatus = currentStatus.toLowerCase() === "active" ? "disabled" : "active";
+        const statusLabel = newStatus === "active" ? "Hoạt động" : "Không hoạt động";
 
         // Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
         setRows((prevRows) =>
@@ -309,7 +310,7 @@ const AccountPage = () => {
         console.log("userId được đổi status:", id)
         Swal.fire({
           title: "Cập nhật thành công!",
-          text: `Trạng thái đã chuyển sang "${newStatus}".`,
+          text: `Trạng thái đã chuyển sang "${statusLabel}".`,
           icon: "success",
         });
       }
@@ -318,7 +319,7 @@ const AccountPage = () => {
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
   return (
-    <div className="sample-page p-4">
+    <div className="p-4">
       {/* Breadcrumbs */}
       <nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
         <Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
@@ -327,35 +328,36 @@ const AccountPage = () => {
         <span className="breadcrumb-current">Quản lý tài khoản</span>
       </nav>
       <div className="tbl-shadow p-3 pt-1">
-        {/* Thanh tìm kiếm + Nút thêm mới + Upload */}
-        <div className="account-actions">
-          <div className="search-container">
-            <div className="search-box d-flex align-items-center px-3" style={{ border: '1px solid #ddd', borderRadius: '8px', height: '40px', backgroundColor: '#fff', width: "250px" }}>
-              <i className="fa-solid fa-magnifying-glass me-2" style={{ fontSize: '14px', color: '#999' }}></i>
+        <div className="sample-card-header d-flex justify-content-between align-items-center mb-2">
+          <div className='left-header d-flex align-items-center'>
+            <div className="search-box rounded d-flex align-items-center"> 
+              <i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
               <input
                 type="text"
-                className="search-input border-0 w-100"
+                className="search-input w-100"
                 placeholder="Tìm kiếm..."
                 value={keyword}
                 onChange={handleKeywordChange}
-                style={{ outline: 'none', boxShadow: 'none', fontSize: '14px', color: '#333' }}
               />
             </div>
           </div>
-          <div className="role-selector mb-4">
-            <button className="btn btn-primary me-0" style={{fontSize: "14px"}} onClick={handleAddNew}>
+          <div className="role-selector d-flex align-items-center gap-2">
+            <AddButton onClick={handleAddNew}>
+              <i className="fas fa-plus me-2"></i> Thêm mới
+            </AddButton>
+            {/* <button className="btn btn-primary add-btn-hover" style={{fontSize: "14px"}} onClick={handleAddNew}>
               <i className="fas fa-plus me-2"></i>
               Thêm mới
-            </button>
+            </button> */}
             <button
               className="change-password-btn btn-size align-items-center d-flex"
               onClick={() => setShowPasswordForm(true)}
             >
               Đổi mật khẩu
             </button>
-            <button className="upload-btn btn-size align-items-center d-flex" onClick={handleUploadClick}>
-              Upload File
-            </button>
+            <AddButton className="upload-btn-hover" style={{backgroundColor: "#28A745"}} onClick={handleUploadClick}>
+              <i className="fas fa-upload me-2"></i>Upload File
+            </AddButton>
           </div>
         </div>
 
@@ -426,30 +428,55 @@ const AccountPage = () => {
                   <td className="text-center">{item.dateOfBirth}</td>
                   <td className="text-center">{item.gender}</td>
                   <td className="text-center">{item.groupName}</td>
-                  <td>
-                    <div className="form-check form-switch d-flex align-items-center justify-content-center">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        role="switch"
-                        checked={item.accountStatus.toLowerCase() === "active"}
-                        onChange={() =>
-                          handleToggleStatus(item.id, item.accountStatus)
-                        }
-                      />
+                  <td className="text-center">
+                    <div className="d-flex align-items-center justify-content-center">
                       <span className={`badge ms-2 mt-1 ${item.accountStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
                         {item.accountStatus === "Active" || "available" ? "Hoạt động" : "Không hoạt động"}
                       </span>
                     </div>
                   </td>
-                  <td className="text-center">
-                    <button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}} onClick={() => handleEdit(item)}>
-                      <i className="fas fa-edit text-white "></i>
-                    </button>
-                    <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}} onClick={() => handleDelete(item.id)}>
-                      <i className="fas fa-trash-alt"></i>
-                    </button>
+                  <td className="text-center align-middle">
+                    <div className="dropdown d-inline-block">
+                      <button
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        className="dropdown-toggle-icon"
+                      >
+                        <i className="fas fa-ellipsis-v"></i>
+                      </button>
+                      <ul className="dropdown-menu dropdown-menu-end dropdown-menu-custom"
+                        style={{
+                          right: "50%",
+                          transform: 'translate3d(-10px, 10px, 0px)',
+                        }}
+                      >
+                        <li className="tbl-action" onClick={() => handleEdit(item)}> 
+                          <button className="dropdown-item tbl-action" onClick={() => handleEdit(item)}>
+                             Chỉnh sửa
+                          </button>
+                        </li>
+                        <li className="tbl-action" onClick={() => handleDelete(item.id)}>
+                          <button className="dropdown-item tbl-action" onClick={() => handleDelete(item.id)}>
+                             Xoá
+                          </button>
+                        </li>
+                        <li className="tbl-action" onChange={() => handleToggleStatus(item.id, item.accountStatus)}>
+                          <button
+                            className="dropdown-item tbl-action"
+                            onClick={() =>
+                              handleToggleStatus(item.id, item.accountStatus)
+                            }
+                          >
+                            {item.accountStatus.toLowerCase() === "active"
+                              ? "Vô hiệu hoá"
+                              : "Kích hoạt"}
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
                   </td>
+
                 </tr>
               ))}
             </tbody>
@@ -477,14 +504,14 @@ const AccountPage = () => {
             sx={{
               width: "800px",
               backgroundColor: "white",
-              p: 4,
+              p: 3,
               borderRadius: "8px",
               boxShadow: 3,
               mx: "auto",
             }}
             onSubmit={handleSubmit}
           >
-            <p className="fw-bold">
+            <p className="fw-bold mb-4">
               {editingAccount ? "Chỉnh sửa tài khoản" : "Thêm tài khoản mới"}
             </p>
 
@@ -706,26 +733,14 @@ const AccountPage = () => {
             {/* Buttons */}
             <Grid container spacing={2} sx={{ mt: 1, justifyContent:"flex-end" }}>
               <Grid item xs={3}>
-                <Button
-                  variant="outlined"
-                  color="inherit"
-                  fullWidth
-                  onClick={() => setShowForm(false)}
-                  sx={{ color: '#6c757d', borderColor: '#6c757d' }}
-                >
+                <CancelButton onClick={() => setShowForm(false)} style={{width: "100%"}}>
                   Hủy
-                </Button>
+                </CancelButton>
               </Grid>
               <Grid item xs={3}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  sx={{ backgroundColor: 'rgb(48, 133, 214)' }}
-                  fullWidth
-                >
+                <AddButton style={{width: "100%"}}>
                   {editingAccount ? "Cập nhật" : "Lưu"}
-                </Button>
+                </AddButton>
               </Grid>
             </Grid>
           </Box>
@@ -779,11 +794,12 @@ const AccountPage = () => {
                 }
               />
               <div className="d-flex mt-2" style={{ gap: "20px" }}>
-                <button className="cancel-btn" 
-                  style={{width: "100%", border: "1px solid #6c757d",}} onClick={() => setShowPasswordForm(false)}>
+                <CancelButton onClick={() => setShowPasswordForm(false)} style={{width: "100%"}}>
                   Hủy
-                </button>
-                <button className="btn btn-primary" style={{width: "100%"}}>Lưu</button>
+                </CancelButton>
+                <AddButton style={{width: "100%"}}>
+                  Lưu
+                </AddButton>
               </div>
             </form>
           </div>

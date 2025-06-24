@@ -21,7 +21,7 @@
 
 .barchart-score {
     background-color: #fff;
-    border-radius: 15px;
+    border-radius: 10px;
     box-shadow: 4px 4px 27px 0 rgba(181, 180, 180, 0.25);
 
 }
@@ -30,7 +30,7 @@
     flex: 1;
     max-width: 33.33%;
     background-color: #fff;
-    border-radius: 15px;
+    border-radius: 10px;
     box-shadow: 4px 4px 27px 0 rgba(181, 180, 180, 0.25);
 
 }
@@ -51,22 +51,28 @@
     align-items: center; /* Căn giữa theo chiều dọc */
     gap: 20px; /* Khoảng cách giữa 2 biểu đồ */
     width: 100%;
-    border-radius: 15px;
+    border-radius: 10px;
 }
 
 .line-chart {
-    border-radius: 15px;
+    border-radius: 10px;
 }
 
 .all-btn {
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 4px 4px 27px 0 rgba(181, 180, 180, 0.25);
+    /* background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 4px 4px 27px 0 rgba(181, 180, 180, 0.25); */
+  cursor: pointer !important;
+  transition: background-color 0.3s !important;
+}
 
+.all-btn:hover {
+  color: #545454 !important;
+  border-bottom: 2px solid #606060 !important;
 }
 
 .organize-dash{
-    border-radius: 15px;
+    border-radius: 10px;
     background-color: #fff;
     box-shadow: 4px 4px 27px 0 rgba(181, 180, 180, 0.25);
 ;

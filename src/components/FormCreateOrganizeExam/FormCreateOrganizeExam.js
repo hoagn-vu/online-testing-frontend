@@ -8,7 +8,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import ReactSelect from 'react-select';
 import PropTypes from 'prop-types';
-
+import "./FormCreateOrganizeExam.css"
+import AddButton from "../../components/AddButton/AddButton";
+import CancelButton from "../../components/CancelButton/CancelButton";
 
 const FormCreateOrganizeExam = ({ onClose, typeOptions, questionBankOptions, subjectOptions  }) => {
 	const [editingOrganizeExam, setEditingOrganizeExam] = useState(null);
@@ -76,11 +78,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions, questionBankOptions, sub
       <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: '#1976d2',  }}>
             Tạo kỳ thi mới
       </Typography>
-      
-      <Box component="form" onSubmit={handleSubmit}>
-        {/* Phần thông tin kỳ thi */}
-        <Box sx={{ mb: 2, p: 2, pt: 1, border: '1px solid #eee', borderRadius: '8px' }}>
-                <Typography variant="h6" gutterBottom sx={{ 
+      <Typography variant="h6" gutterBottom sx={{ 
             fontWeight: 'bold', 
             color: '#333',
             display: 'flex',
@@ -96,38 +94,42 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions, questionBankOptions, sub
             }
           }}>            Thông tin kỳ thi
           </Typography>
-          
-          <Grid container spacing={2}>
-						<Grid item xs={12}>
-							<TextField
-								fullWidth
-								label="Tên kỳ thi"
-								required
-								value={examData.organizeExamName}
-								inputRef={inputRef}
-								onChange={(e) => setExamData({...examData, organizeExamName: e.target.value})}
-								sx={{
-										"& .MuiInputBase-input": { 
-												fontSize: "14px", 
-												padding: "8px 12px", // Thêm padding để text không dính sát viền
-										},
-										"& .MuiInputLabel-root": {
-												fontSize: "14px",
-												width: "100%",
-												left: "0",
-												top: "2px", // Đã điều chỉnh từ 0px lên 10px
-												"&.Mui-focused": {
-														transform: "translate(13px, -3px) scale(0.75)", // Điều chỉnh khi focus
-												},
-										},
-										"& .MuiInputBase-root": {
-												height: "40px",
-												fontSize: "14px",
-												marginTop: "8px", // Thêm margin top để tạo khoảng cách
-										},
-								}}
-							/>
-						</Grid>
+      <Box component="form" onSubmit={handleSubmit}>
+        {/* Phần thông tin kỳ thi */}
+        <Box 
+			className="box-shadow-custom"
+			sx={{ mb: 2, p: 2, pt: 1, border: '1px solid #eee', borderRadius: '8px' }}>
+          	<Grid container spacing={2}>
+			<Grid item xs={12}>
+				<TextField
+					fullWidth
+					label="Tên kỳ thi"
+					required
+					value={examData.organizeExamName}
+					inputRef={inputRef}
+					onChange={(e) => setExamData({...examData, organizeExamName: e.target.value})}
+					sx={{
+						"& .MuiInputBase-input": { 
+							fontSize: "14px", 
+							padding: "8px 12px", // Thêm padding để text không dính sát viền
+						},
+						"& .MuiInputLabel-root": {
+							fontSize: "14px",
+							width: "100%",
+							left: "0",
+							top: "2px", // Đã điều chỉnh từ 0px lên 10px
+							"&.Mui-focused": {
+									transform: "translate(13px, -3px) scale(0.75)", // Điều chỉnh khi focus
+							},
+						},
+						"& .MuiInputBase-root": {
+							height: "40px",
+							fontSize: "14px",
+							marginTop: "8px", // Thêm margin top để tạo khoảng cách
+						},
+					}}
+				/>
+			</Grid>
             
             <Grid item xs={6}>
               <TextField
@@ -407,6 +409,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions, questionBankOptions, sub
           
           {sessions.map((session, index) => (
 						<Box 
+							className="box-shadow-custom"
 							key={index} 
 							sx={{ 
 								mb: 2, 
@@ -417,7 +420,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions, questionBankOptions, sub
 								position: 'relative'
 							}}
 						>
-							<Typography variant="subtitle1" sx={{ mb: 1, fontSize: "16px" }}>
+							<Typography className='fw-bold' variant="subtitle1" sx={{ mb: 1, fontSize: "16px" }}>
 								Ca thi {index + 1}
 							</Typography>
 							
@@ -511,10 +514,10 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions, questionBankOptions, sub
 						</Box>
 					))}
         </Box>
-				<button className="btn btn-primary" style={{fontSize: "14px"}} onClick={addSession}>
+				<CancelButton style={{padding: "10px"}} onClick={addSession}>
 					<i className="fas fa-plus me-2"></i>
 					Thêm ca thi
-				</button>
+				</CancelButton>
 				{/* Đường phân cách */}
 				<Box sx={{ 
 					borderBottom: '1px solid #e0e0e0', 
@@ -524,12 +527,12 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions, questionBankOptions, sub
 				}} />
         {/* Nút submit */}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-          <Button variant="outlined" color="secondary" onClick={onClose}> 
-            Hủy
-          </Button>
-          <button className="btn btn-primary">
-            Tạo kỳ thi
-          </button>
+          <CancelButton onClick={onClose}>
+						Hủy
+					</CancelButton>
+					<AddButton >
+						<i className="fas fa-plus me-2"></i> Tạo kỳ thi
+					</AddButton>
         </Box>
       </Box>
     </Box>

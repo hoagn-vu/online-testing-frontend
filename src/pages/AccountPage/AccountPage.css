@@ -101,20 +101,6 @@
   transform: scale(1.3);
 } */
 
-.add-btn, .upload-btn {
-  background-color: #007bff;
-  color: white;
-  padding: 0px 12px 0px 12px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.upload-btn {
-  background-color: #28a745;
-}
-
 /* Bảng tài khoản */
 .account-table-container {
   margin-bottom: 20px;
@@ -203,14 +189,13 @@
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 14px;
+  font-size: 14px; 
 }
 
 .form-container button {
   margin-top: 15px;
   width: 40%;
   padding: 8px;
-  border: none;
   border-radius: 5px;
   font-size: 14px;
   cursor: pointer;
@@ -232,6 +217,13 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.change-password-btn:hover {
+  box-shadow: 0 0 0 3.5px #f7ca87 , 
+              0 6px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
 }
 
 .modal-overlay {
@@ -252,24 +244,39 @@
   justify-content: space-around;
 }
 
-.cancel-btn {
-  color: #6c757d !important;
-  background: white !important;
-  padding: 10px 15px;
-  cursor: pointer !important;
-  border-radius: 5px;
-  border-color: #6c757d !important;
-  border: 1px solid #6c757d !important;
-  text-align: center !important;
-  display: inline-block !important;
-}
-
 .btn-size {
   font-size: 14px;
 }
 
 .input-height {
   height: 47px;
+}
+
+.dropdown-menu-custom {
+  right: 50% !important;
+  transform: translate3d(-20px, 10px, 10px) !important;
+}
+
+.tbl-action:hover {
+  background-color: #f0f8ff;
+}
+
+.dropdown-toggle-icon {
+  width: 35px;
+  height: 35px;
+  padding: 0;
+  border: none;
+  background: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-toggle-icon:hover {
+  background-color: #fafafa; /* xám nhạt */
+  cursor: pointer;
 }
 
 @media (max-width: 760px) {

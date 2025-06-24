@@ -239,7 +239,7 @@ const DetailExamMatrixPage = () => {
 	};
 		
 	return (
-		<div className="detail-matrix-page">
+		<div className="p-4">
 			{/* Breadcrumb */}
 			<nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
 				<Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i></Link> 

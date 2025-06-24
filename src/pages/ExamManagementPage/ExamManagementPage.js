@@ -10,6 +10,8 @@ import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import ReactSelect  from 'react-select';
 import ApiService from "../../services/apiService";
+import AddButton from "../../components/AddButton/AddButton";
+import CancelButton from "../../components/CancelButton/CancelButton";
 
 const ExamManagementPage = () => {
 	const [listExam, setListExam] = useState([]);
@@ -179,7 +181,7 @@ const ExamManagementPage = () => {
   };
 
 	return (
-		<div className="sample-management-page">
+		<div className="p-4">
 			{/* Breadcrumb */}
 			<nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
 				<Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
@@ -205,10 +207,10 @@ const ExamManagementPage = () => {
           </div>
 
           <div className='right-header'>
-            <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={preAddNew}>
-              <i className="fas fa-plus me-2"></i>
+						<AddButton onClick={preAddNew}>
+							<i className="fas fa-plus me-2"></i>
               Thêm mới
-            </button>
+						</AddButton>
           </div>
         </div>
 
@@ -267,6 +269,43 @@ const ExamManagementPage = () => {
 										{item.questionBankName}
 									</td>
 									<td className="text-center">
+                    <div className="dropdown">
+                      <button
+                        className="btn btn-light btn-sm "
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        style={{
+                          width: "35px",
+                          height: "35px",
+                          padding: 0,
+                          background: "none",
+                          border: "none",
+                          boxShadow: "none",
+                        }}
+                      >
+                        <i className="fas fa-ellipsis-v"></i>
+                      </button>
+                      <ul className="dropdown-menu dropdown-menu-end dropdown-menu-custom "
+                        style={{
+                          right: "50%",
+                          transform: 'translate3d(-10px, 10px, 0px)',
+                        }}
+                      >
+                        <li className="tbl-action" onClick={() => preEdit(item)}> 
+                          <button className="dropdown-item tbl-action" onClick={() => preEdit(item)}>
+                             Chỉnh sửa
+                          </button>
+                        </li>
+                        <li className="tbl-action" onClick={() => handleDelete(item.id)}>
+                          <button className="dropdown-item tbl-action" onClick={() => handleDelete(item.id)}>
+                             Xoá
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  </td>
+									<td className="text-center">
 										<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
 											<i className="fas fa-edit text-white "></i>
 										</button>
@@ -302,7 +341,7 @@ const ExamManagementPage = () => {
 							sx={{
 								width: "700px",
 								backgroundColor: "white",
-								p: 3.8,
+								p: 3,
 								borderRadius: "8px",
 								boxShadow: 3,
 								mx: "auto",
@@ -431,26 +470,16 @@ const ExamManagementPage = () => {
 								</Grid>
 							</Grid>		
 							{/* Buttons */}
-							<Grid container spacing={2} sx={{ mt: 1 }}>
-								<Grid item xs={6}>
-									<Button
-										type="submit"
-										variant="contained"
-										color="primary"
-										fullWidth
-									>
-										{editingAccount ? "Cập nhật" : "Lưu"}
-									</Button>
-								</Grid>
-								<Grid item xs={6}>
-									<Button
-										variant="outlined"
-										color="secondary"
-										fullWidth
-										onClick={() => setShowForm(false)}
-									>
+							<Grid container spacing={2} sx={{ mt: 1, justifyContent: "flex-end" }}>
+								<Grid item xs={3}>
+									<CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>
 										Hủy
-									</Button>
+									</CancelButton>
+								</Grid>
+								<Grid item xs={3}>
+									<AddButton style={{width: "100%"}}>
+										{editingAccount ? "Cập nhật" : "Lưu"}
+									</AddButton>
 								</Grid>
 							</Grid>
 						</Box>

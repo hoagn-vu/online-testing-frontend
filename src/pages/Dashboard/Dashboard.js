@@ -65,17 +65,17 @@ const Dashboard = () => {
         <CardDashboard
           title="Số lượng thí sinh"
           value="+200"
-          icon={<FaDollarSign />}
+          icon={<i className="fa-solid fa-users"></i>}
+        />
+        <CardDashboard
+          title="Cán bộ nhân viên"
+          value="+200"
+          icon={<i className="fa-solid fa-chalkboard-user"></i>}
         />
         <CardDashboard
           title="Kỳ thi đã tổ chức"
           value="+200"
-          icon={<FaDollarSign />}
-        />
-        <CardDashboard
-          title="Người dùng mới"
-          value="+200"
-          icon={<FaDollarSign />}
+          icon={<i className="fa-solid fa-calendar"></i>}
         />
         <CardDashboard
           title="Người dùng mới"
@@ -114,7 +114,42 @@ const Dashboard = () => {
                       height: "30px",        // Chiều cao tổng thể
                       fontSize: "13px",
                       width: "200px",
-                      minHeight: "30px"
+                      minHeight: "30px",
+                      borderRadius: "6px"
+                    }),
+                    valueContainer: (base) => ({
+                      ...base,
+                      height: "30px",
+                      padding: "0 8px",       // Tuỳ chỉnh padding nếu cần
+                      display: "flex",
+                      alignItems: "center",   // Căn giữa nội dung theo chiều dọc
+                    }),
+                    indicatorsContainer: (base) => ({
+                      ...base,
+                      height: "30px",
+                    }),
+                    menu: (base) => ({
+                      ...base,
+                      zIndex: 9999,
+                    }),
+                  }}								
+                />
+                <ReactSelect
+                  className="basic-single"
+                  classNamePrefix="select"
+                  placeholder="Chọn kỳ"
+                  options={subjectOptions}
+                  onChange={(selectedOption) => 
+                    setExamData({...examData, subjectId: selectedOption?.value})
+                  }
+                  styles={{
+                    control: (base) => ({
+                      ...base,
+                      height: "30px",        // Chiều cao tổng thể
+                      fontSize: "13px",
+                      width: "200px",
+                      minHeight: "30px",
+                      borderRadius: "6px"
                     }),
                     valueContainer: (base) => ({
                       ...base,
@@ -146,8 +181,8 @@ const Dashboard = () => {
 
           <div className="pt-4" >
             <div className="d-flex justify-content-between align-items-center">
-              <p className="fw-bold m-0" >Danh sách kỳ thi</p>
-              <div className="d-flex align-items-center all-btn p-2 pt-1 pb-1"
+              <p className="fw-bold m-0" style={{fontSize: "18px"}}>Danh sách kỳ thi</p>
+              <div className="d-flex align-items-center all-btn"
                 style={{ cursor: "pointer" }}
               >
                 <p className="m-0" style={{color: '#545454'}}>Hiển thị tất cả</p>
@@ -257,7 +292,7 @@ const Dashboard = () => {
           <hr className="border-top border-secondary opacity-25 my-3" />
           <div className="ps-3 mb-3 d-flex justify-content-between align-items-center">
             <p className="fw-bold m-0">Thông báo</p>
-            <div className="d-flex align-items-center all-btn p-2 pt-1 pb-1"
+            <div className="d-flex align-items-center all-btn"
                 style={{ cursor: "pointer" }}
               >
               <p className="m-0" style={{color: '#545454'}}>Hiển thị tất cả</p>

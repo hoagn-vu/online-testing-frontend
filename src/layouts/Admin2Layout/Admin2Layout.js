@@ -36,10 +36,10 @@ const menuItems = [
   { 
     title: "Quản lý người dùng", 
     icon: <i className="fa-solid fa-user-gear icon-color"></i>, 
-    path: "/staff/accountmanage", 
     role: ["user"],
     children: [
-      { title: "Nhóm người dùng", path: "/staff/accountmanage" },
+      { title: "Danh sách người dùng", path: "/staff/accountmanage" },
+      { title: "Nhóm người dùng", path: "/staff/groupuser" },
     ],
   },
   { title: "Quản lý kỳ thi", icon: <i className="fa-solid fa-calendar-check icon-color"></i>, path: "/staff/organize", role: ["user", "admin"] },
@@ -245,8 +245,9 @@ export default function Admin2Layout() {
                     onClick={() => {
                       if (item.children) {
                         handleToggle(item.title);   // mở submenu
+                      } else {
+                        navigate(item.path);          // điều hướng
                       }
-                      navigate(item.path);          // điều hướng
                     }}
                     selected={location.pathname.startsWith(item.path)}
                     sx={{
@@ -265,44 +266,39 @@ export default function Admin2Layout() {
 
               {item.children && (
                 <Collapse in={isMenuOpen(item)} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding>
-                    {item.children.map((subItem) => (
-                      <ListItemButton
-                        key={subItem.title}
-                        onClick={() => navigate(subItem.path)}
-                        selected={location.pathname === subItem.path}
-                        sx={{
-                          pl: 0,
-                          ml: '30px',
-                          py: 1,
-                          fontWeight: 'bold',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 1,
-                          '&.Mui-selected': {
-                            backgroundColor: 'transparent',
-                            color: '#1976D2',
-                          },
-                          '&:hover': {
-                            backgroundColor: '#f5f5f5', // Hover nhẹ nếu bạn muốn
-                          },
-                        }}
-                      >
-                        {/* Thanh dọc xanh luôn hiển thị */}
-                        <Box
+                  <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                    {/* Thanh dọc xanh chung cho toàn bộ submenu */}
+                    <Box
+                      sx={{
+                        width: '3px',
+                        backgroundColor: '#1976D2',
+                        borderRadius: '2px',
+                        ml: '40px',
+                      }}
+                    />
+                    <List component="div" disablePadding>
+                      {item.children.map((subItem) => (
+                        <ListItemButton
+                          key={subItem.title}
+                          onClick={() => navigate(subItem.path)}
+                          selected={location.pathname === subItem.path}
                           sx={{
-                            width: '4px',
-                            height: '35px',
-                            backgroundColor: location.pathname === subItem.path ? '#1976D2' : '#1976D2', // xanh đậm nếu chọn, nhạt nếu không
-                            borderRadius: '2px',
-                            ml: '8px',
-                            mr: '8px',
+                            pl: 2,
+                            py: 0.8, // nhỏ hơn để sát nhau
+                            '&.Mui-selected': {
+                              backgroundColor: 'transparent',
+                              color: '#1976D2',
+                            },
+                            '&:hover': {
+                              backgroundColor: '#f5f5f5',
+                            },
                           }}
-                        />
-                        <ListItemText primary={subItem.title} />
-                      </ListItemButton>
-                    ))}
-                  </List>
+                        >
+                          <ListItemText primary={subItem.title} />
+                        </ListItemButton>
+                      ))}
+                    </List>
+                  </Box>
                 </Collapse>
               )}
             </React.Fragment>
@@ -315,6 +311,7 @@ export default function Admin2Layout() {
           flexGrow: 1,
           p: 0,
           paddingTop: 0,
+          // backgroundColor: "#F8F9FA",
           backgroundColor: "#F8F9FA",
           minHeight: "100vh",
           transition: "margin 0.3s ease, width 0.3s ease",

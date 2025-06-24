@@ -8,6 +8,8 @@ import SearchBox from "../../components/SearchBox/SearchBox";
 import ReactSelect  from 'react-select';
 import ApiService from "../../services/apiService";
 import { IdCard } from "lucide-react";
+import AddButton from "../../components/AddButton/AddButton";
+import CancelButton from "../../components/CancelButton/CancelButton";
 
 const CandidateOrganizePage = () => {
   const [showForm, setShowForm] = useState(false);
@@ -112,7 +114,7 @@ const CandidateOrganizePage = () => {
 	};
 	
 	return (
-		<div className="exam-management-page">
+		<div className="p-4">
 			{/* Breadcrumb */}
 			<nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
 				<Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
@@ -155,10 +157,10 @@ const CandidateOrganizePage = () => {
           </div>
 
           <div className='right-header'>
-            <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={preAddNew}>
-              <i className="fas fa-plus me-2"></i>
+						<AddButton onClick={preAddNew}>
+							<i className="fas fa-plus me-2"></i>
               Thêm mới
-            </button>
+						</AddButton>
           </div>
         </div>
 
@@ -225,14 +227,14 @@ const CandidateOrganizePage = () => {
 						sx={{
 							width: "500px",
 							backgroundColor: "white",
-							p: 2,
+							p: 3,
 							borderRadius: "8px",
 							boxShadow: 3,
 							mx: "auto",
 						}}
 						onSubmit={handleSubmit}
 					>
-						<p className="fw-bold">Thêm thí sinh vào phòng thi</p>
+						<p className="fw-bold mb-4">Thêm thí sinh vào phòng thi</p>
 						<Grid container>	
 							<Grid item xs={12}>									
 								<TextField
@@ -253,22 +255,16 @@ const CandidateOrganizePage = () => {
 							</Grid>	
 						</Grid>		
 						{/* Buttons */}
-						<Grid container spacing={2} sx={{ mt: 1 }}>
-							<Grid item xs={6}>
-								<Button
-									type="submit"
-									variant="contained"
-									color="primary"
-									fullWidth 
-								> Lưu </Button>
+						<Grid container spacing={2} sx={{ mt: 1, justifyContent: "flex-end" }}>
+							<Grid item xs={3}>
+								<CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>
+									Hủy
+								</CancelButton>
 							</Grid>
-							<Grid item xs={6}>
-								<Button
-										variant="outlined"
-										color="secondary"
-										fullWidth
-										onClick={() => setShowForm(false)}
-								> Hủy </Button>
+							<Grid item xs={3}>
+								<AddButton style={{width: "100%"}}>
+									Lưu
+								</AddButton>
 							</Grid>
 						</Grid>
 					</Box>

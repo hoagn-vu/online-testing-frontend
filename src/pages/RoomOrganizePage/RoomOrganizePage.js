@@ -11,6 +11,10 @@ import SearchBox from "../../components/SearchBox/SearchBox";
 import ReactSelect  from 'react-select';
 import ApiService from "../../services/apiService";
 import { IdCardIcon } from "@radix-ui/react-icons";
+import AddButton from "../../components/AddButton/AddButton";
+import CancelButton from "../../components/CancelButton/CancelButton";
+import { Add } from "@mui/icons-material";
+import FormDivideStudent from "../../components/FormDivideStudent/FormDivideStudent";
 
 const RoomOrganizePage = () => {
 	const [showForm, setShowForm] = useState(false);
@@ -31,6 +35,7 @@ const RoomOrganizePage = () => {
 	const [supervisorOptions, setSupervisorOptions] = useState([]);
 	const [candidateGroupOptions, setCandidateGroupOptions] = useState([]);
 	const navigate = useNavigate();
+	const [showFormDivide, setShowFormDivide] = useState(false);
 
 	useEffect(() => {
 		if (showForm && inputRef.current) {
@@ -161,8 +166,6 @@ const RoomOrganizePage = () => {
 				console.log("Xóa phòng thi có ID:", id);
 				setRoomsOrganize(prev => prev.filter(room => room.roomId !== id));
 
-
-	
 				Swal.fire({
 					title: "Đã xóa!",
 					text: "Phòng thi đã bị xóa.",
@@ -185,7 +188,8 @@ const RoomOrganizePage = () => {
 		}).then((result) => {
 		  if (result.isConfirmed) {
 			const newStatus = currentStatus.toLowerCase() === "active" ? "disabled" : "active";
-	
+			const statusLabel = newStatus === "active" ? "Kích hoạt" : "Đóng";
+
 			// Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
 			setRows((prevRows) =>
 			  prevRows.map((row) =>
@@ -195,7 +199,7 @@ const RoomOrganizePage = () => {
 			console.log("organizeExamId được đổi status:", id)
 			Swal.fire({
 			  title: "Cập nhật thành công!",
-			  text: `Trạng thái đã chuyển sang "${newStatus}".`,
+			  text: `Trạng thái đã chuyển sang "${statusLabel}".`,
 			  icon: "success",
 			});
 		  }
@@ -213,7 +217,7 @@ const RoomOrganizePage = () => {
 	}
 
 	return (
-		<div className="exam-management-page">
+		<div className="p-4">
 			{/* Breadcrumb */}
 			<nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
 				<Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
@@ -232,6 +236,13 @@ const RoomOrganizePage = () => {
 				<span className="breadcrumb-current">{sessionName}</span>
 			</nav>
 
+			{showFormDivide ? (
+				<FormDivideStudent 
+					onClose={() => setShowFormDivide(false)}
+
+				/>
+			) : (
+				<>
 			<div className="tbl-shadow p-3">
 				<div className="sample-card-header d-flex justify-content-between align-items-center mb-2">
           <div className='left-header d-flex align-items-center'>
@@ -248,10 +259,14 @@ const RoomOrganizePage = () => {
           </div>
 
           <div className='right-header'>
-            <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={preAddNew}>
-              <i className="fas fa-plus me-2"></i>
+						<AddButton onClick={() => setShowFormDivide(true)}>
+							<i className="fas fa-plus me-2"></i>
+              Thêm mới mới
+						</AddButton>
+						<AddButton onClick={preAddNew}>
+							<i className="fas fa-plus me-2"></i>
               Thêm mới
-            </button>
+						</AddButton>
           </div>
         </div>
 
@@ -303,28 +318,52 @@ const RoomOrganizePage = () => {
 											Danh sách thí sinh
 										</td>
 										<td>
-											<div className="form-check form-switch d-flex align-items-center justify-content-center">
-												<input
-													className="form-check-input"
-													type="checkbox"
-													role="switch"
-													checked={item.roomStatus.toLowerCase() === "active"}
-													onChange={() =>
-														handleToggleStatus(item.roomId, item.roomStatus)
-													}
-												/>
-												<span className={`badge ms-2 mt-1 ${item.roomStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
+											<div className="d-flex align-items-center justify-content-center">
+												<span className={`badge mt-1 ${item.roomStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
 													{item.roomStatus === "Active" || "available" ? "Kích hoạt" : "Đóng"}
 												</span>
 											</div>
 										</td>
-										<td className="text-center">
-											<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}  onClick={() => preEdit(item)}>
-												<i className="fas fa-edit text-white "></i>
-											</button>
-											<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}  onClick={() => handleDelete(item.roomId)}>
-												<i className="fas fa-trash-alt"></i>
-											</button>
+										<td className="text-center align-middle">
+											<div className="dropdown d-inline-block">
+												<button
+													type="button"
+													data-bs-toggle="dropdown"
+													aria-expanded="false"
+													className="dropdown-toggle-icon"
+												>
+													<i className="fas fa-ellipsis-v"></i>
+												</button>
+												<ul className="dropdown-menu dropdown-menu-end dropdown-menu-custom "
+													style={{
+														right: "50%",
+														transform: 'translate3d(-10px, 10px, 0px)',
+													}}
+												>
+													<li className="tbl-action" onClick={() => preEdit(item)}> 
+														<button className="dropdown-item tbl-action" onClick={() => preEdit(item)}>
+															Chỉnh sửa
+														</button>
+													</li>
+													<li className="tbl-action" onClick={() => handleDelete(item.roomId)}>
+														<button className="dropdown-item tbl-action" onClick={() => handleDelete(item.roomId)}>
+															Xoá
+														</button>
+													</li>
+													<li className="tbl-action" onClick={() => handleToggleStatus(item.roomId, item.roomStatus)}>
+														<button
+															className="dropdown-item tbl-action"
+															onClick={() =>
+																handleToggleStatus(item.roomId, item.roomStatus)
+															}
+														>
+															{item.roomStatus.toLowerCase() === "active"
+																? "Đóng"
+																: "Kích hoạt"}
+														</button>
+													</li>
+												</ul>
+											</div>
 										</td>
 									</tr>
 								)))}
@@ -353,7 +392,7 @@ const RoomOrganizePage = () => {
 						sx={{
 							width: "600px",
 							backgroundColor: "white",
-							p: 2,
+							p: 3,
 							borderRadius: "8px",
 							boxShadow: 3,
 							mx: "auto",
@@ -362,7 +401,9 @@ const RoomOrganizePage = () => {
 						}}
 						onSubmit={handleSubmit}
 					>
-						<p className="text-align fw-bold">{editingRoomOrganize ? "Chỉnh sửa thông tin ca thi" : "Thêm phòng thi"}</p>
+						<p className="fw-bold mb-4">
+							{editingRoomOrganize ? "Chỉnh sửa thông tin phòng thi" : "Thêm phòng thi"}
+						</p>
 						<Grid container spacing={2}>										
 						<Grid item xs={12}>
 						<ReactSelect
@@ -458,31 +499,25 @@ const RoomOrganizePage = () => {
 							</Grid> */}
 						</Grid>		
 						{/* Buttons */}
-						<Grid container spacing={2} sx={{ mt: 2 }}>
-								<Grid item xs={6}>
-										<Button
-												type="submit"
-												variant="contained"
-												color="primary"
-												fullWidth
-										>
-												{editingRoomOrganize ? "Cập nhật" : "Lưu"}
-										</Button>
+						<Grid container spacing={2} sx={{ mt: 1, justifyContent: "flex-end" }}>
+								<Grid item xs={3}>
+									<CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>
+										Hủy
+									</CancelButton>
 								</Grid>
-								<Grid item xs={6}>
-										<Button
-											variant="outlined"
-											color="secondary"
-											fullWidth
-											onClick={() => setShowForm(false)}
-										> Hủy </Button>
+								<Grid item xs={3}>
+									<AddButton style={{width: "100%"}}>
+										{editingRoomOrganize ? "Cập nhật" : "Lưu"}
+									</AddButton>
 								</Grid>
 						</Grid>
 					</Box>
-				</div>
+					</div>
+				)}
+				</>
 			)}
-		</div>
-	)
+    </div>
+  )
 }
 
 export default RoomOrganizePage;

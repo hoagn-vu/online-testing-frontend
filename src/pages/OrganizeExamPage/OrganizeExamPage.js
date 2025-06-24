@@ -12,6 +12,9 @@ import ApiService from "../../services/apiService";
 import CreatableSelect from "react-select/creatable";
 import ReactSelect  from 'react-select';
 import FormCreateOrganizeExam from "../../components/FormCreateOrganizeExam/FormCreateOrganizeExam";
+import AddButton from "../../components/AddButton/AddButton";
+import CancelButton from "../../components/CancelButton/CancelButton";
+import { Add } from "@mui/icons-material";
 
 const OrganizeExamPage = () => {
   const [listOrganizeExam, setListOrganizeExam] = useState([]);
@@ -146,6 +149,7 @@ const OrganizeExamPage = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         const newStatus = currentStatus.toLowerCase() === "active" ? "disabled" : "active";
+        const statusLabel = newStatus === "active" ? "Kích hoạt" : "Đóng";
 
         // Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
         setRows((prevRows) =>
@@ -156,7 +160,7 @@ const OrganizeExamPage = () => {
         console.log("organizeExamId được đổi status:", id)
         Swal.fire({
           title: "Cập nhật thành công!",
-          text: `Trạng thái đã chuyển sang "${newStatus}".`,
+          text: `Trạng thái đã chuyển sang "${statusLabel}".`,
           icon: "success",
         });
       }
@@ -243,7 +247,7 @@ const OrganizeExamPage = () => {
 	};
 
   return (
-    <div className="exam-management-page">
+    <div className="p-4">
       {/* Breadcrumb */}
 			<nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
 				<Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
@@ -276,14 +280,13 @@ const OrganizeExamPage = () => {
 								</div>
 							</div>
 
-							<div className='right-header'>
+							<div className='right-header d-flex'>
+								<AddButton onClick={() => setShowFormCreate(true)}>
+									<i className="fas fa-plus me-2"></i> Thêm mới
+								</AddButton>
 								<button className="btn btn-primary" style={{fontSize: "14px"}} onClick={preAddNew}>
 									<i className="fas fa-plus me-2"></i>
 									Thêm mới
-								</button>
-								<button className="btn btn-primary" style={{fontSize: "14px"}} onClick={() => setShowFormCreate(true)}>
-									<i className="fas fa-plus me-2"></i>
-									Thêm mới mới
 								</button>
 							</div>
 						</div>
@@ -303,7 +306,6 @@ const OrganizeExamPage = () => {
 											<th className="text-center">Thời gian (M)</th>
 											<th className="text-center">Điểm</th>
 											<th className="text-center">Trạng thái</th>
-											<th className="text-center">Báo cáo</th>
 											<th className="text-center">Thao tác</th>
 										</tr>
 									</thead>
@@ -386,38 +388,71 @@ const OrganizeExamPage = () => {
 												>
 													{item.maxScore}
 												</td>
-												<td>
-												<div className="form-check form-switch d-flex align-items-center justify-content-center" >
-													<input
-														className="form-check-input"
-														type="checkbox"
-														role="switch"
-														checked={item.organizeExamStatus.toLowerCase() === "active"}
-														onChange={() =>
-															handleToggleStatus(item.id, item.organizeExamStatus)
-														}
-													/>
-													<span className={`badge ms-2 mt-1 ${item.organizeExamStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
-														{item.organizeExamStatus === "Active" || "available" ? "Kích hoạt" : "Đóng"}
-													</span>
-												</div>
-											</td>
 												<td className="text-center">
-													<Link
-														to={`/staff/organize/report/${item.id}`}     
-														style={{ color: "blue", cursor: "pointer" }}
-														className="report-hover"
-													>
-														Chi tiết
-													</Link>
+													<div className="d-flex align-items-center justify-content-center" >
+														<span className={`badge mt-1 ${item.organizeExamStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
+															{item.organizeExamStatus === "Active" || "available" ? "Kích hoạt" : "Đóng"}
+														</span>
+													</div>
 												</td>
 												<td className="text-center">
-													<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}} onClick={() => preEdit(item)}>
-														<i className="fas fa-edit text-white "></i>
-													</button>
-													<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}} onClick={() => handleDelete(item.id)}>
-														<i className="fas fa-trash-alt"></i>
-													</button>
+													<div className="dropdown">
+														<button
+															className="btn btn-light btn-sm "
+															type="button"
+															data-bs-toggle="dropdown"
+															aria-expanded="false"
+															style={{
+																width: "35px",
+																height: "35px",
+																padding: 0,
+																background: "none",
+																border: "none",
+																boxShadow: "none",
+															}}
+														>
+															<i className="fas fa-ellipsis-v"></i>
+														</button>
+														<ul className="dropdown-menu dropdown-menu-end dropdown-menu-custom"
+															style={{
+																right: "50%",
+																transform: 'translate3d(-10px, 10px, 0px)',
+															}}
+														>
+															<li className="tbl-action" onClick={() => preEdit(item)}> 
+																<button className="dropdown-item tbl-action" onClick={() => preEdit(item)}>
+																	Chỉnh sửa
+																</button>
+															</li>
+															<li className="tbl-action" onClick={() => handleDelete(item.id)}>
+																<button className="dropdown-item tbl-action" onClick={() => handleDelete(item.id)}>
+																	Xoá
+																</button>
+															</li>
+															<li className="tbl-action">
+																<button className="dropdown-item tbl-action">
+																	<Link
+																		to={`/staff/organize/report/${item.id}`}  
+																		style={{color: "black", textDecoration: "none"}}   
+																	>
+																		Báo cáo
+																	</Link>
+																</button>
+															</li>
+															<li className="tbl-action" onClick={() => handleToggleStatus(item.id, item.organizeExamStatus)}>
+																<button
+																	className="dropdown-item tbl-action"
+																	onClick={() =>
+																		handleToggleStatus(item.id, item.organizeExamStatus)
+																	}
+																>
+																	{item.organizeExamStatus.toLowerCase() === "active"
+																		? "Đóng"
+																		: "Kích hoạt"}
+																</button>
+															</li>
+														</ul>
+													</div>
 												</td>
 											</tr>
 										)))}
@@ -445,16 +480,16 @@ const OrganizeExamPage = () => {
 						<Box
 							component="form"
 							sx={{
-								width: "600px",
+								width: "650px",
 								backgroundColor: "white",
-								p: 2,
+								p: 3,
 								borderRadius: "8px",
 								boxShadow: 3,
 								mx: "auto",
 							}}
 							onSubmit={handleSubmit}
 						>
-							<p className=" fw-bold">
+							<p className="fw-bold mb-4">
 								{editingOrganizeExam ? "Chỉnh sửa thông tin kỳ thi" : "Tạo kỳ thi"}
 							</p>
 	
@@ -531,9 +566,9 @@ const OrganizeExamPage = () => {
 										styles={{
 											control: (base) => ({
 												...base,
-												width: "275px", // Cố định chiều rộng
-												minWidth: "275px",
-												maxWidth: "250px",
+												width: "292px", // Cố định chiều rộng
+												minWidth: "292px",
+												maxWidth: "260px",
 												height: "48px", // Tăng chiều cao
 												minHeight: "40px",
 											}),
@@ -573,8 +608,8 @@ const OrganizeExamPage = () => {
 										styles={{
 											control: (base) => ({
 												...base,
-												width: "275px", // Cố định chiều rộng
-												minWidth: "275px",
+												width: "292px", // Cố định chiều rộng
+												minWidth: "292px",
 												maxWidth: "250px",
 												height: "48px", // Tăng chiều cao
 												minHeight: "40px",
@@ -730,26 +765,16 @@ const OrganizeExamPage = () => {
                 )}
 							</Grid>		
 							{/* Buttons */}
-							<Grid container spacing={2} sx={{ mt: 2 }}>
-								<Grid item xs={6}>
-									<Button
-										type="submit"
-										variant="contained"
-										color="primary"
-										fullWidth
-									>
-										{editingOrganizeExam ? "Cập nhật" : "Lưu"}
-									</Button>
-								</Grid>
-								<Grid item xs={6}>
-									<Button
-										variant="outlined"
-										color="secondary"
-										fullWidth
-										onClick={() => resetForm()}
-									>
+							<Grid container spacing={2} sx={{ mt: 1, justifyContent:"flex-end" }}>
+								<Grid item xs={3}>
+									<CancelButton style={{width: "100%"}} onClick={() => resetForm()}>
 										Hủy
-									</Button>
+									</CancelButton>
+								</Grid>
+								<Grid item xs={3}>
+									<AddButton style={{width: "100%"}}>
+										{editingOrganizeExam ? "Cập nhật" : "Lưu"}
+									</AddButton>
 								</Grid>
 							</Grid>
 						</Box>

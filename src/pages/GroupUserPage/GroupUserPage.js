@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "./SubjectPage.css";
+import "./GroupUserPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { Box, Button, Grid, Pagination, TextField, Paper } from "@mui/material";
@@ -11,7 +11,7 @@ import ApiService from "../../services/apiService";
 import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
 
-const SubjectPage = () => {
+const GroupUserPage = () => {
   const [listSubject, setListSubject] = useState([]);
 
   const [keyword, setKeyword] = useState("");
@@ -173,8 +173,8 @@ const SubjectPage = () => {
             <thead>
               <tr className="align-middle">
                 <th scope="col" className="text-center title-row" style={{ width: "50px"}}>STT</th>
-                <th scope="col" className="title-row">Phân môn</th>
-                <th className="text-center">Số lượng bộ câu hỏi</th>
+                <th scope="col" className="title-row">Nhóm</th>
+                <th className="text-center">Số lượng thí sinh</th>
                 <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
               </tr>
             </thead>
@@ -270,60 +270,61 @@ const SubjectPage = () => {
             <Box
               component="form"
               sx={{
-                  width: "700px",
-                  backgroundColor: "white",
-                  p: 3,
-                  borderRadius: "8px",
-                  boxShadow: 3,
-                  mx: "auto",
+                width: "700px",
+                backgroundColor: "white",
+                p: 3,
+                borderRadius: "8px",
+                boxShadow: 3,
+                mx: "auto",
               }}
               onSubmit={handleSubmit}
             >
               {/* Add your form content here */}
               <p className="fw-bold">
-                  {editingSubject ? "Chỉnh sửa phân môn" : "Thêm phân môn"}
+                  {editingSubject ? "Chỉnh sửa nhóm người dùng" : "Thêm nhóm người đùng mới"}
               </p>
 
-              <Grid container>
-                <TextField
-                  fullWidth
-                  label="Tên phân môn"
-                  required
-                  value={formData.subjectName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, subjectName: e.target.value })
-                  }
-                  inputRef={inputRef}
-                  sx={{
-                    "& .MuiDataGrid-cell": {
-                        whiteSpace: "normal",
-                        wordWrap: "break-word",
-                        lineHeight: "1.2",
-                        padding: "8px",
-                    },
-                    "& .MuiDataGrid-columnHeaders": {
-                        borderBottom: "2px solid #ccc",
-                    },
-                    "& .MuiDataGrid-cell": {
-                        borderRight: "1px solid #ddd",
-                    },
-                    "& .MuiDataGrid-row:last-child .MuiDataGrid-cell": {
-                        borderBottom: "none",
-                    },
-                    "& .MuiTablePagination-displayedRows": {
-                        textAlign: "center",        // Căn giữa chữ "1-1 of 1"
-                        marginTop: "16px",
-                        marginLeft: "0px"
-                    },
-                    "& .MuiTablePagination-selectLabel": {
-                        marginTop: "13px",
-                        marginLeft: "0px"
-                    },
-                    "& .MuiTablePagination-select": {
-                        marginLeft: "0px",
-                    } 
-                  }}
-                />
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Tên nhóm"
+                    required
+                    value={formData.subjectName}
+                    inputRef={inputRef}
+                    onChange={(e) =>
+                      setFormData({ ...formData, subjectName: e.target.value })
+                    }
+                    sx={{
+                      "& .MuiInputBase-input": {
+                        fontSize: "14px",
+                        paddingBottom: "11px",
+                      },
+                      "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    id="outlined-multiline-flexible"
+                    label="Nhập mã sinh viên"
+                    placeholder="Nhập mã sinh viên"
+                    multiline
+                    inputRef={inputRef}
+                    maxRows={10}
+                    sx={{
+                      width: "100%",
+                      "& .MuiInputBase-root": {
+                        minHeight: "150px", 
+                        alignItems: "flex-start", 
+                      },
+                      "& .MuiInputBase-input": {
+                        fontSize: "14px",
+                      },
+                      "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+                    }}
+                  />
+                </Grid>
               </Grid>
 
               <Grid container spacing={2} sx={{mt: 1, justifyContent: "flex-end"}}>
@@ -344,4 +345,4 @@ const SubjectPage = () => {
     );
 };
 
-export default SubjectPage;
+export default GroupUserPage;

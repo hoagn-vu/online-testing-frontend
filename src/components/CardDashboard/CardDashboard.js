@@ -15,7 +15,7 @@ const CardDashboard = ({ title, value, icon }) => {
         <p className="fw-bold m-0">{value}</p>
       </div>
       <div className="d-flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg icon-card">
-        <div className="frame-icon">{icon}</div>
+        <div className="frame-icon pt-2 pb-1">{icon}</div>
       </div>
     </div>
   );

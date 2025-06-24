@@ -1,0 +1,75 @@
+.loading-modal .modal-content {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  text-align: center;
+}
+
+.loading-modal .spinner-border {
+  width: 3rem;
+  height: 3rem;
+  color: #007bff;
+}
+
+.loading-modal .modal-body {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+input[type="file"]::file-selector-button {
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+input[type="file"]:hover::file-selector-button {
+  background-color: #0b5ed7;
+  color: black;
+}
+
+/* AiGenerate.css */
+
+.custom-loading-modal .modal-content {
+  border: none;
+  border-radius: 12px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+}
+
+.custom-loading-modal .spinner-border {
+  width: 3rem;
+  height: 3rem;
+  color: #1976d2;
+}
+
+.custom-loading-text {
+  font-size: 1.2rem;
+  color: #444;
+  font-weight: 500;
+}
+
+.custom-loading-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-lottie {
+  width: 300px; /* Điều chỉnh kích thước nhỏ hơn ở đây */
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.custom-loading-text {
+  font-weight: 500;
+  color: #1976d2;
+  text-align: center;
+  font-size: 16px;
+}
+
