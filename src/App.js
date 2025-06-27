@@ -33,6 +33,7 @@ import Admin2Layout from "./layouts/Admin2Layout/Admin2Layout";
 import ExamCreationPage from "./pages/AddOrganizeExam/AddOrganizeExam";
 import NotFound from "./pages/NotFound/NotFound";
 import GroupUserPage from "./pages/GroupUserPage/GroupUserPage";
+import ListUserInGroup from "./pages/ListUserInGroup/ListUserInGroup";
 
 import { authApi, useGetProfileQuery } from "./services/authApi";
 import { useDispatch, useSelector } from 'react-redux';
@@ -96,6 +97,7 @@ function App() {
         >
           <Route path="accountmanage" element={<AccountPage />} />
           <Route path="groupuser" element={<GroupUserPage />} />
+          <Route path="groupuser/groupuserId" element={<ListUserInGroup />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="organize" element={<OrganizeExamPage />} />
           <Route path="organize/report/:organizeId" element={<ReportEachOrganizePage />} />
