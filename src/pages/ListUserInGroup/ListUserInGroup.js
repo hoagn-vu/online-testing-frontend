@@ -148,111 +148,115 @@ const ListUserInGroup = () => {
             </div>
           </div>
 
-            <div className="session-table-container mt-3">
-                <div className="table-responsive">
-                    <table className="table sample-table tbl-organize table-striped">
-                        <thead style={{fontSize: "14px"}}>
-                            <tr className="align-middle fw-medium">
-                                <th className="text-center">STT</th> 
-                                <th>MSSV</th>
-                                <th>Họ và tên đệm</th>
-                                <th>Tên</th>
-                                <th className="text-center">Ngày sinh</th>
-                                <th className="text-center">Giới tính</th>
-                                <th scope="col" className="title-row">Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody style={{fontSize: "14px"}}>
-                            {processData(listCandidate).length === 0 ? (
-                                <tr>
-                                    <td colSpan="7" className="text-center fw-semibold text-muted" 
-                                        style={{ height: "100px", verticalAlign: "middle" }}>
-                                    Không có dữ liệu
-                                    </td>
-                                </tr>
-                            ) : (
-                            processData(listCandidate).map((item, index) => (
-                                <tr key={item.candidateId} className="align-middle">
-                                    <td className="text-center">{index + 1}</td>
-                                    <td>{item.userCode}</td>
-                                    <td>{item.lastName}</td>
-                                    <td>{item.firstName}</td>
-                                    <td className="text-center">{item.dateOfBirth}</td>
-                                    <td className="text-center">{item.gender == "male" ? "Nam" : "Nữ"}</td>
-                                    <td>
-                                        <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}  onClick={() => handleDelete(item.candidateId)}>
-                                            <i className="fas fa-trash-alt"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            )))}
-                        </tbody>
-                    </table>
-                </div>
-                <div className="d-flex justify-content-end mb-2">
-                    { totalCount > 0 && (
-                        <Pagination
-                            count={Math.ceil(totalCount / pageSize)}
-                            shape="rounded"
-                            page={page}
-                            onChange={(e, value) => setPage(value)}
-                            color="primary"
-                        />
-                    )}
-                </div>
+          <div className="session-table-container mt-3">
+            <div className="table-responsive">
+                <table className="table sample-table tbl-organize table-striped">
+                    <thead style={{fontSize: "14px"}}>
+                        <tr className="align-middle fw-medium">
+                            <th className="text-center">STT</th> 
+                            <th>MSSV</th>
+                            <th>Họ và tên đệm</th>
+                            <th>Tên</th>
+                            <th className="text-center">Ngày sinh</th>
+                            <th className="text-center">Giới tính</th>
+                            <th scope="col" className="title-row">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody style={{fontSize: "14px"}}>
+                      {processData(listCandidate).length === 0 ? (
+                          <tr>
+                              <td colSpan="7" className="text-center fw-semibold text-muted" 
+                                  style={{ height: "100px", verticalAlign: "middle" }}>
+                              Không có dữ liệu
+                              </td>
+                          </tr>
+                      ) : (
+                      processData(listCandidate).map((item, index) => (
+                          <tr key={item.candidateId} className="align-middle">
+                              <td className="text-center">{index + 1}</td>
+                              <td>{item.userCode}</td>
+                              <td>{item.lastName}</td>
+                              <td>{item.firstName}</td>
+                              <td className="text-center">{item.dateOfBirth}</td>
+                              <td className="text-center">{item.gender == "male" ? "Nam" : "Nữ"}</td>
+                              <td>
+                                  <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}  onClick={() => handleDelete(item.candidateId)}>
+                                      <i className="fas fa-trash-alt"></i>
+                                  </button>
+                              </td>
+                          </tr>
+                      )))}
+                    </tbody>
+                </table>
             </div>
+            <div className="d-flex justify-content-end mb-2">
+                { totalCount > 0 && (
+                    <Pagination
+                        count={Math.ceil(totalCount / pageSize)}
+                        shape="rounded"
+                        page={page}
+                        onChange={(e, value) => setPage(value)}
+                        color="primary"
+                    />
+                )}
+            </div>
+          </div>
         </div>
 
         {/* Form thêm tài khoản */}
         {showForm && (
-            <div className="form-overlay">
-                <Box
-                    component="form"
-                    sx={{
-                        width: "500px",
-                        backgroundColor: "white",
-                        p: 3,
-                        borderRadius: "8px",
-                        boxShadow: 3,
-                        mx: "auto",
-                    }}
-                    onSubmit={handleSubmit}
-                >
-                    <p className="fw-bold mb-4">Thêm thí sinh vào phòng thi</p>
-                    <Grid container>	
-                        <Grid item xs={12}>									
-                            <TextField
-                                id="outlined-multiline-flexible"
-                                label="Nhập mã sinh viên"
-                                placeholder="Nhập mã sinh viên"
-                                multiline
-                                inputRef={inputRef}
-                                maxRows={10}
-                                sx={{
-                                    width: "100%",
-                                    "& .MuiInputBase-input": {
-                                        fontSize: "14px",
-                                    },
-                                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-                                }}
-                            />
-                        </Grid>	
-                    </Grid>		
-                    {/* Buttons */}
-                    <Grid container spacing={2} sx={{ mt: 1, justifyContent: "flex-end" }}>
-                        <Grid item xs={3}>
-                            <CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>
-                                Hủy
-                            </CancelButton>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <AddButton style={{width: "100%"}}>
-                                Lưu
-                            </AddButton>
-                        </Grid>
-                    </Grid>
-                </Box>
-            </div>
+          <div className="form-overlay">
+            <Box
+              component="form"
+              sx={{
+                width: "700px",
+                backgroundColor: "white",
+                p: 3,
+                borderRadius: "8px",
+                boxShadow: 3,
+                mx: "auto",
+              }}
+              onSubmit={handleSubmit}
+            >
+                <p className="fw-bold mb-4">Thêm người dùng vào nhóm</p>
+                <Grid container>	
+                  <Grid item xs={12}>									
+                    <TextField
+                      id="outlined-multiline-flexible"
+                      label="Nhập mã sinh viên"
+                      placeholder="Nhập mã sinh viên"
+                      multiline
+                      inputRef={inputRef}
+                      maxRows={10}
+                      sx={{
+                        width: "100%",
+                        "& .MuiInputBase-root": {
+                          minHeight: "150px", 
+                          alignItems: "flex-start", 
+                        },
+                        "& .MuiInputBase-input": {
+                            fontSize: "14px",
+                        },
+                        "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+                      }}
+                    />
+                  </Grid>	
+                </Grid>		
+                {/* Buttons */}
+                <Grid container spacing={2} sx={{ mt: 1, justifyContent: "flex-end" }}>
+                  <Grid item xs={3}>
+                    <CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>
+                      Hủy
+                    </CancelButton>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <AddButton style={{width: "100%"}}>
+                      Lưu
+                    </AddButton>
+                  </Grid>
+                </Grid>
+            </Box>
+          </div>
         )}
       </div>
     )

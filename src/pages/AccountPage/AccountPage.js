@@ -3,7 +3,7 @@ import { Link, useLocation  } from "react-router-dom";
 import "./AccountPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import {Chip, Box, Button, Grid, MenuItem, Pagination, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography } from "@mui/material";
+import {InputAdornment , Box, Button, Grid, MenuItem, Pagination, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
@@ -12,6 +12,7 @@ import ApiService from "../../services/apiService";
 import CreatableSelect from "react-select/creatable";
 import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const AccountPage = () => {
   const [listAccountUser, setListAccountUser] = useState([]);
@@ -28,6 +29,7 @@ const AccountPage = () => {
     "Giám thị": [],
     "Quản trị viên": [],
     "Cán bộ phụ trách kỳ thi": [],
+    "Giảng viên": [],
   });
 
   const [listDisplay, setListDisplay] = useState([]);
@@ -59,6 +61,7 @@ const AccountPage = () => {
         "Giám thị": [],
         "Quản trị viên": [],
         "Cán bộ phụ trách kỳ thi": [],
+        "Giảng viên": [],
       };
   
       response.data.users.forEach((user) => {
@@ -156,7 +159,7 @@ const AccountPage = () => {
   };
 
   const [passwordData, setPasswordData] = useState({
-    role: "Thí sinh",
+    role: "candidate",
     newPassword: "",
     confirmPassword: "",
   });
@@ -318,6 +321,13 @@ const AccountPage = () => {
   };
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
+  // state quản lý hiện/ẩn
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // hàm toggle
+  const handleTogglePassword = () => setShowPassword((prev) => !prev);
+
   return (
     <div className="p-4">
       {/* Breadcrumbs */}
@@ -598,7 +608,7 @@ const AccountPage = () => {
               </Grid>
 
               {/* Username và Password */}
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
                   label="Username"
@@ -615,7 +625,7 @@ const AccountPage = () => {
                   }}
                 />
               </Grid>
-              <Grid item xs={6}>
+              {/* <Grid item xs={6}>
                 <TextField
                   fullWidth
                   label="Password"
@@ -632,7 +642,7 @@ const AccountPage = () => {
                     "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
                   }}
                 />
-              </Grid>
+              </Grid> */}
 
               {/* Trạng thái và Vai trò */}
               {/* <Grid item xs={6}>
@@ -678,6 +688,7 @@ const AccountPage = () => {
                 >
                   <MenuItem value="candidate">Thí sinh</MenuItem>
                   <MenuItem value="supervisor">Giám thị</MenuItem>
+                  <MenuItem value="teacher">Giảng viên</MenuItem>
                   <MenuItem value="admin">Quản trị viên</MenuItem>
                   <MenuItem value="staff">
                     Cán bộ phụ trách kỳ thi
@@ -750,59 +761,126 @@ const AccountPage = () => {
       {/* Form Đổi mật khẩu */}
       {showPasswordForm && (
         <div className="form-overlay">
-          <div className="form-container" style={{width: "40%"}}>
-            <h6 className="fw-bold " style={{ textAlign: "left" }}>Đổi mật khẩu</h6>
-            <form onSubmit={handlePasswordSubmit}>
-              <label>Chọn vai trò:</label>
-              <select
-                className="input-height"
-                onChange={(e) =>
-                  setPasswordData({ ...passwordData, role: e.target.value })
-                }
-              >
-                <option value="candidate">Thí sinh</option>
-                <option value="supervisor">Giám thị</option>
-                <option value="staff">
-                  Cán bộ phụ trách kỳ thi
-                </option>
-                <option value="Quản trị viên">Quản trị viên</option>
-              </select>
+          <Box
+            component="form"
+            sx={{
+              width: "800px",
+              backgroundColor: "white",
+              p: 3,
+              borderRadius: "8px",
+              boxShadow: 3,
+              mx: "auto",
+            }}
+            onSubmit={handlePasswordSubmit}
+          >
+            <p className="fw-bold mb-4">
+              Đổi mật khẩu
+            </p>
 
-              <label>Mật khẩu mới:</label>
-              <input
-                className="input-height"
-                type="password"
-                required
-                onChange={(e) =>
-                  setPasswordData({
-                    ...passwordData,
-                    newPassword: e.target.value,
-                  })
-                }
-              />
+            <Grid container spacing={2}>
+              {/* Mã và Họ Tên */}
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  select
+                  required
+                  label="Vai trò"
+                  value={passwordData.role}
+                  onChange={(e) =>
+                    setPasswordData({ ...passwordData, role: e.target.value })
+                  }
+                  sx={{
+                    "& .MuiInputBase-input": {
+                      fontSize: "14px",
+                      paddingBottom: "11px",
+                    },
+                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+                  }}
+                >
+                  <MenuItem value="candidate">Thí sinh</MenuItem>
+                  <MenuItem value="supervisor">Giám thị</MenuItem>
+                  <MenuItem value="teacher">Giảng viên</MenuItem>
+                  <MenuItem value="admin">Quản trị viên</MenuItem>
+                  <MenuItem value="staff">Cán bộ phụ trách kỳ thi</MenuItem>
+                </TextField>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Mật khẩu mới"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  inputRef={inputRef}
+                  value={formData.newPassword}
+                  onChange={(e) =>
+                    setPasswordData({ ...passwordData, newPassword: e.target.value })
+                  }
+                  sx={{
+                    "& .MuiInputBase-input": {
+                      fontSize: "14px",
+                      paddingBottom: "11px",
+                    },
+                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton onClick={handleTogglePassword} edge="end">
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Xác nhận mật khẩu"
+                  required
+                  inputRef={inputRef}
+                  type={showConfirmPassword  ? "text" : "password"}
+                  value={formData.confirmPassword}
+                  onChange={(e) =>
+                    setPasswordData({ ...passwordData, confirmPassword: e.target.value })
+                  }
+                  sx={{
+                    "& .MuiInputBase-input": {
+                      fontSize: "14px",
+                      paddingBottom: "11px",
+                    },
+                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          edge="end"
+                        >
+                          {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+              </Grid>
 
-              <label>Xác nhận mật khẩu:</label>
-              <input
-                className="input-height"
-                type="password"
-                required
-                onChange={(e) =>
-                  setPasswordData({
-                    ...passwordData,
-                    confirmPassword: e.target.value,
-                  })
-                }
-              />
-              <div className="d-flex mt-2" style={{ gap: "20px" }}>
+            {/* Buttons */}
+            <Grid container spacing={2} sx={{ mt: 1, justifyContent:"flex-end" }}>
+              <Grid item xs={3}>
                 <CancelButton onClick={() => setShowPasswordForm(false)} style={{width: "100%"}}>
                   Hủy
                 </CancelButton>
+              </Grid>
+              <Grid item xs={3}>
                 <AddButton style={{width: "100%"}}>
-                  Lưu
+                  {editingAccount ? "Cập nhật" : "Lưu"}
                 </AddButton>
-              </div>
-            </form>
-          </div>
+              </Grid>
+            </Grid>
+          </Box>
         </div>
       )}
       {/* Form Chọn nhóm */}
