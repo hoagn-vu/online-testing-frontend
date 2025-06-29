@@ -142,7 +142,7 @@ const GroupUserPage = () => {
         <Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
         
         <span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
-        <span className="breadcrumb-current">Ngân hàng câu hỏi</span>
+        <span className="breadcrumb-current">Nhóm người dùng</span>
       </nav>
 
       <div className="tbl-shadow p-3">
@@ -191,7 +191,7 @@ const GroupUserPage = () => {
                 <tr key={item.id} className="align-middle">
                   <td className="text-center">{index + 1}</td>
                   <td
-                    onClick={() => navigate(`/staff/question/${item.id}`, {
+                    onClick={() => navigate(`groupuserId`, {
                     })}
                     style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
                     className="text-hover-primary"
@@ -199,7 +199,7 @@ const GroupUserPage = () => {
                     {item.subjectName}
                   </td>
                   <td
-                    onClick={() => navigate(`/staff/question/${item.id}`, {
+                    onClick={() => navigate(`groupuserId`, {
                     })}
                     style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
                     className="text-center"
@@ -310,7 +310,6 @@ const GroupUserPage = () => {
                     label="Nhập mã sinh viên"
                     placeholder="Nhập mã sinh viên"
                     multiline
-                    inputRef={inputRef}
                     maxRows={10}
                     sx={{
                       width: "100%",
