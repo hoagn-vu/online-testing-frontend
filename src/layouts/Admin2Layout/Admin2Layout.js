@@ -281,7 +281,7 @@ export default function Admin2Layout() {
                         <ListItemButton
                           key={subItem.title}
                           onClick={() => navigate(subItem.path)}
-                          selected={location.pathname === subItem.path}
+                          selected={location.pathname.startsWith(subItem.path)}                          
                           sx={{
                             pl: 2,
                             py: 0.8, // nhỏ hơn để sát nhau
