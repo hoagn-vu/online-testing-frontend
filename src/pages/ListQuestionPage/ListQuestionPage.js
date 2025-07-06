@@ -289,6 +289,13 @@ const ListQuestionPage = () => {
 			}
 		});
 	};
+	const [collapsedChapters, setCollapsedChapters] = useState({});
+	const toggleChapter = (chapter) => {
+  setCollapsedChapters((prev) => ({
+    ...prev,
+    [chapter]: !prev[chapter],
+  }));
+};
 
 	return (
 		<div className="p-4">
@@ -393,67 +400,90 @@ const ListQuestionPage = () => {
 			))} */}
 			{Object.keys(groupedQuestions).length === 0 ? (
 				<div
-				className="d-flex align-items-center justify-content-center"
-				style={{ minHeight: "350px" }} // Hoặc bạn có thể dùng height: "60vh"
-			>
-				<div className="text-center p-4 rounded shadow-sm bg-light text-muted" style={{ width: "400px"}}>
-					<i className="fa-solid fa-circle-info fa-2x mb-2"></i>
-					<h5>Không có dữ liệu</h5>
+					className="d-flex align-items-center justify-content-center"
+					style={{ minHeight: "350px" }} // Hoặc bạn có thể dùng height: "60vh"
+				>
+					<div className="text-center p-4 rounded shadow-sm bg-light text-muted" style={{ width: "400px"}}>
+						<i className="fa-solid fa-circle-info fa-2x mb-2"></i>
+						<h5>Không có dữ liệu</h5>
+					</div>
 				</div>
-			</div>
-			) : (
-			Object.entries(groupedQuestions).map(([chapter, levels]) => (
-				<div key={chapter}>
-					<h4 className="mt-4 mb-3">{chapter}</h4>
-					{Object.entries(levels).map(([level, questions]) => (
-						<div key={level}>
-							<div>
-								{questions.map((question) => (
-									<div key={question.questionId} className="card mb-2">
-										<div className="card-header d-flex justify-content-between ps-2">
-											<div className="d-flex ">
-												<button 
-														className="btn btn-link text-decoration-none position p-0 pe-1 "
-														style={{color: "black"}}
-														data-bs-toggle="collapse" 
-														data-bs-target={`#collapse-${question.questionId}`}
-														aria-expanded="false"
-														aria-controls={`collapse-${question.questionId}`}
-												>            
-														<ArrowDropDownIcon />
-												</button>
-												<div className="d-flex flex-column justify-content-center">
-													<h6 className="mb-0">{question.questionText}</h6>
-													{question.tags?.slice(1).map((tag, index) => (
-														<p className="m-0 tag-level" key={index}>{tag}</p>
-													))}
+				) : (
+				Object.entries(groupedQuestions).map(([chapter, levels]) => (
+					<div className="container-chapter p-3 mt-2" key={chapter}>
+						<div className="d-flex justify-content-between align-items-center mb-2">
+							<div className="mb-2" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+								<h4 className="m-0">{chapter} 
+									<i className="fa-solid fa-pen-to-square ms-3" style={{fontSize: "18px"}}></i>	
+								</h4>
+							</div>
+							<button 
+								className="btn btn-link text-decoration-none position p-0 pe-1 "
+								style={{color: "black"}}
+								onClick={() => toggleChapter(chapter)}
+							>            
+								<ArrowDropDownIcon 
+									fontSize="large"
+									style={{
+										transform: collapsedChapters[chapter] ? "rotate(180deg)" : "rotate(0deg)",
+										transition: "transform 0.3s ease"
+									}}
+								/>
+							</button>
+						</div>
+						{!collapsedChapters[chapter] && (
+							<div className="chapter-content">
+								{Object.entries(levels).map(([level, questions]) => (
+									<div key={level}>
+										<div>
+											{questions.map((question) => (
+												<div key={question.questionId} className="card mb-2">
+													<div className="card-header d-flex justify-content-between ps-2">
+														<div className="d-flex ">
+															<button 
+																className="btn btn-link text-decoration-none position p-0 pe-1 "
+																style={{color: "black"}}
+																data-bs-toggle="collapse" 
+																data-bs-target={`#collapse-${question.questionId}`}
+																aria-expanded="false"
+																aria-controls={`collapse-${question.questionId}`}
+															>            
+																<ArrowDropDownIcon />
+															</button>
+															<div className="d-flex flex-column justify-content-center">
+																<h6 className="mb-0">{question.questionText}</h6>
+																{question.tags?.slice(1).map((tag, index) => (
+																	<p className="m-0 tag-level" key={index}>{tag}</p>
+																))}
+															</div>
+														</div>
+														<div className="d-flex" style={{ marginLeft: "50px" }}>
+															<button className="btn pe-1 ps-1" style={{ fontSize: "20px" }} onClick={() => preEditQuestion(question)}>
+																<i className="fa-solid fa-pen-to-square" style={{color: "#A6A6A6"}}></i>	
+															</button>
+															<button className="btn pe-1 ps-1" style={{ fontSize: "20px" }} onClick={() => handleDelete(question.questionId)}>
+																<i className="fa-solid fa-trash-can" style={{color: "#A6A6A6"}}></i>
+															</button>
+														</div>
+													</div>
+													<div id={`collapse-${question.questionId}`} className="collapse show">
+														<ul className="list-group" style={{ borderRadius: "0 0 5px 5px" }}>
+															{question.options.map((option, index) => (
+																<li key={index} className={option.isCorrect ? "list-group-item list-group-item-success" : "list-group-item"}>
+																	{option.optionText}
+																</li>
+															))}
+														</ul>
+													</div>
 												</div>
-											</div>
-											<div className="d-flex" style={{ marginLeft: "50px" }}>
-												<button className="btn btn-primary me-2" style={{ fontSize: "14px" }} onClick={() => preEditQuestion(question)}>
-														Edit
-												</button>
-												<button className="btn btn-danger" style={{ fontSize: "14px" }} onClick={() => handleDelete(question.questionId)}>
-														Delete
-												</button>
-											</div>
-										</div>
-										<div id={`collapse-${question.questionId}`} className="collapse show">
-											<ul className="list-group" style={{ borderRadius: "0 0 5px 5px" }}>
-												{question.options.map((option, index) => (
-													<li key={index} className={option.isCorrect ? "list-group-item list-group-item-success" : "list-group-item"}>
-														{option.optionText}
-													</li>
-												))}
-											</ul>
+											))}
 										</div>
 									</div>
 								))}
 							</div>
-						</div>
-					))}
-				</div>
-			)))}
+						)}
+					</div>
+				)))}
 
 		{/* Modal Bootstrap thuần */}
 		<div className="modal fade" id="questionModal" tabIndex="-1" aria-hidden="true">
