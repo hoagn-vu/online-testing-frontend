@@ -36,18 +36,18 @@ const menuItems = [
   { 
     title: "Quản lý người dùng", 
     icon: <i className="fa-solid fa-user-gear icon-color"></i>, 
-    role: ["user"],
+    role: ["admin"],
     children: [
       { title: "Danh sách người dùng", path: "/staff/accountmanage" },
       { title: "Nhóm người dùng", path: "/staff/groupuser" },
     ],
   },
   { title: "Quản lý kỳ thi", icon: <i className="fa-solid fa-calendar-check icon-color"></i>, path: "/staff/organize", role: ["user", "admin"] },
-  { title: "Ngân hàng câu hỏi", icon: <i className="fa-solid fa-database icon-color"></i>, path: "/staff/question", role: ["user"] },
+  { title: "Ngân hàng câu hỏi", icon: <i className="fa-solid fa-database icon-color"></i>, path: "/staff/question", role: ["user", "admin"] },
   { title: "Quản lý ma trận đề", icon: <i className="fa-solid fa-table icon-color"></i>, path: "/staff/matrix-exam", role: ["user", "admin"] },
-  { title: "Quản lý đề thi", icon: <i className="fa-solid fa-file-lines icon-color"></i>, path: "/staff/exam", role: ["user"] },
+  { title: "Quản lý đề thi", icon: <i className="fa-solid fa-file-lines icon-color"></i>, path: "/staff/exam", role: ["user", "admin"] },
   { title: "Quản lý phòng thi", icon: <i className="fa-solid fa-school icon-color"></i>, path: "/staff/room", role: ["user", "admin"] },
-  { title: "Nhật ký sử dụng", icon: <i className="fa-solid fa-book icon-color"></i>, path: "/staff/log", role: ["user"] },
+  { title: "Nhật ký sử dụng", icon: <i className="fa-solid fa-book icon-color"></i>, path: "/staff/log", role: ["user", "admin"] },
 ];
 
 const openedMixin = (theme) => ({
@@ -214,9 +214,8 @@ export default function Admin2Layout() {
       </AppBar>
 
       <Drawer variant="permanent" open={open}>
-        {isListQuestionPage ? (
-          <ChapterSidebar /> // 👉 component danh sách chương thay cho menu
-        ) : (
+        {!isListQuestionPage && (
+           // 👉 component danh sách chương thay cho menu
           <>
             <DrawerHeader>
               <img src={logo} alt="Logo" style={{ height: 40 }} />
@@ -226,7 +225,8 @@ export default function Admin2Layout() {
             </DrawerHeader>
             <Divider />
             <List>
-              {menuItems.map((item) => (
+              {menuItems.filter(item => item.role.includes(user?.role))
+                .map((item) => (
                 <React.Fragment key={item.title}>
                   <ListItem disablePadding
                     sx={{
