@@ -226,7 +226,8 @@ export default function Admin2Layout() {
             </DrawerHeader>
             <Divider />
             <List>
-              {menuItems.map((item) => (
+              {menuItems.filter(item => item.role.includes(user?.role))
+                .map((item) => (
                 <React.Fragment key={item.title}>
                   <ListItem disablePadding
                     sx={{
