@@ -47,17 +47,39 @@ const dummyLogs = [
 const getTagColor = (action) => {
   switch (action) {
     case "Login":
-      return "success";
+      return {
+        backgroundColor: "#DBEAFE", // Xanh dương nhạt, hiện đại
+        color: "#1E40AF",           // Xanh dương đậm, dễ nhìn
+        icon: "fas fa-sign-in-alt"
+      };
     case "Thêm mới":
-      return "primary";
+      return {
+        backgroundColor: "#D1FAE5", // Xanh lá nhạt, tươi sáng
+        color: "#065F46",           // Xanh lá đậm, thân thiện
+        icon: "fas fa-plus"
+      };
     case "Sửa":
-      return { backgroundColor: "#FFC107", color: "#000" }; // Màu vàng custom
+      return {
+        backgroundColor: "#FEF3C7", // Vàng nhạt, ấm áp
+        color: "#92400E",           // Vàng đậm, tương phản tốt
+        icon: "fas fa-pen"
+      };
     case "Xóa":
-      return "error";
+      return {
+        backgroundColor: "#FEE2E2", // Đỏ nhạt, không quá chói
+        color: "#991B1B",           // Đỏ đậm, dễ nhận diện
+        icon: "fas fa-trash"
+      };
     default:
-      return "default";
+      return {
+        backgroundColor: "#F3F4F6", // Xám nhạt, trung tính
+        color: "#374151",           // Xám đậm, chuyên nghiệp
+        icon: "fas fa-info-circle"
+      };
   }
 };
+
+
 
 const LogPage = () => {
   const [logs, setLogs] = useState([]);
@@ -105,7 +127,7 @@ const LogPage = () => {
         {/* Bảng hiển thị nhật ký */}
         <div className="session-table-container mt-2">
           <div className="table-responsive tbl-log">
-            <table className="table sample-table tbl-organize table-striped ">
+            <table className="table sample-table tbl-organize  ">
               <thead style={{ fontSize: "14px" }}>
                 <tr className="align-middle fw-medium">
                   <th scope="col" className="title-row text-center">STT</th>
@@ -129,14 +151,36 @@ const LogPage = () => {
                   <tr key={log.logId} className="align-middle" >
                     <td className="text-center">{index + 1}</td>
                     <td>{new Date(log.logAt).toLocaleString()}</td>
-                    <td className="text-center">
-                      <Chip 
-                        label={log.logAction} 
-                        sx={typeof getTagColor(log.logAction) === "string" 
-                          ? { bgcolor: `${getTagColor(log.logAction)}.main`, color: "white" }
-                          : getTagColor(log.logAction)}
-                      />
-                    </td>
+<td className="text-center">
+  <Chip
+    label={
+      <span className="flex items-center gap-1.5">
+        <i className={`${getTagColor(log.logAction).icon}`}></i>
+        {log.logAction}
+      </span>
+    }
+    sx={{
+      backgroundColor: getTagColor(log.logAction).backgroundColor,
+      color: getTagColor(log.logAction).color,
+      fontWeight: 600,
+      fontSize: "0.85rem",
+      borderRadius: "12px",
+      padding: "4px 12px",
+      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+      transition: "all 0.2s ease-in-out",
+      "&:hover": {
+        transform: "translateY(-1px)",
+        boxShadow: "0 4px 8px rgba(0,0,0,0.15)",
+        backgroundColor: getTagColor(log.logAction).backgroundColor + "F0", // Làm sáng màu nền khi hover
+      },
+      "& .MuiChip-label": {
+        padding: 0,
+      },
+    }}
+  />
+</td>
+
+
                     <td>{log.affectedName}</td>
                     <td>{log.fullName}</td>
                     <td>{log.logDetail}</td>

@@ -28,7 +28,7 @@ import {Collapse} from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../redux/authSlice";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
-
+import ChapterSidebar from '../../components/ChapterSidebar/ChapterSidebar';
 const drawerWidth = 250;
 
 const menuItems = [
@@ -171,6 +171,8 @@ export default function Admin2Layout() {
       ? openMenus[item.title]
       : location.pathname.startsWith(item.path);
 
+  const isListQuestionPage = location.pathname.includes("/staff/question/") &&
+                             location.pathname.split("/").length === 5;
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -212,98 +214,104 @@ export default function Admin2Layout() {
       </AppBar>
 
       <Drawer variant="permanent" open={open}>
-        <DrawerHeader>
-          <img src={logo} alt="Logo" style={{ height: 40 }} />
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        <List>
-          {menuItems.map((item) => (
-            <React.Fragment key={item.title}>
-              <ListItem disablePadding
-                sx={{
-                  ...(open === false && {
-                    mb: 1, // cách dọc giữa các icon khi thu gọn
-                  }),
-                }}
-              >
-                <Tooltip title={!open ? item.title : ""} placement="right"
-                  PopperProps={{
-                    modifiers: [
-                      {
-                        name: "offset",
-                        options: {
-                          offset: [0, -13], // đây là phần tạo khoảng cách
-                        },
-                      },
-                    ],
-                  }}
-                >
-                  <ListItemButton
-                    onClick={() => {
-                      if (item.children) {
-                        handleToggle(item.title);   // mở submenu
-                      } else {
-                        navigate(item.path);          // điều hướng
-                      }
-                    }}
-                    selected={location.pathname.startsWith(item.path)}
+        {isListQuestionPage ? (
+          <ChapterSidebar /> // 👉 component danh sách chương thay cho menu
+        ) : (
+          <>
+            <DrawerHeader>
+              <img src={logo} alt="Logo" style={{ height: 40 }} />
+              <IconButton onClick={handleDrawerClose}>
+                {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+              </IconButton>
+            </DrawerHeader>
+            <Divider />
+            <List>
+              {menuItems.map((item) => (
+                <React.Fragment key={item.title}>
+                  <ListItem disablePadding
                     sx={{
-                      '&.Mui-selected': {
-                        borderLeft: '5px solid #1976D2',
-                        backgroundColor: '#f0f8ff',
-                      }
+                      ...(open === false && {
+                        mb: 1, // cách dọc giữa các icon khi thu gọn
+                      }),
                     }}
                   >
-                    <ListItemIcon sx={{minWidth:'45px'}}>{item.icon}</ListItemIcon>
-                    {open && <ListItemText primary={item.title} />}
-                    {open && item.children && (isMenuOpen(item) ? <ExpandLess /> : <ExpandMore />)}
-                  </ListItemButton>
-                </Tooltip>
-              </ListItem>
-
-              {item.children && (
-                <Collapse in={isMenuOpen(item)} timeout="auto" unmountOnExit>
-                  <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                    {/* Thanh dọc xanh chung cho toàn bộ submenu */}
-                    <Box
-                      sx={{
-                        width: '3px',
-                        backgroundColor: '#1976D2',
-                        borderRadius: '2px',
-                        ml: '40px',
+                    <Tooltip title={!open ? item.title : ""} placement="right"
+                      PopperProps={{
+                        modifiers: [
+                          {
+                            name: "offset",
+                            options: {
+                              offset: [0, -13], // đây là phần tạo khoảng cách
+                            },
+                          },
+                        ],
                       }}
-                    />
-                    <List component="div" disablePadding>
-                      {item.children.map((subItem) => (
-                        <ListItemButton
-                          key={subItem.title}
-                          onClick={() => navigate(subItem.path)}
-                          selected={location.pathname.startsWith(subItem.path)}                          
+                    >
+                      <ListItemButton
+                        onClick={() => {
+                          if (item.children) {
+                            handleToggle(item.title);   // mở submenu
+                          } else {
+                            navigate(item.path);          // điều hướng
+                          }
+                        }}
+                        selected={location.pathname.startsWith(item.path)}
+                        sx={{
+                          '&.Mui-selected': {
+                            borderLeft: '5px solid #1976D2',
+                            backgroundColor: '#f0f8ff',
+                          }
+                        }}
+                      >
+                        <ListItemIcon sx={{minWidth:'45px'}}>{item.icon}</ListItemIcon>
+                        {open && <ListItemText primary={item.title} />}
+                        {open && item.children && (isMenuOpen(item) ? <ExpandLess /> : <ExpandMore />)}
+                      </ListItemButton>
+                    </Tooltip>
+                  </ListItem>
+
+                  {item.children && (
+                    <Collapse in={isMenuOpen(item)} timeout="auto" unmountOnExit>
+                      <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                        {/* Thanh dọc xanh chung cho toàn bộ submenu */}
+                        <Box
                           sx={{
-                            pl: 2,
-                            py: 0.8, // nhỏ hơn để sát nhau
-                            '&.Mui-selected': {
-                              backgroundColor: 'transparent',
-                              color: '#1976D2',
-                            },
-                            '&:hover': {
-                              backgroundColor: '#f5f5f5',
-                            },
+                            width: '3px',
+                            backgroundColor: '#1976D2',
+                            borderRadius: '2px',
+                            ml: '40px',
                           }}
-                        >
-                          <ListItemText primary={subItem.title} />
-                        </ListItemButton>
-                      ))}
-                    </List>
-                  </Box>
-                </Collapse>
-              )}
-            </React.Fragment>
-          ))}
-        </List>
+                        />
+                        <List component="div" disablePadding>
+                          {item.children.map((subItem) => (
+                            <ListItemButton
+                              key={subItem.title}
+                              onClick={() => navigate(subItem.path)}
+                              selected={location.pathname.startsWith(subItem.path)}                          
+                              sx={{
+                                pl: 2,
+                                py: 0.8, // nhỏ hơn để sát nhau
+                                '&.Mui-selected': {
+                                  backgroundColor: 'transparent',
+                                  color: '#1976D2',
+                                },
+                                '&:hover': {
+                                  backgroundColor: '#f5f5f5',
+                                },
+                              }}
+                            >
+                              <ListItemText primary={subItem.title} />
+                            </ListItemButton>
+                          ))}
+                        </List>
+                      </Box>
+                    </Collapse>
+                  )}
+                </React.Fragment>
+              ))}
+            </List>
+          </>
+        )}
       </Drawer>
       <Box 
         component="main"
