@@ -1,7 +1,7 @@
 # online-testing-frontend
 
 ## Giới thiệu
-Hệ thống thi trắc nghiệm trực tuyến là một nền tảng giúp tổ chức các kỳ thi trực tuyến một cách dễ dàng, hiệu quả và bảo mật. Hệ thống hỗ trợ nhiều vai trò người dùng như thí sinh, giám thị, quản trị viên, và cán bộ phụ trách ca thi. Các tính năng chính bao gồm:
+Hệ thống thi trắc nghiệm trực tuyến là một nền tảng giúp tổ chức các kỳ thi trực tuyến một cách dễ dàng, hiệu quả và bảo mật. Hệ thống hỗ trợ nhiều vai trò người dùng như thí sinh, giám thị, quản trị viên, giảng viên và cán bộ phụ trách ca thi. Các tính năng chính bao gồm:
 - Tạo và quản lý ngân hàng câu hỏi.
 - Xây dựng và tổ chức kỳ thi với nhiều cấp độ khó khác nhau.
 - Hỗ trợ nộp bài tự động và lưu bài thi theo từng câu để tránh mất dữ liệu.
