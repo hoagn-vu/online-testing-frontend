@@ -214,8 +214,9 @@ export default function Admin2Layout() {
       </AppBar>
 
       <Drawer variant="permanent" open={open}>
-        {!isListQuestionPage && (
-           // 👉 component danh sách chương thay cho menu
+        {isListQuestionPage ? (
+          <ChapterSidebar /> // 👉 component danh sách chương thay cho menu
+        ) : (
           <>
             <DrawerHeader>
               <img src={logo} alt="Logo" style={{ height: 40 }} />

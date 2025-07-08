@@ -1,0 +1,11 @@
+.level-collapse {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.4s ease, opacity 0.4s ease;
+}
+
+.level-collapse.expanded {
+  max-height: 500px; /* hoặc lớn hơn nếu cần */
+  opacity: 1;
+}
