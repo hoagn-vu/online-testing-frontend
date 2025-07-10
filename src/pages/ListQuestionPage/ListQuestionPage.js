@@ -12,7 +12,7 @@ import { CircularProgress, Typography, Box } from "@mui/material";
 import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
 import AiGenerate from "../../components/AiGenerate/AiGenerate";
-import ChapterSidebar from "../../components/ChapterSidebar/ChapterSidebar";
+import AddQuestion from "../../components/AddQuestion/AddQuestion";
 
 const ListQuestionPage = () => {
 	const user = useSelector((state) => state.auth.user);
@@ -34,6 +34,7 @@ const ListQuestionPage = () => {
 	const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
 	const [showAiGenerate, setShowAiGenerate] = useState(false);
+	const [showAddQuestionForm, setShowAddQuestionForm] = useState(false);
 
 	const { selectedChapter } = useOutletContext(); // Lấy selectedChapter từ context
 	
@@ -41,6 +42,11 @@ const ListQuestionPage = () => {
 		const event = new CustomEvent("toggleAiForm", { detail: showAiGenerate });
 		window.dispatchEvent(event);
 	}, [showAiGenerate]);
+
+	useEffect(() => {
+		const event = new CustomEvent("toggleAddQuestionForm", { detail: showAddQuestionForm });
+		window.dispatchEvent(event);
+	}, [showAddQuestionForm]);
 
   const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
@@ -86,65 +92,64 @@ const ListQuestionPage = () => {
 
 	const handleUploadfile = async () => {
     const { value: file } = await Swal.fire({
-        title: "Chọn file",
-        input: "file",
-        inputAttributes: {
-            accept: ".docx,.txt",
-            "aria-label": "Tải lên",
-        },
+			title: "Chọn file",
+			input: "file",
+			inputAttributes: {
+					accept: ".docx,.txt",
+					"aria-label": "Tải lên",
+			},
     });
 
     if (file) {
-        const formData = new FormData();
-        formData.append("file", file);
+			const formData = new FormData();
+			formData.append("file", file);
 
-        setIsUploading(true);
-        setUploadProgress(0);
-        document.getElementById("uploadModal").classList.add("show");
-        document.getElementById("uploadModal").style.display = "block";
+			setIsUploading(true);
+			setUploadProgress(0);
+			document.getElementById("uploadModal").classList.add("show");
+			document.getElementById("uploadModal").style.display = "block";
 
-        try {
-					const response = await ApiService.post(`/file/upload-file-question`, formData, {
-						params: { subjectId, questionBankId },
-						headers: { "Content-Type": "multipart/form-data" },
-						onUploadProgress: (progressEvent) => {
-							if (progressEvent.total) {
-								const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+			try {
+				const response = await ApiService.post(`/file/upload-file-question`, formData, {
+					params: { subjectId, questionBankId },
+					headers: { "Content-Type": "multipart/form-data" },
+					onUploadProgress: (progressEvent) => {
+						if (progressEvent.total) {
+							const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
 
-								setUploadProgress((prevProgress) => {
-									// Tăng từ từ, nhưng không nhảy đột ngột
-									if (percentCompleted > prevProgress) {
-											return percentCompleted < 99 ? percentCompleted : 99;
-									}
-									return prevProgress;
-								});
-							}
-							},
+							setUploadProgress((prevProgress) => {
+								// Tăng từ từ, nhưng không nhảy đột ngột
+								if (percentCompleted > prevProgress) {
+										return percentCompleted < 99 ? percentCompleted : 99;
+								}
+								return prevProgress;
+							});
+						}
+						},
+				});
+
+				setUploadProgress(100); // Khi hoàn thành, đặt 100%
+
+				Swal.fire({
+						title: "Tải lên thành công",
+						icon: "success",
+				});
+
+				fetchData();
+			} catch (error) {
+					Swal.fire({
+						title: "Lỗi",
+						text: error.message,
+						icon: "error",
 					});
+			}
 
-            setUploadProgress(100); // Khi hoàn thành, đặt 100%
-
-            Swal.fire({
-                title: "Tải lên thành công",
-                icon: "success",
-            });
-
-            fetchData();
-        } catch (error) {
-            Swal.fire({
-							title: "Lỗi",
-							text: error.message,
-							icon: "error",
-            });
-        }
-
-        document.getElementById("uploadModal").classList.remove("show");
-        document.getElementById("uploadModal").style.display = "none";
-        setIsUploading(false);
-        setUploadProgress(0);
+			document.getElementById("uploadModal").classList.remove("show");
+			document.getElementById("uploadModal").style.display = "none";
+			setIsUploading(false);
+			setUploadProgress(0);
     }
-};
-
+	};
 
 	const [editQuestionId, setEditQuestionId] = useState(null);
 	const [shuffleQuestion, setShuffleQuestion] = useState(false);
@@ -331,35 +336,45 @@ const ListQuestionPage = () => {
 				<AiGenerate 
 					onClose={() => setShowAiGenerate(false)}
 				/>
-			) : (
+			) : showAddQuestionForm ? (
+        <AddQuestion onClose={() => setShowAddQuestionForm(false)} />
+      ) : (
 				<>
-			<div className="d-flex">
-				<div className="sample-card-header d-flex justify-content-between align-items-center mb-2">
-					<div className='left-header d-flex align-items-center'>
-						<div className="search-box rounded d-flex align-items-center">
-							<i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
-							<input
-								type="text"
-								className="search-input w-100"
-								placeholder="Tìm kiếm..."
-								value={keyword}
-								onChange={handleKeywordChange}
-							/>
+				<div className="d-flex">
+					<div className="sample-card-header d-flex justify-content-between align-items-center mb-2">
+						<div className='left-header d-flex align-items-center'>
+							<div className="search-box rounded d-flex align-items-center">
+								<i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
+								<input
+									type="text"
+									className="search-input w-100"
+									placeholder="Tìm kiếm..."
+									value={keyword}
+									onChange={handleKeywordChange}
+								/>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div className="d-flex justify-content-end ms-auto">
-					<AddButton 
-						data-bs-toggle="modal"
-						data-bs-target="#questionModal"
-						onClick={() => { preAddQuestion(); }}
-					>
-						<i className="fas fa-plus me-2"></i>Thêm câu hỏi
-					</AddButton>
-					<AddButton className="upload-btn-hover" style={{backgroundColor: "#28A745", marginLeft: "10px"}} onClick={handleUploadfile}>
-						<i className="fas fa-upload me-2"></i>Upload File
-					</AddButton>
-					<>
+					<div className="d-flex justify-content-end ms-auto">
+						{/* <AddButton 
+							data-bs-toggle="modal"
+							data-bs-target="#questionModal"
+							onClick={() => { preAddQuestion(); }}
+						>
+							<i className="fas fa-plus me-2"></i>Thêm câu hỏi
+						</AddButton> */}
+						<>
+							<AddButton onClick={() => setShowAddQuestionForm(true)}>
+								<i className="fas fa-plus me-2"></i>Thêm câu hỏi
+							</AddButton>
+							{showAddQuestionForm && (
+									<AddQuestion onClose={() => setShowAddQuestionForm(false)} />
+								)}
+						</>
+						<AddButton className="upload-btn-hover" style={{backgroundColor: "#28A745", marginLeft: "10px"}} onClick={handleUploadfile}>
+							<i className="fas fa-upload me-2"></i>Upload File
+						</AddButton>
+						<>
 							<AddButton className="ms-2" onClick={() => setShowAiGenerate(true)}>
 								<i className="fas fa-brain me-2"></i>AI sinh câu hỏi
 							</AddButton>
@@ -368,16 +383,16 @@ const ListQuestionPage = () => {
 								<AiGenerate onClose={() => setShowAiGenerate(false)} />
 							)}
 						</>
-					<div className="modal fade" id="uploadModal" tabIndex="-1" aria-hidden="true"
-					style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-					>
-						<div className="modal-dialog modal-dialog-centered small-modal" >
-							<div className="modal-content text-center p-4 container" style={{ width: "500px" }}>
-								<div className="modal-body">
-										{/* Vòng tròn tiến trình MUI */}
-										<Box sx={{ position: "relative", display: "inline-flex" }}>
-											<CircularProgress variant="determinate" value={uploadProgress} size={80} />
-											<Box
+						<div className="modal fade" id="uploadModal" tabIndex="-1" aria-hidden="true"
+						style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+						>
+							<div className="modal-dialog modal-dialog-centered small-modal" >
+								<div className="modal-content text-center p-4 container" style={{ width: "500px" }}>
+									<div className="modal-body">
+											{/* Vòng tròn tiến trình MUI */}
+											<Box sx={{ position: "relative", display: "inline-flex" }}>
+												<CircularProgress variant="determinate" value={uploadProgress} size={80} />
+												<Box
 													sx={{
 
 															top: 0,
@@ -389,287 +404,287 @@ const ListQuestionPage = () => {
 															alignItems: "center",
 															justifyContent: "center",
 													}}
-											>
+												>
 													<Typography variant="caption" component="div" sx={{ color: "text.secondary", fontSize: "18px" }}>
 															{`${uploadProgress}%`}
 													</Typography>
+												</Box>
 											</Box>
-										</Box>
-										<p className="mt-3">Đang tải lên...</p>
+											<p className="mt-3">Đang tải lên...</p>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 
-			{/* {questions.map((question) => (
-					<div key={question.questionId} className="card mb-2">
-							<div className="card-header d-flex justify-content-between">
-									<h6>{question.questionText}</h6>
-									<div className="d-flex" style={{ marginLeft: "50px" }}>
-									<button className="btn btn-primary me-2" onClick={() => preEditQuestion(question)}>Edit</button>
-									<button className="btn btn-danger">Delete</button>
-									</div>
-							</div>
-							<ul className="list-group">
-									{question.options.map((option, index) => (
-									<li key={index} className={option.isCorrect ? "list-group-item list-group-item-success" : "list-group-item"}>
-											{option.optionText}
-									</li>
-									))}
-							</ul>
+				{/* {questions.map((question) => (
+						<div key={question.questionId} className="card mb-2">
+								<div className="card-header d-flex justify-content-between">
+										<h6>{question.questionText}</h6>
+										<div className="d-flex" style={{ marginLeft: "50px" }}>
+										<button className="btn btn-primary me-2" onClick={() => preEditQuestion(question)}>Edit</button>
+										<button className="btn btn-danger">Delete</button>
+										</div>
+								</div>
+								<ul className="list-group">
+										{question.options.map((option, index) => (
+										<li key={index} className={option.isCorrect ? "list-group-item list-group-item-success" : "list-group-item"}>
+												{option.optionText}
+										</li>
+										))}
+								</ul>
+						</div>
+				))} */}
+				{Object.keys(groupedQuestions).length === 0 ? (
+					<div
+						className="d-flex align-items-center justify-content-center"
+						style={{ minHeight: "350px" }} // Hoặc bạn có thể dùng height: "60vh"
+					>
+						<div className="text-center p-4 rounded shadow-sm bg-light text-muted" style={{ width: "400px"}}>
+							<i className="fa-solid fa-circle-info fa-2x mb-2"></i>
+							<h5>Không có dữ liệu</h5>
+						</div>
 					</div>
-			))} */}
-			{Object.keys(groupedQuestions).length === 0 ? (
-				<div
-					className="d-flex align-items-center justify-content-center"
-					style={{ minHeight: "350px" }} // Hoặc bạn có thể dùng height: "60vh"
-				>
-					<div className="text-center p-4 rounded shadow-sm bg-light text-muted" style={{ width: "400px"}}>
-						<i className="fa-solid fa-circle-info fa-2x mb-2"></i>
-						<h5>Không có dữ liệu</h5>
-					</div>
-				</div>
-				) : (
-				Object.entries(filteredQuestions).map(([chapter, levels]) => (
-					<div className="container-chapter p-3 mt-2" key={chapter}>
-						<div className="d-flex justify-content-between align-items-center mb-2">
-							<div className="mb-2" style={{ display: "flex", alignItems: "center", gap: "8px", flexGrow: 1, width: "100%" }}>
-								{editingChapter === chapter ? (
-									<div className="d-flex" style={{ flexGrow: 1, width: "100%" }}>
-										<input
-											className="form-control form-control-sm"
-											style={{ flexGrow: 1, minWidth: 0, width: "100%", fontSize: "16px" }} // Thêm width: 100%
-											value={editedName}
-											autoFocus
-											onChange={(e) => setEditedName(e.target.value)}
-											onBlur={() => {
-												handleUpdateChapterName(chapter, editedName);
-												setEditingChapter(null);
-											}}
-											onKeyDown={(e) => {
-												if (e.key === 'Enter') {
+					) : (
+					Object.entries(filteredQuestions).map(([chapter, levels]) => (
+						<div className="container-chapter p-3 mt-2" key={chapter}>
+							<div className="d-flex justify-content-between align-items-center mb-2">
+								<div className="mb-2" style={{ display: "flex", alignItems: "center", gap: "8px", flexGrow: 1, width: "100%" }}>
+									{editingChapter === chapter ? (
+										<div className="d-flex" style={{ flexGrow: 1, width: "100%" }}>
+											<input
+												className="form-control form-control-sm"
+												style={{ flexGrow: 1, minWidth: 0, width: "100%", fontSize: "16px" }} // Thêm width: 100%
+												value={editedName}
+												autoFocus
+												onChange={(e) => setEditedName(e.target.value)}
+												onBlur={() => {
 													handleUpdateChapterName(chapter, editedName);
 													setEditingChapter(null);
-												}
-											}}
-										/>
-										<button
-											className="btn btn-sm btn-success ms-2 me-2 pt-2"
-											onClick={() => {
-												// handleUpdateChapterName(chapter, editedName);
-												setEditingChapter(null);
-											}}
-											style={{paddingLeft: "11px", paddingRight: "11px"}}
-										>
-											<i className="fa-solid fa-check" style={{fontSize: "18px"}}></i>
-										</button>
-										<button
-											className="btn btn-sm btn-secondary pt-2"
-											onClick={() => setEditingChapter(null)}
-											style={{paddingLeft: "13px", paddingRight: "13px"}}
-										>
-											<i className="fa-solid fa-xmark" style={{fontSize: "18px"}}></i>
-										</button>
-									</div>
-								) : (
-									<h4 className="m-0">
-										{chapter}
-										<i
-											className="fa-solid fa-pen-to-square ms-3"
-											style={{ fontSize: "18px", cursor: "pointer" }}
-											onClick={() => {
-												setEditingChapter(chapter);
-												setEditedName(chapter);
-											}}
-										></i>
-									</h4>
-								)}
-							</div>
-							<button
-								className="btn btn-link text-decoration-none position p-0 pe-1"
-								style={{ color: "black" }}
-								onClick={() => toggleChapter(chapter)}
-							>
-								<ArrowDropDownIcon
-									fontSize="large"
-									style={{
-										transform: collapsedChapters[chapter] ? "rotate(180deg)" : "rotate(0deg)",
-										transition: "transform 0.3s ease",
-									}}
-								/>
-							</button>
-						</div>
-						{!collapsedChapters[chapter] && (
-							<div className="chapter-content">
-								{Object.entries(levels).map(([level, questions]) => (
-									<div key={level}>
-										<div>
-											{questions.map((question) => (
-												<div key={question.questionId} className="card mb-2">
-													<div className="card-header d-flex justify-content-between ps-2">
-														<div className="d-flex ">
-															<button 
-																className="btn btn-link text-decoration-none position p-0 pe-1 "
-																style={{color: "black"}}
-																data-bs-toggle="collapse" 
-																data-bs-target={`#collapse-${question.questionId}`}
-																aria-expanded="false"
-																aria-controls={`collapse-${question.questionId}`}
-															>            
-																<ArrowDropDownIcon />
-															</button>
-															<div className="d-flex flex-column justify-content-center">
-																<h6 className="mb-0">{question.questionText}</h6>
-																{question.tags?.slice(1).map((tag, index) => (
-																	<p className="m-0 tag-level" key={index}>{tag}</p>
-																))}
-															</div>
-														</div>
-														<div className="d-flex" style={{ marginLeft: "50px" }}>
-															<button className="btn pe-1 ps-1" style={{ fontSize: "20px" }} onClick={() => preEditQuestion(question)}>
-																<i className="fa-solid fa-pen-to-square" style={{color: "#A6A6A6"}}></i>	
-															</button>
-															<button className="btn pe-1 ps-1" style={{ fontSize: "20px" }} onClick={() => handleDelete(question.questionId)}>
-																<i className="fa-solid fa-trash-can" style={{color: "#A6A6A6"}}></i>
-															</button>
-														</div>
-													</div>
-													<div id={`collapse-${question.questionId}`} className="collapse show">
-														<ul className="list-group" style={{ borderRadius: "0 0 5px 5px" }}>
-															{question.options.map((option, index) => (
-																<li key={index} className={option.isCorrect ? "list-group-item list-group-item-success" : "list-group-item"}>
-																	{option.optionText}
-																</li>
-															))}
-														</ul>
-													</div>
-												</div>
-											))}
+												}}
+												onKeyDown={(e) => {
+													if (e.key === 'Enter') {
+														handleUpdateChapterName(chapter, editedName);
+														setEditingChapter(null);
+													}
+												}}
+											/>
+											<button
+												className="btn btn-sm btn-success ms-2 me-2 pt-2"
+												onClick={() => {
+													// handleUpdateChapterName(chapter, editedName);
+													setEditingChapter(null);
+												}}
+												style={{paddingLeft: "11px", paddingRight: "11px"}}
+											>
+												<i className="fa-solid fa-check" style={{fontSize: "18px"}}></i>
+											</button>
+											<button
+												className="btn btn-sm btn-secondary pt-2"
+												onClick={() => setEditingChapter(null)}
+												style={{paddingLeft: "13px", paddingRight: "13px"}}
+											>
+												<i className="fa-solid fa-xmark" style={{fontSize: "18px"}}></i>
+											</button>
 										</div>
-									</div>
-								))}
-							</div>
-						)}
-					</div>
-				)))}
-
-		{/* Modal Bootstrap thuần */}
-		<div className="modal fade" id="questionModal" tabIndex="-1" aria-hidden="true">
-			<div className="modal-dialog modal-dialog-centered modal-xl">
-				<div className="modal-content p-3">
-					<div className="modal-header">
-						<h5 className="modal-title">{editQuestionId ? "Chỉnh sửa câu hỏi" : "Thêm câu hỏi mới"}</h5>
-						<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div className="modal-body">
-						<div className="d-flex" style={{ display: "flex", width: "100%", gap: "10px" }}>
-							<div style={{ flex: 1 }}>
-								<p className="mb-1">Chọn chuyên đề kiến thức:</p>
-								<CreatableSelect
-									isClearable
-									options={allChapters}
-									value={newQuestion.tags[0] ? { value: newQuestion.tags[0], label: newQuestion.tags[0] } : null}
-									onChange={(newValue) => handleTagChange(0, newValue)}
-									menuPortalTarget={document.body}
-									placeholder="Chọn chuyên đề kiến thức"
-									styles={{
-										menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-										container: (provided) => ({ ...provided, flex: 1 })
-									}}
-								/>
-							</div>
-
-							<div style={{ flex: 1 }}>
-								<p className="mb-1">Mức độ:</p>
-								<CreatableSelect
-									isClearable
-									options={allLevels}
-									value={newQuestion.tags[1] ? { value: newQuestion.tags[1], label: newQuestion.tags[1] } : null}
-									onChange={(newValue) => handleTagChange(1, newValue)}
-									menuPortalTarget={document.body}
-									placeholder="Chọn mức độ"
-									styles={{
-										menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-										container: (provided) => ({ ...provided, flex: 1 })
-									}}
-								/>
-							</div>
-
-						</div>
-							<div>
-								<p className="mb-1 mt-2"> <span style={{ color: "red" }}>*</span> Câu hỏi:</p>
-								<textarea
-									type="text"
-									className="form-control mb-2"
-									placeholder="Nhập câu hỏi"
-									value={newQuestion.questionText}
-									onChange={(e) => setNewQuestion({ ...newQuestion, questionText: e.target.value })}
-								/>
-							</div>
-							<div className="form-check mt-0 mb-2">
-								<input
-									type="checkbox"
-									className="form-check-input"
-									id="shuffleQuestion"
-									checked={newQuestion.isRandomOrder}
-									onChange={(e) => setNewQuestion({ ...newQuestion, isRandomOrder: e.target.checked })}
-								/>
-								<label className="form-check-label" htmlFor="shuffleQuestion">
-									Đảo thứ tự đáp án
-								</label>
-							</div>
-							{newQuestion.options.map((option, index) => (
-								<div key={index} className="input-group mb-2">
-									<div className="input-group-text">
-										<input
-											className="form-check-input m-0"
-											type="checkbox"
-											checked={option.isCorrect}
-											onChange={() => {
-												const newOptions = [...newQuestion.options];
-												newOptions[index].isCorrect = !newOptions[index].isCorrect;
-												setNewQuestion({ ...newQuestion, options: newOptions });
-											}}
-										/>
-									</div>
-									<textarea
-										className="form-control m-0"
-										placeholder="Nhập đáp án"
-										value={option.optionText}
-										rows={1} // Hiển thị tối thiểu 1 dòng, tự động mở rộng khi nhập
-										onChange={(e) => {
-											const newOptions = [...newQuestion.options];
-											newOptions[index].optionText = e.target.value;
-											setNewQuestion({ ...newQuestion, options: newOptions });
-										}}
-										style={{ resize: "none", overflow: "hidden", minHeight: "40px" }} // Ngăn resize tay, tự động mở rộng
-										onInput={(e) => {
-											e.target.style.height = "auto"; // Reset chiều cao để tránh bị giãn bất thường
-											e.target.style.height = e.target.scrollHeight + "px"; // Set chiều cao theo nội dung
+									) : (
+										<h4 className="m-0">
+											{chapter}
+											<i
+												className="fa-solid fa-pen-to-square ms-3"
+												style={{ fontSize: "18px", cursor: "pointer" }}
+												onClick={() => {
+													setEditingChapter(chapter);
+													setEditedName(chapter);
+												}}
+											></i>
+										</h4>
+									)}
+								</div>
+								<button
+									className="btn btn-link text-decoration-none position p-0 pe-1"
+									style={{ color: "black" }}
+									onClick={() => toggleChapter(chapter)}
+								>
+									<ArrowDropDownIcon
+										fontSize="large"
+										style={{
+											transform: collapsedChapters[chapter] ? "rotate(180deg)" : "rotate(0deg)",
+											transition: "transform 0.3s ease",
 										}}
 									/>
-									<button className="btn btn-danger d-flex align-items-center justify-content-center" onClick={() => handleRemoveOption(index)}>
-										<i className="fa-solid fa-xmark"></i>
-									</button>
+								</button>
+							</div>
+							{!collapsedChapters[chapter] && (
+								<div className="chapter-content">
+									{Object.entries(levels).map(([level, questions]) => (
+										<div key={level}>
+											<div>
+												{questions.map((question) => (
+													<div key={question.questionId} className="card mb-2">
+														<div className="card-header d-flex justify-content-between ps-2">
+															<div className="d-flex ">
+																<button 
+																	className="btn btn-link text-decoration-none position p-0 pe-1 "
+																	style={{color: "black"}}
+																	data-bs-toggle="collapse" 
+																	data-bs-target={`#collapse-${question.questionId}`}
+																	aria-expanded="false"
+																	aria-controls={`collapse-${question.questionId}`}
+																>            
+																	<ArrowDropDownIcon />
+																</button>
+																<div className="d-flex flex-column justify-content-center">
+																	<h6 className="mb-0">{question.questionText}</h6>
+																	{question.tags?.slice(1).map((tag, index) => (
+																		<p className="m-0 tag-level" key={index}>{tag}</p>
+																	))}
+																</div>
+															</div>
+															<div className="d-flex" style={{ marginLeft: "50px" }}>
+																<button className="btn pe-1 ps-1" style={{ fontSize: "20px" }} onClick={() => preEditQuestion(question)}>
+																	<i className="fa-solid fa-pen-to-square" style={{color: "#A6A6A6"}}></i>	
+																</button>
+																<button className="btn pe-1 ps-1" style={{ fontSize: "20px" }} onClick={() => handleDelete(question.questionId)}>
+																	<i className="fa-solid fa-trash-can" style={{color: "#A6A6A6"}}></i>
+																</button>
+															</div>
+														</div>
+														<div id={`collapse-${question.questionId}`} className="collapse show">
+															<ul className="list-group" style={{ borderRadius: "0 0 5px 5px" }}>
+																{question.options.map((option, index) => (
+																	<li key={index} className={option.isCorrect ? "list-group-item list-group-item-success" : "list-group-item"}>
+																		{option.optionText}
+																	</li>
+																))}
+															</ul>
+														</div>
+													</div>
+												))}
+											</div>
+										</div>
+									))}
 								</div>
-							))}
-							<button className="btn btn-outline-secondary mt-1" style={{fontSize: "14px"}} onClick={handleAddOption}>
-								<i className="fa-solid fa-plus me-2"></i>
-								Thêm đáp án
-							</button>
+							)}
 						</div>
-						<div className="modal-footer">
-							<CancelButton style={{width: "100px"}} id="closeModalBtn"data-bs-dismiss="modal">Hủy</CancelButton>
-							<AddButton style={{width: "100px"}} onClick={handleSaveQuestion}>
-								{editQuestionId ? "Cập nhật" : "Lưu"}
-							</AddButton>
+					)))}
+
+			{/* Modal Bootstrap thuần */}
+			<div className="modal fade" id="questionModal" tabIndex="-1" aria-hidden="true">
+				<div className="modal-dialog modal-dialog-centered modal-xl">
+					<div className="modal-content p-3">
+						<div className="modal-header">
+							<h5 className="modal-title">{editQuestionId ? "Chỉnh sửa câu hỏi" : "Thêm câu hỏi mới"}</h5>
+							<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
-					</div>
-				</div>	
-			</div>
-							</>
+						<div className="modal-body">
+							<div className="d-flex" style={{ display: "flex", width: "100%", gap: "10px" }}>
+								<div style={{ flex: 1 }}>
+									<p className="mb-1">Chọn chuyên đề kiến thức:</p>
+									<CreatableSelect
+										isClearable
+										options={allChapters}
+										value={newQuestion.tags[0] ? { value: newQuestion.tags[0], label: newQuestion.tags[0] } : null}
+										onChange={(newValue) => handleTagChange(0, newValue)}
+										menuPortalTarget={document.body}
+										placeholder="Chọn chuyên đề kiến thức"
+										styles={{
+											menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+											container: (provided) => ({ ...provided, flex: 1 })
+										}}
+									/>
+								</div>
+
+								<div style={{ flex: 1 }}>
+									<p className="mb-1">Mức độ:</p>
+									<CreatableSelect
+										isClearable
+										options={allLevels}
+										value={newQuestion.tags[1] ? { value: newQuestion.tags[1], label: newQuestion.tags[1] } : null}
+										onChange={(newValue) => handleTagChange(1, newValue)}
+										menuPortalTarget={document.body}
+										placeholder="Chọn mức độ"
+										styles={{
+											menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+											container: (provided) => ({ ...provided, flex: 1 })
+										}}
+									/>
+								</div>
+
+							</div>
+								<div>
+									<p className="mb-1 mt-2"> <span style={{ color: "red" }}>*</span> Câu hỏi:</p>
+									<textarea
+										type="text"
+										className="form-control mb-2"
+										placeholder="Nhập câu hỏi"
+										value={newQuestion.questionText}
+										onChange={(e) => setNewQuestion({ ...newQuestion, questionText: e.target.value })}
+									/>
+								</div>
+								<div className="form-check mt-0 mb-2">
+									<input
+										type="checkbox"
+										className="form-check-input"
+										id="shuffleQuestion"
+										checked={newQuestion.isRandomOrder}
+										onChange={(e) => setNewQuestion({ ...newQuestion, isRandomOrder: e.target.checked })}
+									/>
+									<label className="form-check-label" htmlFor="shuffleQuestion">
+										Đảo thứ tự đáp án
+									</label>
+								</div>
+								{newQuestion.options.map((option, index) => (
+									<div key={index} className="input-group mb-2">
+										<div className="input-group-text">
+											<input
+												className="form-check-input m-0"
+												type="checkbox"
+												checked={option.isCorrect}
+												onChange={() => {
+													const newOptions = [...newQuestion.options];
+													newOptions[index].isCorrect = !newOptions[index].isCorrect;
+													setNewQuestion({ ...newQuestion, options: newOptions });
+												}}
+											/>
+										</div>
+										<textarea
+											className="form-control m-0"
+											placeholder="Nhập đáp án"
+											value={option.optionText}
+											rows={1} // Hiển thị tối thiểu 1 dòng, tự động mở rộng khi nhập
+											onChange={(e) => {
+												const newOptions = [...newQuestion.options];
+												newOptions[index].optionText = e.target.value;
+												setNewQuestion({ ...newQuestion, options: newOptions });
+											}}
+											style={{ resize: "none", overflow: "hidden", minHeight: "40px" }} // Ngăn resize tay, tự động mở rộng
+											onInput={(e) => {
+												e.target.style.height = "auto"; // Reset chiều cao để tránh bị giãn bất thường
+												e.target.style.height = e.target.scrollHeight + "px"; // Set chiều cao theo nội dung
+											}}
+										/>
+										<button className="btn btn-danger d-flex align-items-center justify-content-center" onClick={() => handleRemoveOption(index)}>
+											<i className="fa-solid fa-xmark"></i>
+										</button>
+									</div>
+								))}
+								<button className="btn btn-outline-secondary mt-1" style={{fontSize: "14px"}} onClick={handleAddOption}>
+									<i className="fa-solid fa-plus me-2"></i>
+									Thêm đáp án
+								</button>
+							</div>
+							<div className="modal-footer">
+								<CancelButton style={{width: "100px"}} id="closeModalBtn"data-bs-dismiss="modal">Hủy</CancelButton>
+								<AddButton style={{width: "100px"}} onClick={handleSaveQuestion}>
+									{editQuestionId ? "Cập nhật" : "Lưu"}
+								</AddButton>
+							</div>
+						</div>
+					</div>	
+				</div>
+				</>
 			)}
     </div>
   )

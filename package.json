@@ -29,6 +29,7 @@
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
     "lucide-react": "^0.476.0",
+    "quill": "^2.0.3",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.9",
     "react-calendar": "^6.0.0",

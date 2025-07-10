@@ -41,7 +41,6 @@ import PropTypes from "prop-types";
 import { setUser } from './redux/authSlice';
 
 import Login2 from "./pages/Login2/Login2";
-import AiGenerate from "./components/AiGenerate/AiGenerate";
 
 function App() {
   const accessToken = useSelector((state) => state.auth.accessToken) || localStorage.getItem("accessToken");
@@ -110,7 +109,6 @@ function App() {
           <Route path="question" element={<SubjectPage />}/>
           <Route path="question/:subjectId" element={<QuestionBankPage />} />
           <Route path="question/:subjectId/:questionBankId" element={<ListQuestionPage />} />
-          {/* <Route path="question/:subjectId/:questionBankId/aigen" element={<AiGenerate />} /> */}
           <Route path="matrix-exam" element={<ExamMatrixPage />} />
           <Route path="matrix-exam/matrix-detail" element={<DetailExamMatrixPage />} />
           <Route path="exam" element={<ExamManagementPage />} />

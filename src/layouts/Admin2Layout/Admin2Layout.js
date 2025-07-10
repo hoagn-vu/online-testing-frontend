@@ -48,7 +48,7 @@ const menuItems = [
     role: ["admin"],
     children: [
       { title: "Quản lý kỳ thi", path: "/staff/organize" },
-      { title: "quản lý phòng thi", path: "/staff/room" },
+      { title: "Quản lý phòng thi", path: "/staff/room" },
     ],
   },
   { 
@@ -175,7 +175,6 @@ export default function Admin2Layout() {
     navigate("/");
   };
 
-
   const handleToggle = (title) => {
     setOpenMenus(prev => ({
       ...prev,
@@ -189,7 +188,8 @@ export default function Admin2Layout() {
       : location.pathname.startsWith(item.path);
 
   const [isAiFormOpen, setIsAiFormOpen] = useState(false);
-
+  const [isAddQuestionFormOpen, setIsAddQuestionFormOpen] = useState(false);
+  
   useEffect(() => {
     const handleToggle = (e) => {
       setIsAiFormOpen(e.detail);
@@ -201,10 +201,21 @@ export default function Admin2Layout() {
     };
   }, []);
 
+  useEffect(() => {
+    const handleToggleAd = (e) => {
+      setIsAddQuestionFormOpen(e.detail);
+    };
+
+    window.addEventListener("toggleAddQuestionForm", handleToggleAd);
+    return () => {
+      window.removeEventListener("toggleAddQuestionForm", handleToggleAd);
+    };
+  }, []);
+
   const isBaseListQuestionPage = location.pathname.startsWith("/staff/question/") &&
                                 location.pathname.split("/").length === 5;
 
-  const isListQuestionPage = isBaseListQuestionPage && !isAiFormOpen;
+  const isListQuestionPage = isBaseListQuestionPage && !isAiFormOpen && !isAddQuestionFormOpen;
 
   return (
     <Box sx={{ display: 'flex' }}>
