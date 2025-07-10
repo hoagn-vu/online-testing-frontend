@@ -32,7 +32,7 @@ import ChapterSidebar from '../../components/ChapterSidebar/ChapterSidebar';
 const drawerWidth = 250;
 
 const menuItems = [
-  { title: "Trang chủ", icon: <i className="fa-solid fa-chart-column icon-color" aria-hidden="true"></i>, path: "/staff/dashboard", role: ["user", "admin"] },
+  { title: "Trang chủ", icon: <i className="fa-solid fa-chart-column icon-color" aria-hidden="true"></i>, path: "/staff/dashboard", role: ["admin"] },
   { 
     title: "Quản lý người dùng", 
     icon: <i className="fa-solid fa-user-gear icon-color"></i>, 
@@ -42,12 +42,28 @@ const menuItems = [
       { title: "Nhóm người dùng", path: "/staff/groupuser" },
     ],
   },
-  { title: "Quản lý kỳ thi", icon: <i className="fa-solid fa-calendar-check icon-color"></i>, path: "/staff/organize", role: ["user", "admin"] },
-  { title: "Ngân hàng câu hỏi", icon: <i className="fa-solid fa-database icon-color"></i>, path: "/staff/question", role: ["user", "admin"] },
-  { title: "Quản lý ma trận đề", icon: <i className="fa-solid fa-table icon-color"></i>, path: "/staff/matrix-exam", role: ["user", "admin"] },
-  { title: "Quản lý đề thi", icon: <i className="fa-solid fa-file-lines icon-color"></i>, path: "/staff/exam", role: ["user", "admin"] },
-  { title: "Quản lý phòng thi", icon: <i className="fa-solid fa-school icon-color"></i>, path: "/staff/room", role: ["user", "admin"] },
-  { title: "Nhật ký sử dụng", icon: <i className="fa-solid fa-book icon-color"></i>, path: "/staff/log", role: ["user", "admin"] },
+  { 
+    title: "Tổ chức kỳ thi", 
+    icon: <i className="fa-solid fa-calendar-check icon-color"></i>, 
+    role: ["admin"],
+    children: [
+      { title: "Quản lý kỳ thi", path: "/staff/organize" },
+      { title: "quản lý phòng thi", path: "/staff/room" },
+    ],
+  },
+  { 
+    title: "Quản lý nội dung thi", 
+    icon: <i className="fa-solid fa-database icon-color"></i>, 
+    role: ["admin"],
+    children: [
+      { title: "Ngân hàng câu hỏi", path: "/staff/question" },
+      { title: "Quản lý ma trận đề", path: "/staff/matrix-exam" },
+      { title: "Quản lý đề thi", path: "/staff/exam" },
+    ],
+  },
+  // { title: "Quản lý ma trận đề", icon: <i className="fa-solid fa-table icon-color"></i>, path: "/staff/matrix-exam", role: ["admin"] },
+  // { title: "Quản lý đề thi", icon: <i className="fa-solid fa-file-lines icon-color"></i>, path: "/staff/exam", role: ["admin"] },
+  { title: "Nhật ký sử dụng", icon: <i className="fa-solid fa-book icon-color"></i>, path: "/staff/log", role: ["admin"] },
 ];
 
 const openedMixin = (theme) => ({
