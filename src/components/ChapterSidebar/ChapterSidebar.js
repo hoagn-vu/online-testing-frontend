@@ -9,10 +9,10 @@ import logo from '../../assets/logo/logo.png';
 import ApiService from "../../services/apiService";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import "./ChapterSidebar.css";
+import PropTypes from 'prop-types';
 
-const ChapterSidebar = () => {
+const ChapterSidebar = ({ onChapterSelect }) => {
   const { subjectId, questionBankId } = useParams();
-
   const [chapters, setChapters] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedChapter, setSelectedChapter] = useState(null);
@@ -60,6 +60,12 @@ const ChapterSidebar = () => {
       [chapter]: !prev[chapter],
     }));
   };
+
+  // Gửi chapter lên cha khi chọn
+  const handleChapterClick = (chapter) => {
+    setSelectedChapter(chapter); // Cập nhật local state
+    if (onChapterSelect) onChapterSelect(chapter); // Gửi lên cha
+  };
   
   return (
     <div>
@@ -76,7 +82,7 @@ const ChapterSidebar = () => {
           {Object.entries(groupedQuestions).map(([chapter, levels], index) => (
             <Box key={index} sx={{ mb: 0 }}>
               <ListItem 
-                onClick={() => setSelectedChapter(chapter)}
+                onClick={() => handleChapterClick(chapter)}
                 sx={{ 
                   backgroundColor: selectedChapter === chapter ? '#e6f2fc' : '#f0f0f0',
                   '&:hover': {
@@ -89,7 +95,7 @@ const ChapterSidebar = () => {
                 <button 
                   className="btn btn-link text-decoration-none position p-0 pe-1 "
                   style={{color: "black"}}
-                  onClick={() => toggleChapter(chapter)}
+                  onClick={(e) => { e.stopPropagation(); toggleChapter(chapter); }}
                   
                 >            
                   <ArrowDropDownIcon 
@@ -128,4 +134,7 @@ const ChapterSidebar = () => {
   );
 };
 
+ChapterSidebar.propTypes = {
+  onChapterSelect: PropTypes.func, // Khai báo onChapterSelect là một hàm
+};
 export default ChapterSidebar;

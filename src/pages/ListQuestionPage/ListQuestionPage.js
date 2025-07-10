@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link, useLocation  } from "react-router-dom";
+import { useOutletContext } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./ListQuestionPage.css";
 import Swal from "sweetalert2";
@@ -11,6 +12,7 @@ import { CircularProgress, Typography, Box } from "@mui/material";
 import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
 import AiGenerate from "../../components/AiGenerate/AiGenerate";
+import ChapterSidebar from "../../components/ChapterSidebar/ChapterSidebar";
 
 const ListQuestionPage = () => {
 	const user = useSelector((state) => state.auth.user);
@@ -32,6 +34,13 @@ const ListQuestionPage = () => {
 	const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
 	const [showAiGenerate, setShowAiGenerate] = useState(false);
+
+	const { selectedChapter } = useOutletContext(); // Lấy selectedChapter từ context
+	
+	useEffect(() => {
+		const event = new CustomEvent("toggleAiForm", { detail: showAiGenerate });
+		window.dispatchEvent(event);
+	}, [showAiGenerate]);
 
   const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
@@ -297,6 +306,14 @@ const ListQuestionPage = () => {
   }));
 };
 
+	// Lọc câu hỏi theo selectedChapter
+  const filteredQuestions = selectedChapter
+    ? { [selectedChapter]: groupedQuestions[selectedChapter] || {} }
+    : groupedQuestions;
+
+	const [editingChapter, setEditingChapter] = useState(null);
+	const [editedName, setEditedName] = useState("");
+
 	return (
 		<div className="p-4">
 			{/* Breadcrumb */}
@@ -342,9 +359,15 @@ const ListQuestionPage = () => {
 					<AddButton className="upload-btn-hover" style={{backgroundColor: "#28A745", marginLeft: "10px"}} onClick={handleUploadfile}>
 						<i className="fas fa-upload me-2"></i>Upload File
 					</AddButton>
-					<AddButton className="ms-2" onClick={() => setShowAiGenerate(true)}>
-						<i className="fas fa-brain me-2"></i>AI sinh câu hỏi
-					</AddButton>
+					<>
+							<AddButton className="ms-2" onClick={() => setShowAiGenerate(true)}>
+								<i className="fas fa-brain me-2"></i>AI sinh câu hỏi
+							</AddButton>
+
+							{showAiGenerate && (
+								<AiGenerate onClose={() => setShowAiGenerate(false)} />
+							)}
+						</>
 					<div className="modal fade" id="uploadModal" tabIndex="-1" aria-hidden="true"
 					style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
 					>
@@ -409,24 +432,71 @@ const ListQuestionPage = () => {
 					</div>
 				</div>
 				) : (
-				Object.entries(groupedQuestions).map(([chapter, levels]) => (
+				Object.entries(filteredQuestions).map(([chapter, levels]) => (
 					<div className="container-chapter p-3 mt-2" key={chapter}>
 						<div className="d-flex justify-content-between align-items-center mb-2">
-							<div className="mb-2" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-								<h4 className="m-0">{chapter} 
-									<i className="fa-solid fa-pen-to-square ms-3" style={{fontSize: "18px"}}></i>	
-								</h4>
+							<div className="mb-2" style={{ display: "flex", alignItems: "center", gap: "8px", flexGrow: 1, width: "100%" }}>
+								{editingChapter === chapter ? (
+									<div className="d-flex" style={{ flexGrow: 1, width: "100%" }}>
+										<input
+											className="form-control form-control-sm"
+											style={{ flexGrow: 1, minWidth: 0, width: "100%", fontSize: "16px" }} // Thêm width: 100%
+											value={editedName}
+											autoFocus
+											onChange={(e) => setEditedName(e.target.value)}
+											onBlur={() => {
+												handleUpdateChapterName(chapter, editedName);
+												setEditingChapter(null);
+											}}
+											onKeyDown={(e) => {
+												if (e.key === 'Enter') {
+													handleUpdateChapterName(chapter, editedName);
+													setEditingChapter(null);
+												}
+											}}
+										/>
+										<button
+											className="btn btn-sm btn-success ms-2 me-2 pt-2"
+											onClick={() => {
+												// handleUpdateChapterName(chapter, editedName);
+												setEditingChapter(null);
+											}}
+											style={{paddingLeft: "11px", paddingRight: "11px"}}
+										>
+											<i className="fa-solid fa-check" style={{fontSize: "18px"}}></i>
+										</button>
+										<button
+											className="btn btn-sm btn-secondary pt-2"
+											onClick={() => setEditingChapter(null)}
+											style={{paddingLeft: "13px", paddingRight: "13px"}}
+										>
+											<i className="fa-solid fa-xmark" style={{fontSize: "18px"}}></i>
+										</button>
+									</div>
+								) : (
+									<h4 className="m-0">
+										{chapter}
+										<i
+											className="fa-solid fa-pen-to-square ms-3"
+											style={{ fontSize: "18px", cursor: "pointer" }}
+											onClick={() => {
+												setEditingChapter(chapter);
+												setEditedName(chapter);
+											}}
+										></i>
+									</h4>
+								)}
 							</div>
-							<button 
-								className="btn btn-link text-decoration-none position p-0 pe-1 "
-								style={{color: "black"}}
+							<button
+								className="btn btn-link text-decoration-none position p-0 pe-1"
+								style={{ color: "black" }}
 								onClick={() => toggleChapter(chapter)}
-							>            
-								<ArrowDropDownIcon 
+							>
+								<ArrowDropDownIcon
 									fontSize="large"
 									style={{
 										transform: collapsedChapters[chapter] ? "rotate(180deg)" : "rotate(0deg)",
-										transition: "transform 0.3s ease"
+										transition: "transform 0.3s ease",
 									}}
 								/>
 							</button>
@@ -597,9 +667,9 @@ const ListQuestionPage = () => {
 							</AddButton>
 						</div>
 					</div>
-				</div>
+				</div>	
 			</div>
-				</>
+							</>
 			)}
     </div>
   )

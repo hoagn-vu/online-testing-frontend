@@ -131,7 +131,8 @@ export default function Admin2Layout() {
   const handleDrawerClose = () => setOpen(false);
   const [isOpen, setIsOpen] = useState(false);
   const [openMenus, setOpenMenus] = useState({});
-  
+  const [selectedChapter, setSelectedChapter] = useState(null);
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 960) {
@@ -171,8 +172,24 @@ export default function Admin2Layout() {
       ? openMenus[item.title]
       : location.pathname.startsWith(item.path);
 
-  const isListQuestionPage = location.pathname.includes("/staff/question/") &&
-                             location.pathname.split("/").length === 5;
+  const [isAiFormOpen, setIsAiFormOpen] = useState(false);
+
+  useEffect(() => {
+    const handleToggle = (e) => {
+      setIsAiFormOpen(e.detail);
+    };
+
+    window.addEventListener("toggleAiForm", handleToggle);
+    return () => {
+      window.removeEventListener("toggleAiForm", handleToggle);
+    };
+  }, []);
+
+  const isBaseListQuestionPage = location.pathname.startsWith("/staff/question/") &&
+                                location.pathname.split("/").length === 5;
+
+  const isListQuestionPage = isBaseListQuestionPage && !isAiFormOpen;
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -215,7 +232,7 @@ export default function Admin2Layout() {
 
       <Drawer variant="permanent" open={open}>
         {isListQuestionPage ? (
-          <ChapterSidebar /> // 👉 component danh sách chương thay cho menu
+          <ChapterSidebar onChapterSelect={(chapter) => setSelectedChapter(chapter)} />
         ) : (
           <>
             <DrawerHeader>
@@ -329,8 +346,7 @@ export default function Admin2Layout() {
         }}
       >        
         <DrawerHeader />
-        <Outlet />
-      </Box>
+        <Outlet context={{ selectedChapter }} /> {/* Truyền selectedChapter qua context */}      </Box>
     </Box>
   );
 }

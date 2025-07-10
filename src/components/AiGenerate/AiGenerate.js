@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams  } from "react-router-dom";
 import { Modal, Spinner } from 'react-bootstrap';
 import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
@@ -12,7 +13,10 @@ const AiGenerate = ({ onClose  }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [generatedQuestions, setGeneratedQuestions] = useState([]); 
   const [editingIndex, setEditingIndex] = useState(null);
-
+  
+  const { subjectId, questionBankId } = useParams();
+  const [ subjectName, setSubjectName ] = useState("");
+  const [ questionBankName, setQuestionBankName ] = useState("");	
   const handleGenerateQuestions = () => {
     setIsLoading(true);
 

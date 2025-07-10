@@ -54,3 +54,8 @@
 .list-group-item-success {
     background-color: #e6f0eb;
 }
+
+.chapter-sidebar {
+  width: 240px;
+  min-width: 240px;
+}
