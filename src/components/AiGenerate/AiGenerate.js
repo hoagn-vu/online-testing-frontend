@@ -9,6 +9,7 @@ import Nodata from "../../assets/images/no-data1.png"
 import PropTypes from 'prop-types';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import CreatableSelect from 'react-select/creatable';
+import Swal from "sweetalert2";
 
 const AiGenerate = ({ onClose  }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -108,6 +109,30 @@ const AiGenerate = ({ onClose  }) => {
     bsModal.show();
   };
 
+  const handleDelete = (index) => {
+    Swal.fire({
+      title: "Bạn có chắc chắn xóa?",
+      text: "Bạn sẽ không thể hoàn tác hành động này!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Xóa",
+      cancelButtonText: "Hủy",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const newQuestions = [...generatedQuestions];
+        newQuestions.splice(index, 1); // Xóa phần tử tại vị trí index
+        setGeneratedQuestions(newQuestions);
+
+        Swal.fire({
+          title: "Đã xóa!",
+          text: "Câu hỏi đã bị xóa.",
+          icon: "success",
+        });
+      }
+    });
+  };
 
   const handleSave = () => {
     setEditingIndex(null);
@@ -287,7 +312,7 @@ const AiGenerate = ({ onClose  }) => {
                   <button className="btn pe-1 ps-1" style={{ fontSize: "20px" }} onClick={() => handleEdit(index)}>
                     <i className="fa-solid fa-pen-to-square" style={{color: "#A6A6A6"}}></i>	
                   </button>
-                  <button className="btn pe-1 ps-1" style={{ fontSize: "20px" }} >
+                  <button className="btn pe-1 ps-1" style={{ fontSize: "20px" }} onClick={() => handleDelete(index)} >
                     <i className="fa-solid fa-trash-can" style={{color: "#A6A6A6"}}></i>
                   </button>
                 </div>
