@@ -37,6 +37,8 @@ const ListQuestionPage = () => {
 	const [showAddQuestionForm, setShowAddQuestionForm] = useState(false);
 
 	const { selectedChapter } = useOutletContext(); // Lấy selectedChapter từ context
+	const [selectedQuestions, setSelectedQuestions] = useState([]); // State để theo dõi câu hỏi được chọn
+  const [showModal, setShowModal] = useState(false);
 	
 	useEffect(() => {
 		const event = new CustomEvent("toggleAiForm", { detail: showAiGenerate });
@@ -394,15 +396,14 @@ const ListQuestionPage = () => {
 												<CircularProgress variant="determinate" value={uploadProgress} size={80} />
 												<Box
 													sx={{
-
-															top: 0,
-															left: 0,
-															bottom: 0,
-															right: 0,
-															position: "absolute",
-															display: "flex",
-															alignItems: "center",
-															justifyContent: "center",
+														top: 0,
+														left: 0,
+														bottom: 0,
+														right: 0,
+														position: "absolute",
+														display: "flex",
+														alignItems: "center",
+														justifyContent: "center",
 													}}
 												>
 													<Typography variant="caption" component="div" sx={{ color: "text.secondary", fontSize: "18px" }}>
@@ -570,8 +571,8 @@ const ListQuestionPage = () => {
 						</div>
 					)))}
 
-			{/* Modal Bootstrap thuần */}
-			<div className="modal fade" id="questionModal" tabIndex="-1" aria-hidden="true">
+				{/* Modal Bootstrap thuần */}
+				<div className="modal fade" id="questionModal" tabIndex="-1" aria-hidden="true">
 				<div className="modal-dialog modal-dialog-centered modal-xl">
 					<div className="modal-content p-3">
 						<div className="modal-header">
