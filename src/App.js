@@ -41,6 +41,7 @@ import PropTypes from "prop-types";
 import { setUser } from './redux/authSlice';
 
 import Login2 from "./pages/Login2/Login2";
+import LevelManagement from "./pages/LevelManagement/LevelManagement";
 
 function App() {
   const accessToken = useSelector((state) => state.auth.accessToken) || localStorage.getItem("accessToken");
@@ -114,6 +115,7 @@ function App() {
           <Route path="exam" element={<ExamManagementPage />} />
           <Route path="exam/:examId" element={<DetailExamPage />} />
           <Route path="room" element={<RoomManagementPage />} />
+          <Route path="level" element={<LevelManagement />} />
           <Route path="log" element={<LogPage />} />
         </Route>
       </Routes>

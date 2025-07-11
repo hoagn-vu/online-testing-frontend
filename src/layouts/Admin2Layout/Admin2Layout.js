@@ -59,6 +59,7 @@ const menuItems = [
       { title: "Ngân hàng câu hỏi", path: "/staff/question" },
       { title: "Quản lý ma trận đề", path: "/staff/matrix-exam" },
       { title: "Quản lý đề thi", path: "/staff/exam" },
+      { title: "Quản lý mức độ", path: "/staff/level" },
     ],
   },
   // { title: "Quản lý ma trận đề", icon: <i className="fa-solid fa-table icon-color"></i>, path: "/staff/matrix-exam", role: ["admin"] },
