@@ -96,7 +96,9 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
                       />
                     </td>
                     <td className="border p-2 text-center">
-                        {(level.scorePerQuestion / level.questionCount ).toFixed(2)}
+                      {level.questionCount === 0
+                        ? "-"
+                        : (level.scorePerQuestion / level.questionCount).toFixed(2)}
                     </td>
                   </tr>
                 ))}

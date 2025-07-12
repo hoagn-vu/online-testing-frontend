@@ -110,7 +110,9 @@ const MatrixChapter = ({ data }) => {
                     />
                   </td>
                   <td className="border p-2 text-center">
-                    {(item.pointsPerQuestion / item.totalSelected).toFixed(2)}
+                    {item.totalSelected === 0
+                      ? "-"
+                      : (item.pointsPerQuestion / item.totalSelected).toFixed(2)}
                   </td>
                 </tr>
               ))}
