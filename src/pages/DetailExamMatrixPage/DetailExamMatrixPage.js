@@ -461,10 +461,10 @@ const DetailExamMatrixPage = () => {
 				</div>
 				<div className="d-flex ms-auto">
 					<button className="add-btn" onClick={handleSaveMatrix}
-									style={{width: "109px"}}
+						style={{width: "120px"}}
 					>
 						<i className="fas fa-plus me-2"></i>
-						Thêm mới
+						Tạo ma trận
 					</button>
 				</div>
 			</div>
