@@ -453,42 +453,51 @@ const ListQuestionPage = () => {
 							<div className="d-flex justify-content-between align-items-center mb-2">
 								<div className="mb-2" style={{ display: "flex", alignItems: "center", gap: "8px", flexGrow: 1, width: "100%" }}>
 									{editingChapter === chapter ? (
-										<div className="d-flex" style={{ flexGrow: 1, width: "100%" }}>
-											<input
-												className="form-control form-control-sm"
-												style={{ flexGrow: 1, minWidth: 0, width: "100%", fontSize: "16px" }} // Thêm width: 100%
-												value={editedName}
-												autoFocus
-												onChange={(e) => setEditedName(e.target.value)}
-												onBlur={() => {
-													handleUpdateChapterName(chapter, editedName);
-													setEditingChapter(null);
-												}}
-												onKeyDown={(e) => {
-													if (e.key === 'Enter') {
-														handleUpdateChapterName(chapter, editedName);
-														setEditingChapter(null);
-													}
-												}}
-											/>
-											<button
-												className="btn btn-sm btn-success ms-2 me-2 pt-2"
-												onClick={() => {
-													// handleUpdateChapterName(chapter, editedName);
-													setEditingChapter(null);
-												}}
-												style={{paddingLeft: "11px", paddingRight: "11px"}}
-											>
-												<i className="fa-solid fa-check" style={{fontSize: "18px"}}></i>
-											</button>
-											<button
-												className="btn btn-sm btn-secondary pt-2"
-												onClick={() => setEditingChapter(null)}
-												style={{paddingLeft: "13px", paddingRight: "13px"}}
-											>
-												<i className="fa-solid fa-xmark" style={{fontSize: "18px"}}></i>
-											</button>
-										</div>
+										<div className="d-flex align-items-center gap-2 w-100">
+  <input
+    className="form-control form-control-sm shadow-sm"
+    style={{
+      flexGrow: 1,
+      fontSize: "16px",
+      padding: "6px 12px",
+      borderRadius: "8px",
+      border: "1px solid #ced4da",
+    }}
+    value={editedName}
+    autoFocus
+    onChange={(e) => setEditedName(e.target.value)}
+    onBlur={() => {
+      handleUpdateChapterName(chapter, editedName);
+      setEditingChapter(null);
+    }}
+    onKeyDown={(e) => {
+      if (e.key === 'Enter') {
+        handleUpdateChapterName(chapter, editedName);
+        setEditingChapter(null);
+      }
+    }}
+  />
+  <button
+    className="btn btn-sm btn-outline-success d-flex align-items-center justify-content-center"
+    title="Lưu"
+    onClick={() => {
+      handleUpdateChapterName(chapter, editedName);
+      setEditingChapter(null);
+    }}
+    style={{ width: "36px", height: "36px", borderRadius: "50%" }}
+  >
+    <i className="fa-solid fa-check"></i>
+  </button>
+  <button
+    className="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
+    title="Hủy"
+    onClick={() => setEditingChapter(null)}
+    style={{ width: "36px", height: "36px", borderRadius: "50%" }}
+  >
+    <i className="fa-solid fa-xmark"></i>
+  </button>
+</div>
+
 									) : (
 										<h4 className="m-0">
 											{chapter}
