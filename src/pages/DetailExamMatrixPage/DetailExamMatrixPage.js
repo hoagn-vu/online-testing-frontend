@@ -261,6 +261,7 @@ const DetailExamMatrixPage = () => {
 						inputRef={inputRef}
 						label="Tên ma trận đề thi"
 						sx={{
+							backgroundColor: "white",
 							"& .MuiOutlinedInput-root": {
 								minHeight: "40px",
 								minWidth: "250px",
@@ -283,6 +284,7 @@ const DetailExamMatrixPage = () => {
 								label="Chọn phân môn"
 								size="small"
 								sx={{
+									backgroundColor: "white",
 									width: 250,
 									"& .MuiInputBase-root": {
 										height: "40px",
@@ -347,6 +349,7 @@ const DetailExamMatrixPage = () => {
 								label="Chọn bộ câu hỏi"
 								size="small"
 								sx={{
+									backgroundColor: "white",
 									width: 250,
 									"& .MuiInputBase-root": {
 										height: "40px",
@@ -405,7 +408,7 @@ const DetailExamMatrixPage = () => {
 					<FormControl sx={{ ml: 1, width: 250 }} size="small">
 					<InputLabel
 							id="demo-multiple-checkbox-label"
-							sx={{ fontSize: "14px" }}
+							sx={{ fontSize: "14px",  }}
 						>
 							Phân theo
 						</InputLabel>						
@@ -419,6 +422,7 @@ const DetailExamMatrixPage = () => {
 								<OutlinedInput
 									label="Phân theo"
 									sx={{
+										
 										"& .MuiInputBase-input": {
 											fontSize: "14px", // Font trong input
 										},
@@ -437,6 +441,7 @@ const DetailExamMatrixPage = () => {
 								},
 							}}
 							sx={{
+								backgroundColor: "white",
 								width: "205px",
 								height: "40px",
 								fontSize: "14px",
