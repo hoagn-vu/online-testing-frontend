@@ -162,9 +162,16 @@ const AiGenerate = ({ onClose  }) => {
 
   // Chọn tất cả
   const handleSelectAll = () => {
-    const allIndices = generatedQuestions.map((_, i) => i);
-    setSelectedQuestions(allIndices);
+    if (selectedQuestions.length === generatedQuestions.length) {
+      // Nếu đã chọn hết => bỏ chọn hết
+      setSelectedQuestions([]);
+    } else {
+      // Nếu chưa chọn hết => chọn tất cả
+      const allIndices = generatedQuestions.map((_, i) => i);
+      setSelectedQuestions(allIndices);
+    }
   };
+
 // Xử lý thay đổi chuyên đề hoặc mức độ
   const handleTagChange = (tagIndex, newValue) => {
     const updatedTags = [...newQuestion.tags];
