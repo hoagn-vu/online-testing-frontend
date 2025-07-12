@@ -4,7 +4,7 @@ import './ExamMatrixPage.css'
 import {Box, Button, Grid, MenuItem, Select, IconButton, TextField, Pagination } from "@mui/material";
 import Swal from "sweetalert2";
 import ApiService from "../../services/apiService";
-
+import { Modal } from "react-bootstrap";
 const ExamMatrixPage = () => {
   const [listExamMatrix, setListExamMatrix] = useState([]);
 
@@ -13,6 +13,48 @@ const ExamMatrixPage = () => {
   const [pageSize, setPageSize] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [editingMatrix, setEditingMatrix] = useState(null);
+  const [detailData, setDetailData] = useState([]);
+  const [totalSelectedQuestions, setTotalSelectedQuestions] = useState(0);
+  const [totalScore, setTotalScore] = useState(0);
+  const [difficultyData, setDifficultyData] = useState([]);   
+  
+  const handleDetailClick = async (matrix) => {
+  setEditingMatrix(matrix);
+  try {
+    const response = await ApiService.get(`/exam-matrices`);
+    const examMatrices = response.data.examMatrices || [];
+    const selectedMatrix = examMatrices.find((m) => m.id === matrix.id);
+
+    if (!selectedMatrix) {
+      throw new Error("Không tìm thấy ma trận với ID: " + matrix.id);
+    }
+
+    const tags = selectedMatrix.matrixTags || [];
+    setDetailData(tags);
+
+    // Tính tổng số câu hỏi đã chọn
+    setTotalSelectedQuestions(tags.reduce((sum, tag) => sum + tag.questionCount, 0));
+
+    // Tính tổng điểm
+    setTotalScore(tags.reduce((sum, tag) => sum + tag.score, 0));
+
+    // Tính toán difficultyData
+    setDifficultyData(
+      Object.entries(
+        tags.reduce((acc, tag) => {
+          acc[tag.level] = (acc[tag.level] || 0) + tag.questionCount;
+          return acc;
+        }, {})
+      ).map(([level, questionCount]) => ({ level, questionCount }))
+    );
+  } catch (error) {
+    console.error("Lỗi lấy chi tiết ma trận:", error);
+    Swal.fire("Lỗi!", "Không thể tải chi tiết ma trận. Vui lòng kiểm tra lại.", "error");
+  }
+  setShowDetailModal(true);
+};
 
   const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
@@ -171,14 +213,15 @@ const ExamMatrixPage = () => {
               listExamMatrix.map((item, index) => (
                 <tr key={item.questionBankId} className="align-middle">
                   <td className="text-center">{index + 1}</td>
-                  <td >
-                    <Link className="text-hover-primary"
-                      to={`/staff/`} 
-                      style={{ textDecoration: "none", cursor: "pointer", color: "black" }}
-                    >
-                      {item.matrixName}
-                    </Link>
-                  </td>
+                  <td>
+                      <span
+                        className="text-hover-primary"
+                        style={{ textDecoration: "none", cursor: "pointer", color: "black" }}
+                        onClick={() => handleDetailClick(item)}
+                      >
+                        {item.matrixName}
+                      </span>
+                    </td>
                   <td>{item.subjectName}</td>
                   <td>{item.questionBankName}</td>
                   <td>{item.totalGeneratedExams}</td>
@@ -356,6 +399,151 @@ const ExamMatrixPage = () => {
                 </Grid>
               </Box>
             </div>
+          )}
+          {/* Modal chi tiết */}
+          {showDetailModal && (
+          <div className="form-overlay">
+            <div style={{ backgroundColor: "#ffff",borderRadius: "8px"}}>
+              <div className="p-3"
+                style={{
+                  borderBottom: '1px solid #ddd',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  backgroundColor: "#ffff",
+                  borderRadius: "8px"
+                }}
+              >
+                <h5 className="modal-title fw-bold">Chi tiết ma trận: {editingMatrix?.matrixName}</h5>
+                <button
+                  type="button"
+                  onClick={() => setShowDetailModal(false)}
+                  style={{
+                    border: 'none',
+                    background: 'none',
+                    fontSize: '20px',
+                    cursor: 'pointer',
+                  }}
+                ><i className="fa-solid fa-xmark"></i></button>
+              </div>
+              <div className="p-4"
+                style={{
+                  overflowY: 'auto',
+                }}
+              >
+                <div className="d-flex gap-2 w-100" style={{ flexWrap: 'wrap' }}>
+                  <div className="table-responsive tbl-shadow pb-0" style={{ flex: '1', fontSize: '14px' }}>
+                    <table className="table w-100 border border-gray-300">
+                      <thead>
+                        <tr className="bg-gray-200">
+                          <th className="border p-2">STT</th>
+                          <th className="border p-2">Chuyên đề kiến thức</th>
+                          <th className="border p-2">Mức độ</th>
+                          <th className="border p-2 text-center">Số lượng chọn / Tổng</th>
+                          <th className="border p-2 text-center">Đơn vị</th>
+                          <th className="border p-2 text-center">Tổng điểm</th>
+                          <th className="border p-2 text-center">Điểm/Câu</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {Object.entries(
+                          detailData.reduce((acc, tag) => {
+                            if (!acc[tag.chapter]) {
+                              acc[tag.chapter] = [];
+                            }
+                            acc[tag.chapter].push(tag);
+                            return acc;
+                          }, {})
+                        ).map(([chapter, tags], chapterIndex) => (
+                          <React.Fragment key={chapterIndex}>
+                            {tags.map((tag, levelIndex) => (
+                              <tr key={`${chapterIndex}-${levelIndex}`} className="border">
+                                {levelIndex === 0 && (
+                                  <td className="border p-2 text-center" rowSpan={tags.length}>
+                                    {chapterIndex + 1}
+                                  </td>
+                                )}
+                                {levelIndex === 0 && (
+                                  <td className="border p-2" rowSpan={tags.length} style={{ minWidth: '300px' }}>
+                                    {chapter}
+                                  </td>
+                                )}
+                                <td className="border p-2" style={{ minWidth: '150px' }}>{tag.level}</td>
+                                <td className="border p-2 text-center" style={{ minWidth: '100px' }}>
+                                  <div className="d-flex align-items-center justify-content-center gap-1">
+                                    <input
+                                      type="number"
+                                      value={tag.questionCount}
+                                      min="0"
+                                      step="1"
+                                      className="border p-1 text-center"
+                                      style={{ width: '60px' }}
+                                      readOnly
+                                    />
+                                    <span>/ {String(10).padStart(2, '0')}</span> {/* Giả định total = 10 */}
+                                  </div>
+                                </td>
+                                <td className="border p-2 text-center" style={{ minWidth: '70px' }}>Câu</td>
+                                <td className="border p-2 text-center">
+                                  {tag.score.toFixed(1)}
+                                </td>
+                                <td className="border p-2 text-center">
+                                  {tag.questionCount === 0
+                                    ? '-'
+                                    : (tag.score / tag.questionCount).toFixed(2)}
+                                </td>
+                              </tr>
+                            ))}
+                          </React.Fragment>
+                        ))}
+                        <tr className="bg-gray-300 font-semibold">
+                          <td className="border p-2 text-center" colSpan="3">Tổng số câu hỏi</td>
+                          <td className="border p-2 text-center">{totalSelectedQuestions}</td>
+                          <td className="border p-2 text-center">Câu</td>
+                          <td className="border p-2 text-center">{totalScore.toFixed(1)}</td>
+                          <td className="border p-2 text-center">-</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div className="mt-3" style={{ width: '250px', fontSize: '14px' }}>
+                    <h5 className="text-center">Thống kê</h5>
+                    <table className="table table-bordered" style={{ backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)' }}>
+                      <thead>
+                        <tr>
+                          <th style={{ border: '1px solid #ddd', textAlign: 'left', padding: '8px', minWidth: '130px' }}>Mức độ</th>
+                          <th style={{ border: '1px solid #ddd', textAlign: 'center', padding: '8px' }}>Số lượng</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {difficultyData.map((row, index) => (
+                          <tr key={index}>
+                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{row.level}</td>
+                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{row.questionCount}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div className="p-3" style={{borderTop: '1px solid #ddd', textAlign: 'right',}}>
+                <button onClick={() => setShowDetailModal(false)}
+                  style={{
+                    border: '1px solid #ccc',
+                    backgroundColor: '#6c757d',
+                    color: '#fff',
+                    padding: '5px 15px',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Đóng
+                </button>
+              </div>
+            </div>
+          </div>
           )}
       </div>
   );
