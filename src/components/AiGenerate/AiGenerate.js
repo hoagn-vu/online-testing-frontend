@@ -134,10 +134,6 @@ const AiGenerate = ({ onClose  }) => {
     });
   };
 
-  const handleSave = () => {
-    setEditingIndex(null);
-  };
-
   const handleQuestionChange = (index, newQuestion) => {
     const updated = [...generatedQuestions];
     updated[index].question = newQuestion;
@@ -200,15 +196,9 @@ const AiGenerate = ({ onClose  }) => {
       allAnswers: newQuestion.options.map((opt) => opt.optionText),
     };
     setGeneratedQuestions(updatedQuestions);
-    setShowModal(false); // Đóng modal
-    setEditQuestionId(null);
-    setNewQuestion({
-      questionText: "",
-      options: [{ optionText: "", isCorrect: false }],
-      tags: ["", ""],
-      isRandomOrder: false,
-    });
+    document.getElementById("closeModalBtn").click();
   };
+
   // Dữ liệu mẫu cho CreatableSelect
   const allChapters = [{ value: "Chuyên đề 1", label: "Chuyên đề 1" }, { value: "Chuyên đề 2", label: "Chuyên đề 2" }];
   const allLevels = [
@@ -378,7 +368,7 @@ const AiGenerate = ({ onClose  }) => {
         <div className="modal-dialog modal-dialog-centered modal-xl">
           <div className="modal-content p-3">
             <div className="modal-header">
-              <h5 className="modal-title">{editQuestionId !== null ? "Chỉnh sửa câu hỏi" : "Thêm câu hỏi mới"}</h5>
+              <h5 className="modal-title">Chỉnh sửa câu hỏi</h5>
               <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div className="modal-body">
@@ -489,7 +479,7 @@ const AiGenerate = ({ onClose  }) => {
             <div className="modal-footer">
               <CancelButton style={{width: "100px"}} id="closeModalBtn"data-bs-dismiss="modal">Hủy</CancelButton>
               <AddButton style={{ width: "100px" }} onClick={handleSaveQuestion}>
-                {editQuestionId !== null ? "Cập nhật" : "Lưu"}
+                Cập nhật
               </AddButton>
             </div>
           </div>
