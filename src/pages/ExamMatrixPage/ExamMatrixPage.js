@@ -5,6 +5,9 @@ import {Box, Button, Grid, MenuItem, Select, IconButton, TextField, Pagination }
 import Swal from "sweetalert2";
 import ApiService from "../../services/apiService";
 import { Modal } from "react-bootstrap";
+import AddButton from "../../components/AddButton/AddButton";
+import CancelButton from "../../components/CancelButton/CancelButton";
+
 const ExamMatrixPage = () => {
   const [listExamMatrix, setListExamMatrix] = useState([]);
 
@@ -82,6 +85,12 @@ const ExamMatrixPage = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingAccount, setEditingAccount] = useState(null);
   const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (showForm && inputRef.current) {
+        inputRef.current.focus();
+    }
+  }, [showForm]);
 
   const handleAddNew = () => {
     console.log("Thêm mới");
@@ -249,8 +258,8 @@ const ExamMatrixPage = () => {
                           transform: 'translate3d(-10px, 10px, 0px)',
                         }}
                       >
-                        <li className="tbl-action" > 
-                          <button className="dropdown-item tbl-action">
+                        <li className="tbl-action" onClick={() => handleEdit(item)}> 
+                          <button className="dropdown-item tbl-action" onClick={() => handleEdit(item)}>
                              Chỉnh sửa
                           </button>
                         </li>
@@ -287,20 +296,20 @@ const ExamMatrixPage = () => {
           <Box
             component="form"
             sx={{
-              width: "600px",
+              width: "700px",
               backgroundColor: "white",
-              p: 2,
+              p: 3,
               borderRadius: "8px",
               boxShadow: 3,
               mx: "auto",
             }}
             onSubmit={handleSubmit}
           >
-            <p className="text-align fw-bold">
-              {"Chỉnh sửa ma trận đề thi" }
+            <p className="mb-4 fw-bold">
+              {"Chỉnh sửa thông tin ma trận đề thi" }
             </p>
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
                   label="Ma trận đề thi"
@@ -319,88 +328,20 @@ const ExamMatrixPage = () => {
                   }}
                 />
               </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  select
-                  label="Trạng thái"
-                  required
-                  value={formData.matrixStatus}
-                  onChange={(e) =>
-                    setFormData({ ...formData, matrixStatus: e.target.value })
-                  }
-                  sx={{
-                    "& .MuiInputBase-input": {
-                      fontSize: "14px",
-                      paddingBottom: "11px",
-                    },
-                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-                  }}
-                >
-                  <MenuItem value="active">Active</MenuItem>
-                  <MenuItem value="disabled">Disabled</MenuItem>
-                </TextField>
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  required
-                  label="Phân môn"
-                  value={formData.subjectId}
-                  disabled={editingAccount}
-                  sx={{
-                    "& .MuiInputBase-input": {
-                      fontSize: "14px",
-                      paddingBottom: "11px",
-                    },
-                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-                  }}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  required
-                  label="Ngân hàng câu hỏi"
-                  value={formData.questionBankId}
-                  disabled={editingAccount}
-                  sx={{
-                    "& .MuiInputBase-input": {
-                      fontSize: "14px",
-                      paddingBottom: "11px",
-                    },
-                    "& .MuiInputLabel-root": { fontSize: "14px" }, 
-                  }}
-                />
-              </Grid>
             </Grid>		
             {/* Buttons */}
-            <Grid container spacing={2} sx={{ mt: 2 }}>
-              <Grid item xs={6}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                >
-                  {editingAccount ? "Cập nhật" : "Lưu"}
-                </Button>
+            <Grid container spacing={2} sx={{mt: 1, justifyContent: "flex-end"}}>
+              <Grid item xs={3}>
+                <CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>Hủy</CancelButton>
               </Grid>
-              <Grid item xs={6}>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  fullWidth
-                  onClick={() => setShowForm(false)}
-                >
-                  Hủy
-                </Button>
+              <Grid item xs={3}>
+                <AddButton style={{width: "100%"}}>Cập nhật</AddButton>
               </Grid>
             </Grid>
           </Box>
         </div>
       )}
-      
+
       {/* Modal chi tiết */}
       {showDetailModal && (
       <div className="form-overlay">
