@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, use } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate  } from "react-router-dom";
 import SelectRe from 'react-select';
 import './DetailExamMatrixPage.css'
 import {Select, Box, Button, Grid, IconButton, Input, TextField, MenuItem, Autocomplete } from "@mui/material";
@@ -39,6 +39,8 @@ const DetailExamMatrixPage = () => {
 	const [data, setData] = useState([]);
 	const [matrixName, setMatrixName] = useState("");
 	const inputRef = useRef(null);
+	const navigate = useNavigate();
+
 	useEffect(() => {
 		if (inputRef.current) {
 			inputRef.current.focus();
@@ -229,6 +231,8 @@ const DetailExamMatrixPage = () => {
 				icon: "success",
 				title: "Lưu thành công!",
 				text: "Ma trận đề thi đã được lưu.",
+			}).then(() => {
+				navigate("/staff/matrix-exam"); 
 			});
 			
 			// alert("Lưu thành công!");
