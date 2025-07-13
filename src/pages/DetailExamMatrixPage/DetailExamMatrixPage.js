@@ -465,7 +465,7 @@ const DetailExamMatrixPage = () => {
 				</div>
 				<div className="d-flex ms-auto">
 					<button className="add-btn" onClick={handleSaveMatrix}
-						style={{width: "120px"}}
+						style={{width: "130px"}}
 					>
 						<i className="fas fa-plus me-2"></i>
 						Tạo ma trận
