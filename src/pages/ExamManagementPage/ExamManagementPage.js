@@ -239,7 +239,7 @@ const ExamManagementPage = () => {
 								<tr key={item.id} className="align-middle">
 									<td className=" text-center">{index +1} </td>
 									<td
-										onClick={() => navigate(`/exam/${item.id}`, {
+										onClick={() => navigate(`/staff/exam/${item.id}`, {
 										})}
 										style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
 										className="text-hover-primary"
@@ -247,7 +247,7 @@ const ExamManagementPage = () => {
 										{item.examCode}
 									</td>
 									<td
-										onClick={() => navigate(`/exam/${item.id}`, {
+										onClick={() => navigate(`/staff/exam/${item.id}`, {
 										})}
 										style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
 										className="text-hover-primary"
@@ -255,14 +255,14 @@ const ExamManagementPage = () => {
 										{item.examName}
 									</td>
 									<td
-										onClick={() => navigate(`/exam/${item.id}`, {
+										onClick={() => navigate(`/staff/exam/${item.id}`, {
 										})}
 										style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
 									>
 										{item.subjectName}
 									</td>
 									<td
-										onClick={() => navigate(`/exam/${item.id}`, {
+										onClick={() => navigate(`/staff/exam/${item.id}`, {
 										})}
 										style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
 									>
