@@ -12,6 +12,7 @@ import ReactSelect  from 'react-select';
 import ApiService from "../../services/apiService";
 import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
+import FormCreateExam from "../../components/FormCreateExam/FormCreateExam";
 
 const ExamManagementPage = () => {
 	const [listExam, setListExam] = useState([]);
@@ -22,6 +23,8 @@ const ExamManagementPage = () => {
 	const [totalCount, setTotalCount] = useState(0);
 	const [subjectOptions, setSubjectOptions] = useState([]);
 	const [questionBankOptions, setQuestionBankOptions] = useState([]);
+	const [showFormCreateExam, setShowFormCreateExam] = useState(false);
+	
 	const navigate = useNavigate();
 	const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
@@ -190,7 +193,9 @@ const ExamManagementPage = () => {
 				<span className="breadcrumb-current">Quản lý đề thi</span>
 			</nav>
 
-
+			{showFormCreateExam ? (
+				<FormCreateExam onClose={() => setShowAiGenerate(false)}/>
+			):(
 			<div className="tbl-shadow p-3">
 				<div className="sample-card-header d-flex justify-content-between align-items-center mb-2">
           <div className='left-header d-flex align-items-center'>
@@ -207,7 +212,7 @@ const ExamManagementPage = () => {
           </div>
 
           <div className='right-header'>
-						<AddButton onClick={preAddNew}>
+						<AddButton onClick={() => setShowFormCreateExam(true)}>
 							<i className="fas fa-plus me-2"></i>
               Thêm mới
 						</AddButton>
@@ -323,7 +328,7 @@ const ExamManagementPage = () => {
 					)}
 				</div>
 			</div>
-
+			)}
 			
 			{/* Form thêm tài khoản */}
 				{showForm && (
