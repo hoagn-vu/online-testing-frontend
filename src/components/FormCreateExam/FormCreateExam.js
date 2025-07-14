@@ -114,11 +114,20 @@ const FormCreateExam = ({ onClose  }) => {
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedItems(listDisplay.map((item) => item.id));
+      setSelectedItems(listDisplay.map((item) => item.questionId));
     } else {
       setSelectedItems([]);
     }
   };
+  
+  const handleSelectItem = (e, id) => {
+    if (e.target.checked) {
+      setSelectedItems([...selectedItems, id]);
+    } else {
+      setSelectedItems(selectedItems.filter((item) => item !== id));
+    }
+  };
+
   return (
     <div>
       <h5 className="mb-3 fw-bold" style={{color: '#1976d2', fontSize: "20px"}}>Tạo đề thi mới</h5>
@@ -347,8 +356,8 @@ const FormCreateExam = ({ onClose  }) => {
                     <input
                       className="form-check-input"
                       type="checkbox"
-                      // onChange={handleSelectAll}
-                      // checked={listDisplay.length > 0 && listDisplay.every((item) => selectedItems.includes(item.id))}                  
+                      onChange={handleSelectAll}
+                      checked={listDisplay.length > 0 && listDisplay.every((item) => selectedItems.includes(item.questionId))}                  
                     />
                   </th>
                   <th scope="col" className="title-row">Nội dung</th>
