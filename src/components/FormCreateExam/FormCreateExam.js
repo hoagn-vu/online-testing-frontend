@@ -14,8 +14,11 @@ const FormCreateExam = ({ onClose  }) => {
   const [bankOptions, setBankOptions] = useState([]);
   const [bankChosen, setBankChosen] = useState(null);
   const [tagClassification, setTagClassification] = useState([]);
+  const [questions, setQuestions] = useState([]);
   const [chapterOptions, setChapterOptions] = useState([]); 
   const [levelOptions, setLevelOptions] = useState([]);
+  const [selectedChapter, setSelectedChapter] = useState(null); 
+  const [selectedLevel, setSelectedLevel] = useState(null);
 
   useEffect(() => {
     if (inputRef.current) {
@@ -78,6 +81,36 @@ const FormCreateExam = ({ onClose  }) => {
       setLevelOptions([]);
     }
   }, [subjectChosen, bankChosen]);
+
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const response = await ApiService.get("/subjects/questions", {
+          params: { subId: subjectChosen, qbId: bankChosen },
+        });
+        setQuestions(response.data.questions || []);
+      } catch (error) {
+        console.error("Failed to fetch bank options: ", error);
+      }
+    };
+
+    if (subjectChosen && bankChosen) {
+      fetchQuestions();
+    } else {
+      setQuestions([]);
+    }
+  }, [subjectChosen, bankChosen]);
+
+  useEffect(() => {
+    if (subjectChosen && bankChosen) {
+      const filteredQuestions = questions.filter((q) => {
+        const chapterMatch = !selectedChapter || q.tags[0] === selectedChapter.value;
+        const levelMatch = !selectedLevel || q.tags[1] === selectedLevel.value;
+        return chapterMatch && levelMatch;
+      });
+      setListDisplay(filteredQuestions);
+    }
+  }, [subjectChosen, bankChosen, selectedChapter, selectedLevel, questions]);
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -240,7 +273,7 @@ const FormCreateExam = ({ onClose  }) => {
                 className="mt-3"
                 options={chapterOptions} 
                 getOptionLabel={(option) => option.label}
-                onChange={(event, newValue) => console.log("Chapter selected:", newValue?.label)}
+                onChange={(event, newValue) => setSelectedChapter(newValue)}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -275,7 +308,7 @@ const FormCreateExam = ({ onClose  }) => {
                 className="mt-3"
                 options={levelOptions}
                 getOptionLabel={(option) => option.label}
-                onChange={(event, newValue) => console.log("Level selected:", newValue?.label)}
+                onChange={(event, newValue) => setSelectedLevel(newValue)}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -322,20 +355,22 @@ const FormCreateExam = ({ onClose  }) => {
                   <th scope="col" className="title-row">Độ khó</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr className="align-middle">
-                  <td className=" text-center" style={{ width: "50px" }}>
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      // onChange={(e) => handleSelectItem(e, item.id)}
-                      // checked={selectedItems.includes(item.id)}
-                    />
-                  </td>
-                  <td>Hôm nay thứ mấy</td>
-                  <td>Dễ</td>
-                </tr>
-              </tbody>
+                <tbody>
+                  {listDisplay.map((item, index) => (
+                    <tr key={item.questionId} className="align-middle">
+                      <td className=" text-center" style={{ width: "50px" }}>
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          onChange={(e) => handleSelectItem(e, item.questionId)}
+                          checked={selectedItems.includes(item.questionId)}
+                        />
+                      </td>
+                      <td>{item.questionText}</td>
+                      <td>{item.tags[1]}</td>
+                    </tr>
+                  ))}
+                </tbody>
             </table>
           </div>
         </div>
