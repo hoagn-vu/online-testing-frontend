@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 import {TextField, Autocomplete, Grid } from "@mui/material";
 import ReactSelect  from 'react-select';
 import ApiService from "../../services/apiService";
+import Swal from "sweetalert2";
+import AddButton from "../AddButton/AddButton";
+import CancelButton from "../CancelButton/CancelButton";
 
 const FormCreateExam = ({ onClose  }) => {
   const [listDisplay, setListDisplay] = useState([]);
@@ -19,6 +22,8 @@ const FormCreateExam = ({ onClose  }) => {
   const [levelOptions, setLevelOptions] = useState([]);
   const [selectedChapter, setSelectedChapter] = useState(null); 
   const [selectedLevel, setSelectedLevel] = useState(null);
+  const [totalScore, setTotalScore] = useState(0);
+  const [scores, setScores] = useState({});  
 
   useEffect(() => {
     if (inputRef.current) {
@@ -112,6 +117,20 @@ const FormCreateExam = ({ onClose  }) => {
     }
   }, [subjectChosen, bankChosen, selectedChapter, selectedLevel, questions]);
 
+  useEffect(() => {
+    // Gán điểm mặc định khi selectedItems hoặc totalScore thay đổi
+    if (selectedItems.length > 0 && totalScore > 0) {
+      const defaultScore = totalScore / selectedItems.length;
+      const newScores = {};
+      selectedItems.forEach((questionId) => {
+        newScores[questionId] = defaultScore; // Không dùng toFixed để giữ chính xác
+      });
+      setScores(newScores);
+    } else {
+      setScores({});
+    }
+  }, [selectedItems, totalScore]);
+
   const handleSelectAll = (e) => {
     if (e.target.checked) {
       setSelectedItems(listDisplay.map((item) => item.questionId));
@@ -135,6 +154,63 @@ const FormCreateExam = ({ onClose  }) => {
 
   const handleRemoveItem = (questionId) => {
     setSelectedItems(selectedItems.filter((id) => id !== questionId));
+  };
+
+  const handleScoreChange = (questionId, value) => {
+  const newScore = parseFloat(value) || 0;
+  if (newScore < 0) {
+    Swal.fire({
+      icon: "error",
+      title: "Lỗi",
+      text: "Điểm không được nhỏ hơn 0!",
+    });
+    return;
+  }
+
+  setScores((prevScores) => {
+    const currentScores = { ...prevScores };
+    const oldScore = currentScores[questionId] || 0;
+    const scoreDifference = newScore - oldScore;
+
+    if (scoreDifference !== 0) {
+      const currentTotal = Object.values(currentScores).reduce((sum, score) => sum + score, 0);
+      const newTotal = currentTotal - oldScore + newScore;
+
+      if (newTotal > totalScore) {
+        Swal.fire({
+          icon: "error",
+          title: "Lỗi",
+          text: "Tổng điểm vượt quá tổng điểm đã nhập!",
+        });
+        return prevScores;
+      }
+
+      return {
+        ...currentScores,
+        [questionId]: newScore,
+      };
+    }
+
+    return prevScores;
+  });
+};
+
+  const handleSave = () => {
+    const currentTotal = Object.values(scores).reduce((sum, score) => sum + (score || 0), 0);
+    if (currentTotal !== totalScore) {
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi",
+        text: `Tổng điểm (${currentTotal.toFixed(2)}) không khớp với tổng điểm đã nhập (${totalScore})!`,
+      });
+      return;
+    }
+    // Logic lưu dữ liệu (nếu cần) ở đây
+    Swal.fire({
+      icon: "success",
+      title: "Thành công",
+      text: "Đã lưu thành công!",
+    });
   };
 
   return (
@@ -168,8 +244,8 @@ const FormCreateExam = ({ onClose  }) => {
               fullWidth
               required
               type="number"
-              // value={formData.organizeExamName}
-              // inputRef={inputRef}
+              value={totalScore}
+              onChange={(e) => setTotalScore(parseFloat(e.target.value) || 0)}
               sx={{
                 height: "40px",
                 "& .MuiInputBase-root": {
@@ -198,18 +274,38 @@ const FormCreateExam = ({ onClose  }) => {
                 {selectedItems.map((questionId, index) => {
                   const selectedQuestion = listDisplay.find((q) => q.questionId === questionId);
                   if (selectedQuestion) {
+                    const scorePerQuestion = selectedItems.length > 0 ? (totalScore / selectedItems.length).toFixed(2) : 0;
                     return (
                       <tr key={questionId} className="align-middle">
                         <td className="text-center" style={{ width: "50px" }}>
-                      <i
-                        className="fa-solid fa-minus"
-                        style={{ color: "red", cursor: "pointer" }}
-                        onClick={() => handleRemoveItem(questionId)}
-                      ></i>
+                          <i
+                            className="fa-solid fa-minus"
+                            style={{ color: "red", cursor: "pointer" }}
+                            onClick={() => handleRemoveItem(questionId)}
+                          ></i>
                         </td>
                         <td>{index + 1}</td>
                         <td>{selectedQuestion.questionText}</td>
-                        <td>0.1</td> {/* Điểm mặc định, có thể tùy chỉnh */}
+                        <td>
+                          <TextField
+                            type="number"
+                            value={scores[questionId] !== undefined ? scores[questionId] : scorePerQuestion}
+                            onChange={(e) => handleScoreChange(questionId, e.target.value)}
+                            size="small"
+                            sx={{
+                              width: "80px",
+                              "& .MuiInputBase-root": {
+                                height: "40px",
+                                fontSize: "14px",
+                              },
+                              "& input": {
+                                fontSize: "14px",
+                                padding: "8px",
+                              },
+                            }}
+                            inputProps={{ step: "0.1", min: "0" }}
+                          />
+                        </td>
                       </tr>
                     );
                   }
@@ -217,6 +313,25 @@ const FormCreateExam = ({ onClose  }) => {
                 })}
               </tbody>
             </table>
+          </div>
+          <div 
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",  
+              gap: "10px",                 
+              width: "100%"
+            }}
+          >
+            <div style={{ display: "flex", width: "50%", gap: "10px" }}>
+              <CancelButton onClick={onClose} type="button"
+                style={{ flex: 1 }}   
+              >
+                Hủy
+              </CancelButton>
+              <AddButton style={{ flex: 1 }} onClick={handleSave}>
+                Lưu
+              </AddButton>
+            </div>
           </div>
         </div>
         <div className="tbl-shadow flex-fill ms-2">

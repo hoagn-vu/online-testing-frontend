@@ -194,7 +194,7 @@ const ExamManagementPage = () => {
 			</nav>
 
 			{showFormCreateExam ? (
-				<FormCreateExam onClose={() => setShowAiGenerate(false)}/>
+				<FormCreateExam onClose={() => setShowFormCreateExam(false)}/>
 			):(
 			<div className="tbl-shadow p-3">
 				<div className="sample-card-header d-flex justify-content-between align-items-center mb-2">
