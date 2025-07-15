@@ -120,12 +120,21 @@ const FormCreateExam = ({ onClose  }) => {
     }
   };
   
-  const handleSelectItem = (e, id) => {
-    if (e.target.checked) {
-      setSelectedItems([...selectedItems, id]);
-    } else {
-      setSelectedItems(selectedItems.filter((item) => item !== id));
+  const handleSelectItem = (e, questionId) => {
+    if (!questionId) {
+      console.error("questionId is undefined, check listDisplay data");
+      return;
     }
+    console.log("handleSelectItem called with questionId:", questionId);
+    if (e.target.checked) {
+      setSelectedItems([...selectedItems, questionId]);
+    } else {
+      setSelectedItems(selectedItems.filter((id) => id !== questionId));
+    }
+  };
+
+  const handleRemoveItem = (questionId) => {
+    setSelectedItems(selectedItems.filter((id) => id !== questionId));
   };
 
   return (
@@ -186,14 +195,26 @@ const FormCreateExam = ({ onClose  }) => {
                 </tr>
               </thead>
               <tbody>
-                <tr className="align-middle">
-                  <td className=" text-center" style={{ width: "50px" }}>
-                    <i className="fa-solid fa-minus" style={{color: "red"}}></i>
-                  </td>
-                  <td>1</td>
-                  <td>Hôm nay thứ mấy</td>
-                  <td>0.1</td>
-                </tr>
+                {selectedItems.map((questionId, index) => {
+                  const selectedQuestion = listDisplay.find((q) => q.questionId === questionId);
+                  if (selectedQuestion) {
+                    return (
+                      <tr key={questionId} className="align-middle">
+                        <td className="text-center" style={{ width: "50px" }}>
+                      <i
+                        className="fa-solid fa-minus"
+                        style={{ color: "red", cursor: "pointer" }}
+                        onClick={() => handleRemoveItem(questionId)}
+                      ></i>
+                        </td>
+                        <td>{index + 1}</td>
+                        <td>{selectedQuestion.questionText}</td>
+                        <td>0.1</td> {/* Điểm mặc định, có thể tùy chỉnh */}
+                      </tr>
+                    );
+                  }
+                  return null;
+                })}
               </tbody>
             </table>
           </div>
