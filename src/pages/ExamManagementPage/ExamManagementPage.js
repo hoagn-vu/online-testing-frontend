@@ -12,6 +12,7 @@ import ReactSelect  from 'react-select';
 import ApiService from "../../services/apiService";
 import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
+import FormCreateExam from "../../components/FormCreateExam/FormCreateExam";
 
 const ExamManagementPage = () => {
 	const [listExam, setListExam] = useState([]);
@@ -22,6 +23,8 @@ const ExamManagementPage = () => {
 	const [totalCount, setTotalCount] = useState(0);
 	const [subjectOptions, setSubjectOptions] = useState([]);
 	const [questionBankOptions, setQuestionBankOptions] = useState([]);
+	const [showFormCreateExam, setShowFormCreateExam] = useState(false);
+	
 	const navigate = useNavigate();
 	const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
@@ -190,7 +193,9 @@ const ExamManagementPage = () => {
 				<span className="breadcrumb-current">Quản lý đề thi</span>
 			</nav>
 
-
+			{showFormCreateExam ? (
+				<FormCreateExam onClose={() => setShowFormCreateExam(false)}/>
+			):(
 			<div className="tbl-shadow p-3">
 				<div className="sample-card-header d-flex justify-content-between align-items-center mb-2">
           <div className='left-header d-flex align-items-center'>
@@ -207,7 +212,7 @@ const ExamManagementPage = () => {
           </div>
 
           <div className='right-header'>
-						<AddButton onClick={preAddNew}>
+						<AddButton onClick={() => setShowFormCreateExam(true)}>
 							<i className="fas fa-plus me-2"></i>
               Thêm mới
 						</AddButton>
@@ -239,7 +244,7 @@ const ExamManagementPage = () => {
 								<tr key={item.id} className="align-middle">
 									<td className=" text-center">{index +1} </td>
 									<td
-										onClick={() => navigate(`/exam/${item.id}`, {
+										onClick={() => navigate(`/staff/exam/${item.id}`, {
 										})}
 										style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
 										className="text-hover-primary"
@@ -247,7 +252,7 @@ const ExamManagementPage = () => {
 										{item.examCode}
 									</td>
 									<td
-										onClick={() => navigate(`/exam/${item.id}`, {
+										onClick={() => navigate(`/staff/exam/${item.id}`, {
 										})}
 										style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
 										className="text-hover-primary"
@@ -255,14 +260,14 @@ const ExamManagementPage = () => {
 										{item.examName}
 									</td>
 									<td
-										onClick={() => navigate(`/exam/${item.id}`, {
+										onClick={() => navigate(`/staff/exam/${item.id}`, {
 										})}
 										style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
 									>
 										{item.subjectName}
 									</td>
 									<td
-										onClick={() => navigate(`/exam/${item.id}`, {
+										onClick={() => navigate(`/staff/exam/${item.id}`, {
 										})}
 										style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
 									>
@@ -292,8 +297,8 @@ const ExamManagementPage = () => {
                           transform: 'translate3d(-10px, 10px, 0px)',
                         }}
                       >
-                        <li className="tbl-action" onClick={() => preEdit(item)}> 
-                          <button className="dropdown-item tbl-action" onClick={() => preEdit(item)}>
+                        <li className="tbl-action" onClick={() => handleEdit(item)}> 
+                          <button className="dropdown-item tbl-action" onClick={() => handleEdit(item)}>
                              Chỉnh sửa
                           </button>
                         </li>
@@ -305,14 +310,6 @@ const ExamManagementPage = () => {
                       </ul>
                     </div>
                   </td>
-									<td className="text-center">
-										<button className="btn btn-primary btn-sm" style={{width: "35px", height: "35px"}}>
-											<i className="fas fa-edit text-white "></i>
-										</button>
-										<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}>
-											<i className="fas fa-trash-alt"></i>
-										</button>
-									</td>
 								</tr>
 							)))}
 						</tbody>
@@ -331,7 +328,7 @@ const ExamManagementPage = () => {
 					)}
 				</div>
 			</div>
-
+			)}
 			
 			{/* Form thêm tài khoản */}
 				{showForm && (

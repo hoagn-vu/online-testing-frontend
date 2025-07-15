@@ -117,14 +117,14 @@ const RoomManagementPage = () => {
     setShowForm(false);
   };
 
-  const handleEdit = (account) => {
+  const handleEdit = (id) => {
     setFormData({
-      roomName: account.roomName,
-      roomLocation: account.roomLocation,
-      roomCapacity: account.roomCapacity,
-      roomStatus: account.roomStatus,
+      roomName: id.roomName,
+      roomLocation: id.roomLocation,
+      roomCapacity: id.roomCapacity,
+      roomStatus: id.roomStatus,
     });
-    setEditingAccount(account);
+    setEditingAccount(id);
     setShowForm(true);
   };
 
@@ -272,8 +272,8 @@ const RoomManagementPage = () => {
                           transform: 'translate3d(-10px, 10px, 0px)',
                         }}
                       >
-                        <li className="tbl-action" > 
-                          <button className="dropdown-item tbl-action" >
+                        <li className="tbl-action" onClick={() => handleEdit(item)}> 
+                          <button className="dropdown-item tbl-action" onClick={() => handleEdit(item)}>
                              Chỉnh sửa
                           </button>
                         </li>
@@ -333,7 +333,7 @@ const RoomManagementPage = () => {
             onSubmit={handleSubmit}
           >
             <p className="fw-bold mb-3" style={{fontSize: "18px"}}>
-              {editingAccount ? "Chỉnh sửa phòng thi" : "Thêm phòng thi"}
+              {editingAccount ? "Chỉnh sửa thông tin phòng thi" : "Thêm phòng thi"}
             </p>
 
             <Grid container spacing={2}>
@@ -375,10 +375,10 @@ const RoomManagementPage = () => {
                 />
               </Grid>
 
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
-                  label="Số lượng"
+                  label="Số lượng chỗ ngồi"
                   type="number"
                   value={formData.roomCapacity}
                   onChange={(e) =>
@@ -393,31 +393,7 @@ const RoomManagementPage = () => {
                   }}
                 />
               </Grid>
-
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  select
-                  label="Trạng thái"
-                  required
-                  value={formData.roomStatus}
-                  onChange={(e) =>
-                    setFormData({ ...formData, roomStatus: e.target.value })
-                  }
-                  sx={{
-                    "& .MuiInputBase-input": {
-                      fontSize: "14px",
-                      paddingBottom: "11px",
-                    },
-                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-                  }}
-                >
-                  <MenuItem value="active">Active</MenuItem>
-                  <MenuItem value="disabled">Disabled</MenuItem>
-                </TextField>
-              </Grid>
             </Grid>
-
 
             {/* Buttons */}
             <Grid container spacing={2} sx={{ mt: 1, justifyContent:"flex-end" }}>

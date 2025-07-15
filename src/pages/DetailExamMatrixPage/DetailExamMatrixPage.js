@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, use } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate  } from "react-router-dom";
 import SelectRe from 'react-select';
 import './DetailExamMatrixPage.css'
 import {Select, Box, Button, Grid, IconButton, Input, TextField, MenuItem, Autocomplete } from "@mui/material";
@@ -39,6 +39,8 @@ const DetailExamMatrixPage = () => {
 	const [data, setData] = useState([]);
 	const [matrixName, setMatrixName] = useState("");
 	const inputRef = useRef(null);
+	const navigate = useNavigate();
+
 	useEffect(() => {
 		if (inputRef.current) {
 			inputRef.current.focus();
@@ -229,6 +231,8 @@ const DetailExamMatrixPage = () => {
 				icon: "success",
 				title: "Lưu thành công!",
 				text: "Ma trận đề thi đã được lưu.",
+			}).then(() => {
+				navigate("/staff/matrix-exam"); 
 			});
 			
 			// alert("Lưu thành công!");
@@ -261,6 +265,7 @@ const DetailExamMatrixPage = () => {
 						inputRef={inputRef}
 						label="Tên ma trận đề thi"
 						sx={{
+							backgroundColor: "white",
 							"& .MuiOutlinedInput-root": {
 								minHeight: "40px",
 								minWidth: "250px",
@@ -283,6 +288,7 @@ const DetailExamMatrixPage = () => {
 								label="Chọn phân môn"
 								size="small"
 								sx={{
+									backgroundColor: "white",
 									width: 250,
 									"& .MuiInputBase-root": {
 										height: "40px",
@@ -347,6 +353,7 @@ const DetailExamMatrixPage = () => {
 								label="Chọn bộ câu hỏi"
 								size="small"
 								sx={{
+									backgroundColor: "white",
 									width: 250,
 									"& .MuiInputBase-root": {
 										height: "40px",
@@ -405,7 +412,7 @@ const DetailExamMatrixPage = () => {
 					<FormControl sx={{ ml: 1, width: 250 }} size="small">
 					<InputLabel
 							id="demo-multiple-checkbox-label"
-							sx={{ fontSize: "14px" }}
+							sx={{ fontSize: "14px",  }}
 						>
 							Phân theo
 						</InputLabel>						
@@ -419,6 +426,7 @@ const DetailExamMatrixPage = () => {
 								<OutlinedInput
 									label="Phân theo"
 									sx={{
+										
 										"& .MuiInputBase-input": {
 											fontSize: "14px", // Font trong input
 										},
@@ -437,6 +445,7 @@ const DetailExamMatrixPage = () => {
 								},
 							}}
 							sx={{
+								backgroundColor: "white",
 								width: "205px",
 								height: "40px",
 								fontSize: "14px",
@@ -456,10 +465,10 @@ const DetailExamMatrixPage = () => {
 				</div>
 				<div className="d-flex ms-auto">
 					<button className="add-btn" onClick={handleSaveMatrix}
-									style={{width: "109px"}}
+						style={{width: "130px"}}
 					>
 						<i className="fas fa-plus me-2"></i>
-						Thêm mới
+						Tạo ma trận
 					</button>
 				</div>
 			</div>

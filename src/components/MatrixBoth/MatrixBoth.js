@@ -14,7 +14,7 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
   
   return (
     <Box display="flex" gap={2} className="mt-3 w-full" justifyContent="space-between" >
-      <div className="table-responsive " 
+      <div className="table-responsive tbl-shadow pb-0" 
         style={{ flex: "1", fontSize: "14px", }}>
         <table className="table w-full border border-gray-300" >
           <thead>
@@ -96,7 +96,9 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
                       />
                     </td>
                     <td className="border p-2 text-center">
-                        {(level.scorePerQuestion / level.questionCount ).toFixed(2)}
+                      {level.questionCount === 0
+                        ? "-"
+                        : (level.scorePerQuestion / level.questionCount).toFixed(2)}
                     </td>
                   </tr>
                 ))}
@@ -132,7 +134,12 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
       </div>
 
       {/* Bảng thống kê */}
-      <Paper sx={{ padding: 2, height: "100%", width: "250px", fontSize: "14px" }}>
+      <Paper 
+        sx={{ 
+          padding: 2, height: "100%", width: "250px", fontSize: "14px", borderRadius: "8px",
+          boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
+        }}
+      >
         <h5 className="justify-content-center d-flex">Thống kê</h5>
         <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #ddd", backgroundColor: "#FFFF" }}>
           <thead>

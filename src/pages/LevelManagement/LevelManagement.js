@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "./GroupUserPage.css";
+import "./LevelManagement.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { Box, Button, Grid, Pagination, TextField, Paper } from "@mui/material";
@@ -11,7 +11,7 @@ import ApiService from "../../services/apiService";
 import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
 
-const GroupUserPage = () => {
+const LevelManagement = () => {
   const [listSubject, setListSubject] = useState([]);
 
   const [keyword, setKeyword] = useState("");
@@ -121,7 +121,7 @@ const GroupUserPage = () => {
         
         Swal.fire({
           title: "Đã xóa!",
-          text: "Phân môn đã bị xóa.",
+          text: "Mức độ đã bị xóa.",
           icon: "success",
         });
       }
@@ -142,7 +142,7 @@ const GroupUserPage = () => {
         <Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
         
         <span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
-        <span className="breadcrumb-current">Nhóm người dùng</span>
+        <span className="breadcrumb-current">Ngân hàng câu hỏi</span>
       </nav>
 
       <div className="tbl-shadow p-3">
@@ -173,8 +173,7 @@ const GroupUserPage = () => {
             <thead>
               <tr className="align-middle">
                 <th scope="col" className="text-center title-row" style={{ width: "50px"}}>STT</th>
-                <th scope="col" className="title-row">Nhóm</th>
-                <th className="text-center">Số lượng thí sinh</th>
+                <th scope="col" className="title-row">Mức độ</th>
                 <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
               </tr>
             </thead>
@@ -190,22 +189,7 @@ const GroupUserPage = () => {
               ) : listSubject.map((item, index) => (  
                 <tr key={item.id} className="align-middle">
                   <td className="text-center">{index + 1}</td>
-                  <td
-                    onClick={() => navigate(`groupuserId`, {
-                    })}
-                    style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
-                    className="text-hover-primary"
-                  >
-                    {item.subjectName}
-                  </td>
-                  <td
-                    onClick={() => navigate(`groupuserId`, {
-                    })}
-                    style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
-                    className="text-center"
-                  >
-                    {item.totalQuestionBanks}
-                  </td>
+                  <td >{item.subjectName}</td>
                   <td className="text-center">
                     <div className="dropdown">
                       <button
@@ -270,60 +254,60 @@ const GroupUserPage = () => {
             <Box
               component="form"
               sx={{
-                width: "700px",
-                backgroundColor: "white",
-                p: 3,
-                borderRadius: "8px",
-                boxShadow: 3,
-                mx: "auto",
+                  width: "700px",
+                  backgroundColor: "white",
+                  p: 3,
+                  borderRadius: "8px",
+                  boxShadow: 3,
+                  mx: "auto",
               }}
               onSubmit={handleSubmit}
             >
               {/* Add your form content here */}
               <p className="fw-bold">
-                  {editingSubject ? "Chỉnh sửa nhóm người dùng" : "Thêm nhóm người đùng mới"}
+                  {editingSubject ? "Chỉnh sửa mức độ" : "Thêm mức độ"}
               </p>
 
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Tên nhóm"
-                    required
-                    value={formData.subjectName}
-                    inputRef={inputRef}
-                    onChange={(e) =>
-                      setFormData({ ...formData, subjectName: e.target.value })
-                    }
-                    sx={{
-                      "& .MuiInputBase-input": {
-                        fontSize: "14px",
-                        paddingBottom: "11px",
-                      },
-                      "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    id="outlined-multiline-flexible"
-                    label="Nhập mã sinh viên"
-                    placeholder="Nhập mã sinh viên"
-                    multiline
-                    maxRows={10}
-                    sx={{
-                      width: "100%",
-                      "& .MuiInputBase-root": {
-                        minHeight: "150px", 
-                        alignItems: "flex-start", 
-                      },
-                      "& .MuiInputBase-input": {
-                        fontSize: "14px",
-                      },
-                      "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-                    }}
-                  />
-                </Grid>
+              <Grid container>
+                <TextField
+                  fullWidth
+                  label="Tên mức độ"
+                  required
+                  value={formData.subjectName}
+                  onChange={(e) =>
+                    setFormData({ ...formData, subjectName: e.target.value })
+                  }
+                  inputRef={inputRef}
+                  sx={{
+                    "& .MuiDataGrid-cell": {
+                        whiteSpace: "normal",
+                        wordWrap: "break-word",
+                        lineHeight: "1.2",
+                        padding: "8px",
+                    },
+                    "& .MuiDataGrid-columnHeaders": {
+                        borderBottom: "2px solid #ccc",
+                    },
+                    "& .MuiDataGrid-cell": {
+                        borderRight: "1px solid #ddd",
+                    },
+                    "& .MuiDataGrid-row:last-child .MuiDataGrid-cell": {
+                        borderBottom: "none",
+                    },
+                    "& .MuiTablePagination-displayedRows": {
+                        textAlign: "center",        // Căn giữa chữ "1-1 of 1"
+                        marginTop: "16px",
+                        marginLeft: "0px"
+                    },
+                    "& .MuiTablePagination-selectLabel": {
+                        marginTop: "13px",
+                        marginLeft: "0px"
+                    },
+                    "& .MuiTablePagination-select": {
+                        marginLeft: "0px",
+                    } 
+                  }}
+                />
               </Grid>
 
               <Grid container spacing={2} sx={{mt: 1, justifyContent: "flex-end"}}>
@@ -340,8 +324,8 @@ const GroupUserPage = () => {
           </React.Fragment>
         </div>
       )}
-        </div>
-    );
+    </div>
+  );
 };
 
-export default GroupUserPage;
+export default LevelManagement;

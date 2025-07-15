@@ -28,26 +28,43 @@ import {Collapse} from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../redux/authSlice";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
-
+import ChapterSidebar from '../../components/ChapterSidebar/ChapterSidebar';
 const drawerWidth = 250;
 
 const menuItems = [
-  { title: "Trang chủ", icon: <i className="fa-solid fa-chart-column icon-color" aria-hidden="true"></i>, path: "/staff/dashboard", role: ["user", "admin"] },
+  { title: "Trang chủ", icon: <i className="fa-solid fa-chart-column icon-color" aria-hidden="true"></i>, path: "/staff/dashboard", role: ["admin"] },
   { 
     title: "Quản lý người dùng", 
     icon: <i className="fa-solid fa-user-gear icon-color"></i>, 
-    role: ["user"],
+    role: ["admin"],
     children: [
       { title: "Danh sách người dùng", path: "/staff/accountmanage" },
       { title: "Nhóm người dùng", path: "/staff/groupuser" },
     ],
   },
-  { title: "Quản lý kỳ thi", icon: <i className="fa-solid fa-calendar-check icon-color"></i>, path: "/staff/organize", role: ["user", "admin"] },
-  { title: "Ngân hàng câu hỏi", icon: <i className="fa-solid fa-database icon-color"></i>, path: "/staff/question", role: ["user"] },
-  { title: "Quản lý ma trận đề", icon: <i className="fa-solid fa-table icon-color"></i>, path: "/staff/matrix-exam", role: ["user", "admin"] },
-  { title: "Quản lý đề thi", icon: <i className="fa-solid fa-file-lines icon-color"></i>, path: "/staff/exam", role: ["user"] },
-  { title: "Quản lý phòng thi", icon: <i className="fa-solid fa-school icon-color"></i>, path: "/staff/room", role: ["user", "admin"] },
-  { title: "Nhật ký sử dụng", icon: <i className="fa-solid fa-book icon-color"></i>, path: "/staff/log", role: ["user"] },
+  { 
+    title: "Tổ chức kỳ thi", 
+    icon: <i className="fa-solid fa-calendar-check icon-color"></i>, 
+    role: ["admin"],
+    children: [
+      { title: "Quản lý kỳ thi", path: "/staff/organize" },
+      { title: "Quản lý phòng thi", path: "/staff/room" },
+    ],
+  },
+  { 
+    title: "Quản lý nội dung thi", 
+    icon: <i className="fa-solid fa-database icon-color"></i>, 
+    role: ["admin"],
+    children: [
+      { title: "Ngân hàng câu hỏi", path: "/staff/question" },
+      { title: "Quản lý ma trận đề", path: "/staff/matrix-exam" },
+      { title: "Quản lý đề thi", path: "/staff/exam" },
+      { title: "Quản lý mức độ", path: "/staff/level" },
+    ],
+  },
+  // { title: "Quản lý ma trận đề", icon: <i className="fa-solid fa-table icon-color"></i>, path: "/staff/matrix-exam", role: ["admin"] },
+  // { title: "Quản lý đề thi", icon: <i className="fa-solid fa-file-lines icon-color"></i>, path: "/staff/exam", role: ["admin"] },
+  { title: "Nhật ký sử dụng", icon: <i className="fa-solid fa-book icon-color"></i>, path: "/staff/log", role: ["admin"] },
 ];
 
 const openedMixin = (theme) => ({
@@ -131,7 +148,8 @@ export default function Admin2Layout() {
   const handleDrawerClose = () => setOpen(false);
   const [isOpen, setIsOpen] = useState(false);
   const [openMenus, setOpenMenus] = useState({});
-  
+  const [selectedChapter, setSelectedChapter] = useState(null);
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 960) {
@@ -158,7 +176,6 @@ export default function Admin2Layout() {
     navigate("/");
   };
 
-
   const handleToggle = (title) => {
     setOpenMenus(prev => ({
       ...prev,
@@ -170,6 +187,36 @@ export default function Admin2Layout() {
     openMenus[item.title] !== undefined
       ? openMenus[item.title]
       : location.pathname.startsWith(item.path);
+
+  const [isAiFormOpen, setIsAiFormOpen] = useState(false);
+  const [isAddQuestionFormOpen, setIsAddQuestionFormOpen] = useState(false);
+  
+  useEffect(() => {
+    const handleToggle = (e) => {
+      setIsAiFormOpen(e.detail);
+    };
+
+    window.addEventListener("toggleAiForm", handleToggle);
+    return () => {
+      window.removeEventListener("toggleAiForm", handleToggle);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleToggleAd = (e) => {
+      setIsAddQuestionFormOpen(e.detail);
+    };
+
+    window.addEventListener("toggleAddQuestionForm", handleToggleAd);
+    return () => {
+      window.removeEventListener("toggleAddQuestionForm", handleToggleAd);
+    };
+  }, []);
+
+  const isBaseListQuestionPage = location.pathname.startsWith("/staff/question/") &&
+                                location.pathname.split("/").length === 5;
+
+  const isListQuestionPage = isBaseListQuestionPage && !isAiFormOpen && !isAddQuestionFormOpen;
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -212,98 +259,105 @@ export default function Admin2Layout() {
       </AppBar>
 
       <Drawer variant="permanent" open={open}>
-        <DrawerHeader>
-          <img src={logo} alt="Logo" style={{ height: 40 }} />
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        <List>
-          {menuItems.map((item) => (
-            <React.Fragment key={item.title}>
-              <ListItem disablePadding
-                sx={{
-                  ...(open === false && {
-                    mb: 1, // cách dọc giữa các icon khi thu gọn
-                  }),
-                }}
-              >
-                <Tooltip title={!open ? item.title : ""} placement="right"
-                  PopperProps={{
-                    modifiers: [
-                      {
-                        name: "offset",
-                        options: {
-                          offset: [0, -13], // đây là phần tạo khoảng cách
-                        },
-                      },
-                    ],
-                  }}
-                >
-                  <ListItemButton
-                    onClick={() => {
-                      if (item.children) {
-                        handleToggle(item.title);   // mở submenu
-                      } else {
-                        navigate(item.path);          // điều hướng
-                      }
-                    }}
-                    selected={location.pathname.startsWith(item.path)}
+        {isListQuestionPage ? (
+          <ChapterSidebar onChapterSelect={(chapter) => setSelectedChapter(chapter)} />
+        ) : (
+          <>
+            <DrawerHeader>
+              <img src={logo} alt="Logo" style={{ height: 40 }} />
+              <IconButton onClick={handleDrawerClose}>
+                {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+              </IconButton>
+            </DrawerHeader>
+            <Divider />
+            <List>
+              {menuItems.filter(item => item.role.includes(user?.role))
+                .map((item) => (
+                <React.Fragment key={item.title}>
+                  <ListItem disablePadding
                     sx={{
-                      '&.Mui-selected': {
-                        borderLeft: '5px solid #1976D2',
-                        backgroundColor: '#f0f8ff',
-                      }
+                      ...(open === false && {
+                        mb: 1, // cách dọc giữa các icon khi thu gọn
+                      }),
                     }}
                   >
-                    <ListItemIcon sx={{minWidth:'45px'}}>{item.icon}</ListItemIcon>
-                    {open && <ListItemText primary={item.title} />}
-                    {open && item.children && (isMenuOpen(item) ? <ExpandLess /> : <ExpandMore />)}
-                  </ListItemButton>
-                </Tooltip>
-              </ListItem>
-
-              {item.children && (
-                <Collapse in={isMenuOpen(item)} timeout="auto" unmountOnExit>
-                  <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                    {/* Thanh dọc xanh chung cho toàn bộ submenu */}
-                    <Box
-                      sx={{
-                        width: '3px',
-                        backgroundColor: '#1976D2',
-                        borderRadius: '2px',
-                        ml: '40px',
+                    <Tooltip title={!open ? item.title : ""} placement="right"
+                      PopperProps={{
+                        modifiers: [
+                          {
+                            name: "offset",
+                            options: {
+                              offset: [0, -13], // đây là phần tạo khoảng cách
+                            },
+                          },
+                        ],
                       }}
-                    />
-                    <List component="div" disablePadding>
-                      {item.children.map((subItem) => (
-                        <ListItemButton
-                          key={subItem.title}
-                          onClick={() => navigate(subItem.path)}
-                          selected={location.pathname === subItem.path}
+                    >
+                      <ListItemButton
+                        onClick={() => {
+                          if (item.children) {
+                            handleToggle(item.title);   // mở submenu
+                          } else {
+                            navigate(item.path);          // điều hướng
+                          }
+                        }}
+                        selected={location.pathname.startsWith(item.path)}
+                        sx={{
+                          '&.Mui-selected': {
+                            borderLeft: '5px solid #1976D2',
+                            backgroundColor: '#f0f8ff',
+                          }
+                        }}
+                      >
+                        <ListItemIcon sx={{minWidth:'45px'}}>{item.icon}</ListItemIcon>
+                        {open && <ListItemText primary={item.title} />}
+                        {open && item.children && (isMenuOpen(item) ? <ExpandLess /> : <ExpandMore />)}
+                      </ListItemButton>
+                    </Tooltip>
+                  </ListItem>
+
+                  {item.children && (
+                    <Collapse in={isMenuOpen(item)} timeout="auto" unmountOnExit>
+                      <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                        {/* Thanh dọc xanh chung cho toàn bộ submenu */}
+                        <Box
                           sx={{
-                            pl: 2,
-                            py: 0.8, // nhỏ hơn để sát nhau
-                            '&.Mui-selected': {
-                              backgroundColor: 'transparent',
-                              color: '#1976D2',
-                            },
-                            '&:hover': {
-                              backgroundColor: '#f5f5f5',
-                            },
+                            width: '3px',
+                            backgroundColor: '#1976D2',
+                            borderRadius: '2px',
+                            ml: '40px',
                           }}
-                        >
-                          <ListItemText primary={subItem.title} />
-                        </ListItemButton>
-                      ))}
-                    </List>
-                  </Box>
-                </Collapse>
-              )}
-            </React.Fragment>
-          ))}
-        </List>
+                        />
+                        <List component="div" disablePadding>
+                          {item.children.map((subItem) => (
+                            <ListItemButton
+                              key={subItem.title}
+                              onClick={() => navigate(subItem.path)}
+                              selected={location.pathname.startsWith(subItem.path)}                          
+                              sx={{
+                                pl: 2,
+                                py: 0.8, // nhỏ hơn để sát nhau
+                                '&.Mui-selected': {
+                                  backgroundColor: 'transparent',
+                                  color: '#1976D2',
+                                },
+                                '&:hover': {
+                                  backgroundColor: '#f5f5f5',
+                                },
+                              }}
+                            >
+                              <ListItemText primary={subItem.title} />
+                            </ListItemButton>
+                          ))}
+                        </List>
+                      </Box>
+                    </Collapse>
+                  )}
+                </React.Fragment>
+              ))}
+            </List>
+          </>
+        )}
       </Drawer>
       <Box 
         component="main"
@@ -320,8 +374,7 @@ export default function Admin2Layout() {
         }}
       >        
         <DrawerHeader />
-        <Outlet />
-      </Box>
+        <Outlet context={{ selectedChapter }} /> {/* Truyền selectedChapter qua context */}      </Box>
     </Box>
   );
 }
