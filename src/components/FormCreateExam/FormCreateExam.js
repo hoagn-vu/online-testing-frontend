@@ -218,48 +218,54 @@ const FormCreateExam = ({ onClose  }) => {
       <h5 className="mb-3 fw-bold" style={{color: '#1976d2', fontSize: "20px"}}>Tạo đề thi mới</h5>
       <div className="d-flex w-100">
         <div className="tbl-shadow flex-fill me-2">
-          <div>
-            <p className="mb-2">Tên đề thi:</p>
-            <TextField
-              fullWidth
-              required
-              // value={formData.organizeExamName}
-              // inputRef={inputRef}
-              sx={{
-                height: "40px",
-                "& .MuiInputBase-root": {
-                  height: "40px",
-                  fontSize: "14px",
-                },
-                "& .MuiInputBase-input": {
-                  fontSize: "14px",
-                },
-                "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-              }}
-            />           
-          </div>
-          <div className="mt-2">
-            <p className="mb-2">Tổng điểm:</p>
-            <TextField
-              fullWidth
-              required
-              type="number"
-              value={totalScore}
-              onChange={(e) => setTotalScore(parseFloat(e.target.value) || 0)}
-              sx={{
-                height: "40px",
-                "& .MuiInputBase-root": {
-                  height: "40px",
-                  fontSize: "14px",
-                },
-                "& .MuiInputBase-input": {
-                  fontSize: "14px",
-                },
-                "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-              }}
-              
-            />
-          </div>
+          <Grid container spacing={1}>
+            <Grid item xs={8}>
+              <div>
+                <p className="mb-2">Tên đề thi:</p>
+                <TextField
+                  fullWidth
+                  required
+                  // value={formData.organizeExamName}
+                  // inputRef={inputRef}
+                  sx={{
+                    height: "40px",
+                    "& .MuiInputBase-root": {
+                      height: "40px",
+                      fontSize: "14px",
+                    },
+                    "& .MuiInputBase-input": {
+                      fontSize: "14px",
+                    },
+                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+                  }}
+                />           
+              </div>
+              </Grid>
+              <Grid item xs={4}>
+              <div className="">
+                <p className="mb-2">Tổng điểm:</p>
+                <TextField
+                  fullWidth
+                  required
+                  type="number"
+                  value={totalScore}
+                  onChange={(e) => setTotalScore(parseFloat(e.target.value) || 0)}
+                  sx={{
+                    height: "40px",
+                    "& .MuiInputBase-root": {
+                      height: "40px",
+                      fontSize: "14px",
+                    },
+                    "& .MuiInputBase-input": {
+                      fontSize: "14px",
+                    },
+                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+                  }}
+                  
+                />
+              </div>
+            </Grid>
+          </Grid>
           <div className="table-responsive">
             <table className="table sample-table table-hover tbl-organize-hover">
               <thead>
