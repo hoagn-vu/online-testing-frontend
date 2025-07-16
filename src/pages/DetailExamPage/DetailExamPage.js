@@ -9,6 +9,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Select from "react-select";
 import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
+import { Grid, TextField, Autocomplete } from "@mui/material";
 
 const examData = [
   {
@@ -100,6 +101,7 @@ const DetailExamPage = () => {
   const [shuffleQuestion, setShuffleQuestion] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [exam, setExam] = useState(null);
+  const [selectedSubject, setSelectedSubject] = useState(null); // Môn học
 
   const [newQuestion, setNewQuestion] = useState({
     questionText: "",
@@ -255,17 +257,64 @@ const DetailExamPage = () => {
           <SearchBox></SearchBox>
         </div>
         <div className="d-flex justify-content-end ms-auto">
-          <button
-            className="btn btn-success mb-1"
-            data-bs-toggle="modal"
-            data-bs-target="#questionModal"
-            onClick={handleAddQuestion}
-          >
-            Thêm câu hỏi mới
-          </button>
+          <AddButton onClick={handleAddQuestion}>
+            <i className="fas fa-plus me-2"></i> Thêm câu hỏi
+          </AddButton>
         </div>
       </div>
+      <div className="container tbl-shadow p-3" style={{ borderRadius: "8px", position: "relative" }}>
+        <div className="row">
+          <div className="col">
+            <p style={{ fontSize: "14px" }}>
+              <span style={{ fontWeight: "bold" }}>Mã đề thi: </span>{"MA12345"}
+            </p>
+            <p style={{ fontSize: "14px" }}>
+              <span style={{ fontWeight: "bold" }}>Tên đề thi: </span>{"Đề kiểm tra cuối kỳ"}
+            </p>
+            <p className="m-0" style={{ fontSize: "14px" }}>
+              <span style={{ fontWeight: "bold" }}>Tổng điểm:</span> {"10"}
+            </p>
+          </div>
 
+          <div className="col">
+            <p style={{ fontSize: "14px" }}>
+              <span style={{ fontWeight: "bold" }}>Phân học: </span> {selectedSubject || "Toán học"}
+            </p>
+            <p style={{ fontSize: "14px" }}>
+              <span style={{ fontWeight: "bold" }}>Bộ câu hỏi: </span> {selectedSubject || "Toán học 1"}
+            </p>
+          </div>
+        </div>
+
+        {/* Nút 3 chấm góc phải */}
+        <div 
+          className="dropdown d-inline-block" 
+          style={{ position: "absolute", top: "10px", right: "10px" }}
+        >
+          <button
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            className="dropdown-toggle-icon"
+          >
+            <i className="fas fa-ellipsis-v"></i>
+          </button>
+          <ul
+            className="dropdown-menu dropdown-menu-end dropdown-menu-custom"
+            style={{
+              right: "0",
+              transform: "translate3d(-10px, 10px, 0px)",
+            }}
+          >
+            <li className="tbl-action">
+              <button className="dropdown-item tbl-action">Chỉnh sửa</button>
+            </li>
+            <li className="tbl-action">
+              <button className="dropdown-item tbl-action">Xoá</button>
+            </li>
+          </ul>
+        </div>
+      </div>
       {questions.length > 0 ? (
         questions.map((question) => (
           <div key={question.id} className="card mb-2">
