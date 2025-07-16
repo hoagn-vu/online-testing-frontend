@@ -345,12 +345,12 @@ const ExamManagementPage = () => {
 							}}
 							onSubmit={handleSubmit}
 						>
-							<p className="fw-bold" style={{fontSize: "18px"}}>
+							<p className="fw-bold mb-4" style={{fontSize: "18px"}}>
 								{editingAccount ? "Chỉnh sửa thông tin đề thi" : "Tạo đề thi"}
 							</p>
 	
 							<Grid container spacing={2}>										
-								<Grid item xs={6}>
+								<Grid item xs={12}>
 									<TextField
 										fullWidth
 										label="Mã đề thi"
@@ -370,23 +370,6 @@ const ExamManagementPage = () => {
 									/>
 								</Grid>
 	
-								<Grid item xs={6}>
-									<TextField
-										fullWidth
-										required
-										type="number"
-										label="Số lượng"
-									//   value={formData.capacity}
-										disabled={editingAccount}
-										sx={{
-											"& .MuiInputBase-input": {
-												fontSize: "14px",
-												paddingBottom: "11px",
-											},
-											"& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-										}}
-									/>
-								</Grid>
 								<Grid item xs={12}>
 									<TextField
 										fullWidth
@@ -402,66 +385,6 @@ const ExamManagementPage = () => {
 												paddingBottom: "11px",
 											},
 											"& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-										}}
-									/>
-								</Grid>
-								<Grid item xs={12}>
-									<ReactSelect
-										fullWidth
-										className="basic-single "
-										classNamePrefix="select"
-										placeholder="Chọn phân môn"
-										name="color"
-										options={subjectOptions}
-										onChange={(selected) => {
-											fetchQuestionBankOptions(selected?.value);
-											setFormData({ ...formData, subjectId: selected.value });
-										}}										
-										isDisabled={editingAccount}
-										styles={{
-											control: (base) => ({
-												...base,
-												height: "48px", // Tăng chiều cao
-											}),
-											valueContainer: (base) => ({
-												...base,
-												overflow: "hidden",
-												textOverflow: "ellipsis",
-												whiteSpace: "nowrap",
-												fontSize: "14px",
-											}),
-											placeholder: (base) => ({
-												...base,
-												fontSize: "14px", // Cỡ chữ của placeholder (label)
-											}),
-										}}
-									/>
-								</Grid>
-								<Grid item xs={12}>
-									<ReactSelect
-										fullWidth
-										className="basic-single "
-										classNamePrefix="select"
-										placeholder="Chọn ngân hàng câu hỏi"
-										name="color"
-										options={questionBankOptions}
-										isDisabled={editingAccount}
-										styles={{
-											control: (base) => ({
-												...base,
-												height: "48px", // Tăng chiều cao
-											}),
-											valueContainer: (base) => ({
-												...base,
-												overflow: "hidden",
-												textOverflow: "ellipsis",
-												whiteSpace: "nowrap",
-												fontSize: "14px",
-											}),
-											placeholder: (base) => ({
-												...base,
-												fontSize: "14px", // Cỡ chữ của placeholder (label)
-											}),
 										}}
 									/>
 								</Grid>
