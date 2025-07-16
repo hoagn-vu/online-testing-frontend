@@ -21,7 +21,7 @@ const DetailExamPage = () => {
   const { examId } = useParams();
   const [totalScore, setTotalScore] = useState(0);
   const [scores, setScores] = useState({}); 
-  const [examDetails, setExamDetails] = useState(null);
+  const [examDetails, setExamDetails] = useState([]);
   
   const [newQuestion, setNewQuestion] = useState({
     questionText: "",
@@ -186,7 +186,7 @@ const DetailExamPage = () => {
 				<span className="ms-3 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
 				<span className="breadcrumb-between"> <Link to="/staff/exam" className="breadcrumb-between">Quản lý đề thi</Link></span>
 				<span className="ms-3 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
-				<span className="breadcrumb-current"></span>
+				<span className="breadcrumb-current">{examDetails.examName}</span>
 			</nav>
       <div className="d-flex mb-3">
         <div className="search-container">
