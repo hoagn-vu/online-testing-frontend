@@ -325,7 +325,7 @@ const DetailExamPage = () => {
                     </div>
                   </div>
                   {/* Nút chỉnh sửa & xoá */}
-                  <div className="d-flex" style={{ marginLeft: "50px" }}>
+                  {/* <div className="d-flex" style={{ marginLeft: "50px" }}>
                     <button
                       className="btn pe-1 ps-1"
                       style={{ fontSize: "20px" }}
@@ -340,7 +340,7 @@ const DetailExamPage = () => {
                     >
                       <i className="fa-solid fa-trash-can" style={{ color: "#A6A6A6" }}></i>
                     </button>
-                  </div>
+                  </div> */}
                 </div>
                 {/* Collapse hiển thị options */}
                 <div id={`collapse-${question.questionId}`} className="collapse show">
