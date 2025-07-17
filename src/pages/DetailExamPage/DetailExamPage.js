@@ -160,30 +160,44 @@ const DetailExamPage = () => {
     new window.bootstrap.Modal(document.getElementById("questionModal")).show();
   };*/
 
-  const handleDelete = (id) => {
+  const handleCloseFormCreateExam = () => {
+    setShowFormCreateExam(false); // Đóng FormCreateExam
+  };
+
+  const handleDeleteExam = (examId) => {
     Swal.fire({
-      title: "Bạn có chắc chắn xóa?",
-      text: "Bạn sẽ không thể hoàn tác hành động này!",
+      title: "Bạn có chắc chắn muốn xóa đề thi này?",
+      text: "Hành động này không thể hoàn tác!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Xóa",
       cancelButtonText: "Hủy",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        setQuestions(questions.filter((q) => q.id !== id));
-        Swal.fire({
-          title: "Đã xóa!",
-          text: "Câu hỏi đã bị xóa.",
-          icon: "success",
-        });
+        try {
+          //await ApiService.delete(`/exams/${examId}`);
+
+          Swal.fire({
+            title: "Đã xóa!",
+            text: "Đề thi đã bị xóa thành công.",
+            icon: "success",
+          });
+
+          navigate("/staff/exam"); 
+        } catch (error) {
+          console.error("Xóa đề thi thất bại:", error);
+          Swal.fire({
+            title: "Lỗi",
+            text: "Không thể xóa đề thi. Vui lòng thử lại!",
+            icon: "error",
+          });
+        }
       }
     });
   };
-  const handleCloseFormCreateExam = () => {
-    setShowFormCreateExam(false); // Đóng FormCreateExam
-  };
+
 
   return (
     <div className="container list-question-container me-0 p-4">
@@ -277,7 +291,7 @@ const DetailExamPage = () => {
                     </button>
                   </li>
                   <li className="tbl-action">
-                    <button className="dropdown-item tbl-action">Xoá</button>
+                    <button className="dropdown-item tbl-action" onClick={() => handleDeleteExam(examDetails.id)}>Xoá</button>
                   </li>
                 </ul>
               </div>
