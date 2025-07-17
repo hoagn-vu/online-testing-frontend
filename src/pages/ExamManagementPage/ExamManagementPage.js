@@ -178,7 +178,7 @@ const ExamManagementPage = () => {
 				text: "Tài khoản đã bị xóa.",
 				icon: "success",
 			});
-			setRows(rows.filter((row) => row.id !== id));
+			setListExam((prev) => prev.filter((exam) => exam.id !== id));
 			}
 		});
   };
