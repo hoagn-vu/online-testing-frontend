@@ -259,7 +259,7 @@ const DetailExamPage = () => {
                   aria-expanded="false"
                   className="dropdown-toggle-icon"
                 >
-                  <i className="fas fa-ellipsis-v" ></i>
+                  <i className="fas fa-ellipsis-v" style={{fontSize: "18px"}}></i>
                 </button>
                 <ul
                   className="dropdown-menu dropdown-menu-end dropdown-menu-custom"
