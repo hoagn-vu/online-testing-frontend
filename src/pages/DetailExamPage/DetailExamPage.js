@@ -232,11 +232,6 @@ const DetailExamPage = () => {
             <div className="search-container">
               <SearchBox></SearchBox>
             </div>
-            <div className="d-flex justify-content-end ms-auto">
-              <AddButton onClick={handleAddQuestion}>
-                <i className="fas fa-plus me-2"></i> Thêm câu hỏi
-              </AddButton>
-            </div>
           </div>
           {examDetails && (
             <div className="container tbl-shadow p-3" style={{ borderRadius: "8px", position: "relative" }}>
