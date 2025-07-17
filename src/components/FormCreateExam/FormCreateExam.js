@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 import AddButton from "../AddButton/AddButton";
 import CancelButton from "../CancelButton/CancelButton";
 
-const FormCreateExam = ({ onClose  }) => {
+const FormCreateExam = ({ onClose, initialData  }) => {
   const [listDisplay, setListDisplay] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const inputRef = useRef(null);
@@ -24,12 +24,39 @@ const FormCreateExam = ({ onClose  }) => {
   const [selectedLevel, setSelectedLevel] = useState(null);
   const [totalScore, setTotalScore] = useState(0);
   const [scores, setScores] = useState({});  
+  const [examCode, setExamCode] = useState("");
+  const [examName, setExamName] = useState("");
 
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
-  }, []);
+    // Khởi tạo dữ liệu từ initialData nếu có
+    if (initialData) {
+      setExamCode(initialData.examCode || "");
+      setExamName(initialData.examName || "");
+      setTotalScore(initialData.totalScore || 0);
+      setScores(initialData.scores || {});
+      setSelectedItems(initialData.questions.map((q) => q.questionId) || []);
+      // Ánh xạ subjectName và questionBankName sang subjectId và questionBankId
+      const fetchInitialSubjectId = async () => {
+        const subjects = await ApiService.get("/subjects/options");
+        const subject = subjects.data.find((s) => s.subjectName === initialData.subjectName);
+        setSubjectChosen(subject?.id || null);
+      };
+      const fetchInitialBankId = async () => {
+        if (subjectChosen) {
+          const banks = await ApiService.get("/subjects/question-bank-options", {
+            params: { subjectId: subjectChosen },
+          });
+          const bank = banks.data.find((b) => b.questionBankName === initialData.questionBankName);
+          setBankChosen(bank?.questionBankId || null);
+        }
+      };
+      fetchInitialSubjectId();
+      fetchInitialBankId();
+    }
+  }, [initialData, subjectChosen]);
 
   useEffect(() => {
     const fetchSubjectOptions = async () => {
@@ -117,19 +144,23 @@ const FormCreateExam = ({ onClose  }) => {
     }
   }, [subjectChosen, bankChosen, selectedChapter, selectedLevel, questions]);
 
+
   useEffect(() => {
-    // Gán điểm mặc định khi selectedItems hoặc totalScore thay đổi
-    if (selectedItems.length > 0 && totalScore > 0) {
-      const defaultScore = totalScore / selectedItems.length;
-      const newScores = {};
-      selectedItems.forEach((questionId) => {
-        newScores[questionId] = defaultScore; // Không dùng toFixed để giữ chính xác
-      });
-      setScores(newScores);
-    } else {
-      setScores({});
+    // ✅ CHỈ chia đều điểm khi đang tạo mới (không có initialData)
+    if (!initialData) {
+      if (selectedItems.length > 0 && totalScore > 0) {
+        const defaultScore = totalScore / selectedItems.length;
+        const newScores = {};
+        selectedItems.forEach((questionId) => {
+          newScores[questionId] = defaultScore;
+        });
+        setScores(newScores);
+      } else {
+        setScores({});
+      }
     }
-  }, [selectedItems, totalScore]);
+  }, [selectedItems, totalScore, initialData]);
+
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -195,7 +226,28 @@ const FormCreateExam = ({ onClose  }) => {
   });
 };
 
-  const handleSave = () => {
+const handleSave = () => {
+  const currentTotal = selectedItems.reduce((sum, qid) => {
+    return sum + (scores[qid] ?? (initialData.questions.find(q => q.questionId === qid)?.questionScore ?? 0));
+  }, 0);
+
+  if (currentTotal !== totalScore) {
+    Swal.fire({
+      icon: "error",
+      title: "Lỗi",
+      text: `Tổng điểm (${currentTotal.toFixed(2)}) không khớp với tổng điểm đã nhập (${totalScore})!`,
+    });
+    return;
+  }
+
+  Swal.fire({
+    icon: "success",
+    title: "Thành công",
+    text: "Đã lưu thành công!",
+  });
+};
+
+  /*const handleSave = () => {
     const currentTotal = Object.values(scores).reduce((sum, score) => sum + (score || 0), 0);
     if (currentTotal !== totalScore) {
       Swal.fire({
@@ -211,11 +263,13 @@ const FormCreateExam = ({ onClose  }) => {
       title: "Thành công",
       text: "Đã lưu thành công!",
     });
-  };
+  };*/
 
   return (
     <div>
-      <h5 className="mb-3 fw-bold" style={{color: '#1976d2', fontSize: "20px"}}>Tạo đề thi mới</h5>
+      <h5 className="mb-3 fw-bold" style={{ color: "#1976d2", fontSize: "20px" }}>
+        {initialData ? "Chỉnh sửa đề thi" : "Tạo đề thi mới"}
+      </h5>      
       <div className="container">
         <div className="row">
           <div className="tbl-shadow me-2 col">
@@ -224,8 +278,10 @@ const FormCreateExam = ({ onClose  }) => {
               <TextField
                 fullWidth
                 required
-                // value={formData.organizeExamName}
-                // inputRef={inputRef}
+                value={examCode}
+                disabled={!!initialData} // Vô hiệu hóa khi chỉnh sửa
+                inputRef={inputRef}
+                onChange={(e) => setExamCode(e.target.value)}
                 sx={{
                   height: "40px",
                   "& .MuiInputBase-root": {
@@ -246,8 +302,8 @@ const FormCreateExam = ({ onClose  }) => {
                 <TextField
                   fullWidth
                   required
-                  // value={formData.organizeExamName}
-                  // inputRef={inputRef}
+                  value={examName}
+                  onChange={(e) => setExamName(e.target.value)}
                   sx={{
                     height: "40px",
                     "& .MuiInputBase-root": {
@@ -314,7 +370,11 @@ const FormCreateExam = ({ onClose  }) => {
                           <td>
                             <TextField
                               type="number"
-                              value={scores[questionId] !== undefined ? scores[questionId] : scorePerQuestion}
+                              value={
+                                scores[questionId] !== undefined
+                                  ? scores[questionId]       // Nếu đã chỉnh sửa thì lấy từ state
+                                  : selectedQuestion.questionScore ?? 0  // Nếu chưa thì giữ nguyên điểm gốc
+                              }                             
                               onChange={(e) => handleScoreChange(questionId, e.target.value)}
                               size="small"
                               sx={{
@@ -371,78 +431,65 @@ const FormCreateExam = ({ onClose  }) => {
                 />
               </div>
             </div>
-            <Autocomplete
-              className="mt-3"
-              options={subjectOptions}
-              getOptionLabel={(option) => option.label}
-              onChange={(event, newValue) => setSubjectChosen(newValue?.value)}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Chọn phân môn"
-                  size="small"
-                  sx={{
-                    backgroundColor: "white",
-                    "& .MuiInputBase-root": {
-                      height: "40px",
-                      fontSize: "14px",
-                    },
-                    "& label": {
-                      fontSize: "14px",
-                    },
-                    "& input": {
-                      fontSize: "14px",
-                    },
-                  }}
-                />
-              )}
-              slotProps={{
-                paper: {
-                  sx: {
-                    fontSize: "14px", // ✅ Cỡ chữ dropdown
-                  },
-                },
-              }}
-            />
-            <Autocomplete
-              className="mt-3"
-              options={bankOptions} 
-              getOptionLabel={(option) => option.label}
-              onChange={(event, newValue) => setBankChosen(newValue?.value)}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Chọn bộ câu hỏi"
-                  size="small"
-                  sx={{
-                    backgroundColor: "white",
-                    "& .MuiInputBase-root": {
-                      height: "40px",
-                      fontSize: "14px",
-                    },
-                    "& label": {
-                      fontSize: "14px",
-                    },
-                    "& input": {
-                      fontSize: "14px",
-                    },
-                  }}
-                />
-              )}
-              slotProps={{
-                paper: {
-                  sx: {
-                    fontSize: "14px", // ✅ Cỡ chữ dropdown
-                  },
-                },
-              }}
-            />
+            {initialData ? (
+              <div className="mt-3">
+                <p className="mb-1"> <span className="fw-bold">Phân môn: </span>{initialData.subjectName}</p>
+              </div>
+            ) : (
+              <Autocomplete
+                className="mt-3"
+                options={subjectOptions}
+                getOptionLabel={(option) => option.label}
+                value={subjectOptions.find((option) => option.value === subjectChosen) || null}
+                onChange={(event, newValue) => setSubjectChosen(newValue?.value)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Chọn phân môn"
+                    size="small"
+                    sx={{
+                      backgroundColor: "white",
+                      "& .MuiInputBase-root": { height: "40px", fontSize: "14px" },
+                      "& label": { fontSize: "14px" },
+                      "& input": { fontSize: "14px" },
+                    }}
+                  />
+                )}
+              />
+            )}
+            {initialData ? (
+              <div className="mt-3">
+                <p className="mb-1"> <span className="fw-bold">Bộ câu hỏi: </span>{initialData.questionBankName}</p>
+              </div>
+            ) : (
+              <Autocomplete
+                className="mt-3"
+                options={bankOptions}
+                getOptionLabel={(option) => option.label}
+                value={bankOptions.find((option) => option.value === bankChosen) || null}
+                onChange={(event, newValue) => setBankChosen(newValue?.value)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Chọn bộ câu hỏi"
+                    size="small"
+                    sx={{
+                      backgroundColor: "white",
+                      "& .MuiInputBase-root": { height: "40px", fontSize: "14px" },
+                      "& label": { fontSize: "14px" },
+                      "& input": { fontSize: "14px" },
+                    }}
+                  />
+                )}
+              />
+            )}
             <Grid container spacing={2}>
               <Grid item xs={6}>
                 <Autocomplete
                   className="mt-3"
                   options={chapterOptions} 
                   getOptionLabel={(option) => option.label}
+                  value={chapterOptions.find((option) => option.value === selectedChapter?.value) || null}
                   onChange={(event, newValue) => setSelectedChapter(newValue)}
                   renderInput={(params) => (
                     <TextField
@@ -478,6 +525,7 @@ const FormCreateExam = ({ onClose  }) => {
                   className="mt-3"
                   options={levelOptions}
                   getOptionLabel={(option) => option.label}
+                  value={levelOptions.find((option) => option.value === selectedLevel?.value) || null}
                   onChange={(event, newValue) => setSelectedLevel(newValue)}
                   renderInput={(params) => (
                     <TextField
@@ -552,6 +600,25 @@ const FormCreateExam = ({ onClose  }) => {
 
 FormCreateExam.propTypes = {
   onClose: PropTypes.func.isRequired,
+  initialData: PropTypes.shape({
+    examId: PropTypes.string,
+    examCode: PropTypes.string,
+    examName: PropTypes.string,
+    subjectName: PropTypes.string,
+    questionBankName: PropTypes.string,
+    questions: PropTypes.arrayOf(
+      PropTypes.shape({
+        questionId: PropTypes.string,
+        questionText: PropTypes.string,
+        chapter: PropTypes.string,
+        level: PropTypes.string,
+        questionScore: PropTypes.number,
+        options: PropTypes.array,
+      })
+    ),
+    totalScore: PropTypes.number,
+    scores: PropTypes.object,
+  }),
 };
 
 export default FormCreateExam;

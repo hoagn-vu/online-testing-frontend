@@ -11,18 +11,17 @@ import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
 import { Grid, TextField, Autocomplete } from "@mui/material";
 import ApiService from "../../services/apiService";
+import FormCreateExam from "../../components/FormCreateExam/FormCreateExam";
 
 const DetailExamPage = () => {
   const [editQuestionId, setEditQuestionId] = useState(null);
-  const [shuffleQuestion, setShuffleQuestion] = useState(false);
   const [questions, setQuestions] = useState([]);
-  const [examName, setExamName] = useState(null);
-  const [selectedSubject, setSelectedSubject] = useState(null); 
   const { examId } = useParams();
   const [totalScore, setTotalScore] = useState(0);
   const [scores, setScores] = useState({}); 
   const [examDetails, setExamDetails] = useState([]);
-  
+  const [showFormCreateExam, setShowFormCreateExam] = useState(false);
+
   const [newQuestion, setNewQuestion] = useState({
     questionText: "",
     options: [{ optionText: "", isCorrect: false }, { optionText: "", isCorrect: false }],
@@ -85,6 +84,10 @@ const DetailExamPage = () => {
     }
   }, []); */
 
+  const handleEditQuestion = () => {
+    setShowFormCreateExam(true);  
+  };
+
   const handleAddOption = () => {
     setNewQuestion({
       ...newQuestion,
@@ -141,7 +144,7 @@ const DetailExamPage = () => {
     new window.bootstrap.Modal(document.getElementById("questionModal")).show();
   };
 
-  const handleEditQuestion = (question) => {
+  /* const handleEditQuestion = (question) => {
     setEditQuestionId(question.id);
 
     const chapter = question.tags?.[0] ? { label: question.tags[0], value: question.tags[0] } : null;
@@ -155,7 +158,7 @@ const DetailExamPage = () => {
     setSelectedLevel(level);
 
     new window.bootstrap.Modal(document.getElementById("questionModal")).show();
-  };
+  };*/
 
   const handleDelete = (id) => {
     Swal.fire({
@@ -178,6 +181,9 @@ const DetailExamPage = () => {
       }
     });
   };
+  const handleCloseFormCreateExam = () => {
+    setShowFormCreateExam(false); // Đóng FormCreateExam
+  };
 
   return (
     <div className="container list-question-container me-0 p-4">
@@ -188,146 +194,168 @@ const DetailExamPage = () => {
 				<span className="ms-3 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
 				<span className="breadcrumb-current">{examDetails.examName}</span>
 			</nav>
-      <div className="d-flex mb-3">
-        <div className="search-container">
-          <SearchBox></SearchBox>
-        </div>
-        {/* <div className="d-flex justify-content-end ms-auto">
-          <AddButton onClick={handleAddQuestion}>
-            <i className="fas fa-plus me-2"></i> Thêm câu hỏi
-          </AddButton>
-        </div> */}
-      </div>
-      {examDetails && (
-        <div className="container tbl-shadow p-3" style={{ borderRadius: "8px", position: "relative" }}>
-          <div className="row">
-            <div className="col">
-              <p style={{ fontSize: "14px" }}>
-                <span style={{ fontWeight: "bold" }}>Mã đề thi: </span>{examDetails.examCode}
-              </p>
-              <p style={{ fontSize: "14px" }}>
-                <span style={{ fontWeight: "bold" }}>Tên đề thi: </span>{examDetails.examName}
-              </p>
-              <p className="m-0" style={{ fontSize: "14px" }}>
-                <span style={{ fontWeight: "bold" }}>Tổng điểm: </span>
-                {questions.reduce((sum, q) => sum + q.questionScore, 0)}
-              </p>
-            </div>
 
-            <div className="col">
-              <p style={{ fontSize: "14px" }}>
-                <span style={{ fontWeight: "bold" }}>Phân học: </span> {examDetails.subjectName}
-              </p>
-              <p style={{ fontSize: "14px" }}>
-                <span style={{ fontWeight: "bold" }}>Bộ câu hỏi: </span> {examDetails.questionBankName}
-              </p>
+      {showFormCreateExam ? (
+        <FormCreateExam
+          onClose={handleCloseFormCreateExam}
+          initialData={{
+            examId: examDetails?.id,
+            examCode: examDetails?.examCode,
+            examName: examDetails?.examName,
+            subjectName: examDetails?.subjectName,
+            questionBankName: examDetails?.questionBankName,
+            questions: questions,
+            totalScore: questions.reduce((sum, q) => sum + (q.questionScore || 0), 0),
+            scores: questions.reduce((acc, q) => {
+              acc[q.questionId] = q.questionScore || 0;
+              return acc;
+            }, {}),
+          }}
+        />
+      ) : (
+        <>
+          <div className="d-flex mb-3">
+            <div className="search-container">
+              <SearchBox></SearchBox>
+            </div>
+            <div className="d-flex justify-content-end ms-auto">
+              <AddButton onClick={handleAddQuestion}>
+                <i className="fas fa-plus me-2"></i> Thêm câu hỏi
+              </AddButton>
             </div>
           </div>
-          {/* Nút 3 chấm góc phải */}
-          <div 
-            className="dropdown d-inline-block" 
-            style={{ position: "absolute", top: "10px", right: "10px" }}
-          >
-            <button
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              className="dropdown-toggle-icon"
-            >
-              <i className="fas fa-ellipsis-v"></i>
-            </button>
-            <ul
-              className="dropdown-menu dropdown-menu-end dropdown-menu-custom"
-              style={{
-                right: "0",
-                transform: "translate3d(-10px, 10px, 0px)",
-              }}
-            >
-              <li className="tbl-action">
-                <button className="dropdown-item tbl-action">Chỉnh sửa</button>
-              </li>
-              <li className="tbl-action">
-                <button className="dropdown-item tbl-action">Xoá</button>
-              </li>
-            </ul>
-          </div>
-        </div>
-      )}
-      {questions.length > 0 ? (
-        questions.map((question) => (
-          <div key={question.questionId} className="card mb-2">
-            <div className="card-header d-flex justify-content-between ps-2">
-              <div className="d-flex">
-                <button
-                  className="btn btn-link text-decoration-none d-flex p-0 pe-1"
-                  style={{ color: "black" }}
-                  data-bs-toggle="collapse"
-                  data-bs-target={`#collapse-${question.questionId}`}
-                  aria-expanded="false"
-                  aria-controls={`collapse-${question.questionId}`}
-                >
-                  <ArrowDropDownIcon />
-                </button>
-
-                <div>
-                  {/* Nội dung câu hỏi */}
-                  <h6 className="d-flex align-items-center">
-                    {question.questionText}
-                    <span
-                      className="ms-1"
-                      style={{ fontSize: "13px", color: "#70706E" }}
-                    >
-                      {question.questionScore} điểm
-                    </span>
-                  </h6>
-
-                  {/* Hiển thị chapter & level */}
-                  <p className="m-0" style={{ fontSize: "13px", color: "#70706E" }}>
-                    {question.chapter} - {question.level}
+          {examDetails && (
+            <div className="container tbl-shadow p-3" style={{ borderRadius: "8px", position: "relative" }}>
+              <div className="row">
+                <div className="col">
+                  <p style={{ fontSize: "14px" }}>
+                    <span style={{ fontWeight: "bold" }}>Mã đề thi: </span>{examDetails.examCode}
+                  </p>
+                  <p style={{ fontSize: "14px" }}>
+                    <span style={{ fontWeight: "bold" }}>Tên đề thi: </span>{examDetails.examName}
+                  </p>
+                  <p className="m-0" style={{ fontSize: "14px" }}>
+                    <span style={{ fontWeight: "bold" }}>Tổng điểm: </span>
+                    {totalScore} {/* Sử dụng totalScore thay vì reduce để đồng bộ */}
+                  </p>
+                </div>
+                <div className="col">
+                  <p style={{ fontSize: "14px" }}>
+                    <span style={{ fontWeight: "bold" }}>Phân học: </span>{examDetails.subjectName}
+                  </p>
+                  <p style={{ fontSize: "14px" }}>
+                    <span style={{ fontWeight: "bold" }}>Bộ câu hỏi: </span>{examDetails.questionBankName}
                   </p>
                 </div>
               </div>
-
-              {/* Nút chỉnh sửa & xoá */}
-              <div className="d-flex" style={{ marginLeft: "50px" }}>
+              {/* Nút 3 chấm góc phải */}
+              <div
+                className="dropdown d-inline-block"
+                style={{ position: "absolute", top: "10px", right: "10px" }}
+              >
                 <button
-                  className="btn pe-1 ps-1"
-                  style={{ fontSize: "20px" }}
-                  onClick={() => handleEditQuestion(question)}
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  className="dropdown-toggle-icon"
                 >
-                  <i className="fa-solid fa-pen-to-square" style={{ color: "#A6A6A6" }}></i>
+                  <i className="fas fa-ellipsis-v" ></i>
                 </button>
-                <button
-                  className="btn pe-1 ps-1"
-                  style={{ fontSize: "20px" }}
-                  onClick={() => handleDelete(question.questionId)}
+                <ul
+                  className="dropdown-menu dropdown-menu-end dropdown-menu-custom"
+                  style={{
+                    right: "0",
+                    transform: "translate3d(-10px, 10px, 0px)",
+                  }}
                 >
-                  <i className="fa-solid fa-trash-can" style={{ color: "#A6A6A6" }}></i>
-                </button>
+                  <li className="tbl-action">
+                    <button
+                      className="dropdown-item tbl-action"
+                      onClick={handleEditQuestion}
+                    >
+                      Chỉnh sửa
+                    </button>
+                  </li>
+                  <li className="tbl-action">
+                    <button className="dropdown-item tbl-action">Xoá</button>
+                  </li>
+                </ul>
               </div>
             </div>
-
-            {/* Collapse hiển thị options */}
-            <div id={`collapse-${question.questionId}`} className="collapse show">
-              <ul className="list-group">
-                {question.options.map((option) => (
-                  <li
-                    key={option.optionId}
-                    className={
-                      option.isCorrect
-                        ? "list-group-item list-group-item-success"
-                        : "list-group-item"
-                    }
-                  >
-                    {option.optionText}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        ))
-      ) : (
-        <p>Không có câu hỏi nào.</p>
+          )}
+          {questions.length > 0 ? (
+            questions.map((question) => (
+              <div key={question.questionId} className="card mb-2">
+                <div className="card-header d-flex justify-content-between ps-2">
+                  <div className="d-flex">
+                    <button
+                      className="btn btn-link text-decoration-none d-flex p-0 pe-1"
+                      style={{ color: "black" }}
+                      data-bs-toggle="collapse"
+                      data-bs-target={`#collapse-${question.questionId}`}
+                      aria-expanded="false"
+                      aria-controls={`collapse-${question.questionId}`}
+                    >
+                      <ArrowDropDownIcon />
+                    </button>
+                    <div>
+                      {/* Nội dung câu hỏi */}
+                      <h6 className="d-flex align-items-center">
+                        {question.questionText}
+                        <span
+                          className="ms-1"
+                          style={{ fontSize: "13px", color: "#70706E" }}
+                        >
+                          {question.questionScore} điểm
+                        </span>
+                      </h6>
+                      {/* Hiển thị chapter & level */}
+                      <p className="m-0" style={{ fontSize: "13px", color: "#70706E" }}>
+                        {question.chapter} - {question.level}
+                      </p>
+                    </div>
+                  </div>
+                  {/* Nút chỉnh sửa & xoá */}
+                  <div className="d-flex" style={{ marginLeft: "50px" }}>
+                    <button
+                      className="btn pe-1 ps-1"
+                      style={{ fontSize: "20px" }}
+                      onClick={handleEditQuestion} // Đồng bộ với dropdown
+                    >
+                      <i className="fa-solid fa-pen-to-square" style={{ color: "#A6A6A6" }}></i>
+                    </button>
+                    <button
+                      className="btn pe-1 ps-1"
+                      style={{ fontSize: "20px" }}
+                      onClick={() => handleDelete(question.questionId)}
+                    >
+                      <i className="fa-solid fa-trash-can" style={{ color: "#A6A6A6" }}></i>
+                    </button>
+                  </div>
+                </div>
+                {/* Collapse hiển thị options */}
+                <div id={`collapse-${question.questionId}`} className="collapse show">
+                  <ul className="list-group">
+                    {question.options.map((option) => (
+                      <li
+                        key={option.optionId}
+                        className={
+                          option.isCorrect
+                            ? "list-group-item list-group-item-success"
+                            : "list-group-item"
+                        }
+                      >
+                        {option.optionText}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p>Không có câu hỏi nào.</p>
+          )}
+        </>
       )}
     </div>
   );
