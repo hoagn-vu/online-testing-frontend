@@ -312,7 +312,8 @@ const SessionPage = () => {
 							<tr className="align-middle fw-medium">
 								<th scope="col" className="title-row text-center">STT</th> 
 								<th scope="col" className="title-row">Ca thi</th>
-								<th scope="col" className="title-row">Active At</th>
+								<th scope="col" className="title-row">Bắt đầu</th>
+								<th scope="col" className="title-row">Kết thúc</th>
 								<th scope="col" className="title-row">Phòng thi</th>
 								<th scope="col" className="title-row">Trạng thái</th>
 								<th scope="col" className="title-row text-center">Giám sát</th>
@@ -344,6 +345,20 @@ const SessionPage = () => {
 												style={{ cursor: "pointer", color: "black" }}
 											>
 												{session.sessionName}
+											</td>
+											<td
+												onClick={() => {
+													localStorage.setItem("organizeExamName", organizeExamName);
+													navigate(`/staff/organize/${organizeId}/${session.sessionId}`, {
+														state: {
+															sessionName: session.sessionName,
+															organizeExamName: organizeExamName,
+														},
+													});
+												}}
+												style={{ cursor: "pointer", color: "black" }}
+											>
+												{dayjs(session.activeAt).format("DD/MM/YYYY HH:mm")}
 											</td>
 											<td
 												onClick={() => {
@@ -473,7 +488,7 @@ const SessionPage = () => {
 						</p>
 
 						<Grid container spacing={2}>										
-							<Grid item xs={6}>
+							<Grid item xs={12}>
 								<TextField
 									fullWidth
 									label="Ca thi"
@@ -493,35 +508,62 @@ const SessionPage = () => {
 								/>
 							</Grid>
 							<Grid item xs={6}>
-							<LocalizationProvider dateAdapter={AdapterDayjs}>
-								<DateTimePicker
-										label="Active at"
-										value={formData.activeAt ? dayjs(formData.activeAt) : null}
-										onChange={(newValue) => 
-										setFormData({ ...formData, activeAt: newValue ? newValue.toISOString() : "" })
-										}
-										sx={{
-											width: "100%", 
-										}}
-										slotProps={{
-											textField: {
-												fullWidth: true,
-												sx: {
-													"& .MuiInputBase-root": {
-															height: "50px", 
-															fontSize: "16px",
-													},
-													"& .MuiInputLabel-root": {
-															fontSize: "14px",
+								<LocalizationProvider dateAdapter={AdapterDayjs}>
+									<DateTimePicker
+											label="Active at"
+											value={formData.activeAt ? dayjs(formData.activeAt) : null}
+											onChange={(newValue) => 
+											setFormData({ ...formData, activeAt: newValue ? newValue.toISOString() : "" })
+											}
+											sx={{
+												width: "100%", 
+											}}
+											slotProps={{
+												textField: {
+													fullWidth: true,
+													sx: {
+														"& .MuiInputBase-root": {
+																height: "50px", 
+																fontSize: "16px",
+														},
+														"& .MuiInputLabel-root": {
+																fontSize: "14px",
+														},
 													},
 												},
-											},
-										}}
-								/>
-						</LocalizationProvider>
-
-						</Grid>
-							</Grid>		
+											}}
+									/>
+								</LocalizationProvider>
+							</Grid>
+							<Grid item xs={6}>
+								<LocalizationProvider dateAdapter={AdapterDayjs}>
+									<DateTimePicker
+											label="Active at"
+											value={formData.activeAt ? dayjs(formData.activeAt) : null}
+											onChange={(newValue) => 
+											setFormData({ ...formData, activeAt: newValue ? newValue.toISOString() : "" })
+											}
+											sx={{
+												width: "100%", 
+											}}
+											slotProps={{
+												textField: {
+													fullWidth: true,
+													sx: {
+														"& .MuiInputBase-root": {
+																height: "50px", 
+																fontSize: "16px",
+														},
+														"& .MuiInputLabel-root": {
+																fontSize: "14px",
+														},
+													},
+												},
+											}}
+									/>
+								</LocalizationProvider>
+							</Grid>
+						</Grid>		
 							{/* Buttons */}
 							<Grid container spacing={2} sx={{ mt: 1, justifyContent: "flex-end" }}>
 								<Grid item xs={3}>
