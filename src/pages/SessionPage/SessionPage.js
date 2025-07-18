@@ -510,7 +510,7 @@ const SessionPage = () => {
 							<Grid item xs={6}>
 								<LocalizationProvider dateAdapter={AdapterDayjs}>
 									<DateTimePicker
-											label="Active at"
+											label="Start at"
 											value={formData.activeAt ? dayjs(formData.activeAt) : null}
 											onChange={(newValue) => 
 											setFormData({ ...formData, activeAt: newValue ? newValue.toISOString() : "" })
@@ -538,7 +538,7 @@ const SessionPage = () => {
 							<Grid item xs={6}>
 								<LocalizationProvider dateAdapter={AdapterDayjs}>
 									<DateTimePicker
-											label="Active at"
+											label="Finish at"
 											value={formData.activeAt ? dayjs(formData.activeAt) : null}
 											onChange={(newValue) => 
 											setFormData({ ...formData, activeAt: newValue ? newValue.toISOString() : "" })
