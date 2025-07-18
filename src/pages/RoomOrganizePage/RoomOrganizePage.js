@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
+import { Link, useParams, useSearchParams, useNavigate, useLocation  } from "react-router-dom";
 import "./RoomOrganizePage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -36,6 +36,33 @@ const RoomOrganizePage = () => {
 	const [candidateGroupOptions, setCandidateGroupOptions] = useState([]);
 	const navigate = useNavigate();
 	const [showFormDivide, setShowFormDivide] = useState(false);
+	const [searchParams] = useSearchParams();
+	const location = useLocation();
+
+  const handleOpenForm = () => {
+    const newSearchParams = new URLSearchParams(location.search);
+    newSearchParams.set("showFormDivide", "true");
+    navigate(`${location.pathname}?${newSearchParams.toString()}`, { replace: true });
+    setShowFormDivide(true);
+  };
+
+  const handleCloseForm = () => {
+    const newSearchParams = new URLSearchParams(location.search);
+    newSearchParams.delete("showFormDivide");
+    const newUrl = newSearchParams.toString()
+      ? `${location.pathname}?${newSearchParams.toString()}`
+      : location.pathname;
+    navigate(newUrl, { replace: true });
+    setShowFormDivide(false);
+  };
+
+	useEffect(() => {
+		const params = new URLSearchParams(location.search);
+		if (params.get("showFormDivide") === "true") {
+			setShowFormDivide(true);
+		}
+	}, [location.search]);
+
 
 	useEffect(() => {
 		if (showForm && inputRef.current) {
@@ -237,10 +264,7 @@ const RoomOrganizePage = () => {
 			</nav>
 
 			{showFormDivide ? (
-				<FormDivideStudent 
-					onClose={() => setShowFormDivide(false)}
-
-				/>
+				<FormDivideStudent onClose={handleCloseForm}/>
 			) : (
 				<>
 			<div className="tbl-shadow p-3">
@@ -259,7 +283,7 @@ const RoomOrganizePage = () => {
           </div>
 
           <div className='right-header'>
-						<AddButton onClick={() => setShowFormDivide(true)}>
+						<AddButton onClick={handleOpenForm}>
 							<i className="fas fa-plus me-2"></i>
               Thêm mới mới
 						</AddButton>
@@ -278,6 +302,7 @@ const RoomOrganizePage = () => {
 									<th className="title-row text-center">STT</th> 
 									<th className="title-row">Phòng</th>
 									<th className="title-row">Giám thị</th>
+									<th className="text-center">Số lượng thí sinh</th>
 									<th className="text-center">Thí sinh</th>
 									<th className="title-row text-center">Trạng thái</th>
 									<th className="text-center">Thao tác</th>
@@ -308,6 +333,13 @@ const RoomOrganizePage = () => {
 											style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
 										>
 											{item.supervisorName}
+										</td>
+										<td className="text-center"
+											onClick={() => navigate(`/staff/organize/${organizeId}/${sessionId}/${item.roomInSessionId}`, {
+											})}
+											style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+										>
+											40
 										</td>
 										<td
 											onClick={() => navigate(`/staff/organize/${organizeId}/${sessionId}/${item.roomInSessionId}`, {

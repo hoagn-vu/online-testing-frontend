@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate, useLocation } from "react-router-dom";
 import { Box, Grid, TextField, Button, Typography, IconButton, Autocomplete } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -203,6 +204,14 @@ const FormDivideStudent = ({ onClose }) => {
       setSelectedItems([]);
     }
   };
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const handleCreateGroup = () => {
+    const currentPath = location.pathname;
+    navigate(`/staff/groupuser`);
+  };
+
   return (
     <div>
       <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: '#1976d2', marginTop: '20px'  }}>
@@ -261,6 +270,22 @@ const FormDivideStudent = ({ onClose }) => {
                   }}
                 />
               </Grid>
+              <AddButton
+                className='mt-3 ms-1'
+                onClick={handleCreateGroup}
+                style={{
+                  background: "#1976d2",
+                  border: "none",
+                  color: "white",
+                  borderRadius: "5px",
+                  width: "40px",
+                  height: "40px",
+                  cursor: "pointer",
+                }}
+                title="Tạo nhóm mới"
+              >
+                <i className="fas fa-plus"></i>              
+              </AddButton>
             </Grid>
             <div className="form-check mt-3 mb-2">
               <input
