@@ -48,38 +48,36 @@ const getTagColor = (action) => {
   switch (action) {
     case "Login":
       return {
-        backgroundColor: "#DBEAFE", // Xanh dương nhạt, hiện đại
-        color: "#1E40AF",           // Xanh dương đậm, dễ nhìn
+        background: "linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%)",
+        color: "#1E40AF",
         icon: "fas fa-sign-in-alt"
       };
     case "Thêm mới":
       return {
-        backgroundColor: "#D1FAE5", // Xanh lá nhạt, tươi sáng
-        color: "#065F46",           // Xanh lá đậm, thân thiện
-        icon: "fas fa-plus"
+        background: "linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%)",
+        color: "#065F46",
+        icon: "fas fa-plus-circle"
       };
     case "Sửa":
       return {
-        backgroundColor: "#FEF3C7", // Vàng nhạt, ấm áp
-        color: "#92400E",           // Vàng đậm, tương phản tốt
-        icon: "fas fa-pen"
+        background: "linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)",
+        color: "#92400E",
+        icon: "fas fa-edit"
       };
     case "Xóa":
       return {
-        backgroundColor: "#FEE2E2", // Đỏ nhạt, không quá chói
-        color: "#991B1B",           // Đỏ đậm, dễ nhận diện
-        icon: "fas fa-trash"
+        background: "linear-gradient(135deg, #FEE2E2 0%, #FCA5A5 100%)",
+        color: "#991B1B",
+        icon: "fas fa-trash-alt"
       };
     default:
       return {
-        backgroundColor: "#F3F4F6", // Xám nhạt, trung tính
-        color: "#374151",           // Xám đậm, chuyên nghiệp
+        background: "linear-gradient(135deg, #E5E7EB 0%, #D1D5DB 100%)",
+        color: "#374151",
         icon: "fas fa-info-circle"
       };
   }
 };
-
-
 
 const LogPage = () => {
   const [logs, setLogs] = useState([]);
@@ -133,7 +131,6 @@ const LogPage = () => {
                   <th scope="col" className="title-row text-center">STT</th>
                   <th scope="col" className="title-row" style={{ width: "200px" }}>Thời điểm</th>
                   <th scope="col" className="title-row text-center" style={{ width: "200px" }}>Hành động</th>
-                  <th scope="col" className="title-row">Đối tượng</th>
                   <th scope="col" className="title-row">Người thực hiện</th>
                   <th scope="col" className="title-row">Mô tả</th>
                 </tr>
@@ -151,37 +148,44 @@ const LogPage = () => {
                   <tr key={log.logId} className="align-middle" >
                     <td className="text-center">{index + 1}</td>
                     <td>{new Date(log.logAt).toLocaleString()}</td>
-<td className="text-center">
-  <Chip
-    label={
-      <span className="flex items-center gap-1.5">
-        <i className={`${getTagColor(log.logAction).icon}`}></i>
-        {log.logAction}
-      </span>
-    }
-    sx={{
-      backgroundColor: getTagColor(log.logAction).backgroundColor,
-      color: getTagColor(log.logAction).color,
-      fontWeight: 600,
-      fontSize: "0.85rem",
-      borderRadius: "12px",
-      padding: "4px 12px",
-      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-      transition: "all 0.2s ease-in-out",
-      "&:hover": {
-        transform: "translateY(-1px)",
-        boxShadow: "0 4px 8px rgba(0,0,0,0.15)",
-        backgroundColor: getTagColor(log.logAction).backgroundColor + "F0", // Làm sáng màu nền khi hover
-      },
-      "& .MuiChip-label": {
-        padding: 0,
-      },
-    }}
-  />
-</td>
+                    <td className="text-center">
+                      <Chip
+                        label={
+                          <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                            <i
+                              className={getTagColor(log.logAction).icon}
+                              style={{
+                                fontSize: "1rem",
+                                color: getTagColor(log.logAction).color,
+                                filter: "drop-shadow(0 1px 1px rgba(0,0,0,0.1))"
+                              }}
+                            />
+                            <span style={{ fontWeight: 600 }}>{log.logAction}</span>
+                          </span>
+                        }
+                        sx={{
+                          background: getTagColor(log.logAction).background,
+                          color: getTagColor(log.logAction).color,
+                          fontWeight: 600,
+                          fontSize: "0.85rem",
+                          borderRadius: "16px",
+                          padding: "6px 14px",
+                          minWidth: "110px",
+                          textAlign: "center",
+                          boxShadow: "0 2px 4px rgba(0,0,0,0.08)",
+                          transition: "all 0.2s ease-in-out",
+                          "&:hover": {
+                            transform: "scale(1.03)",
+                            boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+                            cursor: "pointer"
+                          },
+                          "& .MuiChip-label": {
+                            padding: 0,
+                          },
+                        }}
+                      />
+                    </td>
 
-
-                    <td>{log.affectedName}</td>
                     <td>{log.fullName}</td>
                     <td>{log.logDetail}</td>
                   </tr>
