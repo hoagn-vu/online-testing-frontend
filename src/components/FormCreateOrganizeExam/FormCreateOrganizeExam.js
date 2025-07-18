@@ -528,7 +528,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 							</Typography>
 							
 							<Grid container spacing={2} alignItems="center">
-								<Grid item xs={6}>
+								<Grid item xs={4.5}>
 									<TextField
 										fullWidth
 										label={`Tên ca thi ${index + 1}`}
@@ -557,10 +557,47 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 									/>
 								</Grid>
 								
-								<Grid item xs={5.5}>
+								<Grid item xs={3.5}>
 									<LocalizationProvider dateAdapter={AdapterDayjs}>
 										<DateTimePicker
 											label={`Thời gian bắt đầu ca ${index + 1}`}
+											value={session.activeAt ? dayjs(session.activeAt) : null}
+											onChange={(newValue) => 
+												handleSessionChange(index, 'activeAt', newValue ? newValue.toISOString() : '')
+											}
+											sx={{ width: '100%' }}
+											slotProps={{
+												textField: {
+													fullWidth: true,
+													sx: {
+														"& .MuiInputBase-input": { 
+															fontSize: "14px", 
+															padding: "8px 0px 8px 12px",
+														},
+														"& .MuiInputLabel-root": {
+															fontSize: "14px",
+															width: "100%",
+															left: "0",
+															top: "-5px",
+															"&.Mui-focused": {
+																transform: "translate(13px, -3px) scale(0.75)",
+															},
+														},
+														"& .MuiInputBase-root": {
+															height: "40px",
+															fontSize: "14px",
+														},
+													},
+												},
+											}}
+										/>
+									</LocalizationProvider>
+								</Grid>
+
+								<Grid item xs={3.5}>
+									<LocalizationProvider dateAdapter={AdapterDayjs}>
+										<DateTimePicker
+											label={`Thời gian kết thúc ca ${index + 1}`}
 											value={session.activeAt ? dayjs(session.activeAt) : null}
 											onChange={(newValue) => 
 												handleSessionChange(index, 'activeAt', newValue ? newValue.toISOString() : '')
