@@ -42,7 +42,7 @@ const RoomOrganizePage = () => {
   const handleOpenForm = () => {
     const newSearchParams = new URLSearchParams(location.search);
     newSearchParams.set("showFormDivide", "true");
-    navigate(`${location.pathname}?${newSearchParams.toString()}`, { replace: true });
+    navigate(`${location.pathname}?${newSearchParams.toString()}`);
     setShowFormDivide(true);
   };
 
@@ -58,9 +58,7 @@ const RoomOrganizePage = () => {
 
 	useEffect(() => {
 		const params = new URLSearchParams(location.search);
-		if (params.get("showFormDivide") === "true") {
-			setShowFormDivide(true);
-		}
+		setShowFormDivide(params.get("showFormDivide") === "true");
 	}, [location.search]);
 
 

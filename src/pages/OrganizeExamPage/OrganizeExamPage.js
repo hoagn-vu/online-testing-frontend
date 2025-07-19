@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate, useParams  } from "react-router-dom";
+import { Link, useParams, useSearchParams, useNavigate, useLocation  } from "react-router-dom";
 import "./OrganizeExamPage.css";
 import {Chip, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Pagination, NumberInput, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
 import Paper from "@mui/material/Paper";
@@ -24,6 +24,29 @@ const OrganizeExamPage = () => {
 	const navigate = useNavigate();
 	const [showFormCreate, setShowFormCreate] = useState(false);
 	const [listDisplay, setListDisplay] = useState([]);
+	const location = useLocation();
+
+	const handleOpenForm = () => {
+		const newSearchParams = new URLSearchParams(location.search);
+		newSearchParams.set("showFormCreate", "true");
+		navigate(`${location.pathname}?${newSearchParams.toString()}`);
+		setShowFormCreate(true);
+	};
+
+	const handleCloseForm = () => {
+		const newSearchParams = new URLSearchParams(location.search);
+		newSearchParams.delete("showFormCreate");
+		const newUrl = newSearchParams.toString()
+			? `${location.pathname}?${newSearchParams.toString()}`
+			: location.pathname;
+		navigate(newUrl, { replace: true });
+		setShowFormCreate(false);
+	};
+
+	useEffect(() => {
+		const params = new URLSearchParams(location.search);
+		setShowFormCreate(params.get("showFormCreate") === "true");
+	}, [location.search]);
 
 	const [typeOptions, setTypeOptions] = useState([
 		{ value: "matrix", label: "Ma trận" },
@@ -231,7 +254,7 @@ const OrganizeExamPage = () => {
 
 			{showFormCreate ? (
 				<FormCreateOrganizeExam 
-					onClose={() => setShowFormCreate(false)}
+					onClick={handleCloseForm}
 					typeOptions={typeOptions}
 				/>
 			) : (
@@ -252,7 +275,7 @@ const OrganizeExamPage = () => {
 							</div>
 
 							<div className='right-header d-flex'>
-								<AddButton onClick={() => setShowFormCreate(true)}>
+								<AddButton onClick={handleOpenForm}>
 									<i className="fas fa-plus me-2"></i> Thêm mới
 								</AddButton>
 							</div>
