@@ -1,0 +1,29 @@
+/* Đổi màu prev/next */
+.fc-prev-button, 
+.fc-next-button {
+  background: #ecf5fe !important;
+  color: blue !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.fc-prev-button:hover,
+.fc-next-button:hover {
+  color: darkblue !important;
+  background: #d1e4f7 !important;
+}
+
+/* Bỏ underline ngày */
+.fc-col-header-cell a {
+  text-decoration: none !important;
+  color: #1976d2;
+}
+
+.fc-col-header-cell a:hover {
+  color: #1976d2;
+}
+
+.fc-event-main {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
