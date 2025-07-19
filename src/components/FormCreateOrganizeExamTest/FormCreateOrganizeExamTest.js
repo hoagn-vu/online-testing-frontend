@@ -8,12 +8,12 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import ReactSelect from 'react-select';
 import PropTypes from 'prop-types';
-import "./FormCreateOrganizeExam.css"
-import AddButton from "../../components/AddButton/AddButton";
-import CancelButton from "../../components/CancelButton/CancelButton";
+import "./FormCreateOrganizeExamTest.css"
+import AddButton from "../AddButton/AddButton";
+import CancelButton from "../CancelButton/CancelButton";
 import ApiService from "../../services/apiService";
 
-const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
+const FormCreateOrganizeExamTest = ({ onClose, typeOptions}) => {
 	const [editingOrganizeExam, setEditingOrganizeExam] = useState(null);
 	const [subjectOptions, setSubjectOptions] = useState([]);
 	const [questionBankOptions, setQuestionBankOptions] = useState([]);
@@ -63,10 +63,11 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 		}
 	};
 
-  // State cho các ca thi (mặc định 2 ca)
+  // State cho các ca thi (mặc định 3 ca)
   const [sessions, setSessions] = useState([
     { sessionName: '', activeAt: '' },
-    { sessionName: '', activeAt: '' }
+    { sessionName: '', activeAt: '' },
+		{ sessionName: '', activeAt: '' }
   ]);
   
   const [selectedType, setSelectedType] = useState(null);
@@ -510,151 +511,154 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
             
           </Box>
           
-          {sessions.map((session, index) => (
-						<Box 
-							className="box-shadow-custom"
-							key={index} 
-							sx={{ 
-								mb: 2, 
-								p: 2, 
-								pt: 1,
-								border: '1px solid #eee', 
-								borderRadius: '8px',
-								position: 'relative'
-							}}
-						>
-							<Typography className='fw-bold' variant="subtitle1" sx={{ mb: 1, fontSize: "16px" }}>
-								Ca thi {index + 1}
-							</Typography>
-							
-							<Grid container spacing={2} alignItems="center">
-								<Grid item xs={4.5}>
-									<TextField
-										fullWidth
-										label={`Tên ca thi ${index + 1}`}
-										required
-										value={session.sessionName}
-										onChange={(e) => handleSessionChange(index, 'sessionName', e.target.value)}
-										sx={{
-											"& .MuiInputBase-input": { 
-												fontSize: "14px", 
-												padding: "8px 12px",
-											},
-											"& .MuiInputLabel-root": {
-												fontSize: "14px",
-												width: "100%",
-												left: "0",
-												top: "-5px",
-												"&.Mui-focused": {
-													transform: "translate(13px, -3px) scale(0.75)",
-												},
-											},
-											"& .MuiInputBase-root": {
-												height: "40px",
-												fontSize: "14px",
-											},
-										}}                   
-									/>
-								</Grid>
-								
-								<Grid item xs={3.5}>
-									<LocalizationProvider dateAdapter={AdapterDayjs}>
-										<DateTimePicker
-											label={`Thời gian bắt đầu ca ${index + 1}`}
-											value={session.activeAt ? dayjs(session.activeAt) : null}
-											onChange={(newValue) => 
-												handleSessionChange(index, 'activeAt', newValue ? newValue.toISOString() : '')
-											}
-											sx={{ width: '100%' }}
-											slotProps={{
-												textField: {
-													fullWidth: true,
-													sx: {
-														"& .MuiInputBase-input": { 
-															fontSize: "14px", 
-															padding: "8px 0px 8px 12px",
-														},
-														"& .MuiInputLabel-root": {
-															fontSize: "14px",
-															width: "100%",
-															left: "0",
-															top: "-5px",
-															"&.Mui-focused": {
-																transform: "translate(13px, -3px) scale(0.75)",
-															},
-														},
-														"& .MuiInputBase-root": {
-															height: "40px",
-															fontSize: "14px",
-														},
-													},
-												},
-											}}
-										/>
-									</LocalizationProvider>
-								</Grid>
+          <Grid container spacing={2}>
+						{sessions.map((session, index) => (
+							<Grid item xs={12} sm={6} md={4} key={index}>
+								<Box
+									sx={{
+										p: 3,
+										border: "1px solid #e0e0e0",
+										borderRadius: "10px",
+										backgroundColor: "#fff",
+										boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+										height: "100%",
+									}}
+								>
+									{/* Tiêu đề + nút xóa */}
+									<Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+										<Typography variant="h6" sx={{ fontWeight: "bold", fontSize: "16px", display: "flex", alignItems: "center" }}>
+											📝 Ca thi {index + 1}
+										</Typography>
+										{sessions.length > 1 && (
+											<IconButton
+												onClick={() => removeSession(index)}
+												sx={{
+													color: "error.main",
+													"&:hover": { backgroundColor: "rgba(244, 67, 54, 0.08)" },
+												}}
+											>
+												<i className="fas fa-trash-alt" style={{fontSize: "20px"}}></i>
+											</IconButton>
+										)}
+									</Box>
 
-								<Grid item xs={3.5}>
-									<LocalizationProvider dateAdapter={AdapterDayjs}>
-										<DateTimePicker
-											label={`Thời gian kết thúc ca ${index + 1}`}
-											value={session.activeAt ? dayjs(session.activeAt) : null}
-											onChange={(newValue) => 
-												handleSessionChange(index, 'activeAt', newValue ? newValue.toISOString() : '')
+									{/* Input dọc trong card */}
+									<Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+										<TextField
+											fullWidth
+											label={`Tên ca thi ${index + 1}`}
+											required
+											value={session.sessionName}
+											onChange={(e) =>
+												handleSessionChange(index, "sessionName", e.target.value)
 											}
-											sx={{ width: '100%' }}
-											slotProps={{
-												textField: {
-													fullWidth: true,
-													sx: {
-														"& .MuiInputBase-input": { 
-															fontSize: "14px", 
-															padding: "8px 0px 8px 12px",
-														},
-														"& .MuiInputLabel-root": {
-															fontSize: "14px",
-															width: "100%",
-															left: "0",
-															top: "-5px",
-															"&.Mui-focused": {
-																transform: "translate(13px, -3px) scale(0.75)",
-															},
-														},
-														"& .MuiInputBase-root": {
-															height: "40px",
-															fontSize: "14px",
-														},
+											sx={{
+												"& .MuiInputBase-input": { 
+													fontSize: "14px", 
+													padding: "8px 12px",
+												},
+												"& .MuiInputLabel-root": {
+													fontSize: "14px",
+													width: "100%",
+													left: "0",
+													top: "-5px",
+													"&.Mui-focused": {
+														transform: "translate(13px, -3px) scale(0.75)",
 													},
+												},
+												"& .MuiInputBase-root": {
+													height: "40px",
+													fontSize: "14px",
 												},
 											}}
 										/>
-									</LocalizationProvider>
-								</Grid>
-								
-								<Grid item xs={0.5} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-									{sessions.length > 1 && (
-										<IconButton
-											onClick={() => removeSession(index)}
-											sx={{ 
-												color: 'error.main',
-												padding: '0px',
-												'&:hover': {
-													backgroundColor: 'rgba(244, 67, 54, 0.08)'
+
+										<LocalizationProvider dateAdapter={AdapterDayjs}>
+											<DateTimePicker
+												label="Thời gian bắt đầu"
+												value={session.activeAt ? dayjs(session.activeAt) : null}
+												onChange={(newValue) =>
+													handleSessionChange(
+														index,
+														"activeAt",
+														newValue ? newValue.toISOString() : ""
+													)
 												}
-											}}
-										>
-											<button className="btn btn-danger btn-sm " style={{ width: "38px", height: "38px" }}>
-												<i className="fas fa-trash-alt"></i>
-											</button>
-											{/* <DeleteIcon fontSize="small" /> */}
-										</IconButton>
-									)}
-								</Grid>
+												sx={{ width: "100%" }}
+												slotProps={{
+													textField: {
+														fullWidth: true,
+														sx: {
+															"& .MuiInputBase-input": { 
+																fontSize: "14px", 
+																padding: "8px 0px 8px 12px",
+															},
+															"& .MuiInputLabel-root": {
+																fontSize: "14px",
+																width: "100%",
+																left: "0",
+																top: "-5px",
+																"&.Mui-focused": {
+																	transform: "translate(13px, -3px) scale(0.75)",
+																},
+															},
+															"& .MuiInputBase-root": {
+																height: "40px",
+																fontSize: "14px",
+															},
+														},
+													},
+												}}
+											/>
+										</LocalizationProvider>
+
+										<LocalizationProvider dateAdapter={AdapterDayjs}>
+											<DateTimePicker
+												label="Thời gian kết thúc"
+												value={session.endAt ? dayjs(session.endAt) : null}
+												onChange={(newValue) =>
+													handleSessionChange(
+														index,
+														"endAt",
+														newValue ? newValue.toISOString() : ""
+													)
+												}
+												sx={{ width: "100%" }}
+												slotProps={{
+													textField: {
+														fullWidth: true,
+														sx: {
+															"& .MuiInputBase-input": { 
+																fontSize: "14px", 
+																padding: "8px 0px 8px 12px",
+															},
+															"& .MuiInputLabel-root": {
+																fontSize: "14px",
+																width: "100%",
+																left: "0",
+																top: "-5px",
+																"&.Mui-focused": {
+																	transform: "translate(13px, -3px) scale(0.75)",
+																},
+															},
+															"& .MuiInputBase-root": {
+																height: "40px",
+																fontSize: "14px",
+															},
+														},
+													},
+												}}
+											/>
+										</LocalizationProvider>
+									</Box>
+								</Box>
 							</Grid>
-						</Box>
-					))}
+						))}
+					</Grid>
+
+
         </Box>
-				<CancelButton style={{padding: "10px"}} onClick={addSession}>
+				<CancelButton style={{padding: "10px", marginTop: "15px"}} onClick={addSession}>
 					<i className="fas fa-plus me-2"></i>
 					Thêm ca thi
 				</CancelButton>
@@ -679,11 +683,11 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
   );
 };
 
-FormCreateOrganizeExam.propTypes = {
+FormCreateOrganizeExamTest.propTypes = {
 	onClose: PropTypes.func.isRequired,
 	typeOptions: PropTypes.array.isRequired,
 	questionBankOptions: PropTypes.func.isRequired,
 	subjectOptions: PropTypes.func.isRequired,
 };
 
-export default FormCreateOrganizeExam;
+export default FormCreateOrganizeExamTest;

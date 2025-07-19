@@ -13,6 +13,7 @@ import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
 import AiGenerate from "../../components/AiGenerate/AiGenerate";
 import AddQuestion from "../../components/AddQuestion/AddQuestion";
+import DragDropModal from "../../components/DragDrop/DragDrop";
 
 const ListQuestionPage = () => {
 	const user = useSelector((state) => state.auth.user);
@@ -136,6 +137,18 @@ const ListQuestionPage = () => {
 
 		groupedQuestions[chapter][level].push(question);
 	});
+
+	const [openModal, setOpenModal] = useState(false);
+	
+	const handleUploadClick = () => {
+		setOpenModal(true);
+	};
+
+	const handleFilesDropped = (files) => {
+		console.log("Files received:", files);
+		// 👉 Ở đây bạn có thể xử lý upload API
+		setOpenModal(false);
+	};
 
 	const handleUploadfile = async () => {
     const { value: file } = await Swal.fire({
@@ -416,7 +429,7 @@ const ListQuestionPage = () => {
 									<AddQuestion onClose={() => setShowAddQuestionForm(false)} />
 								)}
 						</>
-						<AddButton className="upload-btn-hover" style={{backgroundColor: "#28A745", marginLeft: "10px"}} onClick={handleUploadfile}>
+						<AddButton className="upload-btn-hover" style={{backgroundColor: "#28A745", marginLeft: "10px"}} onClick={handleUploadClick}>
 							<i className="fas fa-upload me-2"></i>Upload File
 						</AddButton>
 						<>
@@ -738,6 +751,11 @@ const ListQuestionPage = () => {
 				</div>
 				</>
 			)}
+			<DragDropModal
+				open={openModal}
+				onClose={() => setOpenModal(false)}
+				onFilesDropped={handleFilesDropped}
+			/>
     </div>
   )
 }
