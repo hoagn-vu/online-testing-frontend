@@ -93,10 +93,10 @@ const DragDropModal = ({ open, onClose, onFilesDropped }) => {
               ></i>
 
               <p style={{ color: "#444", marginBottom: "8px" }}>
-                Drag your documents, photos, or videos here to start uploading.
+                Kéo Thả Tệp Tài Liệu Vào Đây
               </p>
 
-              <p style={{ color: "#888", margin: "10px 0" }}>─── OR ───</p>
+              <p style={{ color: "#888", margin: "10px 0" }}>─── Hoặc ───</p>
 
               {/* ✅ Link nhỏ Browse files */}
               <p>
