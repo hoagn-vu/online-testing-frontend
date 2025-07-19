@@ -254,7 +254,7 @@ const OrganizeExamPage = () => {
 
 			{showFormCreate ? (
 				<FormCreateOrganizeExam 
-					onClick={handleCloseForm}
+					onClose={handleCloseForm}
 					typeOptions={typeOptions}
 				/>
 			) : (

@@ -667,7 +667,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 				}} />
         {/* Nút submit */}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-          <CancelButton onClick={onClose}>
+          <CancelButton onClick={onClose} type="button">
 						Hủy
 					</CancelButton>
 					<AddButton >
