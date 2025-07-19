@@ -309,7 +309,7 @@ export default function Admin2Layout() {
                           }
                         }}
                       >
-                        <ListItemIcon sx={{minWidth:'45px'}}>{item.icon}</ListItemIcon>
+                        <ListItemIcon sx={{minWidth:'35px'}}>{item.icon}</ListItemIcon>
                         {open && <ListItemText primary={item.title} />}
                         {open && item.children && (isMenuOpen(item) ? <ExpandLess /> : <ExpandMore />)}
                       </ListItemButton>
@@ -325,7 +325,7 @@ export default function Admin2Layout() {
                             width: '3px',
                             backgroundColor: '#1976D2',
                             borderRadius: '2px',
-                            ml: '40px',
+                            ml: '35px',
                           }}
                         />
                         <List component="div" disablePadding>

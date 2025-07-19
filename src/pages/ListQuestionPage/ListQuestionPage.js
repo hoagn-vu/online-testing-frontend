@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link, useLocation  } from "react-router-dom";
+import { Link, useParams, useSearchParams, useNavigate, useLocation  } from "react-router-dom";
 import { useOutletContext } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./ListQuestionPage.css";
@@ -39,7 +39,52 @@ const ListQuestionPage = () => {
 	const { selectedChapter } = useOutletContext(); // Lấy selectedChapter từ context
 	const [selectedQuestions, setSelectedQuestions] = useState([]); // State để theo dõi câu hỏi được chọn
   const [showModal, setShowModal] = useState(false);
-	
+	const navigate = useNavigate();
+
+	const handleOpenFormAddQuestion = () => {
+		const newSearchParams = new URLSearchParams(location.search);
+		newSearchParams.set("showAddQuestionForm", "true");
+		navigate(`${location.pathname}?${newSearchParams.toString()}`);
+		setShowAddQuestionForm(true);
+	};
+
+	const handleCloseFormAddQuestion = () => {
+		const newSearchParams = new URLSearchParams(location.search);
+		newSearchParams.delete("showAddQuestionForm");
+		const newUrl = newSearchParams.toString()
+			? `${location.pathname}?${newSearchParams.toString()}`
+			: location.pathname;
+		navigate(newUrl, { replace: true });
+		setShowAddQuestionForm(false);
+	};
+
+	useEffect(() => {
+		const params = new URLSearchParams(location.search);
+		setShowAddQuestionForm(params.get("showAddQuestionForm") === "true");
+	}, [location.search]);
+
+	const handleOpenForm = () => {
+		const newSearchParams = new URLSearchParams(location.search);
+		newSearchParams.set("showFormDivide", "true");
+		navigate(`${location.pathname}?${newSearchParams.toString()}`);
+		setShowAiGenerate(true);
+	};
+
+	const handleCloseForm = () => {
+		const newSearchParams = new URLSearchParams(location.search);
+		newSearchParams.delete("showFormDivide");
+		const newUrl = newSearchParams.toString()
+			? `${location.pathname}?${newSearchParams.toString()}`
+			: location.pathname;
+		navigate(newUrl, { replace: true });
+		setShowAiGenerate(false);
+	};
+
+	useEffect(() => {
+		const params = new URLSearchParams(location.search);
+		setShowAiGenerate(params.get("showFormDivide") === "true");
+	}, [location.search]);
+
 	useEffect(() => {
 		const event = new CustomEvent("toggleAiForm", { detail: showAiGenerate });
 		window.dispatchEvent(event);
@@ -335,11 +380,9 @@ const ListQuestionPage = () => {
 			</nav>
 
 			{showAiGenerate ? (
-				<AiGenerate 
-					onClose={() => setShowAiGenerate(false)}
-				/>
+				<AiGenerate onClose={handleCloseForm}/>
 			) : showAddQuestionForm ? (
-        <AddQuestion onClose={() => setShowAddQuestionForm(false)} />
+        <AddQuestion onClose={handleCloseFormAddQuestion}/>
       ) : (
 				<>
 				<div className="d-flex">
@@ -366,7 +409,7 @@ const ListQuestionPage = () => {
 							<i className="fas fa-plus me-2"></i>Thêm câu hỏi
 						</AddButton> */}
 						<>
-							<AddButton onClick={() => setShowAddQuestionForm(true)}>
+							<AddButton onClick={handleOpenFormAddQuestion}>
 								<i className="fas fa-plus me-2"></i>Thêm câu hỏi
 							</AddButton>
 							{showAddQuestionForm && (
@@ -377,7 +420,7 @@ const ListQuestionPage = () => {
 							<i className="fas fa-upload me-2"></i>Upload File
 						</AddButton>
 						<>
-							<AddButton className="ms-2" onClick={() => setShowAiGenerate(true)}>
+							<AddButton className="ms-2" onClick={handleOpenForm}>
 								<i className="fas fa-brain me-2"></i>AI sinh câu hỏi
 							</AddButton>
 

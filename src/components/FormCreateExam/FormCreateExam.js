@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef, use } from "react";
 import "./FormCreateExam.css";
 import PropTypes from 'prop-types';
-import {TextField, Autocomplete, Grid } from "@mui/material";
+import {TextField, Autocomplete, Grid, Box } from "@mui/material";
 import ReactSelect  from 'react-select';
 import ApiService from "../../services/apiService";
 import Swal from "sweetalert2";
 import AddButton from "../AddButton/AddButton";
 import CancelButton from "../CancelButton/CancelButton";
 
-const FormCreateExam = ({ onClose  }) => {
+const FormCreateExam = ({ onClose, initialData  }) => {
   const [listDisplay, setListDisplay] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const inputRef = useRef(null);
@@ -24,12 +24,39 @@ const FormCreateExam = ({ onClose  }) => {
   const [selectedLevel, setSelectedLevel] = useState(null);
   const [totalScore, setTotalScore] = useState(0);
   const [scores, setScores] = useState({});  
+  const [examCode, setExamCode] = useState("");
+  const [examName, setExamName] = useState("");
 
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
-  }, []);
+    // Khởi tạo dữ liệu từ initialData nếu có
+    if (initialData) {
+      setExamCode(initialData.examCode || "");
+      setExamName(initialData.examName || "");
+      setTotalScore(initialData.totalScore || 0);
+      setScores(initialData.scores || {});
+      setSelectedItems(initialData.questions.map((q) => q.questionId) || []);
+      // Ánh xạ subjectName và questionBankName sang subjectId và questionBankId
+      const fetchInitialSubjectId = async () => {
+        const subjects = await ApiService.get("/subjects/options");
+        const subject = subjects.data.find((s) => s.subjectName === initialData.subjectName);
+        setSubjectChosen(subject?.id || null);
+      };
+      const fetchInitialBankId = async () => {
+        if (subjectChosen) {
+          const banks = await ApiService.get("/subjects/question-bank-options", {
+            params: { subjectId: subjectChosen },
+          });
+          const bank = banks.data.find((b) => b.questionBankName === initialData.questionBankName);
+          setBankChosen(bank?.questionBankId || null);
+        }
+      };
+      fetchInitialSubjectId();
+      fetchInitialBankId();
+    }
+  }, [initialData, subjectChosen]);
 
   useEffect(() => {
     const fetchSubjectOptions = async () => {
@@ -117,19 +144,23 @@ const FormCreateExam = ({ onClose  }) => {
     }
   }, [subjectChosen, bankChosen, selectedChapter, selectedLevel, questions]);
 
+
   useEffect(() => {
-    // Gán điểm mặc định khi selectedItems hoặc totalScore thay đổi
-    if (selectedItems.length > 0 && totalScore > 0) {
-      const defaultScore = totalScore / selectedItems.length;
-      const newScores = {};
-      selectedItems.forEach((questionId) => {
-        newScores[questionId] = defaultScore; // Không dùng toFixed để giữ chính xác
-      });
-      setScores(newScores);
-    } else {
-      setScores({});
+    // ✅ CHỈ chia đều điểm khi đang tạo mới (không có initialData)
+    if (!initialData) {
+      if (selectedItems.length > 0 && totalScore > 0) {
+        const defaultScore = totalScore / selectedItems.length;
+        const newScores = {};
+        selectedItems.forEach((questionId) => {
+          newScores[questionId] = defaultScore;
+        });
+        setScores(newScores);
+      } else {
+        setScores({});
+      }
     }
-  }, [selectedItems, totalScore]);
+  }, [selectedItems, totalScore, initialData]);
+
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -195,7 +226,28 @@ const FormCreateExam = ({ onClose  }) => {
   });
 };
 
-  const handleSave = () => {
+const handleSave = () => {
+  const currentTotal = selectedItems.reduce((sum, qid) => {
+    return sum + (scores[qid] ?? (initialData.questions.find(q => q.questionId === qid)?.questionScore ?? 0));
+  }, 0);
+
+  if (currentTotal !== totalScore) {
+    Swal.fire({
+      icon: "error",
+      title: "Lỗi",
+      text: `Tổng điểm (${currentTotal.toFixed(2)}) không khớp với tổng điểm đã nhập (${totalScore})!`,
+    });
+    return;
+  }
+
+  Swal.fire({
+    icon: "success",
+    title: "Thành công",
+    text: "Đã lưu thành công!",
+  });
+};
+
+  /*const handleSave = () => {
     const currentTotal = Object.values(scores).reduce((sum, score) => sum + (score || 0), 0);
     if (currentTotal !== totalScore) {
       Swal.fire({
@@ -211,312 +263,334 @@ const FormCreateExam = ({ onClose  }) => {
       title: "Thành công",
       text: "Đã lưu thành công!",
     });
-  };
+  };*/
 
   return (
     <div>
-      <h5 className="mb-3 fw-bold" style={{color: '#1976d2', fontSize: "20px"}}>Tạo đề thi mới</h5>
-      <div className="d-flex w-100">
-        <div className="tbl-shadow flex-fill me-2">
-          <div>
-            <p className="mb-2">Tên đề thi:</p>
-            <TextField
-              fullWidth
-              required
-              // value={formData.organizeExamName}
-              // inputRef={inputRef}
-              sx={{
-                height: "40px",
-                "& .MuiInputBase-root": {
+      <h5 className="mb-3 fw-bold" style={{ color: "#1976d2", fontSize: "20px" }}>
+        {initialData ? "Chỉnh sửa đề thi" : "Tạo đề thi mới"}
+      </h5>      
+      <div className="container">
+        <div className="row">
+          <div className="tbl-shadow me-2 col">
+            <div>
+              <p className="mb-2">Mã đề thi:</p>
+              <TextField
+                fullWidth
+                required
+                value={examCode}
+                disabled={!!initialData} // Vô hiệu hóa khi chỉnh sửa
+                inputRef={inputRef}
+                onChange={(e) => setExamCode(e.target.value)}
+                sx={{
                   height: "40px",
-                  fontSize: "14px",
-                },
-                "& .MuiInputBase-input": {
-                  fontSize: "14px",
-                },
-                "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+                  "& .MuiInputBase-root": {
+                    height: "40px",
+                    fontSize: "14px",
+                  },
+                  "& .MuiInputBase-input": {
+                    fontSize: "14px",
+                  },
+                  "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+                }}
+              />           
+            </div>
+  
+            <div className="d-flex mt-2">
+              <div className="col-8 me-2">
+                <p className="mb-2">Tên đề thi:</p>
+                <TextField
+                  fullWidth
+                  required
+                  value={examName}
+                  onChange={(e) => setExamName(e.target.value)}
+                  sx={{
+                    height: "40px",
+                    "& .MuiInputBase-root": {
+                      height: "40px",
+                      fontSize: "14px",
+                    },
+                    "& .MuiInputBase-input": {
+                      fontSize: "14px",
+                    },
+                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+                  }}
+                />           
+              </div>
+              <div className="">
+                <p className="mb-2">Tổng điểm:</p>
+                <TextField
+                  fullWidth
+                  required
+                  type="number"
+                  value={totalScore}
+                  onChange={(e) => setTotalScore(parseFloat(e.target.value) || 0)}
+                  sx={{
+                    height: "40px",
+                    "& .MuiInputBase-root": {
+                      height: "40px",
+                      fontSize: "14px",
+                    },
+                    "& .MuiInputBase-input": {
+                      fontSize: "14px",
+                    },
+                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+                  }}
+                  
+                />
+              </div>
+            </div>
+
+            <div className="table-responsive">
+              <table className="table sample-table table-hover tbl-organize-hover">
+                <thead>
+                  <tr className="align-middle">
+                    <th scope="col" className="title-row"></th>
+                    <th scope="col" className="title-row">STT</th>
+                    <th scope="col" className="title-row">Nội dung</th>
+                    <th scope="col" className="title-row">Điểm</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedItems.map((questionId, index) => {
+                    const selectedQuestion = listDisplay.find((q) => q.questionId === questionId);
+                    if (selectedQuestion) {
+                      const scorePerQuestion = selectedItems.length > 0 ? (totalScore / selectedItems.length).toFixed(2) : 0;
+                      return (
+                        <tr key={questionId} className="align-middle">
+                          <td className="text-center" style={{ width: "50px" }}>
+                            <i
+                              className="fa-solid fa-minus"
+                              style={{ color: "red", cursor: "pointer" }}
+                              onClick={() => handleRemoveItem(questionId)}
+                            ></i>
+                          </td>
+                          <td>{index + 1}</td>
+                          <td>{selectedQuestion.questionText}</td>
+                          <td>
+                            <TextField
+                              type="number"
+                              value={
+                                scores[questionId] !== undefined
+                                  ? scores[questionId]       // Nếu đã chỉnh sửa thì lấy từ state
+                                  : selectedQuestion.questionScore ?? 0  // Nếu chưa thì giữ nguyên điểm gốc
+                              }                             
+                              onChange={(e) => handleScoreChange(questionId, e.target.value)}
+                              size="small"
+                              sx={{
+                                width: "80px",
+                                "& .MuiInputBase-root": {
+                                  height: "40px",
+                                  fontSize: "14px",
+                                },
+                                "& input": {
+                                  fontSize: "14px",
+                                  padding: "8px",
+                                },
+                              }}
+                              inputProps={{ step: "0.1", min: "0" }}
+                            />
+                          </td>
+                        </tr>
+                      );
+                    }
+                    return null;
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <div 
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",  
+                gap: "10px",                 
+                width: "100%"
               }}
-            />           
+            >
+              <div style={{ display: "flex", width: "50%", gap: "10px" }}>
+                <CancelButton onClick={onClose} type="button"
+                  style={{ flex: 1 }}   
+                >
+                  Hủy
+                </CancelButton>
+                <AddButton style={{ flex: 1 }} onClick={handleSave}>
+                  Lưu
+                </AddButton>
+              </div>
+            </div>
           </div>
-          <div className="mt-2">
-            <p className="mb-2">Tổng điểm:</p>
-            <TextField
-              fullWidth
-              required
-              type="number"
-              value={totalScore}
-              onChange={(e) => setTotalScore(parseFloat(e.target.value) || 0)}
-              sx={{
-                height: "40px",
-                "& .MuiInputBase-root": {
-                  height: "40px",
-                  fontSize: "14px",
-                },
-                "& .MuiInputBase-input": {
-                  fontSize: "14px",
-                },
-                "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-              }}
-              
-            />
-          </div>
-          <div className="table-responsive">
-            <table className="table sample-table table-hover tbl-organize-hover">
-              <thead>
-                <tr className="align-middle">
-                  <th scope="col" className="title-row"></th>
-                  <th scope="col" className="title-row">STT</th>
-                  <th scope="col" className="title-row">Nội dung</th>
-                  <th scope="col" className="title-row">Điểm</th>
-                </tr>
-              </thead>
-              <tbody>
-                {selectedItems.map((questionId, index) => {
-                  const selectedQuestion = listDisplay.find((q) => q.questionId === questionId);
-                  if (selectedQuestion) {
-                    const scorePerQuestion = selectedItems.length > 0 ? (totalScore / selectedItems.length).toFixed(2) : 0;
-                    return (
-                      <tr key={questionId} className="align-middle">
-                        <td className="text-center" style={{ width: "50px" }}>
-                          <i
-                            className="fa-solid fa-minus"
-                            style={{ color: "red", cursor: "pointer" }}
-                            onClick={() => handleRemoveItem(questionId)}
-                          ></i>
-                        </td>
-                        <td>{index + 1}</td>
-                        <td>{selectedQuestion.questionText}</td>
-                        <td>
-                          <TextField
-                            type="number"
-                            value={scores[questionId] !== undefined ? scores[questionId] : scorePerQuestion}
-                            onChange={(e) => handleScoreChange(questionId, e.target.value)}
-                            size="small"
-                            sx={{
-                              width: "80px",
-                              "& .MuiInputBase-root": {
-                                height: "40px",
-                                fontSize: "14px",
-                              },
-                              "& input": {
-                                fontSize: "14px",
-                                padding: "8px",
-                              },
-                            }}
-                            inputProps={{ step: "0.1", min: "0" }}
+          <div className="tbl-shadow ms-2 col">
+            <div className="sample-card-header d-flex justify-content-between align-items-center">
+              <div className="search-box rounded d-flex align-items-center">
+                <i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
+                <input
+                  type="text"
+                  className="search-input w-100"
+                  placeholder="Tìm kiếm..."
+                  style={{ width: "100%" }}
+                />
+              </div>
+            </div>
+            {initialData ? (
+              <div className="mt-3">
+                <p className="mb-1"> <span className="fw-bold">Phân môn: </span>{initialData.subjectName}</p>
+              </div>
+            ) : (
+              <Autocomplete
+                className="mt-3"
+                options={subjectOptions}
+                getOptionLabel={(option) => option.label}
+                value={subjectOptions.find((option) => option.value === subjectChosen) || null}
+                onChange={(event, newValue) => setSubjectChosen(newValue?.value)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Chọn phân môn"
+                    size="small"
+                    sx={{
+                      backgroundColor: "white",
+                      "& .MuiInputBase-root": { height: "40px", fontSize: "14px" },
+                      "& label": { fontSize: "14px" },
+                      "& input": { fontSize: "14px" },
+                    }}
+                  />
+                )}
+              />
+            )}
+            {initialData ? (
+              <div className="mt-3">
+                <p className="mb-1"> <span className="fw-bold">Bộ câu hỏi: </span>{initialData.questionBankName}</p>
+              </div>
+            ) : (
+              <Autocomplete
+                className="mt-3"
+                options={bankOptions}
+                getOptionLabel={(option) => option.label}
+                value={bankOptions.find((option) => option.value === bankChosen) || null}
+                onChange={(event, newValue) => setBankChosen(newValue?.value)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Chọn bộ câu hỏi"
+                    size="small"
+                    sx={{
+                      backgroundColor: "white",
+                      "& .MuiInputBase-root": { height: "40px", fontSize: "14px" },
+                      "& label": { fontSize: "14px" },
+                      "& input": { fontSize: "14px" },
+                    }}
+                  />
+                )}
+              />
+            )}
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <Autocomplete
+                  className="mt-3"
+                  options={chapterOptions} 
+                  getOptionLabel={(option) => option.label}
+                  value={chapterOptions.find((option) => option.value === selectedChapter?.value) || null}
+                  onChange={(event, newValue) => setSelectedChapter(newValue)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Chọn chuyên đề"
+                      size="small"
+                      sx={{
+                        backgroundColor: "white",
+                        "& .MuiInputBase-root": {
+                          height: "40px",
+                          fontSize: "14px",
+                        },
+                        "& label": {
+                          fontSize: "14px",
+                        },
+                        "& input": {
+                          fontSize: "14px",
+                        },
+                      }}
+                    />
+                  )}
+                  slotProps={{
+                    paper: {
+                      sx: {
+                        fontSize: "14px", // ✅ Cỡ chữ dropdown
+                      },
+                    },
+                  }}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <Autocomplete
+                  className="mt-3"
+                  options={levelOptions}
+                  getOptionLabel={(option) => option.label}
+                  value={levelOptions.find((option) => option.value === selectedLevel?.value) || null}
+                  onChange={(event, newValue) => setSelectedLevel(newValue)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Chọn mức độ"
+                      size="small"
+                      sx={{
+                        backgroundColor: "white",
+                        "& .MuiInputBase-root": {
+                          height: "40px",
+                          fontSize: "14px",
+                        },
+                        "& label": {
+                          fontSize: "14px",
+                        },
+                        "& input": {
+                          fontSize: "14px",
+                        },
+                      }}
+                    />
+                  )}
+                  slotProps={{
+                    paper: {
+                      sx: {
+                        fontSize: "14px", // ✅ Cỡ chữ dropdown
+                      },
+                    },
+                  }}
+                />
+              </Grid>
+            </Grid>
+            <div className="table-responsive">
+              <table className="table sample-table table-hover tbl-organize-hover">
+                <thead>
+                  <tr className="align-middle">
+                    <th scope="col" className="text-center title-row" style={{ width: "50px"}}>
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        onChange={handleSelectAll}
+                        checked={listDisplay.length > 0 && listDisplay.every((item) => selectedItems.includes(item.questionId))}                  
+                      />
+                    </th>
+                    <th scope="col" className="title-row">Nội dung</th>
+                    <th scope="col" className="title-row">Độ khó</th>
+                  </tr>
+                </thead>
+                  <tbody>
+                    {listDisplay.map((item, index) => (
+                      <tr key={item.questionId} className="align-middle">
+                        <td className=" text-center" style={{ width: "50px" }}>
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            onChange={(e) => handleSelectItem(e, item.questionId)}
+                            checked={selectedItems.includes(item.questionId)}
                           />
                         </td>
+                        <td>{item.questionText}</td>
+                        <td>{item.tags[1]}</td>
                       </tr>
-                    );
-                  }
-                  return null;
-                })}
-              </tbody>
-            </table>
-          </div>
-          <div 
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",  
-              gap: "10px",                 
-              width: "100%"
-            }}
-          >
-            <div style={{ display: "flex", width: "50%", gap: "10px" }}>
-              <CancelButton onClick={onClose} type="button"
-                style={{ flex: 1 }}   
-              >
-                Hủy
-              </CancelButton>
-              <AddButton style={{ flex: 1 }} onClick={handleSave}>
-                Lưu
-              </AddButton>
+                    ))}
+                  </tbody>
+              </table>
             </div>
-          </div>
-        </div>
-        <div className="tbl-shadow flex-fill ms-2">
-          <div className="sample-card-header d-flex justify-content-between align-items-center">
-            <div className="search-box rounded d-flex align-items-center">
-              <i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
-              <input
-                type="text"
-                className="search-input w-100"
-                placeholder="Tìm kiếm..."
-                style={{ width: "100%" }}
-              />
-            </div>
-					</div>
-          <Autocomplete
-            className="mt-3"
-            options={subjectOptions}
-            getOptionLabel={(option) => option.label}
-            onChange={(event, newValue) => setSubjectChosen(newValue?.value)}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Chọn phân môn"
-                size="small"
-                sx={{
-                  backgroundColor: "white",
-                  "& .MuiInputBase-root": {
-                    height: "40px",
-                    fontSize: "14px",
-                  },
-                  "& label": {
-                    fontSize: "14px",
-                  },
-                  "& input": {
-                    fontSize: "14px",
-                  },
-                }}
-              />
-            )}
-            slotProps={{
-              paper: {
-                sx: {
-                  fontSize: "14px", // ✅ Cỡ chữ dropdown
-                },
-              },
-            }}
-          />
-          <Autocomplete
-            className="mt-3"
-            options={bankOptions} 
-            getOptionLabel={(option) => option.label}
-            onChange={(event, newValue) => setBankChosen(newValue?.value)}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Chọn bộ câu hỏi"
-                size="small"
-                sx={{
-                  backgroundColor: "white",
-                  "& .MuiInputBase-root": {
-                    height: "40px",
-                    fontSize: "14px",
-                  },
-                  "& label": {
-                    fontSize: "14px",
-                  },
-                  "& input": {
-                    fontSize: "14px",
-                  },
-                }}
-              />
-            )}
-            slotProps={{
-              paper: {
-                sx: {
-                  fontSize: "14px", // ✅ Cỡ chữ dropdown
-                },
-              },
-            }}
-          />
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <Autocomplete
-                className="mt-3"
-                options={chapterOptions} 
-                getOptionLabel={(option) => option.label}
-                onChange={(event, newValue) => setSelectedChapter(newValue)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Chọn chuyên đề"
-                    size="small"
-                    sx={{
-                      backgroundColor: "white",
-                      "& .MuiInputBase-root": {
-                        height: "40px",
-                        fontSize: "14px",
-                      },
-                      "& label": {
-                        fontSize: "14px",
-                      },
-                      "& input": {
-                        fontSize: "14px",
-                      },
-                    }}
-                  />
-                )}
-                slotProps={{
-                  paper: {
-                    sx: {
-                      fontSize: "14px", // ✅ Cỡ chữ dropdown
-                    },
-                  },
-                }}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <Autocomplete
-                className="mt-3"
-                options={levelOptions}
-                getOptionLabel={(option) => option.label}
-                onChange={(event, newValue) => setSelectedLevel(newValue)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Chọn mức độ"
-                    size="small"
-                    sx={{
-                      backgroundColor: "white",
-                      "& .MuiInputBase-root": {
-                        height: "40px",
-                        fontSize: "14px",
-                      },
-                      "& label": {
-                        fontSize: "14px",
-                      },
-                      "& input": {
-                        fontSize: "14px",
-                      },
-                    }}
-                  />
-                )}
-                slotProps={{
-                  paper: {
-                    sx: {
-                      fontSize: "14px", // ✅ Cỡ chữ dropdown
-                    },
-                  },
-                }}
-              />
-            </Grid>
-          </Grid>
-          <div className="table-responsive">
-            <table className="table sample-table table-hover tbl-organize-hover">
-              <thead>
-                <tr className="align-middle">
-                  <th scope="col" className="text-center title-row" style={{ width: "50px"}}>
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      onChange={handleSelectAll}
-                      checked={listDisplay.length > 0 && listDisplay.every((item) => selectedItems.includes(item.questionId))}                  
-                    />
-                  </th>
-                  <th scope="col" className="title-row">Nội dung</th>
-                  <th scope="col" className="title-row">Độ khó</th>
-                </tr>
-              </thead>
-                <tbody>
-                  {listDisplay.map((item, index) => (
-                    <tr key={item.questionId} className="align-middle">
-                      <td className=" text-center" style={{ width: "50px" }}>
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          onChange={(e) => handleSelectItem(e, item.questionId)}
-                          checked={selectedItems.includes(item.questionId)}
-                        />
-                      </td>
-                      <td>{item.questionText}</td>
-                      <td>{item.tags[1]}</td>
-                    </tr>
-                  ))}
-                </tbody>
-            </table>
           </div>
         </div>
       </div>
@@ -526,6 +600,25 @@ const FormCreateExam = ({ onClose  }) => {
 
 FormCreateExam.propTypes = {
   onClose: PropTypes.func.isRequired,
+  initialData: PropTypes.shape({
+    examId: PropTypes.string,
+    examCode: PropTypes.string,
+    examName: PropTypes.string,
+    subjectName: PropTypes.string,
+    questionBankName: PropTypes.string,
+    questions: PropTypes.arrayOf(
+      PropTypes.shape({
+        questionId: PropTypes.string,
+        questionText: PropTypes.string,
+        chapter: PropTypes.string,
+        level: PropTypes.string,
+        questionScore: PropTypes.number,
+        options: PropTypes.array,
+      })
+    ),
+    totalScore: PropTypes.number,
+    scores: PropTypes.object,
+  }),
 };
 
 export default FormCreateExam;

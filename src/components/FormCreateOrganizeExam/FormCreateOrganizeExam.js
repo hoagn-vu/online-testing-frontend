@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Box, Grid, TextField, Button, Typography, IconButton } from '@mui/material';
+import { Box, Grid, TextField, Button, Typography, IconButton, Autocomplete } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -11,10 +11,13 @@ import PropTypes from 'prop-types';
 import "./FormCreateOrganizeExam.css"
 import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
+import ApiService from "../../services/apiService";
 
-const FormCreateOrganizeExam = ({ onClose, typeOptions, questionBankOptions, subjectOptions  }) => {
+const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 	const [editingOrganizeExam, setEditingOrganizeExam] = useState(null);
-	
+	const [subjectOptions, setSubjectOptions] = useState([]);
+	const [questionBankOptions, setQuestionBankOptions] = useState([]);
+
   // State cho thông tin kỳ thi
   const [examData, setExamData] = useState({
     organizeExamName: '',
@@ -25,7 +28,41 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions, questionBankOptions, sub
     questionBankId: null,
     totalQuestions: '',
   });
-  
+
+	useEffect(() => {
+		const fetchSubjectOptions = async () => {
+			try {
+				const response = await ApiService.get("/subjects");
+				setSubjectOptions(response.data.subjects.map((subject) => ({
+					value: subject.id,
+					label: subject.subjectName,
+				})));
+			} catch (error) {
+				console.error("Failed to fetch subjects", error);
+			}
+		};
+		fetchSubjectOptions();
+	}, []);
+
+	const fetchQuestionBankOptions = async (type, subjectId) => {
+		if (type !== "auto") {
+			setQuestionBankOptions([]);
+			return;
+		}
+		try {
+			const response = await ApiService.get("/subjects/question-bank-options", {
+				params: { subjectId: subjectId },
+			});
+
+			setQuestionBankOptions(response.data.map((questionBank) => ({
+				value: questionBank.questionBankId,
+				label: questionBank.questionBankName,
+			})));
+		} catch (error) {
+			console.error("Failed to fetch question banks", error);
+		}
+	};
+
   // State cho các ca thi (mặc định 2 ca)
   const [sessions, setSessions] = useState([
     { sessionName: '', activeAt: '' },
@@ -96,40 +133,39 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions, questionBankOptions, sub
           </Typography>
       <Box component="form" onSubmit={handleSubmit}>
         {/* Phần thông tin kỳ thi */}
-        <Box 
-			className="box-shadow-custom"
-			sx={{ mb: 2, p: 2, pt: 1, border: '1px solid #eee', borderRadius: '8px' }}>
+        <Box className="box-shadow-custom"
+					sx={{ mb: 2, p: 2, pt: 1, border: '1px solid #eee', borderRadius: '8px' }}>
           	<Grid container spacing={2}>
-			<Grid item xs={12}>
-				<TextField
-					fullWidth
-					label="Tên kỳ thi"
-					required
-					value={examData.organizeExamName}
-					inputRef={inputRef}
-					onChange={(e) => setExamData({...examData, organizeExamName: e.target.value})}
-					sx={{
-						"& .MuiInputBase-input": { 
-							fontSize: "14px", 
-							padding: "8px 12px", // Thêm padding để text không dính sát viền
-						},
-						"& .MuiInputLabel-root": {
-							fontSize: "14px",
-							width: "100%",
-							left: "0",
-							top: "2px", // Đã điều chỉnh từ 0px lên 10px
-							"&.Mui-focused": {
-									transform: "translate(13px, -3px) scale(0.75)", // Điều chỉnh khi focus
-							},
-						},
-						"& .MuiInputBase-root": {
-							height: "40px",
-							fontSize: "14px",
-							marginTop: "8px", // Thêm margin top để tạo khoảng cách
-						},
-					}}
-				/>
-			</Grid>
+						<Grid item xs={12}>
+							<TextField
+								fullWidth
+								label="Tên kỳ thi"
+								required
+								value={examData.organizeExamName}
+								inputRef={inputRef}
+								onChange={(e) => setExamData({...examData, organizeExamName: e.target.value})}
+								sx={{
+									"& .MuiInputBase-input": { 
+										fontSize: "14px", 
+										padding: "8px 12px", // Thêm padding để text không dính sát viền
+									},
+									"& .MuiInputLabel-root": {
+										fontSize: "14px",
+										width: "100%",
+										left: "0",
+										top: "2px", // Đã điều chỉnh từ 0px lên 10px
+										"&.Mui-focused": {
+												transform: "translate(13px, -3px) scale(0.75)", // Điều chỉnh khi focus
+										},
+									},
+									"& .MuiInputBase-root": {
+										height: "40px",
+										fontSize: "14px",
+										marginTop: "8px", // Thêm margin top để tạo khoảng cách
+									},
+								}}
+							/>
+						</Grid>
             
             <Grid item xs={6}>
               <TextField
@@ -192,101 +228,139 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions, questionBankOptions, sub
             </Grid>
             
             <Grid item xs={6}>
-              <ReactSelect
-                className="basic-single"
-                classNamePrefix="select"
-                placeholder="Chọn phân môn"
-                options={subjectOptions}
-                onChange={(selectedOption) => 
-                  setExamData({...examData, subjectId: selectedOption?.value})
-                }
-                styles={{
-									control: (base) => ({
-											...base,
-											height: "40px",        // Chiều cao tổng thể
-											fontSize: "14px",
-									}),
-									valueContainer: (base) => ({
-											...base,
-											height: "40px",
-											padding: "0 8px",       // Tuỳ chỉnh padding nếu cần
-											display: "flex",
-											alignItems: "center",   // Căn giữa nội dung theo chiều dọc
-									}),
-									indicatorsContainer: (base) => ({
-											...base,
-											height: "40px",
-									}),
-									menu: (base) => ({
-											...base,
-											zIndex: 9999,
-									}),
-								}}								
-              />
+							<Autocomplete
+								options={subjectOptions}
+								getOptionLabel={(option) => option.label}
+								onChange={(event, selectedOption) => {
+									const newSubjectId = selectedOption?.value || null;
+									setExamData((prev) => ({ ...prev, subjectId: newSubjectId }));
+
+									// Nếu đã chọn loại auto rồi => fetch luôn
+									if (selectedType === "auto" && newSubjectId) {
+										fetchQuestionBankOptions("auto", newSubjectId);
+									}
+								}}							
+								renderInput={(params) => (
+									<TextField
+										{...params}
+										label="Chọn phân môn"
+										size="small"
+										sx={{
+											backgroundColor: "white",
+											"& .MuiInputBase-root": {
+												height: "40px",
+											},
+											"& label": {
+												fontSize: "14px",
+											},
+											"& input": {
+												fontSize: "14px",
+											},
+										}}
+									/>
+								)}
+								slotProps={{
+									paper: {
+										sx: {
+											fontSize: "14px", // ✅ Cỡ chữ dropdown
+										},
+									},
+								}}
+							/>
             </Grid>
             
             <Grid item xs={6}>
-              <ReactSelect
-                className="basic-single"
-                classNamePrefix="select"
-                placeholder="Chọn loại"
-                options={typeOptions}
-                value={typeOptions.find(option => option.value === selectedType)}
-                onChange={(selected) => {
-                  setSelectedType(selected?.value || null);
-                  setExamData({...examData, examType: selected?.value || null});
-                }}
-                styles={{
-									control: (base) => ({
-											...base,
-											height: "40px",        // Chiều cao tổng thể
-											fontSize: "14px",
-									}),
-									valueContainer: (base) => ({
-											...base,
-											height: "40px",
-											padding: "0 8px",       // Tuỳ chỉnh padding nếu cần
-											display: "flex",
-											alignItems: "center",   // Căn giữa nội dung theo chiều dọc
-									}),
-									indicatorsContainer: (base) => ({
-											...base,
-											height: "40px",
-									}),
-									menu: (base) => ({
-											...base,
-											zIndex: 9999,
-									}),
+							<Autocomplete
+								options={typeOptions}
+								getOptionLabel={(option) => option.label || ""}
+    						value={typeOptions.find((opt) => opt.value === examData.examType) || null}
+								onChange={(event, selected) => {
+									const selectedValue = selected?.value || null;
+
+									setSelectedType(selectedValue);
+									setExamData((prev) => ({
+										...prev,
+										examType: selectedValue,
+										questionBankId: null
+									}));
+
+									// 👉 Chỉ fetch khi loại là auto + subjectId đã chọn
+									if (selectedValue === "auto" && examData.subjectId) {
+										fetchQuestionBankOptions("auto", examData.subjectId);
+									}
 								}}
-              />
+								renderInput={(params) => (
+									<TextField
+										{...params}
+										label="Chọn loại"
+										size="small"
+										placeholder="Chọn loại"
+										sx={{
+											backgroundColor: "white",
+											"& .MuiInputBase-root": {
+												height: "40px",
+												fontSize: "14px",
+											},
+											"& label": {
+												fontSize: "14px",
+											},
+											"& input": {
+												fontSize: "14px",
+											},
+										}}
+									/>
+								)}
+								slotProps={{
+									paper: {
+										sx: {
+											fontSize: "14px", // ✅ Cỡ chữ dropdown
+											zIndex: 9999, // ✅ Giữ dropdown nổi
+										},
+									},
+								}}
+							/>
+
             </Grid>
             {selectedType === "exams" && (
 							<Grid item xs={12}>
-								<ReactSelect
+								<Autocomplete
 									fullWidth
-									className="basic-single "
-									classNamePrefix="select"
-									placeholder="Chọn đề thi"
-									name="color"
 									options={subjectOptions}
-									isDisabled={editingOrganizeExam}
-									styles={{
-										control: (base) => ({
-											...base,
-											height: "40px",
-										}),
-
-										valueContainer: (base) => ({
-											...base,
-											overflow: "hidden",
-											textOverflow: "ellipsis",
-											whiteSpace: "nowrap",
-											fontSize: "14px",
-										}),
-										placeholder: (base) => ({
-											...base,
-											fontSize: "14px", // Cỡ chữ của placeholder (label)
-										}),
+									getOptionLabel={(option) => option.label || ""}
+									value={subjectOptions.find((opt) => opt.value === examData.examId) || null}
+									onChange={(e, newValue) => {
+										setExamData({ ...examData, examId: newValue?.value || null });
+									}}
+									disabled={editingOrganizeExam}
+									renderInput={(params) => (
+										<TextField
+											{...params}
+											label="Chọn đề thi"
+											placeholder="Chọn đề thi"
+											size="small"
+											sx={{
+												backgroundColor: "white",
+												"& .MuiInputBase-root": {
+													height: "40px",
+													fontSize: "14px",
+												},
+												"& input": {
+													textOverflow: "ellipsis",
+													whiteSpace: "nowrap",
+												},
+												"& label": {
+													fontSize: "14px",
+												},
+											}}
+										/>
+									)}
+									slotProps={{
+										paper: {
+											sx: {
+												fontSize: "14px",
+												zIndex: 9999,
+											},
+										},
 									}}
 								/>
 							</Grid>
@@ -294,58 +368,87 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions, questionBankOptions, sub
 
 						{selectedType === "matrix" && (
 							<Grid item xs={12}>
-								<ReactSelect
+								<Autocomplete
 									fullWidth
-									className="basic-single "
-									classNamePrefix="select"
-									placeholder="Chọn ma trận"
-									name="color"
-									options={subjectOptions}
-									isDisabled={editingOrganizeExam}
-									styles={{
-										control: (base) => ({
-											...base,
-											height: "40px", 
-										}),
-										menu: (base) => ({
-											...base,
-											width: "100%",
-										}),
-										valueContainer: (base) => ({
-											...base,
-											overflow: "hidden",
-											textOverflow: "ellipsis",
-											whiteSpace: "nowrap",
-											fontSize: "14px",
-										}),
-										placeholder: (base) => ({
-											...base,
-											fontSize: "14px", // Cỡ chữ của placeholder (label)
-										}),
+									options={subjectOptions} 
+									getOptionLabel={(option) => option.label || ""}
+									value={subjectOptions.find((opt) => opt.value === examData.matrixId) || null}
+									onChange={(e, newValue) => {
+										setExamData({ ...examData, matrixId: newValue?.value || null });
+									}}
+									disabled={editingOrganizeExam}
+									renderInput={(params) => (
+										<TextField
+											{...params}
+											label="Chọn ma trận"
+											placeholder="Chọn ma trận"
+											size="small"
+											sx={{
+												backgroundColor: "white",
+												"& .MuiInputBase-root": {
+													height: "40px",
+													fontSize: "14px",
+												},
+												"& input": {
+													textOverflow: "ellipsis",
+													whiteSpace: "nowrap",
+												},
+												"& label": {
+													fontSize: "14px",
+												},
+											}}
+										/>
+									)}
+									slotProps={{
+										paper: {
+											sx: {
+												fontSize: "14px",
+												zIndex: 9999,
+												width: "100%", // giữ dropdown khớp chiều rộng
+											},
+										},
 									}}
 								/>
+
 							</Grid>
 						)}
             {selectedType === "auto" && (
               <>
                 <Grid item xs={6}>
-                  <ReactSelect
-                    className="basic-single"
-                    classNamePrefix="select"
-                    placeholder="Bộ câu hỏi"
-                    options={questionBankOptions}
-                    onChange={(selectedOption) => 
-                      setExamData({...examData, questionBankId: selectedOption?.value})
-                    }
-                    styles={{
-                      control: (base) => ({
-                        ...base,
-                        height: "40px",
-                        fontSize: "14px",
-                      }),
-                      menu: (base) => ({ ...base, zIndex: 9999 }),
-                    }}
-                  />
+                  <Autocomplete
+										options={questionBankOptions} 
+										getOptionLabel={(option) => option.label || ""}
+										value={questionBankOptions.find((opt) => opt.value === examData.questionBankId) || null}
+										onChange={(e, newValue) => {
+											setExamData({ ...examData, questionBankId: newValue?.value || null });
+										}}
+										renderInput={(params) => (
+											<TextField
+												{...params}
+												label="Bộ câu hỏi"
+												placeholder="Bộ câu hỏi"
+												size="small"
+												sx={{
+													backgroundColor: "white",
+													"& .MuiInputBase-root": {
+														height: "40px",
+														fontSize: "14px",
+													},
+													"& label": {
+														fontSize: "14px",
+													},
+												}}
+											/>
+										)}
+										slotProps={{
+											paper: {
+												sx: {
+													fontSize: "14px",
+													zIndex: 9999,
+												},
+											},
+										}}
+									/>
                 </Grid>
                 
                 <Grid item xs={6}>
@@ -425,7 +528,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions, questionBankOptions, sub
 							</Typography>
 							
 							<Grid container spacing={2} alignItems="center">
-								<Grid item xs={6}>
+								<Grid item xs={4.5}>
 									<TextField
 										fullWidth
 										label={`Tên ca thi ${index + 1}`}
@@ -454,10 +557,47 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions, questionBankOptions, sub
 									/>
 								</Grid>
 								
-								<Grid item xs={5.5}>
+								<Grid item xs={3.5}>
 									<LocalizationProvider dateAdapter={AdapterDayjs}>
 										<DateTimePicker
 											label={`Thời gian bắt đầu ca ${index + 1}`}
+											value={session.activeAt ? dayjs(session.activeAt) : null}
+											onChange={(newValue) => 
+												handleSessionChange(index, 'activeAt', newValue ? newValue.toISOString() : '')
+											}
+											sx={{ width: '100%' }}
+											slotProps={{
+												textField: {
+													fullWidth: true,
+													sx: {
+														"& .MuiInputBase-input": { 
+															fontSize: "14px", 
+															padding: "8px 0px 8px 12px",
+														},
+														"& .MuiInputLabel-root": {
+															fontSize: "14px",
+															width: "100%",
+															left: "0",
+															top: "-5px",
+															"&.Mui-focused": {
+																transform: "translate(13px, -3px) scale(0.75)",
+															},
+														},
+														"& .MuiInputBase-root": {
+															height: "40px",
+															fontSize: "14px",
+														},
+													},
+												},
+											}}
+										/>
+									</LocalizationProvider>
+								</Grid>
+
+								<Grid item xs={3.5}>
+									<LocalizationProvider dateAdapter={AdapterDayjs}>
+										<DateTimePicker
+											label={`Thời gian kết thúc ca ${index + 1}`}
 											value={session.activeAt ? dayjs(session.activeAt) : null}
 											onChange={(newValue) => 
 												handleSessionChange(index, 'activeAt', newValue ? newValue.toISOString() : '')

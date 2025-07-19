@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate, useLocation } from "react-router-dom";
 import { Box, Grid, TextField, Button, Typography, IconButton, Autocomplete } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -14,6 +15,9 @@ import CancelButton from "../../components/CancelButton/CancelButton";
 
 const FormDivideStudent = ({ onClose }) => {
 	const [editingOrganizeExam, setEditingOrganizeExam] = useState(null);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+
 	const monList = [
     { label: "Toán" },
     { label: "Văn" },
@@ -28,6 +32,7 @@ const FormDivideStudent = ({ onClose }) => {
 
   const students = [
     {
+      id: "123456789",
       mssv: "BIT220172",
       ho: "Phạm Thị Phương",
       ten: "Linh",
@@ -36,6 +41,7 @@ const FormDivideStudent = ({ onClose }) => {
       dieuKien: "Đủ"
     },
     {
+      id: "1234567890",
       mssv: "BIT220173",
       ho: "Hoàng Nguyên",
       ten: "Vũ",
@@ -44,6 +50,7 @@ const FormDivideStudent = ({ onClose }) => {
       dieuKien: "Đủ"
     },
     {
+      id: "1234567891",
       mssv: "BIT220174",
       ho: "Ngô Đức",
       ten: "Thuận",
@@ -52,6 +59,7 @@ const FormDivideStudent = ({ onClose }) => {
       dieuKien: "Không"
     },
     {
+      id: "1234567892",
       mssv: "BIT220174",
       ho: "Ngô Đức",
       ten: "Thuận",
@@ -60,6 +68,7 @@ const FormDivideStudent = ({ onClose }) => {
       dieuKien: "Không"
     },
     {
+      id: "1234567893",
       mssv: "BIT220174",
       ho: "Ngô Đức",
       ten: "Thuận",
@@ -68,6 +77,7 @@ const FormDivideStudent = ({ onClose }) => {
       dieuKien: "Không"
     },
     {
+      id: "1234567894",
       mssv: "BIT220174",
       ho: "Ngô Đức",
       ten: "Thuận",
@@ -76,6 +86,7 @@ const FormDivideStudent = ({ onClose }) => {
       dieuKien: "Không"
     },
     {
+      id: "1234567895",
       mssv: "BIT220174",
       ho: "Ngô Đức",
       ten: "Thuận",
@@ -84,6 +95,7 @@ const FormDivideStudent = ({ onClose }) => {
       dieuKien: "Không"
     },
     {
+      id: "1234567896",
       mssv: "BIT220174",
       ho: "Ngô Đức",
       ten: "Thuận",
@@ -92,6 +104,7 @@ const FormDivideStudent = ({ onClose }) => {
       dieuKien: "Không"
     },
     {
+      id: "1234567897",
       mssv: "BIT220174",
       ho: "Ngô Đức",
       ten: "Thuận",
@@ -100,6 +113,23 @@ const FormDivideStudent = ({ onClose }) => {
       dieuKien: "Không"
     }
   ];
+
+  useEffect(() => {
+    if (showForm && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [showForm]);
+
+  const [formData, setFormData] = useState({
+    candidateList: "",
+  });
+
+  const preAddNew = () => {
+    setFormData({
+      candidateList: "",
+    });
+    setShowForm(true);
+  };
 
   // State cho thông tin kỳ thi
   const [examData, setExamData] = useState({
@@ -158,9 +188,32 @@ const FormDivideStudent = ({ onClose }) => {
     console.log('Submitting:', payload);
     // Gọi API ở đây
   };
-  
+
+  const handleSelectItem = (e, id) => {
+    if (e.target.checked) {
+      setSelectedItems([...selectedItems, id]);
+    } else {
+      setSelectedItems(selectedItems.filter((item) => item !== id));
+    }
+  };
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedItems(students.map((item) => item.id));
+    } else {
+      setSelectedItems([]);
+    }
+  };
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const handleCreateGroup = () => {
+    const currentPath = location.pathname;
+    navigate(`/staff/groupuser`);
+  };
+
   return (
-    <Box>
+    <div>
       <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: '#1976d2', marginTop: '20px'  }}>
         Chia phòng thi: Ca thi 1
       </Typography>
@@ -217,6 +270,22 @@ const FormDivideStudent = ({ onClose }) => {
                   }}
                 />
               </Grid>
+              <AddButton
+                className='mt-3 ms-1'
+                onClick={handleCreateGroup}
+                style={{
+                  background: "#1976d2",
+                  border: "none",
+                  color: "white",
+                  borderRadius: "5px",
+                  width: "40px",
+                  height: "40px",
+                  cursor: "pointer",
+                }}
+                title="Tạo nhóm mới"
+              >
+                <i className="fas fa-plus"></i>              
+              </AddButton>
             </Grid>
             <div className="form-check mt-3 mb-2">
               <input
@@ -278,7 +347,7 @@ const FormDivideStudent = ({ onClose }) => {
                         </div>
                       </div>
                       <div className='right-header d-flex me-3'>
-                        <AddButton onClick={() => setShowFormCreate(true)}>
+                        <AddButton onClick={preAddNew}>
                           <i className="fas fa-plus me-2"></i> Thêm mới
                         </AddButton>
                         <AddButton className='ms-2' style={{ backgroundColor: "#dc3545", color: "#ffff", }}>
@@ -297,6 +366,8 @@ const FormDivideStudent = ({ onClose }) => {
                                 <input
                                   className="form-check-input"
                                   type="checkbox"
+                                  onChange={handleSelectAll}
+                                  checked={students.length > 0 && students.every((item) => selectedItems.includes(item.id))}
                                />
                               </th>
                               <th scope="col">STT</th>
@@ -315,7 +386,8 @@ const FormDivideStudent = ({ onClose }) => {
                                   <input
                                     className="form-check-input"
                                     type="checkbox"
-                                    onChange={(e) => handleSelectItem(e, item.id)}
+                                    onChange={(e) => handleSelectItem(e, student.id)}
+                                    checked={selectedItems.includes(student.id)}
                                   />
                                 </td>
                                 <td className="align-middle">{index + 1}</td>
@@ -478,7 +550,73 @@ const FormDivideStudent = ({ onClose }) => {
           </Box>
         </Box>	
       </Box>
-    </Box>
+      {/* Form thêm tài khoản */}
+      {showForm && (
+        <div 
+          className="form-overlay"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background: "rgba(0,0,0,0.3)", // mờ nền modal
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 2000, 
+          }}
+        >
+          <Box
+            component="form"
+            sx={{
+              width: "500px",
+              backgroundColor: "white",
+              p: 3,
+              borderRadius: "8px",
+              boxShadow: 3,
+              mx: "auto",
+              zIndex: "99999",
+            }}
+            onSubmit={handleSubmit}
+          >
+            <p className="fw-bold mb-4">Thêm thí sinh vào phòng thi</p>
+            <Grid container>	
+              <Grid item xs={12}>									
+                <TextField
+                  id="outlined-multiline-flexible"
+                  label="Nhập mã sinh viên"
+                  placeholder="Nhập mã sinh viên"
+                  multiline
+                  inputRef={inputRef}
+                  maxRows={10}
+                  sx={{
+                    width: "100%",
+                    "& .MuiInputBase-input": {
+                      fontSize: "14px",
+                    },
+                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+                  }}
+                />
+              </Grid>	
+            </Grid>		
+            {/* Buttons */}
+            <Grid container spacing={2} sx={{ mt: 1, justifyContent: "flex-end" }}>
+              <Grid item xs={3}>
+                <CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>
+                  Hủy
+                </CancelButton>
+              </Grid>
+              <Grid item xs={3}>
+                <AddButton style={{width: "100%"}}>
+                  Lưu
+                </AddButton>
+              </Grid>
+            </Grid>
+          </Box>
+        </div>
+      )}
+    </div>
   );
 };
 

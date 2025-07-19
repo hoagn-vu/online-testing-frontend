@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate, useParams  } from "react-router-dom";
+import { Link, useParams, useSearchParams, useNavigate, useLocation  } from "react-router-dom";
 import "./OrganizeExamPage.css";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import {Chip, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Pagination, NumberInput, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
@@ -13,8 +11,6 @@ import CreatableSelect from "react-select/creatable";
 import ReactSelect  from 'react-select';
 import FormCreateOrganizeExam from "../../components/FormCreateOrganizeExam/FormCreateOrganizeExam";
 import AddButton from "../../components/AddButton/AddButton";
-import CancelButton from "../../components/CancelButton/CancelButton";
-import { Add } from "@mui/icons-material";
 
 const OrganizeExamPage = () => {
   const [listOrganizeExam, setListOrganizeExam] = useState([]);
@@ -28,6 +24,29 @@ const OrganizeExamPage = () => {
 	const navigate = useNavigate();
 	const [showFormCreate, setShowFormCreate] = useState(false);
 	const [listDisplay, setListDisplay] = useState([]);
+	const location = useLocation();
+
+	const handleOpenForm = () => {
+		const newSearchParams = new URLSearchParams(location.search);
+		newSearchParams.set("showFormCreate", "true");
+		navigate(`${location.pathname}?${newSearchParams.toString()}`);
+		setShowFormCreate(true);
+	};
+
+	const handleCloseForm = () => {
+		const newSearchParams = new URLSearchParams(location.search);
+		newSearchParams.delete("showFormCreate");
+		const newUrl = newSearchParams.toString()
+			? `${location.pathname}?${newSearchParams.toString()}`
+			: location.pathname;
+		navigate(newUrl, { replace: true });
+		setShowFormCreate(false);
+	};
+
+	useEffect(() => {
+		const params = new URLSearchParams(location.search);
+		setShowFormCreate(params.get("showFormCreate") === "true");
+	}, [location.search]);
 
 	const [typeOptions, setTypeOptions] = useState([
 		{ value: "matrix", label: "Ma trận" },
@@ -103,32 +122,9 @@ const OrganizeExamPage = () => {
 		}
 	};
 
-	// 	if (formData.subjectId && formData.examType === "auto") {
-	// 		fetchQuestionBankOptions();
-	// 	}
-	// }, [formData.subjectId, formData.examType]);
-	
-  const preAddNew = () => {
-		setEditingOrganizeExam(null); 
-		setFormData({
-			organizeExamName: "",
-			subjectId: "",
-			questionBankId: null,
-			examType: "",
-			examSet: null,
-			matrixId: null,
-			duration: "",
-			maxScore: 10,
-			totalQuestions: "",
-			organizeExamStatus: "active",
-		});
-		setShowForm(true);
-	};	
-
   const [showForm, setShowForm] = useState(false);
   const [editingOrganizeExam, setEditingOrganizeExam] = useState(null);
   const inputRef = useRef(null);
-  const [selectedType, setSelectedType] = useState(null); 
 
   useEffect(() => {
     if (showForm && inputRef.current) {
@@ -258,10 +254,8 @@ const OrganizeExamPage = () => {
 
 			{showFormCreate ? (
 				<FormCreateOrganizeExam 
-					onClose={() => setShowFormCreate(false)}
+					onClick={handleCloseForm}
 					typeOptions={typeOptions}
-					questionBankOptions={questionBankOptions}
-					subjectOptions={subjectOptions}
 				/>
 			) : (
 				<>
@@ -281,13 +275,9 @@ const OrganizeExamPage = () => {
 							</div>
 
 							<div className='right-header d-flex'>
-								<AddButton onClick={() => setShowFormCreate(true)}>
+								<AddButton onClick={handleOpenForm}>
 									<i className="fas fa-plus me-2"></i> Thêm mới
 								</AddButton>
-								<button className="btn btn-primary" style={{fontSize: "14px"}} onClick={preAddNew}>
-									<i className="fas fa-plus me-2"></i>
-									Thêm mới
-								</button>
 							</div>
 						</div>
 
@@ -473,313 +463,6 @@ const OrganizeExamPage = () => {
 							</div>
 						</div>
 					</div>
-
-      {/* Form thêm tài khoản */}
-				{showForm && (
-					<div className="form-overlay">
-						<Box
-							component="form"
-							sx={{
-								width: "650px",
-								backgroundColor: "white",
-								p: 3,
-								borderRadius: "8px",
-								boxShadow: 3,
-								mx: "auto",
-							}}
-							onSubmit={handleSubmit}
-						>
-							<p className="fw-bold mb-4">
-								{editingOrganizeExam ? "Chỉnh sửa thông tin kỳ thi" : "Tạo kỳ thi"}
-							</p>
-	
-							<Grid container spacing={2}>										
-								<Grid item xs={12}>
-									<TextField
-										fullWidth
-										label="Kỳ thi"
-										required
-										value={formData.organizeExamName}
-										inputRef={inputRef}
-										onChange={(e) =>
-											setFormData({ ...formData, organizeExamName: e.target.value })
-										}
-										sx={{
-											"& .MuiInputBase-input": {
-												fontSize: "14px",
-												paddingBottom: "11px",
-											},
-											"& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-										}}
-									/>
-								</Grid>
-                <Grid item xs={6}>
-									<TextField
-										fullWidth
-										label="Thời lượng"
-										type="number"
-										required
-										value={formData.duration}
-										onChange={(e) =>
-											setFormData({ ...formData, duration: e.target.value })
-										}
-										sx={{
-											"& .MuiInputBase-input": {
-												fontSize: "14px",
-												paddingBottom: "11px",
-											},
-											"& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-										}}
-									/>
-								</Grid>
-                <Grid item xs={6}>
-									<TextField
-										fullWidth
-										label="Điểm tối đa"
-										type="number"
-										required
-										value={formData.maxScore}
-										onChange={(e) =>
-											setFormData({ ...formData, maxScore: e.target.value })
-										}
-										sx={{
-											"& .MuiInputBase-input": {
-												fontSize: "14px",
-												paddingBottom: "11px",
-											},
-											"& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-										}}
-									/>
-								</Grid>
-								<Grid item xs={6}>
-                  <ReactSelect
-										fullWidth
-										className="basic-single "
-										classNamePrefix="select"
-										placeholder="Phân môn"
-										name="color"
-										options={subjectOptions}
-										isDisabled={editingOrganizeExam}
-										onChange={(selectedOption) => {
-											setFormData({ ...formData, subjectId: selectedOption.value });
-										}}
-										styles={{
-											control: (base) => ({
-												...base,
-												width: "292px", // Cố định chiều rộng
-												minWidth: "292px",
-												maxWidth: "260px",
-												height: "48px", // Tăng chiều cao
-												minHeight: "40px",
-											}),
-											menu: (base) => ({
-												...base,
-												width: "250px", // Cố định chiều rộng của dropdown
-											}),
-											valueContainer: (base) => ({
-												...base,
-												overflow: "hidden",
-												textOverflow: "ellipsis",
-												whiteSpace: "nowrap",
-												fontSize: "14px",
-											}),
-											placeholder: (base) => ({
-												...base,
-												fontSize: "14px", // Cỡ chữ của placeholder (label)
-											}),
-										}}
-									/>
-								</Grid>
-								<Grid item xs={6}>
-                <ReactSelect
-										fullWidth
-										className="basic-single "
-										classNamePrefix="select"
-										placeholder="Loại"
-										name="color"
-										options={typeOptions}
-										isDisabled={editingOrganizeExam}
-                    value={typeOptions.find((option) => option.value === selectedType)}
-										onChange={(selected) => {
-											setSelectedType(selected?.value || null);
-											fetchQuestionBankOptions(selected?.value, formData.subjectId);
-											setFormData({ ...formData, examType: selected?.value || null });
-										}}
-										styles={{
-											control: (base) => ({
-												...base,
-												width: "292px", // Cố định chiều rộng
-												minWidth: "292px",
-												maxWidth: "250px",
-												height: "48px", // Tăng chiều cao
-												minHeight: "40px",
-											}),
-											menu: (base) => ({
-												...base,
-												width: "250px", // Cố định chiều rộng của dropdown
-											}),
-											valueContainer: (base) => ({
-												...base,
-												overflow: "hidden",
-												textOverflow: "ellipsis",
-												whiteSpace: "nowrap",
-												fontSize: "14px",
-											}),
-											placeholder: (base) => ({
-												...base,
-												fontSize: "14px", // Cỡ chữ của placeholder (label)
-											}),
-										}}
-									/>
-								</Grid>
-                {selectedType === "exams" && (
-								<Grid item xs={12}>
-									<ReactSelect
-										fullWidth
-										className="basic-single "
-										classNamePrefix="select"
-										placeholder="Chọn đề thi"
-										name="color"
-										options={subjectOptions}
-										isDisabled={editingOrganizeExam}
-										styles={{
-											control: (base) => ({
-												...base,
-												height: "48px",
-											}),
-											menu: (base) => ({
-												...base,
-												width: "250px", 
-											}),
-											valueContainer: (base) => ({
-												...base,
-												overflow: "hidden",
-												textOverflow: "ellipsis",
-												whiteSpace: "nowrap",
-												fontSize: "14px",
-											}),
-											placeholder: (base) => ({
-												...base,
-												fontSize: "14px", // Cỡ chữ của placeholder (label)
-											}),
-										}}
-									/>
-								</Grid>
-                )}
-
-                {selectedType === "matrix" && (
-                <Grid item xs={12}>
-									<ReactSelect
-										fullWidth
-										className="basic-single "
-										classNamePrefix="select"
-										placeholder="Chọn ma trận"
-										name="color"
-										options={subjectOptions}
-										isDisabled={editingOrganizeExam}
-										styles={{
-											control: (base) => ({
-												...base,
-												height: "48px", 
-											}),
-											menu: (base) => ({
-												...base,
-												width: "250px",
-											}),
-											valueContainer: (base) => ({
-												...base,
-												overflow: "hidden",
-												textOverflow: "ellipsis",
-												whiteSpace: "nowrap",
-												fontSize: "14px",
-											}),
-											placeholder: (base) => ({
-												...base,
-												fontSize: "14px", // Cỡ chữ của placeholder (label)
-											}),
-										}}
-									/>
-								</Grid>
-                )}
-                {selectedType === "auto" && (								
-									<Grid container spacing={2} sx={{marginLeft:"0px", marginTop: "0px"}}>		
-										<Grid item xs={6}>
-										<ReactSelect
-											fullWidth
-											className="basic-single "
-											classNamePrefix="select"
-											placeholder="Bộ câu hỏi"
-											name="color"
-											onChange={(selectedOption) => {
-												setFormData({ ...formData, questionBankId: selectedOption.value });
-											}}
-											options={questionBankOptions}
-											isDisabled={editingOrganizeExam}
-											styles={{
-												control: (base) => ({
-													...base,
-													width: "275px", // Cố định chiều rộng
-													height: "48px", // Tăng chiều cao
-												}),
-												menu: (base) => ({
-													...base,
-													width: "100%", // Cố định chiều rộng của dropdown
-													zIndex: 9999,
-												}),
-												valueContainer: (base) => ({
-													...base,
-													overflow: "hidden",
-													textOverflow: "ellipsis",
-													whiteSpace: "nowrap",
-													fontSize: "14px",
-												}),
-												placeholder: (base) => ({
-													...base,
-													fontSize: "14px", // Cỡ chữ của placeholder (label)
-												}),
-											}}
-										/>
-										</Grid>
-										<Grid item xs={6}>
-											<TextField
-												fullWidth
-												label="Số lượng câu hỏi"
-												type="number"
-												required
-												value={formData.totalQuestions}
-												onChange={(e) =>
-													setFormData({ ...formData, totalQuestions: e.target.value })
-												}
-												sx={{
-													position: "relative", 
-   												zIndex: 0, 
-													"& .MuiInputBase-input": {
-														fontSize: "14px",
-														paddingBottom: "11px",
-													},
-													"& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-												}}
-											/>
-										</Grid>
-									</Grid>
-                )}
-							</Grid>		
-							{/* Buttons */}
-							<Grid container spacing={2} sx={{ mt: 1, justifyContent:"flex-end" }}>
-								<Grid item xs={3}>
-									<CancelButton style={{width: "100%"}} onClick={() => resetForm()}>
-										Hủy
-									</CancelButton>
-								</Grid>
-								<Grid item xs={3}>
-									<AddButton style={{width: "100%"}}>
-										{editingOrganizeExam ? "Cập nhật" : "Lưu"}
-									</AddButton>
-								</Grid>
-							</Grid>
-						</Box>
-					</div>
-				)}
 				</>
 			)}
     </div>
