@@ -1,56 +1,76 @@
 .home-super-page {
-    padding-top: 100px;
-    padding-left: 20px;
-    padding-right: 20px;
-    background-color: #f4f6f9;
-    min-height: 100vh;
-}
-  
-.monitor-tbl .custom-table td {
-    align-items: center;
-    justify-content: center;
-    padding: 15px 0px 15px 0px;
-    margin: 0px;
+  padding-top: 80px;
+  padding-left: 30px;
+  padding-right: 30px;
+  background-color: #f4f6f9;
+  min-height: 100vh;
 }
 
-.custom-table td {
-    align-items: center;
-    justify-content: center;
-    padding: 15px 0px 15px 0px;
-    margin: 0px;
+/* Link quay lại */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  font-size: 15px;
+  color: #0d6efd;
+  margin-bottom: 15px;
+}
+.back-link:hover {
+  text-decoration: underline;
 }
 
-.custom-table th, .custom-table td {
-    vertical-align: middle; 
-    text-align: center; 
+/* Khối thông tin kỳ thi */
+.exam-info-card {
+  background: #f9fbff;
+  border: 1px solid #e3e6f0;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+}
+.exam-info-details p {
+  font-size: 16px;
+  margin: 5px 0;
 }
 
-.custom-table th:nth-child(3), 
-.custom-table th:nth-child(4) {
-    text-align: left !important; 
-    padding-left: 10px;
+/* Bảng giám sát */
+.monitor-table table {
+  width: 100%;
+  background: white;
+  border-collapse: separate;
+  border-spacing: 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
 }
 
-.custom-table td:nth-child(3),
-.custom-table td:nth-child(4) {
-    text-align: left !important; 
-    padding-right: 8px;
-    padding-left: 10px;
+.monitor-table thead {
+  background: #e8f1fd;
+}
+.monitor-table th {
+  padding: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+.monitor-table td {
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
 }
 
-.custom-table th {
-    color: black;
+.monitor-table tbody tr:hover {
+  background: #f7faff;
+  transition: 0.2s;
 }
 
-.custom-table {
-    margin: auto; 
+/* Tiến độ dạng progress bar */
+.progress-sm {
+  height: 6px;
+  background: #e9ecef;
+  border-radius: 4px;
+  margin-bottom: 3px;
 }
-
-.custom-header th{
-    background-color: #c6e0f8 !important; /* Màu xanh Bootstrap */
-    padding: 15px;
-}
-
-.custom-table, .custom-table th, .custom-table td {
-    border: 1px solid black !important; /* Viền đen dày */
+.progress-sm .progress-bar {
+  background: #4caf50;
+  height: 6px;
+  border-radius: 4px;
 }
