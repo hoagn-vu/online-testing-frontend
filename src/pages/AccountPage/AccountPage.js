@@ -13,6 +13,7 @@ import CreatableSelect from "react-select/creatable";
 import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import DragDropModal from "../../components/DragDrop/DragDrop";
 
 const AccountPage = () => {
   const [listAccountUser, setListAccountUser] = useState([]);
@@ -230,7 +231,19 @@ const AccountPage = () => {
     });
   };
 
-  const handleUploadClick = async () => {
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleUploadClick = () => {
+    setOpenModal(true);
+  };
+
+  const handleFilesDropped = (files) => {
+    console.log("Files received:", files);
+    // 👉 Ở đây bạn có thể xử lý upload API
+    setOpenModal(false);
+  };
+
+  /*const handleUploadClick = async () => {
   const { value: file } = await Swal.fire({
     title: "Chọn file",
     input: "file",
@@ -258,7 +271,7 @@ const AccountPage = () => {
     };
     reader.readAsDataURL(file);
   }
-};
+};*/
 
   const handleRoleChange = (role) => {
     switch (role) {
@@ -906,6 +919,11 @@ const AccountPage = () => {
         </div>
       )}
 
+      <DragDropModal
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        onFilesDropped={handleFilesDropped}
+      />
     </div>
   );
 };
