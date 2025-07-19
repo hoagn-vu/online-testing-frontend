@@ -11,6 +11,7 @@ import CreatableSelect from "react-select/creatable";
 import ReactSelect  from 'react-select';
 import FormCreateOrganizeExam from "../../components/FormCreateOrganizeExam/FormCreateOrganizeExam";
 import AddButton from "../../components/AddButton/AddButton";
+import FormCreateOrganizeExamTest from "../../components/FormCreateOrganizeExamTest/FormCreateOrganizeExamTest";
 
 const OrganizeExamPage = () => {
   const [listOrganizeExam, setListOrganizeExam] = useState([]);
@@ -253,7 +254,7 @@ const OrganizeExamPage = () => {
 			</nav>
 
 			{showFormCreate ? (
-				<FormCreateOrganizeExam 
+				<FormCreateOrganizeExamTest 
 					onClose={handleCloseForm}
 					typeOptions={typeOptions}
 				/>
