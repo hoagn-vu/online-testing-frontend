@@ -81,27 +81,35 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
                     <td className="border p-2 text-center">
                       <input
                         type="number"
-                        value={level.score.toFixed(1)}
+                        // Giữ giá trị gốc nhưng không ép format mỗi lần render
+                        value={level.score}
                         min="0"
                         step="0.1"
+                        onFocus={(e) => {
+                          // Khi click vào thì bôi đen toàn bộ để dễ gõ đè
+                          e.target.select();
+                        }}
                         onChange={(e) => {
                           const newValue = Number(e.target.value);
-                        
-                          // Tính tổng hiện tại của các score trừ dòng hiện tại
+
                           const currentTotal = data.reduce((total, chapter, cIndex) => {
                             return total + chapter.levels.reduce((sum, lvl, lIndex) => {
                               if (cIndex === chapterIndex && lIndex === levelIndex) return sum;
                               return sum + lvl.score;
                             }, 0);
                           }, 0);
-                        
+
                           if (newValue + currentTotal <= parseFloat(totalScore)) {
                             handleInputChange(chapterIndex, levelIndex, "score", newValue);
                           } else {
                             alert("Tổng điểm không được vượt quá tổng điểm đã nhập!");
                           }
                         }}
-                        
+                        onBlur={(e) => {
+                          // Sau khi rời khỏi ô input -> ép về 1 chữ số thập phân
+                          const formatted = parseFloat(e.target.value || "0").toFixed(1);
+                          handleInputChange(chapterIndex, levelIndex, "score", parseFloat(formatted));
+                        }}
                         className="border p-1 text-center"
                         style={{ width: "60px" }}
                       />

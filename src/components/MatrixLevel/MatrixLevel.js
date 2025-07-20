@@ -109,10 +109,15 @@ const MatrixLevel = ({ data }) => {
                 <td className="border p-2 text-center">
                   <input
                     type="number"
-                    value={item.score.toFixed(1)}
+                    value={item.score} // giữ giá trị gốc để không reset caret
                     min="0"
                     step="0.1"
+                    onFocus={(e) => e.target.select()} // auto select khi click
                     onChange={(e) => handleInputChangeLevel(index, "score", Number(e.target.value))}
+                    onBlur={(e) => {
+                      const formatted = parseFloat(e.target.value || "0").toFixed(1);
+                      handleInputChangeLevel(index, "score", parseFloat(formatted));
+                    }}
                     className="border p-1 text-center"
                     style={{ width: "60px" }}
                   />
