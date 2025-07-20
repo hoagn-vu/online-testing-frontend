@@ -220,7 +220,7 @@ const ExamMatrixPage = () => {
 								</tr>
 							) : (
               listExamMatrix.map((item, index) => (
-                <tr key={item.questionBankId} className="align-middle">
+                <tr key={`${item.questionBankId}-${index}`} className="align-middle">
                   <td className="text-center">{index + 1}</td>
                   <td>
                       <span
