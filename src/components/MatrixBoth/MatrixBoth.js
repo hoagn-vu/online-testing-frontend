@@ -55,9 +55,17 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
                           min="0"
                           max={level.total}
                           step="1"
-                          onChange={(e) =>
-                            handleInputChange(chapterIndex, levelIndex, "questionCount", Number(e.target.value))
-                          }
+                          onChange={(e) => {
+                            let value = Number(e.target.value);
+
+                            if (isNaN(value)) value = 0;
+
+                            if (value > level.total) value = level.total;
+
+                            if (value < 0) value = 0;
+
+                            handleInputChange(chapterIndex, levelIndex, "questionCount", value);
+                          }}
                           onKeyDown={(e) => {
                             if (e.key === '.' || e.key === ',' || e.key === 'e') {
                               e.preventDefault();

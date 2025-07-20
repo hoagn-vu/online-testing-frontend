@@ -85,7 +85,17 @@ const MatrixLevel = ({ data }) => {
                     value={item.totalSelected}
                     min="0"
                     max={item.totalQuestions}
-                    onChange={(e) => handleInputChangeLevel(index, "totalSelected", Number(e.target.value))}
+                    onChange={(e) => {
+                      let value = Number(e.target.value);
+
+                      if (isNaN(value)) value = 0;
+
+                      if (value > item.totalQuestions) value = item.totalQuestions;
+
+                      if (value < 0) value = 0;
+
+                      handleInputChangeLevel(index, "totalSelected", value)
+                    }}
                     onKeyDown={(e) => {
                       if ([".", ",", "e"].includes(e.key)) {
                         e.preventDefault(); // Chặn nhập số thập phân và ký tự không hợp lệ

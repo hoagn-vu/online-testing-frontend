@@ -92,9 +92,17 @@ const MatrixChapter = ({ data }) => {
                           e.preventDefault(); // Chặn nhập số thập phân và ký tự không hợp lệ
                         }
                       }}
-                      onChange={(e) =>
-                        handleInputChangeChapter(index, "totalSelected", Number(e.target.value))
-                      }
+                      onChange={(e) => {
+                        let value = Number(e.target.value);
+
+                        if (isNaN(value)) value = 0;
+
+                        if (value > item.totalQuestions) value = item.totalQuestions;
+
+                        if (value < 0) value = 0;
+
+                        handleInputChangeChapter(index, "totalSelected", value)
+                      }}
                       className="border p-1 text-center"
                       style={{ width: "60px" }}
                     />{" "}
