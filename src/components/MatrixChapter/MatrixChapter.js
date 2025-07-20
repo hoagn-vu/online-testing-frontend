@@ -14,7 +14,7 @@ const MatrixChapter = ({ data }) => {
               chapter: item.chapter,
               totalSelected: 0,
               totalQuestions: 0,
-              pointsPerQuestion: 0, // Điểm mỗi câu
+              score: 0, // Điểm mỗi câu
             };
           }
           chapterSummary[item.chapter].totalSelected += item.questionCount;
@@ -35,9 +35,9 @@ const MatrixChapter = ({ data }) => {
   const handleInputChangeChapter = (index, key, value) => {
     const newChapterData = [...chapterData];
   
-    if (key === "pointsPerQuestion") {
+    if (key === "score") {
       const currentTotal = chapterData.reduce((sum, item, i) =>
-        i === index ? sum : sum + item.pointsPerQuestion, 0
+        i === index ? sum : sum + item.score, 0
       );
   
       if (currentTotal + value > maxTotalPointsChapter) {
@@ -101,10 +101,10 @@ const MatrixChapter = ({ data }) => {
                   <td className="border p-2 text-center">
                     <input
                       type="number"
-                      value={item.pointsPerQuestion.toFixed(1)}
+                      value={item.score.toFixed(1)}
                       min="0"
                       step="0.1"
-                      onChange={(e) => handleInputChangeChapter(index, "pointsPerQuestion", Number(e.target.value))}
+                      onChange={(e) => handleInputChangeChapter(index, "score", Number(e.target.value))}
                       className="border p-1 text-center"
                       style={{ width: "60px" }}
                     />
@@ -112,7 +112,7 @@ const MatrixChapter = ({ data }) => {
                   <td className="border p-2 text-center">
                     {item.totalSelected === 0
                       ? "-"
-                      : (item.pointsPerQuestion / item.totalSelected).toFixed(2)}
+                      : (item.score / item.totalSelected).toFixed(2)}
                   </td>
                 </tr>
               ))}
@@ -133,7 +133,7 @@ const MatrixChapter = ({ data }) => {
                 </td>
 
                 {/* <td className="border p-2 text-center">
-                  {chapterData.reduce((sum, item) => sum + item.pointsPerQuestion, 0).toFixed(2)}
+                  {chapterData.reduce((sum, item) => sum + item.score, 0).toFixed(2)}
                 </td> */}
                 <td className="border p-2 text-center">-</td>
               </tr>

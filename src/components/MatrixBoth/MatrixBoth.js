@@ -9,7 +9,7 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
   const [totalScore, setTotalScore] = React.useState(() => {
     return data.reduce((total, chapter) =>
       total + chapter.levels.reduce((sum, level) =>
-        sum + level.scorePerQuestion, 0), 0).toFixed(1);
+        sum + level.score, 0), 0).toFixed(1);
   });
   
   return (
@@ -70,22 +70,22 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
                     <td className="border p-2 text-center">
                       <input
                         type="number"
-                        value={level.scorePerQuestion.toFixed(1)}
+                        value={level.score.toFixed(1)}
                         min="0"
                         step="0.1"
                         onChange={(e) => {
                           const newValue = Number(e.target.value);
                         
-                          // Tính tổng hiện tại của các scorePerQuestion trừ dòng hiện tại
+                          // Tính tổng hiện tại của các score trừ dòng hiện tại
                           const currentTotal = data.reduce((total, chapter, cIndex) => {
                             return total + chapter.levels.reduce((sum, lvl, lIndex) => {
                               if (cIndex === chapterIndex && lIndex === levelIndex) return sum;
-                              return sum + lvl.scorePerQuestion;
+                              return sum + lvl.score;
                             }, 0);
                           }, 0);
                         
                           if (newValue + currentTotal <= parseFloat(totalScore)) {
-                            handleInputChange(chapterIndex, levelIndex, "scorePerQuestion", newValue);
+                            handleInputChange(chapterIndex, levelIndex, "score", newValue);
                           } else {
                             alert("Tổng điểm không được vượt quá tổng điểm đã nhập!");
                           }
@@ -98,7 +98,7 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
                     <td className="border p-2 text-center">
                       {level.questionCount === 0
                         ? "-"
-                        : (level.scorePerQuestion / level.questionCount).toFixed(2)}
+                        : (level.score / level.questionCount).toFixed(2)}
                     </td>
                   </tr>
                 ))}
@@ -111,7 +111,7 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
               {/* <td className="border p-2 text-center">
                 {data.reduce((total, chapter) => 
                 total + chapter.levels.reduce((sum, level) => 
-                sum + (level.scorePerQuestion), 0), 0).toFixed(2)}
+                sum + (level.score), 0), 0).toFixed(2)}
               </td> */}
               <td className="border p-2 text-center">
                 <input

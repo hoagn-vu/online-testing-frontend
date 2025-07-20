@@ -14,7 +14,7 @@ const MatrixLevel = ({ data }) => {
             level: item.level,
             totalSelected: 0,
             totalQuestions: 0,
-            pointsPerQuestion: 0, // Điểm mỗi câu
+            score: 0, // Điểm mỗi câu
           };
         }
         levelSummary[item.level].totalSelected += item.questionCount;
@@ -34,9 +34,9 @@ const MatrixLevel = ({ data }) => {
   const handleInputChangeLevel = (index, key, value) => {
     const newLevelData = [...levelData];
   
-    if (key === "pointsPerQuestion") {
+    if (key === "score") {
       const currentTotal = levelData.reduce((sum, item, i) =>
-        i === index ? sum : sum + item.pointsPerQuestion, 0
+        i === index ? sum : sum + item.score, 0
       );
   
       if (currentTotal + value > maxTotalPointsLevel) {
@@ -96,10 +96,10 @@ const MatrixLevel = ({ data }) => {
                 <td className="border p-2 text-center">
                   <input
                     type="number"
-                    value={item.pointsPerQuestion.toFixed(1)}
+                    value={item.score.toFixed(1)}
                     min="0"
                     step="0.1"
-                    onChange={(e) => handleInputChangeLevel(index, "pointsPerQuestion", Number(e.target.value))}
+                    onChange={(e) => handleInputChangeLevel(index, "score", Number(e.target.value))}
                     className="border p-1 text-center"
                     style={{ width: "60px" }}
                   />
@@ -107,7 +107,7 @@ const MatrixLevel = ({ data }) => {
                 <td className="border p-2 text-center">
                   {item.totalSelected === 0
                     ? "-"
-                    : (item.pointsPerQuestion / item.totalSelected).toFixed(2)}
+                    : (item.score / item.totalSelected).toFixed(2)}
                 </td>
               </tr>
             ))}
@@ -127,7 +127,7 @@ const MatrixLevel = ({ data }) => {
                   />
                 </td>
               {/* <td className="border p-2 text-center">
-                {levelData.reduce((sum, item) => sum + item.pointsPerQuestion, 0).toFixed(2)}
+                {levelData.reduce((sum, item) => sum + item.score, 0).toFixed(2)}
               </td> */}
               <td className="border p-2 text-center">-</td>
             </tr>

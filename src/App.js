@@ -43,6 +43,7 @@ import { setUser } from './redux/authSlice';
 import Login2 from "./pages/Login2/Login2";
 import LevelManagement from "./pages/LevelManagement/LevelManagement";
 import SchedulePage from "./pages/RoomTest/RoomTest";
+import CandidateExamResult from "./pages/CandidateExamResult/CandidateExamResult";
 
 function App() {
   const accessToken = useSelector((state) => state.auth.accessToken) || localStorage.getItem("accessToken");
@@ -118,6 +119,7 @@ function App() {
           <Route path="room" element={<SchedulePage />} />
           <Route path="level" element={<LevelManagement />} />
           <Route path="log" element={<LogPage />} />
+          <Route path="result" element={<CandidateExamResult />} />
         </Route>
       </Routes>
 
