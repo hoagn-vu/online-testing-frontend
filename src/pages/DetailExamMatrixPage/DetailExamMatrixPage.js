@@ -119,7 +119,7 @@ const DetailExamMatrixPage = () => {
 		setData(
 			groupedData.map((item) => ({
 				...item,
-				levels: item.levels.map((level) => ({ ...level, questionCount: 0, scorePerQuestion: 0 }))
+				levels: item.levels.map((level) => ({ ...level, questionCount: 0, score: 0 }))
 			}))
 		);
 	}, [tagClassification]);
@@ -219,7 +219,7 @@ const DetailExamMatrixPage = () => {
 					chapter: item.chapter,
 					level: level.level,
 					questionCount: level.questionCount,
-					scorePerQuestion: level.scorePerQuestion
+					score: level.score
 				}))
 			),
 		};
