@@ -53,9 +53,12 @@ const MatrixChapter = ({ data }) => {
     setChapterData(newChapterData);
   };  
 
-  const [maxTotalPointsChapter, setMaxTotalPoints] = useState(() =>
-    data?.reduce((sum, item) => sum + item.questionCount * 1, 0).toFixed(1)
-  ); // mặc định tổng điểm = tổng số câu
+  const [maxTotalPointsChapter, setMaxTotalPoints] = useState(() => {
+    if (!data || data.length === 0) return 10;
+    const sum = data.reduce((sum, item) => sum + (item.questionCount * 1), 0);
+    return sum === 0 ? 10 : sum.toFixed(1);
+    }
+  ); 
   
   return (
       <Box display="flex" gap={2} className="mt-3 w-full" justifyContent="space-between">

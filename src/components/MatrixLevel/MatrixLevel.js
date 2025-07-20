@@ -52,8 +52,11 @@ const MatrixLevel = ({ data }) => {
     setLevelData(newLevelData);
   }; 
 
-  const [maxTotalPointsLevel, setMaxTotalPoints] = useState(() =>
-    data?.reduce((sum, item) => sum + item.questionCount * 1, 0).toFixed(1)
+  const [maxTotalPointsLevel, setMaxTotalPoints] = useState(() => {
+    if (!data || data.length === 0) return 10;
+    const sum = data.reduce((sum, item) => sum + (item.questionCount * 1), 0);
+    return sum === 0 ? 10 : sum.toFixed(1);
+    }
   ); 
 
   return (

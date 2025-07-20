@@ -7,9 +7,12 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
   //   console.log("from matrix both", data);
   // }, [data]);
   const [totalScore, setTotalScore] = React.useState(() => {
-    return data.reduce((total, chapter) =>
-      total + chapter.levels.reduce((sum, level) =>
-        sum + level.score, 0), 0).toFixed(1);
+    if (!data || data.length === 0) return 10;
+    const sum = data.reduce((total, chapter) =>
+      total + chapter.levels.reduce((sum, level) => sum + level.score, 0)
+    , 0);
+
+    return sum.toFixed(1);
   });
   
   return (
