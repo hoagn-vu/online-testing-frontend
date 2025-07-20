@@ -1,19 +1,25 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Paper } from "@mui/material";
 import PropTypes from 'prop-types';
 
 const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestions, difficultyData }) => {
-  // useEffect(() => {
-  //   console.log("from matrix both", data);
-  // }, [data]);
-  const [totalScore, setTotalScore] = React.useState(() => {
-    if (!data || data.length === 0) return 10;
-    const sum = data.reduce((total, chapter) =>
-      total + chapter.levels.reduce((sum, level) => sum + level.score, 0)
-    , 0);
+  const [totalScore, setTotalScore] = useState(10);
 
-    return sum.toFixed(1);
-  });
+  useEffect(() => {
+    if (!data || data.length === 0) {
+      setTotalScore(10); // default
+      return;
+    }
+
+    const sum = data.reduce(
+      (total, chapter) => total + chapter.levels.reduce((sum, level) => sum + level.score, 0),
+      0
+    );
+
+    // Nếu sum = 0 → vẫn giữ default 10
+    setTotalScore(sum === 0 ? 10 : parseFloat(sum.toFixed(1)));
+  }, [data]);
+
   
   return (
     <Box display="flex" gap={2} className="mt-3 w-full" justifyContent="space-between" >

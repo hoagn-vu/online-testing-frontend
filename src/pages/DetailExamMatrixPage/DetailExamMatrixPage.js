@@ -97,12 +97,10 @@ const DetailExamMatrixPage = () => {
 	const [personName, setPersonName] = useState([]);
 
   const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setPersonName(
-      typeof value === 'string' ? value.split(',') : value,
-    );
+    const value = event.target.value; 
+		// Lấy phần tử cuối cùng (mục vừa chọn)
+		const lastSelected = value[value.length - 1]; 
+		setPersonName([lastSelected]);
   };
 
 	useEffect(() => {
