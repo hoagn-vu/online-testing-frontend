@@ -1,0 +1,91 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.header {
+  border-bottom: 1px solid #E0E0E0;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.candidate-exam-result .header h4 {
+  margin: 0;
+  color: #1976D2;
+}
+
+.candidate-exam-result .header p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.question-list {
+  list-style: none;
+  padding: 0;
+}
+
+.question-item {
+  padding: 10px;
+  border-bottom: 1px solid #E0E0E0;
+}
+
+.question-item h {
+  margin: 0 0 10px;
+  font-size: 16px;
+}
+
+.options-list {
+  list-style: none;
+  padding: 0;
+}
+
+.option {
+  padding: 5px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.option.correct {
+  background-color: #E8F5E9;
+  color: #4CAF50;
+}
+
+.option.wrong {
+  background-color: #FFEBEE;
+  color: #F44336;
+}
+
+.footer {
+  margin-top: 20px;
+  text-align: right;
+}
+
+.candidate-exam-result .btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  color: white;
+}
+
+.btn-primary {
+  background-color: #1976D2;
+}
+
+.btn-primary:hover {
+  background-color: #155A9E;
+}
+
+.btn-secondary {
+  background-color: #757575;
+  margin-right: 10px;
+}
+
+.btn-secondary:hover {
+  background-color: #616161;
+}
