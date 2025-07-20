@@ -68,51 +68,61 @@ const CandidateOrganizePage = () => {
 		
 	useEffect(() => {
 		if (showForm && inputRef.current) {
-						inputRef.current.focus();
+			inputRef.current.focus();
 		}
-		}, [showForm]);
+	}, [showForm]);
 	
 	const [formData, setFormData] = useState({
-		candidateList: "",
+		candidateIds: [],
+		userCodes: [],
 	});
 
 	const preAddNew = () => {
 		setFormData({
-			candidateList: "",
+			candidateIds: [],
+			userCodes: [],
 		});
 		setShowForm(true);
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 		console.log("Dữ liệu thêm mới:", formData);
+		try {
+			const response = await ApiService.post(`/organize-exams/${organizeId}/sessions/${sessionId}/rooms/${roomId}/candidates`, formData);
+			console.log("Thêm thí sinh thành công:", response.data);
+			fetchData();
+		} catch (error) {
+			console.error("Lỗi khi thêm thí sinh:", error);
+		}
+
 		setShowForm(false);
 	};
 	
 	const handleDelete = (id) => {
-			Swal.fire({
-				title: "Bạn có chắc chắn xóa?",
-				text: "Bạn sẽ không thể hoàn tác hành động này!",
-				icon: "warning",
-				showCancelButton: true,
-				confirmButtonColor: "#3085d6",
-				cancelButtonColor: "#d33",
-				confirmButtonText: "Xóa",
-				cancelButtonText: "Hủy",
-			}).then((result) => {
-				if (result.isConfirmed) {
-					console.log("Xóa thí sinh có ID:", id);
-					setListCandidate(prev => prev.filter(candidate => candidate.candidateId !== id));
+		Swal.fire({
+			title: "Bạn có chắc chắn xóa?",
+			text: "Bạn sẽ không thể hoàn tác hành động này!",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "Xóa",
+			cancelButtonText: "Hủy",
+		}).then((result) => {
+			if (result.isConfirmed) {
+				console.log("Xóa thí sinh có ID:", id);
+				setListCandidate(prev => prev.filter(candidate => candidate.candidateId !== id));
 
-					Swal.fire({
-						title: "Đã xóa!",
-						text: "Thí sinh đã bị xóa.",
-						icon: "success",
-					});
-				}
-			});
+				Swal.fire({
+					title: "Đã xóa!",
+					text: "Thí sinh đã bị xóa.",
+					icon: "success",
+				});
+			}
+		});
 	};
-	
+
 	return (
 		<div className="p-4">
 			{/* Breadcrumb */}
@@ -242,6 +252,8 @@ const CandidateOrganizePage = () => {
 									label="Nhập mã sinh viên"
 									placeholder="Nhập mã sinh viên"
 									multiline
+									onChange={(e) => setFormData({ ...formData, userCodes: e.target.value.split("\n").map(id => id.trim()).filter(id => id) })}
+									// value={formData.userCodes.join("\n")}
 									inputRef={inputRef}
 									maxRows={10}
 									sx={{
