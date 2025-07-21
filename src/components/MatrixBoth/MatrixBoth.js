@@ -7,18 +7,9 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
 
   useEffect(() => {
     if (!data || data.length === 0) {
-      setTotalScore(10); 
-      return;
+      setTotalScore(10);
     }
-
-    const sum = data.reduce(
-      (total, chapter) => total + chapter.levels.reduce((sum, level) => sum + level.score, 0),
-      0
-    );
-
-    // Nếu sum = 0 → vẫn giữ default 10
-    setTotalScore(sum === 0 ? 10 : parseFloat(sum.toFixed(1)));
-  }, [data]);
+  }, []);
 
   
   return (
