@@ -1,4 +1,4 @@
-.container {
+.candidate-exam-result .container {
   max-width: 1200px;
   margin: 0 auto;
   background: white;
@@ -7,7 +7,7 @@
   padding: 20px;
 }
 
-.header {
+.candidate-exam-result .header {
   border-bottom: 1px solid #E0E0E0;
   padding-bottom: 15px;
   margin-bottom: 20px;
@@ -23,43 +23,43 @@
   font-size: 14px;
 }
 
-.question-list {
+.candidate-exam-result .question-list {
   list-style: none;
   padding: 0;
 }
 
-.question-item {
+.candidate-exam-result .question-item {
   padding: 10px;
   border-bottom: 1px solid #E0E0E0;
 }
 
-.question-item h {
+.candidate-exam-result .question-item h {
   margin: 0 0 10px;
   font-size: 16px;
 }
 
-.options-list {
+.candidate-exam-result .options-list {
   list-style: none;
   padding: 0;
 }
 
-.option {
+.candidate-exam-result .option {
   padding: 5px;
   border-radius: 4px;
   transition: background-color 0.3s;
 }
 
-.option.correct {
+.candidate-exam-result .option.correct {
   background-color: #E8F5E9;
   color: #4CAF50;
 }
 
-.option.wrong {
+.candidate-exam-result .option.wrong {
   background-color: #FFEBEE;
   color: #F44336;
 }
 
-.footer {
+.candidate-exam-result .footer {
   margin-top: 20px;
   text-align: right;
 }
@@ -73,19 +73,19 @@
   color: white;
 }
 
-.btn-primary {
+.candidate-exam-result .btn-primary {
   background-color: #1976D2;
 }
 
-.btn-primary:hover {
+.candidate-exam-result .btn-primary:hover {
   background-color: #155A9E;
 }
 
-.btn-secondary {
+.candidate-exam-result .btn-secondary {
   background-color: #757575;
   margin-right: 10px;
 }
 
-.btn-secondary:hover {
+.candidate-exam-result .btn-secondary:hover {
   background-color: #616161;
 }
