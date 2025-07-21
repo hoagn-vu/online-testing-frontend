@@ -206,7 +206,8 @@ const ExamMatrixPage = () => {
                 <th>Ma trận</th>
                 <th>Phân môn</th>
                 <th>Bộ câu hỏi</th>
-                <th style={{ width: "200px"}}>Số lượng đề tạo sinh</th>
+                <th className="text-center" style={{ width: "200px"}}>Số lượng đề tạo sinh</th>
+                <th className="text-center" style={{ width: "200px"}}>Trạng thái</th>
                 <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
               </tr>
             </thead>
@@ -233,7 +234,14 @@ const ExamMatrixPage = () => {
                     </td>
                   <td>{item.subjectName}</td>
                   <td>{item.questionBankName}</td>
-                  <td>{item.totalGeneratedExams}</td>
+                  <td className="text-center">{item.totalGeneratedExams}</td>
+                  <td className="text-center">
+                    <div className="d-flex align-items-center justify-content-center">
+                      <span className={`badge ms-2 mt-1 ${item.matrixStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
+                        {item.matrixStatus === "Active" || "available" ? "Được sử dụng" : "Chưa sử dụng"}
+                      </span>
+                    </div>
+                  </td>
                   <td className="text-center">
                     <div className="dropdown">
                       <button
@@ -259,7 +267,11 @@ const ExamMatrixPage = () => {
                         }}
                       >
                         <li className="tbl-action" onClick={() => handleEdit(item)}> 
-                          <button className="dropdown-item tbl-action" onClick={() => handleEdit(item)}>
+                          <button 
+                            className="dropdown-item tbl-action" 
+                            onClick={() => handleEdit(item)}
+                            disabled={item.examIds && item.examIds.length > 0}
+                          >
                              Chỉnh sửa
                           </button>
                         </li>
