@@ -7,7 +7,7 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
 
   useEffect(() => {
     if (!data || data.length === 0) {
-      setTotalScore(10); // default
+      setTotalScore(10); 
       return;
     }
 
