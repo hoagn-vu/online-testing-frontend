@@ -17,7 +17,8 @@ const FormCreateOrganizeExamTest = ({ onClose, typeOptions}) => {
 	const [editingOrganizeExam, setEditingOrganizeExam] = useState(null);
 	const [subjectOptions, setSubjectOptions] = useState([]);
 	const [questionBankOptions, setQuestionBankOptions] = useState([]);
-
+	const [matrixOptions, setMatrixOptions] = useState([]);
+  // const [sessions, setSessions] = useState([]);
   // State cho thông tin kỳ thi
   const [examData, setExamData] = useState({
     organizeExamName: '',
@@ -26,7 +27,8 @@ const FormCreateOrganizeExamTest = ({ onClose, typeOptions}) => {
     subjectId: null,
     examType: null,
     questionBankId: null,
-    totalQuestions: '',
+    totalQuestions: null,
+		sessions: []
   });
 
 	useEffect(() => {
@@ -63,12 +65,21 @@ const FormCreateOrganizeExamTest = ({ onClose, typeOptions}) => {
 		}
 	};
 
-  // State cho các ca thi (mặc định 3 ca)
-  const [sessions, setSessions] = useState([
-    { sessionName: '', activeAt: '' },
-    { sessionName: '', activeAt: '' },
-		{ sessionName: '', activeAt: '' }
-  ]);
+	const fetchMatrixOptions = async (subjectId) => {
+		try {
+			const response = await ApiService.get("/exam-matrices/options", {
+				params: { subjectId: subjectId },
+			});
+			
+			setMatrixOptions(response.data.map((matrix) => ({
+				value: matrix.id,
+				label: matrix.matrixName,
+			})));
+		} catch (error) {
+			console.error("Failed to fetch matrix options", error);
+			return [];
+		}
+	};
   
   const [selectedType, setSelectedType] = useState(null);
   const inputRef = useRef(null);
@@ -79,37 +90,49 @@ const FormCreateOrganizeExamTest = ({ onClose, typeOptions}) => {
     }
   }, []);
 
-  // Xử lý thêm ca thi mới
   const addSession = () => {
-    setSessions([...sessions, { sessionName: '', activeAt: '' }]);
+		setExamData((prev) => ({
+			...prev,
+			sessions: [...prev.sessions, { sessionName: '', startAt: '', finishAt: '' }]
+		}));
   };
   
-  // Xử lý xóa ca thi
-  const removeSession = (index) => {
-    if (sessions.length > 1) {
-      const newSessions = [...sessions];
-      newSessions.splice(index, 1);
-      setSessions(newSessions);
-    }
-  };
+	const removeSession = (index) => {
+		setExamData((prev) => {
+			const newSessions = [...prev.sessions];
+			newSessions.splice(index, 1);
+			return { ...prev, sessions: newSessions };
+		});
+	};
   
-  // Xử lý thay đổi thông tin ca thi
-  const handleSessionChange = (index, field, value) => {
-    const newSessions = [...sessions];
-    newSessions[index][field] = value;
-    setSessions(newSessions);
-  };
-  
+	const handleSessionChange = (index, field, value) => {
+		setExamData((prev) => {
+			const newSessions = [...prev.sessions];
+			newSessions[index][field] = value;
+			return { ...prev, sessions: newSessions };
+		});
+	};
+
   // Xử lý submit form
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = {
-      ...examData,
-      sessions: sessions.filter(session => session.sessionName && session.activeAt)
+      ...examData
     };
     console.log('Submitting:', payload);
     // Gọi API ở đây
-  };
+
+		try {
+			const response = await ApiService.post("/organize-exams", payload);
+			console.log("Kỳ thi đã được tạo thành công:", response.data);
+			onClose(); // Đóng form sau khi tạo thành công
+		} catch (error) {
+			console.error("Lỗi khi tạo kỳ thi:", error);
+		}
+	};
+
+
+
   
   return (
     <Box sx={{}}>
@@ -289,6 +312,10 @@ const FormCreateOrganizeExamTest = ({ onClose, typeOptions}) => {
 									if (selectedValue === "auto" && examData.subjectId) {
 										fetchQuestionBankOptions("auto", examData.subjectId);
 									}
+									// 👉 Chỉ fetch ma trận khi loại là matrix + subjectId đã chọ
+									if (selectedValue === "matrix" && examData.subjectId) {
+										fetchMatrixOptions(examData.subjectId);
+									}
 								}}
 								renderInput={(params) => (
 									<TextField
@@ -371,9 +398,9 @@ const FormCreateOrganizeExamTest = ({ onClose, typeOptions}) => {
 							<Grid item xs={12}>
 								<Autocomplete
 									fullWidth
-									options={subjectOptions} 
+									options={matrixOptions} 
 									getOptionLabel={(option) => option.label || ""}
-									value={subjectOptions.find((opt) => opt.value === examData.matrixId) || null}
+									value={matrixOptions.find((opt) => opt.value === examData.matrixId) || null}
 									onChange={(e, newValue) => {
 										setExamData({ ...examData, matrixId: newValue?.value || null });
 									}}
@@ -512,7 +539,7 @@ const FormCreateOrganizeExamTest = ({ onClose, typeOptions}) => {
           </Box>
           
           <Grid container spacing={2}>
-						{sessions.map((session, index) => (
+						{examData.sessions.map((session, index) => (
 							<Grid item xs={12} sm={6} md={4} key={index}>
 								<Box
 									sx={{
@@ -529,7 +556,7 @@ const FormCreateOrganizeExamTest = ({ onClose, typeOptions}) => {
 										<Typography variant="h6" sx={{ fontWeight: "bold", fontSize: "16px", display: "flex", alignItems: "center" }}>
 											📝 Ca thi {index + 1}
 										</Typography>
-										{sessions.length > 1 && (
+										{examData.sessions.length > 1 && (
 											<IconButton
 												onClick={() => removeSession(index)}
 												sx={{
@@ -576,11 +603,11 @@ const FormCreateOrganizeExamTest = ({ onClose, typeOptions}) => {
 										<LocalizationProvider dateAdapter={AdapterDayjs}>
 											<DateTimePicker
 												label="Thời gian bắt đầu"
-												value={session.activeAt ? dayjs(session.activeAt) : null}
+												value={session.startAt ? dayjs(session.startAt) : null}
 												onChange={(newValue) =>
 													handleSessionChange(
 														index,
-														"activeAt",
+														"startAt",
 														newValue ? newValue.toISOString() : ""
 													)
 												}
@@ -615,11 +642,11 @@ const FormCreateOrganizeExamTest = ({ onClose, typeOptions}) => {
 										<LocalizationProvider dateAdapter={AdapterDayjs}>
 											<DateTimePicker
 												label="Thời gian kết thúc"
-												value={session.endAt ? dayjs(session.endAt) : null}
+												value={session.finishAt ? dayjs(session.finishAt) : null}
 												onChange={(newValue) =>
 													handleSessionChange(
 														index,
-														"endAt",
+														"finishAt",
 														newValue ? newValue.toISOString() : ""
 													)
 												}

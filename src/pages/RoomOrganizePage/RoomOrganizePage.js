@@ -38,6 +38,10 @@ const RoomOrganizePage = () => {
 	const [showFormDivide, setShowFormDivide] = useState(false);
 	const [searchParams] = useSearchParams();
 	const location = useLocation();
+	const [sessionRoom, setSessionRoom] = useState({
+		roomId: "",
+		supervisorIds: [],
+	});
 
   const handleOpenForm = () => {
     const newSearchParams = new URLSearchParams(location.search);
@@ -125,23 +129,21 @@ const RoomOrganizePage = () => {
 	useEffect(() => {
 		fetchData();
 	}, [organizeId, sessionId, keyword, page, pageSize]);
-
-	
 		
 	const [formData, setFormData] = useState({
 		roomId: "",
-		roomName: "",
-		supervisorId: "",
-		candidateList: "",
+		// roomName: "",
+		supervisorIds: [],
+		// candidateList: [],
 	});
 
 	const preAddNew = () => {
 		setEditingRoomOrganize(null); 
 		setFormData({
 			roomId: "",
-			roomName: "",
-			supervisorId: "",
-			candidateList: "",
+			// roomName: "",
+			supervisorIds: [],
+			// candidateList: [],
 		});
 		setShowForm(true);
 	};
@@ -152,7 +154,7 @@ const RoomOrganizePage = () => {
 		}
 	}, [showForm]);
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 		console.log("Dữ liệu thêm mới:", formData);
 		if (editingRoomOrganize) {
@@ -161,6 +163,19 @@ const RoomOrganizePage = () => {
 		} else {
 			// Gọi API thêm mới
 			console.log("Gọi API thêm mới");
+			try {
+				const response = await ApiService.post(`/organize-exams/${organizeId}/sessions/${sessionId}/rooms`, formData);
+				console.log("Thêm mới thành công:", response.data);
+				fetchData();
+			} catch (error) {
+				console.error("Lỗi khi thêm mới:", error);
+				Swal.fire({
+					title: "Lỗi",
+					text: "Không thể thêm phòng thi. Vui lòng thử lại sau.",
+					icon: "error",
+				});
+				return;
+			}
 		}
 		resetForm();
 		setShowForm(false);
@@ -169,8 +184,8 @@ const RoomOrganizePage = () => {
 	const preEdit = (account) => {
 		setFormData({
 			roomId: account.roomId,
-			roomName: account.roomName,
-			supervisorId: account.supervisorId,
+			// roomName: account.roomName,
+			supervisorIds: account.supervisorIds,
 		});
 		setEditingRoomOrganize(account);
 		setShowForm(true);
@@ -234,9 +249,9 @@ const RoomOrganizePage = () => {
 	const resetForm = () => {
 		setFormData({
 			roomId: "",
-			roomName: "",
-			supervisorId: "",
-			candidateList: "",
+			// roomName: "",
+			supervisorIds: "",
+			// candidateList: "",
 		});
 		setEditingRoomOrganize(null);
 	}
@@ -330,7 +345,12 @@ const RoomOrganizePage = () => {
 											})}
 											style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
 										>
-											{item.supervisorName}
+											{item.supervisors.map((supervisor, idx) => (
+												<span key={supervisor.userId}>
+													{supervisor.userCode} - {supervisor.supervisorName}
+													{idx < item.supervisors.length - 1 ? ", " : ""}
+												</span>
+											))}
 										</td>
 										<td className="text-center"
 											onClick={() => navigate(`/staff/organize/${organizeId}/${sessionId}/${item.roomInSessionId}`, {
@@ -443,6 +463,8 @@ const RoomOrganizePage = () => {
 								placeholder="Phòng thi"
 								name="color"
 								options={roomOptions}
+								value={roomOptions.find(option => option.value === formData.roomId) || null}
+								onChange={(option) => setFormData({ ...formData, roomId: option.value })}
 								styles={{
 									control: (base) => ({
 										...base,
@@ -472,6 +494,12 @@ const RoomOrganizePage = () => {
 									name="color"
 									inputRef={inputRef}
 									options={supervisorOptions}
+									value={formData.supervisorIds.map(id => supervisorOptions.find(option => option.value === id))}
+									onChange={(selectedOptions) => {
+										const selectedIds = selectedOptions ? selectedOptions.map(option => option.value) : [];
+										setFormData({ ...formData, supervisorIds: selectedIds });
+									}}
+									isMulti
 									styles={{
 										control: (base) => ({
 											...base,
