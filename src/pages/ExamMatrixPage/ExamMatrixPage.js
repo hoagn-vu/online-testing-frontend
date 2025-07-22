@@ -200,7 +200,7 @@ const ExamMatrixPage = () => {
                 <th>Ma trận</th>
                 <th>Phân môn</th>
                 <th>Bộ câu hỏi</th>
-                <th className="text-center" style={{ width: "200px"}}>Số lượng đề tạo sinh</th>
+                <th className="text-center">Đề tạo sinh</th>
                 <th className="text-center" style={{ width: "200px"}}>Trạng thái</th>
                 <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
               </tr>
