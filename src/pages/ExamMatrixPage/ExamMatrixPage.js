@@ -21,8 +21,13 @@ const ExamMatrixPage = () => {
   const [detailData, setDetailData] = useState([]);
   const [totalSelectedQuestions, setTotalSelectedQuestions] = useState(0);
   const [totalScore, setTotalScore] = useState(0);
-  const [difficultyData, setDifficultyData] = useState([]);   
+  const [difficultyData, setDifficultyData] = useState([]); 
+  const [showChapter, setShowChapter] = useState(true);
+  const [showLevel, setShowLevel] = useState(true);
   const navigate = useNavigate();
+  const dynamicColSpan = 1 + (showChapter ? 1 : 0) + (showLevel ? 1 : 0);
+
+
   const handleDetailClick = async (matrix) => {
   setEditingMatrix(matrix);
   try {
@@ -36,6 +41,11 @@ const ExamMatrixPage = () => {
 
     const tags = selectedMatrix.matrixTags || [];
     setDetailData(tags);
+    const hasChapter = tags.some(tag => tag.chapter && tag.chapter.trim() !== "");
+    const hasLevel = tags.some(tag => tag.level && tag.level.trim() !== "");
+
+    setShowChapter(hasChapter);
+    setShowLevel(hasLevel);
 
     // Tính tổng số câu hỏi đã chọn
     setTotalSelectedQuestions(tags.reduce((sum, tag) => sum + tag.questionCount, 0));
@@ -383,8 +393,8 @@ const ExamMatrixPage = () => {
                   <thead>
                     <tr className="bg-gray-200">
                       <th className="border p-2">STT</th>
-                      <th className="border p-2">Chuyên đề kiến thức</th>
-                      <th className="border p-2">Mức độ</th>
+                      {showChapter && <th className="border p-2">Chuyên đề kiến thức</th>}
+                      {showLevel && <th className="border p-2">Mức độ</th>}
                       <th className="border p-2 text-center">Số lượng chọn / Tổng</th>
                       <th className="border p-2 text-center">Đơn vị</th>
                       <th className="border p-2 text-center">Tổng điểm</th>
@@ -392,56 +402,78 @@ const ExamMatrixPage = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {Object.entries(
-                      detailData.reduce((acc, tag) => {
-                        if (!acc[tag.chapter]) {
-                          acc[tag.chapter] = [];
-                        }
-                        acc[tag.chapter].push(tag);
-                        return acc;
-                      }, {})
-                    ).map(([chapter, tags], chapterIndex) => (
-                      <React.Fragment key={chapterIndex}>
-                        {tags.map((tag, levelIndex) => (
-                          <tr key={`${chapterIndex}-${levelIndex}`} className="border">
-                            {levelIndex === 0 && (
-                              <td className="border p-2 text-center" rowSpan={tags.length}>
-                                {chapterIndex + 1}
+                    {/* Nếu có chapter thì vẫn group theo chapter */}
+                    {showChapter ? (
+                      Object.entries(
+                        detailData.reduce((acc, tag) => {
+                          const key = tag.chapter || "Khác";
+                          if (!acc[key]) acc[key] = [];
+                          acc[key].push(tag);
+                          return acc;
+                        }, {})
+                      ).map(([chapter, tags], chapterIndex) => (
+                        <React.Fragment key={chapterIndex}>
+                          {tags.map((tag, levelIndex) => (
+                            <tr key={`${chapterIndex}-${levelIndex}`} className="border">
+                              {levelIndex === 0 && (
+                                <td className="border p-2 text-center" rowSpan={tags.length}>
+                                  {chapterIndex + 1}
+                                </td>
+                              )}
+                              {levelIndex === 0 && (
+                                <td
+                                  className="border p-2"
+                                  rowSpan={tags.length}
+                                  style={{ minWidth: "300px" }}
+                                >
+                                  {chapter}
+                                </td>
+                              )}
+                              {showLevel && (
+                                <td className="border p-2" style={{ minWidth: "150px" }}>
+                                  {tag.level || "-"}
+                                </td>
+                              )}
+                              <td className="border p-2 text-center">{tag.questionCount} / 10</td>
+                              <td className="border p-2 text-center">Câu</td>
+                              <td className="border p-2 text-center">{tag.score.toFixed(1)}</td>
+                              <td className="border p-2 text-center">
+                                {tag.questionCount === 0 ? "-" : (tag.score / tag.questionCount).toFixed(2)}
                               </td>
-                            )}
-                            {levelIndex === 0 && (
-                              <td className="border p-2" rowSpan={tags.length} style={{ minWidth: '300px' }}>
-                                {chapter}
-                              </td>
-                            )}
-                            <td className="border p-2" style={{ minWidth: '150px' }}>{tag.level}</td>
-                            <td className="border p-2 text-center" style={{ minWidth: '100px' }}>
-                              <div className="d-flex align-items-center justify-content-center gap-1">
-                                {tag.questionCount}
-                                <span>/ {String(10).padStart(2, '0')}</span> {/* Giả định total = 10 */}
-                              </div>
+                            </tr>
+                          ))}
+                        </React.Fragment>
+                      ))
+                    ) : (
+                      /* Nếu không có chapter thì không group, duyệt trực tiếp */
+                      detailData.map((tag, index) => (
+                        <tr key={index} className="border">
+                          <td className="border p-2 text-center">{index + 1}</td>
+                          {showLevel && (
+                            <td className="border p-2" style={{ minWidth: "150px" }}>
+                              {tag.level || "-"}
                             </td>
-                            <td className="border p-2 text-center" style={{ minWidth: '70px' }}>Câu</td>
-                            <td className="border p-2 text-center">
-                              {tag.score.toFixed(1)}
-                            </td>
-                            <td className="border p-2 text-center">
-                              {tag.questionCount === 0
-                                ? '-'
-                                : (tag.score / tag.questionCount).toFixed(2)}
-                            </td>
-                          </tr>
-                        ))}
-                      </React.Fragment>
-                    ))}
+                          )}
+                          <td className="border p-2 text-center">{tag.questionCount} / 10</td>
+                          <td className="border p-2 text-center">Câu</td>
+                          <td className="border p-2 text-center">{tag.score.toFixed(1)}</td>
+                          <td className="border p-2 text-center">
+                            {tag.questionCount === 0 ? "-" : (tag.score / tag.questionCount).toFixed(2)}
+                          </td>
+                        </tr>
+                        
+                      ))
+                      
+                    )}
                     <tr className="bg-gray-300 fw-bold">
-                      <td className="border p-2 text-center" colSpan="3">Tổng số câu hỏi</td>
+                      <td className="border p-2 text-center" colSpan={dynamicColSpan}>Tổng số câu hỏi</td>
                       <td className="border p-2 text-center">{totalSelectedQuestions}</td>
                       <td className="border p-2 text-center">Câu</td>
                       <td className="border p-2 text-center">{totalScore.toFixed(1)}</td>
                       <td className="border p-2 text-center">-</td>
                     </tr>
                   </tbody>
+
                 </table>
               </div>
 
