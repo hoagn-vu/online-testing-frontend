@@ -2,16 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Box, Paper } from "@mui/material";
 import PropTypes from 'prop-types';
 
-const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestions, difficultyData }) => {
-  const [totalScore, setTotalScore] = useState(10);
-
-  useEffect(() => {
-    if (!data || data.length === 0) {
-      setTotalScore(10);
-    }
-  }, []);
-
-  
+const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestions, difficultyData, totalScore, setTotalScore  }) => {
   return (
     <Box display="flex" gap={2} className="mt-3 w-full" justifyContent="space-between" >
       <div className="table-responsive tbl-shadow pb-0" 
@@ -184,6 +175,8 @@ MatrixBoth.propTypes = {
     handleInputChange: PropTypes.func.isRequired,
     totalSelectedQuestions: PropTypes.number.isRequired,
     difficultyData: PropTypes.array.isRequired,
+    setTotalScore: PropTypes.array.isRequired,
+    totalScore: PropTypes.array.isRequired,
 };
 
 export default MatrixBoth;

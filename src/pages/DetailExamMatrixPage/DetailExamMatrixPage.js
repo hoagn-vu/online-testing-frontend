@@ -42,6 +42,7 @@ const DetailExamMatrixPage = () => {
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
 	const editMatrixId = searchParams.get("id");
+	const [totalScore, setTotalScore] = useState(10);
 
 	useEffect(() => {
 		if (inputRef.current) {
@@ -135,6 +136,12 @@ const DetailExamMatrixPage = () => {
         })),
       }))
     );
+		// ✅ TÍNH TỔNG ĐIỂM TỪ MA TRẬN EDIT
+    const matrixTotalScore = (matrix.matrixTags || []).reduce(
+      (sum, tag) => sum + (tag.score || 0),
+      0
+    );
+    setTotalScore(matrixTotalScore || 10);
   } catch (error) {
     console.error("❌ Lỗi tải chi tiết ma trận:", error);
     Swal.fire("Lỗi!", "Không thể tải chi tiết ma trận", "error");
@@ -583,6 +590,8 @@ const DetailExamMatrixPage = () => {
 					handleInputChange={handleInputChange}
 					totalSelectedQuestions={totalSelectedQuestions}
 					difficultyData={difficultyData}
+					totalScore={totalScore}
+  				setTotalScore={setTotalScore}
 				/>
 			) : personName.includes("Chuyên đề") ? (
 				<MatrixChapter
@@ -603,6 +612,8 @@ const DetailExamMatrixPage = () => {
 					handleInputChange={handleInputChange}
 					totalSelectedQuestions={totalSelectedQuestions}
 					difficultyData={difficultyData}
+					totalScore={totalScore}
+  				setTotalScore={setTotalScore}
 				/>
 			)}
 
