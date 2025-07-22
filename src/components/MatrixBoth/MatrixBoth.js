@@ -80,13 +80,18 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
                         onChange={(e) => {
                           const newValue = Number(e.target.value);
 
-                          const currentTotal = data.reduce((total, chapter, cIndex) => {
-                            return total + chapter.levels.reduce((sum, lvl, lIndex) => {
-                              if (cIndex === chapterIndex && lIndex === levelIndex) return sum;
-                              return sum + lvl.score;
-                            }, 0);
+                          const currentTotal = (data || []).reduce((total, chapter, cIndex) => {
+                            const levels = Array.isArray(chapter.levels) ? chapter.levels : [chapter]; // nếu không có levels => dùng chính chapter
+                            
+                            return (
+                              total +
+                              levels.reduce((sum, lvl, lIndex) => {
+                                // Bỏ qua ô đang chỉnh sửa
+                                if (cIndex === chapterIndex && lIndex === levelIndex) return sum;
+                                return sum + (lvl.score || 0);
+                              }, 0)
+                            );
                           }, 0);
-
                           if (newValue + currentTotal <= parseFloat(totalScore)) {
                             handleInputChange(chapterIndex, levelIndex, "score", newValue);
                           } else {

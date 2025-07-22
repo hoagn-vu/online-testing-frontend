@@ -7,23 +7,28 @@ const MatrixLevel = ({ data }) => {
   const [levelData, setLevelData] = useState(() => {
     const levelSummary = {};
     data
-      .filter(item => item.level !== "") // Lọc bỏ item có level rỗng
+      .filter(item => item.level?.trim() !== "") // lọc level rỗng
       .forEach((item) => {
         if (!levelSummary[item.level]) {
           levelSummary[item.level] = {
             level: item.level,
-            totalSelected: 0,
-            totalQuestions: 0,
-            score: 0, // Điểm mỗi câu
+            // Nếu đang edit -> lấy trực tiếp questionCount, nếu đang thêm mới -> 0
+            totalSelected: item.questionCount ?? 0,
+            // total có thể undefined => fallback = questionCount
+            totalQuestions: item.total ?? item.questionCount ?? 0,
+            // Nếu đang edit -> lấy luôn score, nếu chưa có thì mặc định 0
+            score: item.score ?? 0,
           };
+        } else {
+          // Nếu chapter trùng -> cộng dồn
+          levelSummary[item.level].totalSelected += item.questionCount ?? 0;
+          levelSummary[item.level].totalQuestions += (item.total ?? item.questionCount ?? 0);
+          levelSummary[item.level].score += item.score ?? 0;
         }
-        levelSummary[item.level].totalSelected += item.questionCount;
-        levelSummary[item.level].totalQuestions += item.total;
       });
-  
+
     return Object.values(levelSummary);
   });
-  
 
   // Xử lý thay đổi input (Số lượng chọn, Điểm/câu)
   // const handleInputChangeLevel = (index, key, value) => {

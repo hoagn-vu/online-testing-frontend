@@ -4,25 +4,31 @@ import PropTypes from 'prop-types';
 
 const MatrixChapter = ({ data }) => {
   // State để lưu số lượng câu hỏi đã chọn theo chương + điểm/câu
-  const [chapterData, setChapterData] = useState(() => {
-      const chapterSummary = {};
-      data
-        .filter(item => item.chapter !== "") // Lọc bỏ mục có chapter rỗng
-        .forEach((item) => {
-          if (!chapterSummary[item.chapter]) {
-            chapterSummary[item.chapter] = {
-              chapter: item.chapter,
-              totalSelected: 0,
-              totalQuestions: 0,
-              score: 0, // Điểm mỗi câu
-            };
-          }
-          chapterSummary[item.chapter].totalSelected += item.questionCount;
-          chapterSummary[item.chapter].totalQuestions += item.total;
-        });
-    
-      return Object.values(chapterSummary);
+ const [chapterData, setChapterData] = useState(() => {
+  const chapterSummary = {};
+  data
+    .filter(item => item.chapter?.trim() !== "") // lọc chapter rỗng
+    .forEach((item) => {
+      if (!chapterSummary[item.chapter]) {
+        chapterSummary[item.chapter] = {
+          chapter: item.chapter,
+          // Nếu đang edit -> lấy trực tiếp questionCount, nếu đang thêm mới -> 0
+          totalSelected: item.questionCount ?? 0,
+          // total có thể undefined => fallback = questionCount
+          totalQuestions: item.total ?? item.questionCount ?? 0,
+          // Nếu đang edit -> lấy luôn score, nếu chưa có thì mặc định 0
+          score: item.score ?? 0,
+        };
+      } else {
+        // Nếu chapter trùng -> cộng dồn
+        chapterSummary[item.chapter].totalSelected += item.questionCount ?? 0;
+        chapterSummary[item.chapter].totalQuestions += (item.total ?? item.questionCount ?? 0);
+        chapterSummary[item.chapter].score += item.score ?? 0;
+      }
     });
+
+  return Object.values(chapterSummary);
+});
     
 
 // Xử lý thay đổi input (Số lượng chọn, Điểm/câu)
