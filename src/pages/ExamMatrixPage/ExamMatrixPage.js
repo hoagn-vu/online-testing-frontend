@@ -225,7 +225,7 @@ const ExamMatrixPage = () => {
 								</tr>
 							) : (
               listExamMatrix.map((item, index) => (
-                <tr key={`${item.questionBankId}-${index}`} className="align-middle">
+                <tr key={`${item.questionBankId}-${index}`} className="align-middle" onClick={() => handleDetailClick(item)} style={{ cursor: "pointer" }}>
                   <td className="text-center">{index + 1}</td>
                   <td>
                       <span
@@ -246,7 +246,7 @@ const ExamMatrixPage = () => {
                       </span>
                     </div>
                   </td>
-                  <td className="text-center">
+                  <td className="text-center" onClick={(e) => e.stopPropagation()}>
                     <div className="dropdown">
                       <button
                         className="btn btn-light btn-sm "
