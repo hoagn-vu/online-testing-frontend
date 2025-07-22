@@ -16,6 +16,7 @@ import MatrixChapter from "../../components/MatrixChapter/MatrixChapter";
 import MatrixLevel from "../../components/MatrixLevel/MatrixLevel";
 import ApiService from "../../services/apiService";
 import Swal from "sweetalert2";
+import CancelButton from "../../components/CancelButton/CancelButton";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -576,8 +577,9 @@ const DetailExamMatrixPage = () => {
 					</FormControl>
 				</div>
 				<div className="d-flex ms-auto">
+					<CancelButton onClick={() => navigate("/staff/matrix-exam")}>Hủy</CancelButton>
 					<button
-						className="add-btn"
+						className="add-btn ms-2"
 						onClick={handleSaveMatrix}
 					>
 						<i className={`fas ${editMatrixId ? "fa-save" : "fa-plus"} me-2`}></i>
