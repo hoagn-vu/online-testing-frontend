@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, use } from "react";
-import { Link, useNavigate  } from "react-router-dom";
+import { Link, useNavigate, useSearchParams   } from "react-router-dom";
 import SelectRe from 'react-select';
 import './DetailExamMatrixPage.css'
 import {Select, Box, Button, Grid, IconButton, Input, TextField, MenuItem, Autocomplete } from "@mui/material";
@@ -40,12 +40,22 @@ const DetailExamMatrixPage = () => {
 	const [matrixName, setMatrixName] = useState("");
 	const inputRef = useRef(null);
 	const navigate = useNavigate();
+	const [searchParams] = useSearchParams();
+	const editMatrixId = searchParams.get("id");
 
 	useEffect(() => {
 		if (inputRef.current) {
 			inputRef.current.focus();
 		}
 	}, []);
+
+	useEffect(() => {
+		if (editMatrixId && subjectOptions.length > 0) {
+			fetchMatrixDetail(editMatrixId);
+		}
+	}, [editMatrixId, subjectOptions]);
+
+
 	useEffect(() => {
 		const fetchSubjectOptions = async () => {
 			try {
@@ -76,6 +86,46 @@ const DetailExamMatrixPage = () => {
 		}
 	}, [subjectChosen]);
 
+	const fetchMatrixDetail = async (matrixId) => {
+  try {
+    const response = await ApiService.get(`/exam-matrices/${matrixId}`);
+    const matrix = response.data?.data || {}; // luôn có object
+
+    setMatrixName(matrix.matrixName || "");
+		
+		// ✅ set trực tiếp
+    setMatrixName(matrix.matrixName || "");
+    setSubjectChosen(matrix.subjectId || null);
+    setBankChosen(matrix.questionBankId || null);
+		
+    // ✅ parse matrixTags
+    const tags = Array.isArray(matrix.matrixTags) ? matrix.matrixTags : [];
+    const groupedData = tags.reduce((acc, item) => {
+      const existing = acc.find((entry) => entry.chapter === item.chapter);
+      if (existing) {
+        existing.levels.push({ ...item });
+      } else {
+        acc.push({ chapter: item.chapter, levels: [{ ...item }] });
+      }
+      return acc;
+    }, []);
+
+    setData(
+      groupedData.map((item) => ({
+        ...item,
+        levels: item.levels.map((level) => ({
+          ...level,
+          questionCount: level.questionCount || 0,
+          score: level.score || 0,
+        })),
+      }))
+    );
+  } catch (error) {
+    console.error("❌ Lỗi tải chi tiết ma trận:", error);
+    Swal.fire("Lỗi!", "Không thể tải chi tiết ma trận", "error");
+  }
+};
+
 	useEffect(() => {
 		const fetchTagsClassification = async () => {
 			try {
@@ -104,6 +154,7 @@ const DetailExamMatrixPage = () => {
   };
 
 	useEffect(() => {
+		if (editMatrixId && data.length > 0) return; 
 		const groupedData = tagClassification.reduce((acc, item) => {
 			const existing = acc.find((entry) => entry.chapter === item.chapter);
 			if (existing) {
@@ -207,7 +258,14 @@ const DetailExamMatrixPage = () => {
 			return;
 		}
 		
-	
+		if (editMatrixId) {
+			handleUpdateMatrix();
+		} else {
+			handleCreateMatrix();
+		}
+	};
+		
+	const handleCreateMatrix = async () => {
 		const examMatrixData = {
 			matrixName: matrixName,
 			subjectId: subjectChosen,
@@ -217,29 +275,58 @@ const DetailExamMatrixPage = () => {
 					chapter: item.chapter,
 					level: level.level,
 					questionCount: level.questionCount,
-					score: level.score
+					score: level.score,
 				}))
 			),
 		};
-	
+
 		try {
 			const response = await ApiService.post("/exam-matrices", examMatrixData);
-			console.log("Lưu thành công: ", response.data);
+			console.log("✅ Tạo mới thành công: ", response.data);
 			Swal.fire({
 				icon: "success",
-				title: "Lưu thành công!",
+				title: "Tạo ma trận thành công!",
 				text: "Ma trận đề thi đã được lưu.",
 			}).then(() => {
-				navigate("/staff/matrix-exam"); 
+				navigate("/staff/matrix-exam");
 			});
-			
-			// alert("Lưu thành công!");
 		} catch (error) {
-			console.error("Lỗi khi lưu ma trận đề: ", error);
-			alert("Lưu thất bại!");
+			console.error("❌ Lỗi khi tạo mới ma trận đề: ", error);
+			Swal.fire("Lỗi!", "Không thể tạo ma trận!", "error");
 		}
 	};
-		
+
+	const handleUpdateMatrix = async () => {
+		const examMatrixData = {
+			matrixName: matrixName,
+			subjectId: subjectChosen,
+			questionBankId: bankChosen,
+			matrixTags: data.flatMap((item) =>
+				item.levels.map((level) => ({
+					chapter: item.chapter,
+					level: level.level,
+					questionCount: level.questionCount,
+					score: level.score,
+				}))
+			),
+		};
+
+		try {
+			const response = await ApiService.put(`/exam-matrices/${editMatrixId}`, examMatrixData);
+			console.log("✅ Cập nhật thành công: ", response.data);
+			Swal.fire({
+				icon: "success",
+				title: "Cập nhật ma trận thành công!",
+				text: "Thông tin ma trận đề thi đã được cập nhật.",
+			}).then(() => {
+				navigate("/staff/matrix-exam");
+			});
+		} catch (error) {
+			console.error("❌ Lỗi khi cập nhật ma trận đề: ", error);
+			Swal.fire("Lỗi!", "Không thể cập nhật ma trận!", "error");
+		}
+	};
+
 	return (
 		<div className="p-4">
 			{/* Breadcrumb */}
@@ -277,8 +364,9 @@ const DetailExamMatrixPage = () => {
 					
 					<Autocomplete
 						className="ms-2"
-						options={subjectOptions} // dạng: [{ label: 'Toán 1', value: 'toan1' }, ...]
+						options={subjectOptions} 
 						getOptionLabel={(option) => option.label}
+						value={subjectOptions.find(opt => opt.value === subjectChosen) || null}
 						onChange={(event, newValue) => setSubjectChosen(newValue?.value)}
 						renderInput={(params) => (
 							<TextField
@@ -344,6 +432,7 @@ const DetailExamMatrixPage = () => {
 						className="ms-2"
 						options={bankOptions} 
 						getOptionLabel={(option) => option.label}
+						value={bankOptions.find(opt => opt.value === bankChosen) || null}
 						onChange={(event, newValue) => setBankChosen(newValue?.value)}
 						renderInput={(params) => (
 							<TextField
@@ -462,13 +551,15 @@ const DetailExamMatrixPage = () => {
 					</FormControl>
 				</div>
 				<div className="d-flex ms-auto">
-					<button className="add-btn" onClick={handleSaveMatrix}
-						style={{width: "130px"}}
+					<button
+						className="add-btn"
+						onClick={handleSaveMatrix}
 					>
-						<i className="fas fa-plus me-2"></i>
-						Tạo ma trận
+						<i className={`fas ${editMatrixId ? "fa-save" : "fa-plus"} me-2`}></i>
+						{editMatrixId ? "Cập nhật" : "Tạo ma trận"}
 					</button>
 				</div>
+
 			</div>
 			{personName.includes("Mức độ") && personName.includes("Chuyên đề") ? (
 				<MatrixBoth

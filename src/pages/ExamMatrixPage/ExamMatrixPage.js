@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate  } from "react-router-dom";
 import './ExamMatrixPage.css'
 import {Box, Button, Grid, MenuItem, Select, IconButton, TextField, Pagination } from "@mui/material";
 import Swal from "sweetalert2";
@@ -22,7 +22,7 @@ const ExamMatrixPage = () => {
   const [totalSelectedQuestions, setTotalSelectedQuestions] = useState(0);
   const [totalScore, setTotalScore] = useState(0);
   const [difficultyData, setDifficultyData] = useState([]);   
-  
+  const navigate = useNavigate();
   const handleDetailClick = async (matrix) => {
   setEditingMatrix(matrix);
   try {
@@ -124,15 +124,9 @@ const ExamMatrixPage = () => {
     matrixStatus: "active",
   });
 
-  const handleEdit = (account) => {
-    setFormData({
-      matrixName: account.matrixName,
-      subjectId: account.subjectId,
-      questionBankId: account.questionBankId,
-      matrixStatus: account.matrixStatus,
-    });
-    setEditingAccount(account);
-    setShowForm(true);
+  const handleEdit = (matrix) => {
+    // Điều hướng kèm id ma trận
+    navigate(`/staff/matrix-exam/matrix-detail?id=${matrix.id}`);
   };
 
   const handleSubmit = (e) => {
