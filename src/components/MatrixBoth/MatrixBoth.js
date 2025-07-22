@@ -1,17 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Paper } from "@mui/material";
 import PropTypes from 'prop-types';
 
-const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestions, difficultyData }) => {
-  // useEffect(() => {
-  //   console.log("from matrix both", data);
-  // }, [data]);
-  const [totalScore, setTotalScore] = React.useState(() => {
-    return data.reduce((total, chapter) =>
-      total + chapter.levels.reduce((sum, level) =>
-        sum + level.score, 0), 0).toFixed(1);
-  });
-  
+const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestions, difficultyData, totalScore, setTotalScore  }) => {
   return (
     <Box display="flex" gap={2} className="mt-3 w-full" justifyContent="space-between" >
       <div className="table-responsive tbl-shadow pb-0" 
@@ -52,9 +43,17 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
                           min="0"
                           max={level.total}
                           step="1"
-                          onChange={(e) =>
-                            handleInputChange(chapterIndex, levelIndex, "questionCount", Number(e.target.value))
-                          }
+                          onChange={(e) => {
+                            let value = Number(e.target.value);
+
+                            if (isNaN(value)) value = 0;
+
+                            if (value > level.total) value = level.total;
+
+                            if (value < 0) value = 0;
+
+                            handleInputChange(chapterIndex, levelIndex, "questionCount", value);
+                          }}
                           onKeyDown={(e) => {
                             if (e.key === '.' || e.key === ',' || e.key === 'e') {
                               e.preventDefault();
@@ -70,27 +69,40 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
                     <td className="border p-2 text-center">
                       <input
                         type="number"
-                        value={level.score.toFixed(1)}
+                        // Giữ giá trị gốc nhưng không ép format mỗi lần render
+                        value={level.score}
                         min="0"
                         step="0.1"
+                        onFocus={(e) => {
+                          // Khi click vào thì bôi đen toàn bộ để dễ gõ đè
+                          e.target.select();
+                        }}
                         onChange={(e) => {
                           const newValue = Number(e.target.value);
-                        
-                          // Tính tổng hiện tại của các score trừ dòng hiện tại
-                          const currentTotal = data.reduce((total, chapter, cIndex) => {
-                            return total + chapter.levels.reduce((sum, lvl, lIndex) => {
-                              if (cIndex === chapterIndex && lIndex === levelIndex) return sum;
-                              return sum + lvl.score;
-                            }, 0);
+
+                          const currentTotal = (data || []).reduce((total, chapter, cIndex) => {
+                            const levels = Array.isArray(chapter.levels) ? chapter.levels : [chapter]; // nếu không có levels => dùng chính chapter
+                            
+                            return (
+                              total +
+                              levels.reduce((sum, lvl, lIndex) => {
+                                // Bỏ qua ô đang chỉnh sửa
+                                if (cIndex === chapterIndex && lIndex === levelIndex) return sum;
+                                return sum + (lvl.score || 0);
+                              }, 0)
+                            );
                           }, 0);
-                        
                           if (newValue + currentTotal <= parseFloat(totalScore)) {
                             handleInputChange(chapterIndex, levelIndex, "score", newValue);
                           } else {
                             alert("Tổng điểm không được vượt quá tổng điểm đã nhập!");
                           }
                         }}
-                        
+                        onBlur={(e) => {
+                          // Sau khi rời khỏi ô input -> ép về 1 chữ số thập phân
+                          const formatted = parseFloat(e.target.value || "0").toFixed(1);
+                          handleInputChange(chapterIndex, levelIndex, "score", parseFloat(formatted));
+                        }}
                         className="border p-1 text-center"
                         style={{ width: "60px" }}
                       />
@@ -168,6 +180,8 @@ MatrixBoth.propTypes = {
     handleInputChange: PropTypes.func.isRequired,
     totalSelectedQuestions: PropTypes.number.isRequired,
     difficultyData: PropTypes.array.isRequired,
+    setTotalScore: PropTypes.array.isRequired,
+    totalScore: PropTypes.array.isRequired,
 };
 
 export default MatrixBoth;

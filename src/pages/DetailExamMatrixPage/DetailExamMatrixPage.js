@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, use } from "react";
-import { Link, useNavigate  } from "react-router-dom";
+import { Link, useNavigate, useSearchParams   } from "react-router-dom";
 import SelectRe from 'react-select';
 import './DetailExamMatrixPage.css'
 import {Select, Box, Button, Grid, IconButton, Input, TextField, MenuItem, Autocomplete } from "@mui/material";
@@ -16,6 +16,7 @@ import MatrixChapter from "../../components/MatrixChapter/MatrixChapter";
 import MatrixLevel from "../../components/MatrixLevel/MatrixLevel";
 import ApiService from "../../services/apiService";
 import Swal from "sweetalert2";
+import CancelButton from "../../components/CancelButton/CancelButton";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -40,12 +41,39 @@ const DetailExamMatrixPage = () => {
 	const [matrixName, setMatrixName] = useState("");
 	const inputRef = useRef(null);
 	const navigate = useNavigate();
+	const [searchParams] = useSearchParams();
+	const editMatrixId = searchParams.get("id");
+	const [totalScore, setTotalScore] = useState(10);
+	const [matrixType, setMatrixType] = useState("both");
+	const isEditMode = Boolean(editMatrixId); // nếu có id -> đang chỉnh sửa
+	let finalType;
+
+	if (isEditMode && matrixType) {
+		finalType = matrixType; 
+	} else {
+		finalType =
+			personName.includes("Mức độ") && personName.includes("Chuyên đề")
+				? "both"
+				: personName.includes("Chuyên đề")
+				? "chapter"
+				: personName.includes("Mức độ")
+				? "level"
+				: "both";
+	}
 
 	useEffect(() => {
 		if (inputRef.current) {
 			inputRef.current.focus();
 		}
 	}, []);
+
+	useEffect(() => {
+		if (editMatrixId && subjectOptions.length > 0) {
+			fetchMatrixDetail(editMatrixId);
+		}
+	}, [editMatrixId, subjectOptions]);
+
+
 	useEffect(() => {
 		const fetchSubjectOptions = async () => {
 			try {
@@ -76,6 +104,77 @@ const DetailExamMatrixPage = () => {
 		}
 	}, [subjectChosen]);
 
+	const fetchMatrixDetail = async (matrixId) => {
+		try {
+			const response = await ApiService.get(`/exam-matrices/${matrixId}`);
+			const matrix = response.data?.data || {}; // luôn có object
+			
+			// ✅ set trực tiếp
+			setMatrixName(matrix.matrixName || "");
+			setSubjectChosen(matrix.subjectId || null);
+			setBankChosen(matrix.questionBankId || null);
+			
+			const matrixTags = matrix.matrixTags || [];
+			// ✅ Phân loại
+			const hasOnlyChapter = matrixTags.every(tag => !tag.level || tag.level.trim() === "");
+			const hasOnlyLevel = matrixTags.every(tag => !tag.chapter || tag.chapter.trim() === "");
+
+			let detectedType = "both";
+			if (hasOnlyChapter && !hasOnlyLevel) detectedType = "chapter";
+			else if (hasOnlyLevel && !hasOnlyChapter) detectedType = "level";
+			else if (hasOnlyChapter && hasOnlyLevel) detectedType = "chapter";
+			setMatrixType(detectedType);
+
+			// ✅ Nếu BOTH → cần gọi thêm tags-classification để merge total
+			if (detectedType === "both") {
+				const tagRes = await ApiService.get("/subjects/questions/tags-classification", {
+					params: { subjectId: matrix.subjectId, questionBankId: matrix.questionBankId },
+				});
+				const classification = tagRes.data;
+
+				const tags = matrixTags.map(tag => {
+					const found = classification.find(c => c.chapter === tag.chapter && c.level === tag.level);
+					return { ...tag, total: found ? found.total : 0 };
+				});
+
+				const groupedData = tags.reduce((acc, item) => {
+					const existing = acc.find(entry => entry.chapter === item.chapter);
+					if (existing) {
+						existing.levels.push({ ...item });
+					} else {
+						acc.push({ chapter: item.chapter, levels: [{ ...item }] });
+					}
+					return acc;
+				}, []);
+
+				setData(
+					groupedData.map(item => ({
+						...item,
+						levels: item.levels.map(level => ({
+							...level,
+							total: level.total || 0,
+							questionCount: level.questionCount || 0,
+							score: level.score || 0,
+						})),
+					}))
+				);
+			} else {
+				// ✅ Nếu chỉ chapter hoặc chỉ level → dùng luôn matrixTags
+				setData(matrixTags);
+			}
+
+			// ✅ Tổng điểm
+			const matrixTotalScore = (matrix.matrixTags || []).reduce(
+				(sum, tag) => sum + (tag.score || 0),
+				0
+			);
+			setTotalScore(matrixTotalScore || 10);
+		} catch (error) {
+			console.error("❌ Lỗi tải chi tiết ma trận:", error);
+			Swal.fire("Lỗi!", "Không thể tải chi tiết ma trận", "error");
+		}
+	};
+
 	useEffect(() => {
 		const fetchTagsClassification = async () => {
 			try {
@@ -97,15 +196,14 @@ const DetailExamMatrixPage = () => {
 	const [personName, setPersonName] = useState([]);
 
   const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setPersonName(
-      typeof value === 'string' ? value.split(',') : value,
-    );
+    const value = event.target.value; 
+		// Lấy phần tử cuối cùng (mục vừa chọn)
+		const lastSelected = value[value.length - 1]; 
+		setPersonName([lastSelected]);
   };
 
 	useEffect(() => {
+		if (editMatrixId && data.length > 0) return; 
 		const groupedData = tagClassification.reduce((acc, item) => {
 			const existing = acc.find((entry) => entry.chapter === item.chapter);
 			if (existing) {
@@ -136,30 +234,35 @@ const DetailExamMatrixPage = () => {
     });
 	};
 	
-	const totalSelectedQuestions = data.reduce(
-		(sum, item) => sum + item.levels.reduce((subSum, level) => subSum + level.questionCount, 0),
-		0
-	);
+	const totalSelectedQuestions = Array.isArray(data)
+  ? data.reduce((sum, item) => {
+      const levels = Array.isArray(item.levels) ? item.levels : [item]; 
+      return sum + levels.reduce((subSum, lvl) => subSum + (lvl.questionCount || 0), 0);
+    }, 0)
+  : 0;
+
 
 	const [difficultyData, setDifficultyData] = useState([]);
 
 	useEffect(() => {
-		// Tính toán lại số lượng câu hỏi theo mức độ
 		const newDifficultyData = [];
 
-		data.forEach((item) => {
-			item.levels.forEach((level) => {
+		(data || []).forEach((item) => {
+			const levels = Array.isArray(item.levels) ? item.levels : [item]; // nếu không có levels -> treat như 1 mảng 1 phần tử
+
+			levels.forEach((level) => {
 				const existing = newDifficultyData.find((d) => d.level === level.level);
 				if (existing) {
-					existing.questionCount += level.questionCount;
+					existing.questionCount += (level.questionCount || 0);
 				} else {
-					newDifficultyData.push({ level: level.level, questionCount: level.questionCount });
+					newDifficultyData.push({ level: level.level, questionCount: (level.questionCount || 0) });
 				}
 			});
 		});
 
 		setDifficultyData(newDifficultyData);
-	}, [data]); // Chạy lại mỗi khi `data` thay đổi
+	}, [data]);
+
 	
 	// Tính tổng số câu hỏi đã chọn trong tất cả chương
   const totalSelectedQuestionsChapter = tagClassification.reduce(
@@ -209,7 +312,14 @@ const DetailExamMatrixPage = () => {
 			return;
 		}
 		
-	
+		if (editMatrixId) {
+			handleUpdateMatrix();
+		} else {
+			handleCreateMatrix();
+		}
+	};
+		
+	const handleCreateMatrix = async () => {
 		const examMatrixData = {
 			matrixName: matrixName,
 			subjectId: subjectChosen,
@@ -219,29 +329,58 @@ const DetailExamMatrixPage = () => {
 					chapter: item.chapter,
 					level: level.level,
 					questionCount: level.questionCount,
-					score: level.score
+					score: level.score,
 				}))
 			),
 		};
-	
+
 		try {
 			const response = await ApiService.post("/exam-matrices", examMatrixData);
-			console.log("Lưu thành công: ", response.data);
+			console.log("✅ Tạo mới thành công: ", response.data);
 			Swal.fire({
 				icon: "success",
-				title: "Lưu thành công!",
+				title: "Tạo ma trận thành công!",
 				text: "Ma trận đề thi đã được lưu.",
 			}).then(() => {
-				navigate("/staff/matrix-exam"); 
+				navigate("/staff/matrix-exam");
 			});
-			
-			// alert("Lưu thành công!");
 		} catch (error) {
-			console.error("Lỗi khi lưu ma trận đề: ", error);
-			alert("Lưu thất bại!");
+			console.error("❌ Lỗi khi tạo mới ma trận đề: ", error);
+			Swal.fire("Lỗi!", "Không thể tạo ma trận!", "error");
 		}
 	};
-		
+
+	const handleUpdateMatrix = async () => {
+		const examMatrixData = {
+			matrixName: matrixName,
+			subjectId: subjectChosen,
+			questionBankId: bankChosen,
+			matrixTags: data.flatMap((item) =>
+				item.levels.map((level) => ({
+					chapter: item.chapter,
+					level: level.level,
+					questionCount: level.questionCount,
+					score: level.score,
+				}))
+			),
+		};
+
+		try {
+			const response = await ApiService.put(`/exam-matrices/${editMatrixId}`, examMatrixData);
+			console.log("✅ Cập nhật thành công: ", response.data);
+			Swal.fire({
+				icon: "success",
+				title: "Cập nhật ma trận thành công!",
+				text: "Thông tin ma trận đề thi đã được cập nhật.",
+			}).then(() => {
+				navigate("/staff/matrix-exam");
+			});
+		} catch (error) {
+			console.error("❌ Lỗi khi cập nhật ma trận đề: ", error);
+			Swal.fire("Lỗi!", "Không thể cập nhật ma trận!", "error");
+		}
+	};
+
 	return (
 		<div className="p-4">
 			{/* Breadcrumb */}
@@ -279,8 +418,10 @@ const DetailExamMatrixPage = () => {
 					
 					<Autocomplete
 						className="ms-2"
-						options={subjectOptions} // dạng: [{ label: 'Toán 1', value: 'toan1' }, ...]
+						options={subjectOptions} 
+						disabled={!!editMatrixId}
 						getOptionLabel={(option) => option.label}
+						value={subjectOptions.find(opt => opt.value === subjectChosen) || null}
 						onChange={(event, newValue) => setSubjectChosen(newValue?.value)}
 						renderInput={(params) => (
 							<TextField
@@ -345,7 +486,9 @@ const DetailExamMatrixPage = () => {
 					<Autocomplete
 						className="ms-2"
 						options={bankOptions} 
+						disabled={!!editMatrixId}
 						getOptionLabel={(option) => option.label}
+						value={bankOptions.find(opt => opt.value === bankChosen) || null}
 						onChange={(event, newValue) => setBankChosen(newValue?.value)}
 						renderInput={(params) => (
 							<TextField
@@ -422,6 +565,7 @@ const DetailExamMatrixPage = () => {
 							multiple
 							value={personName}
 							onChange={handleChange}
+							disabled={!!editMatrixId}
 							input={
 								<OutlinedInput
 									label="Phân theo"
@@ -464,43 +608,44 @@ const DetailExamMatrixPage = () => {
 					</FormControl>
 				</div>
 				<div className="d-flex ms-auto">
-					<button className="add-btn" onClick={handleSaveMatrix}
-						style={{width: "130px"}}
+					<CancelButton onClick={() => navigate("/staff/matrix-exam")}>Hủy</CancelButton>
+					<button
+						className="add-btn ms-2"
+						onClick={handleSaveMatrix}
 					>
-						<i className="fas fa-plus me-2"></i>
-						Tạo ma trận
+						<i className={`fas ${editMatrixId ? "fa-save" : "fa-plus"} me-2`}></i>
+						{editMatrixId ? "Cập nhật" : "Tạo ma trận"}
 					</button>
 				</div>
+
 			</div>
-			{personName.includes("Mức độ") && personName.includes("Chuyên đề") ? (
-				<MatrixBoth
-					data={data}
-					personName={personName}
-					handleInputChange={handleInputChange}
-					totalSelectedQuestions={totalSelectedQuestions}
-					difficultyData={difficultyData}
-				/>
-			) : personName.includes("Chuyên đề") ? (
-				<MatrixChapter
-					data={tagClassification}
-					personName={personName}
-					totalSelectedQuestions={totalSelectedQuestionsChapter}
-				/>
-			) : personName.includes("Mức độ") ? (
-				<MatrixLevel
-					data={tagClassification}
-					personName={personName}
-					totalSelectedQuestions={totalSelectedQuestionsLevel}
-				/>
-			) : (
-				<MatrixBoth
-					data={data}
-					personName={personName}
-					handleInputChange={handleInputChange}
-					totalSelectedQuestions={totalSelectedQuestions}
-					difficultyData={difficultyData}
-				/>
-			)}
+			{finalType === "both" && (
+      <MatrixBoth
+        data={data}
+        personName={personName}
+        handleInputChange={handleInputChange}
+        totalSelectedQuestions={totalSelectedQuestions}
+        difficultyData={difficultyData}
+        totalScore={totalScore}
+        setTotalScore={setTotalScore}
+      />
+    )}
+
+    {finalType === "chapter" && (
+      <MatrixChapter
+        data={data}
+        personName={personName}
+        totalSelectedQuestions={totalSelectedQuestionsChapter}
+      />
+    )}
+
+    {finalType === "level" && (
+      <MatrixLevel
+        data={data}
+        personName={personName}
+        totalSelectedQuestions={totalSelectedQuestionsLevel}
+      />
+    )}
 
 		</div>
 	);

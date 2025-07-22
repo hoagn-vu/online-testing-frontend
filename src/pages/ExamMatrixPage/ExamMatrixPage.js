@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate  } from "react-router-dom";
 import './ExamMatrixPage.css'
 import {Box, Button, Grid, MenuItem, Select, IconButton, TextField, Pagination } from "@mui/material";
 import Swal from "sweetalert2";
@@ -21,8 +21,13 @@ const ExamMatrixPage = () => {
   const [detailData, setDetailData] = useState([]);
   const [totalSelectedQuestions, setTotalSelectedQuestions] = useState(0);
   const [totalScore, setTotalScore] = useState(0);
-  const [difficultyData, setDifficultyData] = useState([]);   
-  
+  const [difficultyData, setDifficultyData] = useState([]); 
+  const [showChapter, setShowChapter] = useState(true);
+  const [showLevel, setShowLevel] = useState(true);
+  const navigate = useNavigate();
+  const dynamicColSpan = 1 + (showChapter ? 1 : 0) + (showLevel ? 1 : 0);
+
+
   const handleDetailClick = async (matrix) => {
   setEditingMatrix(matrix);
   try {
@@ -36,6 +41,11 @@ const ExamMatrixPage = () => {
 
     const tags = selectedMatrix.matrixTags || [];
     setDetailData(tags);
+    const hasChapter = tags.some(tag => tag.chapter && tag.chapter.trim() !== "");
+    const hasLevel = tags.some(tag => tag.level && tag.level.trim() !== "");
+
+    setShowChapter(hasChapter);
+    setShowLevel(hasLevel);
 
     // Tính tổng số câu hỏi đã chọn
     setTotalSelectedQuestions(tags.reduce((sum, tag) => sum + tag.questionCount, 0));
@@ -124,15 +134,9 @@ const ExamMatrixPage = () => {
     matrixStatus: "active",
   });
 
-  const handleEdit = (account) => {
-    setFormData({
-      matrixName: account.matrixName,
-      subjectId: account.subjectId,
-      questionBankId: account.questionBankId,
-      matrixStatus: account.matrixStatus,
-    });
-    setEditingAccount(account);
-    setShowForm(true);
+  const handleEdit = (matrix) => {
+    // Điều hướng kèm id ma trận
+    navigate(`/staff/matrix-exam/matrix-detail?id=${matrix.id}`);
   };
 
   const handleSubmit = (e) => {
@@ -206,7 +210,8 @@ const ExamMatrixPage = () => {
                 <th>Ma trận</th>
                 <th>Phân môn</th>
                 <th>Bộ câu hỏi</th>
-                <th style={{ width: "200px"}}>Số lượng đề tạo sinh</th>
+                <th className="text-center">Đề tạo sinh</th>
+                <th className="text-center" style={{ width: "200px"}}>Trạng thái</th>
                 <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
               </tr>
             </thead>
@@ -220,7 +225,7 @@ const ExamMatrixPage = () => {
 								</tr>
 							) : (
               listExamMatrix.map((item, index) => (
-                <tr key={item.questionBankId} className="align-middle">
+                <tr key={`${item.questionBankId}-${index}`} className="align-middle" onClick={() => handleDetailClick(item)} style={{ cursor: "pointer" }}>
                   <td className="text-center">{index + 1}</td>
                   <td>
                       <span
@@ -233,8 +238,15 @@ const ExamMatrixPage = () => {
                     </td>
                   <td>{item.subjectName}</td>
                   <td>{item.questionBankName}</td>
-                  <td>{item.totalGeneratedExams}</td>
+                  <td className="text-center">{item.totalGeneratedExams}</td>
                   <td className="text-center">
+                    <div className="d-flex align-items-center justify-content-center">
+                      <span className={`badge ms-2 mt-1 ${item.matrixStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
+                        {item.matrixStatus === "Active" || "available" ? "Được sử dụng" : "Chưa sử dụng"}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="text-center" onClick={(e) => e.stopPropagation()}>
                     <div className="dropdown">
                       <button
                         className="btn btn-light btn-sm "
@@ -258,9 +270,15 @@ const ExamMatrixPage = () => {
                           transform: 'translate3d(-10px, 10px, 0px)',
                         }}
                       >
-                        <li className="tbl-action" onClick={() => handleEdit(item)}> 
-                          <button className="dropdown-item tbl-action" onClick={() => handleEdit(item)}>
-                             Chỉnh sửa
+                        <li
+                          className={`tbl-action ${item.examIds?.length > 0 ? "disabled" : ""}`}
+                          onClick={() => handleEdit(item)}
+                        >
+                          <button
+                            className="dropdown-item tbl-action"
+                            disabled={item.examIds?.length > 0}
+                          >
+                            Chỉnh sửa
                           </button>
                         </li>
                         <li className="tbl-action" onClick={() => handleDelete(item.id)}>
@@ -375,8 +393,8 @@ const ExamMatrixPage = () => {
                   <thead>
                     <tr className="bg-gray-200">
                       <th className="border p-2">STT</th>
-                      <th className="border p-2">Chuyên đề kiến thức</th>
-                      <th className="border p-2">Mức độ</th>
+                      {showChapter && <th className="border p-2">Chuyên đề kiến thức</th>}
+                      {showLevel && <th className="border p-2">Mức độ</th>}
                       <th className="border p-2 text-center">Số lượng chọn / Tổng</th>
                       <th className="border p-2 text-center">Đơn vị</th>
                       <th className="border p-2 text-center">Tổng điểm</th>
@@ -384,56 +402,78 @@ const ExamMatrixPage = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {Object.entries(
-                      detailData.reduce((acc, tag) => {
-                        if (!acc[tag.chapter]) {
-                          acc[tag.chapter] = [];
-                        }
-                        acc[tag.chapter].push(tag);
-                        return acc;
-                      }, {})
-                    ).map(([chapter, tags], chapterIndex) => (
-                      <React.Fragment key={chapterIndex}>
-                        {tags.map((tag, levelIndex) => (
-                          <tr key={`${chapterIndex}-${levelIndex}`} className="border">
-                            {levelIndex === 0 && (
-                              <td className="border p-2 text-center" rowSpan={tags.length}>
-                                {chapterIndex + 1}
+                    {/* Nếu có chapter thì vẫn group theo chapter */}
+                    {showChapter ? (
+                      Object.entries(
+                        detailData.reduce((acc, tag) => {
+                          const key = tag.chapter || "Khác";
+                          if (!acc[key]) acc[key] = [];
+                          acc[key].push(tag);
+                          return acc;
+                        }, {})
+                      ).map(([chapter, tags], chapterIndex) => (
+                        <React.Fragment key={chapterIndex}>
+                          {tags.map((tag, levelIndex) => (
+                            <tr key={`${chapterIndex}-${levelIndex}`} className="border">
+                              {levelIndex === 0 && (
+                                <td className="border p-2 text-center" rowSpan={tags.length}>
+                                  {chapterIndex + 1}
+                                </td>
+                              )}
+                              {levelIndex === 0 && (
+                                <td
+                                  className="border p-2"
+                                  rowSpan={tags.length}
+                                  style={{ minWidth: "300px" }}
+                                >
+                                  {chapter}
+                                </td>
+                              )}
+                              {showLevel && (
+                                <td className="border p-2" style={{ minWidth: "150px" }}>
+                                  {tag.level || "-"}
+                                </td>
+                              )}
+                              <td className="border p-2 text-center">{tag.questionCount} / 10</td>
+                              <td className="border p-2 text-center">Câu</td>
+                              <td className="border p-2 text-center">{tag.score.toFixed(1)}</td>
+                              <td className="border p-2 text-center">
+                                {tag.questionCount === 0 ? "-" : (tag.score / tag.questionCount).toFixed(2)}
                               </td>
-                            )}
-                            {levelIndex === 0 && (
-                              <td className="border p-2" rowSpan={tags.length} style={{ minWidth: '300px' }}>
-                                {chapter}
-                              </td>
-                            )}
-                            <td className="border p-2" style={{ minWidth: '150px' }}>{tag.level}</td>
-                            <td className="border p-2 text-center" style={{ minWidth: '100px' }}>
-                              <div className="d-flex align-items-center justify-content-center gap-1">
-                                {tag.questionCount}
-                                <span>/ {String(10).padStart(2, '0')}</span> {/* Giả định total = 10 */}
-                              </div>
+                            </tr>
+                          ))}
+                        </React.Fragment>
+                      ))
+                    ) : (
+                      /* Nếu không có chapter thì không group, duyệt trực tiếp */
+                      detailData.map((tag, index) => (
+                        <tr key={index} className="border">
+                          <td className="border p-2 text-center">{index + 1}</td>
+                          {showLevel && (
+                            <td className="border p-2" style={{ minWidth: "150px" }}>
+                              {tag.level || "-"}
                             </td>
-                            <td className="border p-2 text-center" style={{ minWidth: '70px' }}>Câu</td>
-                            <td className="border p-2 text-center">
-                              {tag.score.toFixed(1)}
-                            </td>
-                            <td className="border p-2 text-center">
-                              {tag.questionCount === 0
-                                ? '-'
-                                : (tag.score / tag.questionCount).toFixed(2)}
-                            </td>
-                          </tr>
-                        ))}
-                      </React.Fragment>
-                    ))}
+                          )}
+                          <td className="border p-2 text-center">{tag.questionCount} / 10</td>
+                          <td className="border p-2 text-center">Câu</td>
+                          <td className="border p-2 text-center">{tag.score.toFixed(1)}</td>
+                          <td className="border p-2 text-center">
+                            {tag.questionCount === 0 ? "-" : (tag.score / tag.questionCount).toFixed(2)}
+                          </td>
+                        </tr>
+                        
+                      ))
+                      
+                    )}
                     <tr className="bg-gray-300 fw-bold">
-                      <td className="border p-2 text-center" colSpan="3">Tổng số câu hỏi</td>
+                      <td className="border p-2 text-center" colSpan={dynamicColSpan}>Tổng số câu hỏi</td>
                       <td className="border p-2 text-center">{totalSelectedQuestions}</td>
                       <td className="border p-2 text-center">Câu</td>
                       <td className="border p-2 text-center">{totalScore.toFixed(1)}</td>
                       <td className="border p-2 text-center">-</td>
                     </tr>
                   </tbody>
+
                 </table>
               </div>
 

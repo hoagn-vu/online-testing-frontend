@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useNavigate , useParams } from "react-router-dom";
 import "./CandidateOrganizePage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {Chip, Box, Button, Grid, MenuItem, Select, Pagination, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
@@ -99,20 +99,35 @@ const CandidateOrganizePage = () => {
 		setShowForm(false);
 	};
 	
-	const handleDelete = (id) => {
-		Swal.fire({
-			title: "Bạn có chắc chắn xóa?",
-			text: "Bạn sẽ không thể hoàn tác hành động này!",
-			icon: "warning",
-			showCancelButton: true,
-			confirmButtonColor: "#3085d6",
-			cancelButtonColor: "#d33",
-			confirmButtonText: "Xóa",
-			cancelButtonText: "Hủy",
-		}).then((result) => {
-			if (result.isConfirmed) {
-				console.log("Xóa thí sinh có ID:", id);
-				setListCandidate(prev => prev.filter(candidate => candidate.candidateId !== id));
+	const handleDelete = (id, e) => {
+			e.stopPropagation();
+			Swal.fire({
+				title: "Bạn có chắc chắn xóa?",
+				text: "Bạn sẽ không thể hoàn tác hành động này!",
+				icon: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#3085d6",
+				cancelButtonColor: "#d33",
+				confirmButtonText: "Xóa",
+				cancelButtonText: "Hủy",
+			}).then((result) => {
+				if (result.isConfirmed) {
+					console.log("Xóa thí sinh có ID:", id);
+					setListCandidate(prev => prev.filter(candidate => candidate.candidateId !== id));
+// 	const handleDelete = (id) => {
+// 		Swal.fire({
+// 			title: "Bạn có chắc chắn xóa?",
+// 			text: "Bạn sẽ không thể hoàn tác hành động này!",
+// 			icon: "warning",
+// 			showCancelButton: true,
+// 			confirmButtonColor: "#3085d6",
+// 			cancelButtonColor: "#d33",
+// 			confirmButtonText: "Xóa",
+// 			cancelButtonText: "Hủy",
+// 		}).then((result) => {
+// 			if (result.isConfirmed) {
+// 				console.log("Xóa thí sinh có ID:", id);
+// 				setListCandidate(prev => prev.filter(candidate => candidate.candidateId !== id));
 
 				Swal.fire({
 					title: "Đã xóa!",
@@ -122,6 +137,12 @@ const CandidateOrganizePage = () => {
 			}
 		});
 	};
+
+	const navigate = useNavigate();
+
+  const handleRowClick = (candidateId) => {
+    navigate(`/staff/organize/${organizeId}/${sessionId}/${roomId}/${candidateId}`);
+  };
 
 	return (
 		<div className="p-4">
@@ -198,7 +219,10 @@ const CandidateOrganizePage = () => {
 									</tr>
 								) : (
 								processData(listCandidate).map((item, index) => (
-									<tr key={item.candidateId} className="align-middle">
+									<tr key={item.candidateId} className="align-middle"
+										onClick={() => handleRowClick(item.candidateId)}
+										style={{ cursor: "pointer" }}
+									>
 										<td className="text-center">{index + 1}</td>
 										<td>{item.userCode}</td>
 										<td>{item.lastName}</td>
@@ -206,7 +230,11 @@ const CandidateOrganizePage = () => {
 										<td className="text-center">{item.dateOfBirth}</td>
 										<td className="text-center">{item.gender == "male" ? "Nam" : "Nữ"}</td>
 										<td>
-											<button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}  onClick={() => handleDelete(item.candidateId)}>
+											<button 
+												className="btn btn-danger btn-sm ms-2" 
+												style={{width: "35px", height: "35px"}}  
+												onClick={() => handleDelete(item.candidateId)}
+											>
 												<i className="fas fa-trash-alt"></i>
 											</button>
 										</td>

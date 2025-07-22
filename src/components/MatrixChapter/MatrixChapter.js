@@ -4,25 +4,31 @@ import PropTypes from 'prop-types';
 
 const MatrixChapter = ({ data }) => {
   // State để lưu số lượng câu hỏi đã chọn theo chương + điểm/câu
-  const [chapterData, setChapterData] = useState(() => {
-      const chapterSummary = {};
-      data
-        .filter(item => item.chapter !== "") // Lọc bỏ mục có chapter rỗng
-        .forEach((item) => {
-          if (!chapterSummary[item.chapter]) {
-            chapterSummary[item.chapter] = {
-              chapter: item.chapter,
-              totalSelected: 0,
-              totalQuestions: 0,
-              score: 0, // Điểm mỗi câu
-            };
-          }
-          chapterSummary[item.chapter].totalSelected += item.questionCount;
-          chapterSummary[item.chapter].totalQuestions += item.total;
-        });
-    
-      return Object.values(chapterSummary);
+ const [chapterData, setChapterData] = useState(() => {
+  const chapterSummary = {};
+  data
+    .filter(item => item.chapter?.trim() !== "") // lọc chapter rỗng
+    .forEach((item) => {
+      if (!chapterSummary[item.chapter]) {
+        chapterSummary[item.chapter] = {
+          chapter: item.chapter,
+          // Nếu đang edit -> lấy trực tiếp questionCount, nếu đang thêm mới -> 0
+          totalSelected: item.questionCount ?? 0,
+          // total có thể undefined => fallback = questionCount
+          totalQuestions: item.total ?? item.questionCount ?? 0,
+          // Nếu đang edit -> lấy luôn score, nếu chưa có thì mặc định 0
+          score: item.score ?? 0,
+        };
+      } else {
+        // Nếu chapter trùng -> cộng dồn
+        chapterSummary[item.chapter].totalSelected += item.questionCount ?? 0;
+        chapterSummary[item.chapter].totalQuestions += (item.total ?? item.questionCount ?? 0);
+        chapterSummary[item.chapter].score += item.score ?? 0;
+      }
     });
+
+  return Object.values(chapterSummary);
+});
     
 
 // Xử lý thay đổi input (Số lượng chọn, Điểm/câu)
@@ -53,14 +59,17 @@ const MatrixChapter = ({ data }) => {
     setChapterData(newChapterData);
   };  
 
-  const [maxTotalPointsChapter, setMaxTotalPoints] = useState(() =>
-    data?.reduce((sum, item) => sum + item.questionCount * 1, 0).toFixed(1)
-  ); // mặc định tổng điểm = tổng số câu
+  const [maxTotalPointsChapter, setMaxTotalPoints] = useState(() => {
+    if (!data || data.length === 0) return 10;
+    const sum = data.reduce((sum, item) => sum + (item.questionCount * 1), 0);
+    return sum === 0 ? 10 : sum.toFixed(1);
+    }
+  ); 
   
   return (
       <Box display="flex" gap={2} className="mt-3 w-full" justifyContent="space-between">
         {/* Bảng tổng hợp câu hỏi */}
-        <div className="table-responsive" style={{ flex: "1", fontSize: "14px" }}>
+        <div className="table-responsive tbl-shadow pb-0" style={{ flex: "1", fontSize: "14px" }}>
           <table className="table w-full border border-gray-300">
             <thead>
               <tr className="bg-gray-200">
@@ -89,9 +98,17 @@ const MatrixChapter = ({ data }) => {
                           e.preventDefault(); // Chặn nhập số thập phân và ký tự không hợp lệ
                         }
                       }}
-                      onChange={(e) =>
-                        handleInputChangeChapter(index, "totalSelected", Number(e.target.value))
-                      }
+                      onChange={(e) => {
+                        let value = Number(e.target.value);
+
+                        if (isNaN(value)) value = 0;
+
+                        if (value > item.totalQuestions) value = item.totalQuestions;
+
+                        if (value < 0) value = 0;
+
+                        handleInputChangeChapter(index, "totalSelected", value)
+                      }}
                       className="border p-1 text-center"
                       style={{ width: "60px" }}
                     />{" "}
@@ -101,10 +118,15 @@ const MatrixChapter = ({ data }) => {
                   <td className="border p-2 text-center">
                     <input
                       type="number"
-                      value={item.score.toFixed(1)}
+                      value={item.score} // giữ giá trị gốc để không reset caret
                       min="0"
                       step="0.1"
+                      onFocus={(e) => e.target.select()} // auto select khi click
                       onChange={(e) => handleInputChangeChapter(index, "score", Number(e.target.value))}
+                      onBlur={(e) => {
+                        const formatted = parseFloat(e.target.value || "0").toFixed(1);
+                        handleInputChangeChapter(index, "score", parseFloat(formatted));
+                      }}
                       className="border p-1 text-center"
                       style={{ width: "60px" }}
                     />
@@ -142,7 +164,10 @@ const MatrixChapter = ({ data }) => {
         </div>
   
         {/* Bảng thống kê theo chương */}
-        <Paper sx={{ padding: 2, height: "100%", width: "250px", fontSize: "14px"  }}>
+        <Paper 
+          sx={{ padding: 2, height: "100%", width: "250px", fontSize: "14px", borderRadius: "8px",
+          boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
+        }}>
           <h5 className="justify-content-center d-flex">Thống kê theo chương</h5>
           <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #ddd" }}>
             <thead>

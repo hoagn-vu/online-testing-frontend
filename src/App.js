@@ -109,6 +109,7 @@ function App() {
           <Route path="organize/monitor/:organizeId/:sessionId" element={<MonitorOrganizePage />} />
           <Route path="organize/score/:organizeId/:sessionId" element={<ScoreTableSessionPage />} />
           <Route path="organize/:organizeId/:sessionId/:roomId" element={<CandidateOrganizePage />} />
+          <Route path="organize/:organizeId/:sessionId/:roomId/:candidateId" element={<CandidateExamResult />} />
           <Route path="question" element={<SubjectPage />}/>
           <Route path="question/:subjectId" element={<QuestionBankPage />} />
           <Route path="question/:subjectId/:questionBankId" element={<ListQuestionPage />} />
@@ -119,7 +120,6 @@ function App() {
           <Route path="room" element={<SchedulePage />} />
           <Route path="level" element={<LevelManagement />} />
           <Route path="log" element={<LogPage />} />
-          <Route path="result" element={<CandidateExamResult />} />
         </Route>
       </Routes>
 

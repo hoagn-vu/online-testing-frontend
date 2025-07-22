@@ -6,3 +6,9 @@
 .link-btn {
     height: 40px;
 }
+
+li.tbl-action.disabled {
+  pointer-events: none; /* chặn toàn bộ click */
+  opacity: 0.5;
+  cursor: not-allowed;
+}

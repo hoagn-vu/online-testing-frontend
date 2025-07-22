@@ -7,23 +7,28 @@ const MatrixLevel = ({ data }) => {
   const [levelData, setLevelData] = useState(() => {
     const levelSummary = {};
     data
-      .filter(item => item.level !== "") // Lọc bỏ item có level rỗng
+      .filter(item => item.level?.trim() !== "") // lọc level rỗng
       .forEach((item) => {
         if (!levelSummary[item.level]) {
           levelSummary[item.level] = {
             level: item.level,
-            totalSelected: 0,
-            totalQuestions: 0,
-            score: 0, // Điểm mỗi câu
+            // Nếu đang edit -> lấy trực tiếp questionCount, nếu đang thêm mới -> 0
+            totalSelected: item.questionCount ?? 0,
+            // total có thể undefined => fallback = questionCount
+            totalQuestions: item.total ?? item.questionCount ?? 0,
+            // Nếu đang edit -> lấy luôn score, nếu chưa có thì mặc định 0
+            score: item.score ?? 0,
           };
+        } else {
+          // Nếu chapter trùng -> cộng dồn
+          levelSummary[item.level].totalSelected += item.questionCount ?? 0;
+          levelSummary[item.level].totalQuestions += (item.total ?? item.questionCount ?? 0);
+          levelSummary[item.level].score += item.score ?? 0;
         }
-        levelSummary[item.level].totalSelected += item.questionCount;
-        levelSummary[item.level].totalQuestions += item.total;
       });
-  
+
     return Object.values(levelSummary);
   });
-  
 
   // Xử lý thay đổi input (Số lượng chọn, Điểm/câu)
   // const handleInputChangeLevel = (index, key, value) => {
@@ -52,14 +57,17 @@ const MatrixLevel = ({ data }) => {
     setLevelData(newLevelData);
   }; 
 
-  const [maxTotalPointsLevel, setMaxTotalPoints] = useState(() =>
-    data?.reduce((sum, item) => sum + item.questionCount * 1, 0).toFixed(1)
+  const [maxTotalPointsLevel, setMaxTotalPoints] = useState(() => {
+    if (!data || data.length === 0) return 10;
+    const sum = data.reduce((sum, item) => sum + (item.questionCount * 1), 0);
+    return sum === 0 ? 10 : sum.toFixed(1);
+    }
   ); 
 
   return (
     <Box display="flex" gap={2} className="mt-3 w-full" justifyContent="space-between">
       {/* Bảng tổng hợp câu hỏi theo mức độ */}
-      <div className="table-responsive" style={{ flex: "1", fontSize: "14px" }}>
+      <div className="table-responsive tbl-shadow pb-0" style={{ flex: "1", fontSize: "14px" }}>
         <table className="table w-full border border-gray-300">
           <thead>
             <tr className="bg-gray-200">
@@ -82,7 +90,17 @@ const MatrixLevel = ({ data }) => {
                     value={item.totalSelected}
                     min="0"
                     max={item.totalQuestions}
-                    onChange={(e) => handleInputChangeLevel(index, "totalSelected", Number(e.target.value))}
+                    onChange={(e) => {
+                      let value = Number(e.target.value);
+
+                      if (isNaN(value)) value = 0;
+
+                      if (value > item.totalQuestions) value = item.totalQuestions;
+
+                      if (value < 0) value = 0;
+
+                      handleInputChangeLevel(index, "totalSelected", value)
+                    }}
                     onKeyDown={(e) => {
                       if ([".", ",", "e"].includes(e.key)) {
                         e.preventDefault(); // Chặn nhập số thập phân và ký tự không hợp lệ
@@ -96,10 +114,15 @@ const MatrixLevel = ({ data }) => {
                 <td className="border p-2 text-center">
                   <input
                     type="number"
-                    value={item.score.toFixed(1)}
+                    value={item.score} // giữ giá trị gốc để không reset caret
                     min="0"
                     step="0.1"
+                    onFocus={(e) => e.target.select()} // auto select khi click
                     onChange={(e) => handleInputChangeLevel(index, "score", Number(e.target.value))}
+                    onBlur={(e) => {
+                      const formatted = parseFloat(e.target.value || "0").toFixed(1);
+                      handleInputChangeLevel(index, "score", parseFloat(formatted));
+                    }}
                     className="border p-1 text-center"
                     style={{ width: "60px" }}
                   />
@@ -136,7 +159,10 @@ const MatrixLevel = ({ data }) => {
       </div>
 
       {/* Bảng thống kê theo mức độ */}
-      <Paper sx={{ padding: 2, height: "100%", width: "250px", fontSize: "14px"  }}>
+      <Paper sx={{ 
+          padding: 2, height: "100%", width: "250px", fontSize: "14px", borderRadius: "8px",
+          boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
+        }}>
         <h5 className="justify-content-center d-flex">Thống kê theo mức độ</h5>
         <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #ddd" }}>
           <thead>
