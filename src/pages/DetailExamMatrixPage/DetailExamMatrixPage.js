@@ -98,8 +98,22 @@ const DetailExamMatrixPage = () => {
     setSubjectChosen(matrix.subjectId || null);
     setBankChosen(matrix.questionBankId || null);
 		
-    // ✅ parse matrixTags
-    const tags = Array.isArray(matrix.matrixTags) ? matrix.matrixTags : [];
+		// ✅ Lấy luôn tagClassification (để có total)
+    const tagRes = await ApiService.get("/subjects/questions/tags-classification", {
+      params: { subjectId: matrix.subjectId, questionBankId: matrix.questionBankId },
+    });
+    const classification = tagRes.data; // [{chapter,level,total}, ...]
+
+		// ✅ Merge matrixTags + total từ classification
+    const tags = (matrix.matrixTags || []).map(tag => {
+      const found = classification.find(c => c.chapter === tag.chapter && c.level === tag.level);
+      return {
+        ...tag,
+        total: found ? found.total : 0 // nếu không tìm thấy -> 0
+      };
+    });
+
+		// ✅ Group lại
     const groupedData = tags.reduce((acc, item) => {
       const existing = acc.find((entry) => entry.chapter === item.chapter);
       if (existing) {
@@ -115,6 +129,7 @@ const DetailExamMatrixPage = () => {
         ...item,
         levels: item.levels.map((level) => ({
           ...level,
+					total: level.total || 0,
           questionCount: level.questionCount || 0,
           score: level.score || 0,
         })),
