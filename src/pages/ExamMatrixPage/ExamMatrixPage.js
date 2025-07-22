@@ -260,13 +260,15 @@ const ExamMatrixPage = () => {
                           transform: 'translate3d(-10px, 10px, 0px)',
                         }}
                       >
-                        <li className="tbl-action" onClick={() => handleEdit(item)}> 
-                          <button 
-                            className="dropdown-item tbl-action" 
-                            onClick={() => handleEdit(item)}
-                            disabled={item.examIds && item.examIds.length > 0}
+                        <li
+                          className={`tbl-action ${item.examIds?.length > 0 ? "disabled" : ""}`}
+                          onClick={() => handleEdit(item)}
+                        >
+                          <button
+                            className="dropdown-item tbl-action"
+                            disabled={item.examIds?.length > 0}
                           >
-                             Chỉnh sửa
+                            Chỉnh sửa
                           </button>
                         </li>
                         <li className="tbl-action" onClick={() => handleDelete(item.id)}>
