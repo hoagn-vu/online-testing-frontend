@@ -387,6 +387,7 @@ const DetailExamMatrixPage = () => {
 					<Autocomplete
 						className="ms-2"
 						options={subjectOptions} 
+						disabled={!!editMatrixId}
 						getOptionLabel={(option) => option.label}
 						value={subjectOptions.find(opt => opt.value === subjectChosen) || null}
 						onChange={(event, newValue) => setSubjectChosen(newValue?.value)}
@@ -453,6 +454,7 @@ const DetailExamMatrixPage = () => {
 					<Autocomplete
 						className="ms-2"
 						options={bankOptions} 
+						disabled={!!editMatrixId}
 						getOptionLabel={(option) => option.label}
 						value={bankOptions.find(opt => opt.value === bankChosen) || null}
 						onChange={(event, newValue) => setBankChosen(newValue?.value)}
@@ -531,6 +533,7 @@ const DetailExamMatrixPage = () => {
 							multiple
 							value={personName}
 							onChange={handleChange}
+							disabled={!!editMatrixId}
 							input={
 								<OutlinedInput
 									label="Phân theo"
