@@ -54,6 +54,14 @@ const OrganizeExamPage = () => {
 		{ value: "auto", label: "Ngẫu nhiên" },
 		{ value: "exams", label: "Đề thi" },
 	]);
+
+	const typeMapping = {
+		matrix: "Ma trận",
+		auto: "Tự động",
+		exams: "Đề thi có sẵn"
+	};
+
+
   const [formData, setFormData] = useState({
     organizeExamName: "",
     subjectId: "",
@@ -343,7 +351,7 @@ const OrganizeExamPage = () => {
 													})}
 													style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
 												>
-													{item.examType}
+													{typeMapping[item.examType] || item.examType}
 												</td>
 												<td
 													onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
