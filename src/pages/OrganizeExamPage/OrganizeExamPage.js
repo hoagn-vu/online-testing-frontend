@@ -367,7 +367,7 @@ const OrganizeExamPage = () => {
 													})}
 													style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
 												>
-													{item.examType === "Đề thi" || item.examType === "Ngẫu nhiên" ? "-" : item.matrixId || "-"}
+													{item.examType === "Đề thi" || item.examType === "Ngẫu nhiên" ? "-" : item.matrixName || "-"}
 												</td>
 												<td
 													onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
