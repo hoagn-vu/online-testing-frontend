@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect,  } from 'react';
 import { Box, Grid, TextField, Button, Typography, IconButton, Autocomplete } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -12,13 +12,16 @@ import "./FormCreateOrganizeExam.css"
 import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
 import ApiService from "../../services/apiService";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 	const [editingOrganizeExam, setEditingOrganizeExam] = useState(null);
 	const [subjectOptions, setSubjectOptions] = useState([]);
 	const [questionBankOptions, setQuestionBankOptions] = useState([]);
 	const [matrixOptions, setMatrixOptions] = useState([]);
-	
+	const navigate = useNavigate();
+
   // State cho thông tin kỳ thi
   const [examData, setExamData] = useState({
     organizeExamName: '',
@@ -139,8 +142,17 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
     // Gọi API ở đây
 		try {
 			const response = await ApiService.post("/organize-exams", payload);
+			Swal.fire({
+				title: "Kỳ thi đã được tạo thành công",
+				icon: "success",
+				draggable: true
+			}).then((result) => {
+				if (result.isConfirmed) {
+					navigate("/staff/organize", { state: { reload: true } });
+					onClose(); // ✅ Chỉ đóng sau khi người dùng bấm OK
+				}
+			});
 			console.log("Kỳ thi đã được tạo thành công:", response.data);
-			onClose(); // Đóng form sau khi tạo thành công
 		} catch (error) {
 			console.error("Lỗi khi tạo kỳ thi:", error);
 		}

@@ -27,6 +27,12 @@ const OrganizeExamPage = () => {
 	const [listDisplay, setListDisplay] = useState([]);
 	const location = useLocation();
 
+	useEffect(() => {
+		if (location.state?.reload) {
+			fetchData(); 
+		}
+	}, [location.state]);
+
 	const handleOpenForm = () => {
 		const newSearchParams = new URLSearchParams(location.search);
 		newSearchParams.set("showFormCreate", "true");
