@@ -26,7 +26,11 @@ const ExamMatrixPage = () => {
   const [showLevel, setShowLevel] = useState(true);
   const navigate = useNavigate();
   const dynamicColSpan = 1 + (showChapter ? 1 : 0) + (showLevel ? 1 : 0);
+  const [openId, setOpenId] = useState(null);
 
+  const toggleDropdown = (id) => {
+    setOpenId(prev => prev === id ? null : id);
+  };
 
   const handleDetailClick = async (matrix) => {
   setEditingMatrix(matrix);
@@ -225,7 +229,7 @@ const ExamMatrixPage = () => {
 								</tr>
 							) : (
               listExamMatrix.map((item, index) => (
-                <tr key={`${item.questionBankId}-${index}`} className="align-middle" onClick={() => handleDetailClick(item)} style={{ cursor: "pointer" }}>
+                <tr key={`${item.questionBankId}-${index}`} className={`align-middle ${openId === item.id ? "table-active" : ""}`} onClick={() => handleDetailClick(item)} style={{ cursor: "pointer" }}>
                   <td className="text-center">{index + 1}</td>
                   <td>
                       <span
@@ -246,25 +250,18 @@ const ExamMatrixPage = () => {
                       </span>
                     </div>
                   </td>
-                  <td className="text-center" onClick={(e) => e.stopPropagation()}>
-                    <div className="dropdown">
+                  <td className="text-center align-middle" onClick={(e) => e.stopPropagation()}>
+                    <div className="dropdown d-inline-block">
                       <button
-                        className="btn btn-light btn-sm "
+                        className="dropdown-toggle-icon"
                         type="button"
-                        data-bs-toggle="dropdown"
                         aria-expanded="false"
-                        style={{
-                          width: "35px",
-                          height: "35px",
-                          padding: 0,
-                          background: "none",
-                          border: "none",
-                          boxShadow: "none",
-                        }}
+                        onClick={() => toggleDropdown(item.id)}
                       >
                         <i className="fas fa-ellipsis-v"></i>
                       </button>
-                      <ul className="dropdown-menu dropdown-menu-end dropdown-menu-custom "
+                      {openId === item.id && (
+                      <ul className="dropdown-menu show dropdown-custom "
                         style={{
                           right: "50%",
                           transform: 'translate3d(-10px, 10px, 0px)',
@@ -287,6 +284,7 @@ const ExamMatrixPage = () => {
                           </button>
                         </li>
                       </ul>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -388,7 +386,7 @@ const ExamMatrixPage = () => {
           </div>
           <div className="p-4" style={{ overflowY: 'auto',}}>
             <div className="d-flex gap-2 w-100" style={{ flexWrap: 'wrap' }}>
-              <div className="table-responsive tbl-shadow pb-0" style={{ flex: '1', fontSize: '14px' }}>
+              <div className="table-responsive tbl-shadow pb-0 mb-0" style={{ flex: '1', fontSize: '14px' }}>
                 <table className="table w-100 border border-gray-300">
                   <thead>
                     <tr className="bg-gray-200">
@@ -477,7 +475,7 @@ const ExamMatrixPage = () => {
                 </table>
               </div>
 
-              <div className="p-2" style={{ width: '250px', height:"200px", fontSize: '14px', boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)', borderRadius: '8px', }}>
+              <div className="p-2" style={{ minWidth: '250px', fontSize: '14px', boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)', borderRadius: '8px', }}>
                 <h5 className="text-center">Thống kê</h5>
                 <table className="table table-bordered">
                   <thead>

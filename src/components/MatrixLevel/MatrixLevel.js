@@ -26,6 +26,7 @@ const MatrixLevel = ({ data }) => {
           levelSummary[item.level].score += item.score ?? 0;
         }
       });
+    console.log("📌 data nhận được ở MatrixLevel:", data);
 
     return Object.values(levelSummary);
   });

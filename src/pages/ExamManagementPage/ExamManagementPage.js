@@ -273,21 +273,13 @@ const ExamManagementPage = () => {
 									>
 										{item.questionBankName}
 									</td>
-									<td className="text-center">
-                    <div className="dropdown">
+									<td className="text-center align-middle">
+                    <div className="dropdown d-inline-block">
                       <button
-                        className="btn btn-light btn-sm "
+                        className="dropdown-toggle-icon"
                         type="button"
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
-                        style={{
-                          width: "35px",
-                          height: "35px",
-                          padding: 0,
-                          background: "none",
-                          border: "none",
-                          boxShadow: "none",
-                        }}
                       >
                         <i className="fas fa-ellipsis-v"></i>
                       </button>

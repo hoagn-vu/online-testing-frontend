@@ -78,7 +78,6 @@
 .tbl-organize-hover tbody tr:hover {
   background-color: white !important;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
-  transform: scale(1.001); /* Làm cho hàng to nhẹ khi hover */
   cursor: pointer;
 }
 

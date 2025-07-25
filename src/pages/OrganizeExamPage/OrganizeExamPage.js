@@ -27,6 +27,12 @@ const OrganizeExamPage = () => {
 	const [listDisplay, setListDisplay] = useState([]);
 	const location = useLocation();
 
+	useEffect(() => {
+		if (location.state?.reload) {
+			fetchData(); 
+		}
+	}, [location.state]);
+
 	const handleOpenForm = () => {
 		const newSearchParams = new URLSearchParams(location.search);
 		newSearchParams.set("showFormCreate", "true");
@@ -54,6 +60,14 @@ const OrganizeExamPage = () => {
 		{ value: "auto", label: "Ngẫu nhiên" },
 		{ value: "exams", label: "Đề thi" },
 	]);
+
+	const typeMapping = {
+		matrix: "Ma trận",
+		auto: "Tự động",
+		exams: "Đề thi có sẵn"
+	};
+
+
   const [formData, setFormData] = useState({
     organizeExamName: "",
     subjectId: "",
@@ -254,7 +268,7 @@ const OrganizeExamPage = () => {
 			</nav>
 
 			{showFormCreate ? (
-				<FormCreateOrganizeExamTest 
+				<FormCreateOrganizeExam
 					onClose={handleCloseForm}
 					typeOptions={typeOptions}
 				/>
@@ -343,7 +357,7 @@ const OrganizeExamPage = () => {
 													})}
 													style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
 												>
-													{item.examType}
+													{typeMapping[item.examType] || item.examType}
 												</td>
 												<td
 													onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
@@ -359,7 +373,7 @@ const OrganizeExamPage = () => {
 													})}
 													style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
 												>
-													{item.examType === "Đề thi" || item.examType === "Ngẫu nhiên" ? "-" : item.matrixId || "-"}
+													{item.examType === "Đề thi" || item.examType === "Ngẫu nhiên" ? "-" : item.matrixName || "-"}
 												</td>
 												<td
 													onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
@@ -386,21 +400,13 @@ const OrganizeExamPage = () => {
 														</span>
 													</div>
 												</td>
-												<td className="text-center">
-													<div className="dropdown">
+												<td className="text-center align-middle">
+													<div className="dropdown d-inline-block">
 														<button
-															className="btn btn-light btn-sm "
 															type="button"
 															data-bs-toggle="dropdown"
 															aria-expanded="false"
-															style={{
-																width: "35px",
-																height: "35px",
-																padding: 0,
-																background: "none",
-																border: "none",
-																boxShadow: "none",
-															}}
+															className="dropdown-toggle-icon"
 														>
 															<i className="fas fa-ellipsis-v"></i>
 														</button>
@@ -408,6 +414,7 @@ const OrganizeExamPage = () => {
 															style={{
 																right: "50%",
 																transform: 'translate3d(-10px, 10px, 0px)',
+																zIndex: 999999,
 															}}
 														>
 															<li className="tbl-action" onClick={() => preEdit(item)}> 
