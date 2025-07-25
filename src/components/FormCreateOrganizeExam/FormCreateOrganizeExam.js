@@ -17,7 +17,8 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 	const [editingOrganizeExam, setEditingOrganizeExam] = useState(null);
 	const [subjectOptions, setSubjectOptions] = useState([]);
 	const [questionBankOptions, setQuestionBankOptions] = useState([]);
-
+	const [matrixOptions, setMatrixOptions] = useState([]);
+	
   // State cho thông tin kỳ thi
   const [examData, setExamData] = useState({
     organizeExamName: '',
@@ -27,6 +28,10 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
     examType: null,
     questionBankId: null,
     totalQuestions: '',
+		sessions: [
+		{ sessionName: '', startAt: '', finishAt: '' },
+    { sessionName: '', startAt: '', finishAt: '' }
+		],
   });
 
 	useEffect(() => {
@@ -63,11 +68,21 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 		}
 	};
 
-  // State cho các ca thi (mặc định 2 ca)
-  const [sessions, setSessions] = useState([
-    { sessionName: '', activeAt: '' },
-    { sessionName: '', activeAt: '' }
-  ]);
+	const fetchMatrixOptions = async (subjectId) => {
+		try {
+			const response = await ApiService.get("/exam-matrices/options", {
+				params: { subjectId: subjectId },
+			});
+			
+			setMatrixOptions(response.data.map((matrix) => ({
+				value: matrix.id,
+				label: matrix.matrixName,
+			})));
+		} catch (error) {
+			console.error("Failed to fetch matrix options", error);
+			return [];
+		}
+	};
   
   const [selectedType, setSelectedType] = useState(null);
   const inputRef = useRef(null);
@@ -80,34 +95,55 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 
   // Xử lý thêm ca thi mới
   const addSession = () => {
-    setSessions([...sessions, { sessionName: '', activeAt: '' }]);
+		setExamData((prev) => ({
+			...prev,
+			sessions: [...prev.sessions, { sessionName: '', startAt: '', finishAt: '' }]
+		}));
+    // setSessions([...sessions, { sessionName: '', activeAt: '' }]);
   };
   
   // Xử lý xóa ca thi
   const removeSession = (index) => {
-    if (sessions.length > 1) {
+		setExamData((prev) => {
+			const newSessions = [...prev.sessions];
+			newSessions.splice(index, 1);
+			return { ...prev, sessions: newSessions };
+		});
+    /*if (sessions.length > 1) {
       const newSessions = [...sessions];
       newSessions.splice(index, 1);
       setSessions(newSessions);
-    }
+    }*/
   };
   
   // Xử lý thay đổi thông tin ca thi
   const handleSessionChange = (index, field, value) => {
-    const newSessions = [...sessions];
-    newSessions[index][field] = value;
-    setSessions(newSessions);
+		setExamData((prev) => {
+			const newSessions = [...prev.sessions];
+			newSessions[index][field] = value;
+			return { ...prev, sessions: newSessions };
+		});
+    //const newSessions = [...sessions];
+    //newSessions[index][field] = value;
+    //setSessions(newSessions);
   };
   
   // Xử lý submit form
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = {
       ...examData,
-      sessions: sessions.filter(session => session.sessionName && session.activeAt)
+      //sessions: sessions.filter(session => session.sessionName && session.activeAt)
     };
     console.log('Submitting:', payload);
     // Gọi API ở đây
+		try {
+			const response = await ApiService.post("/organize-exams", payload);
+			console.log("Kỳ thi đã được tạo thành công:", response.data);
+			onClose(); // Đóng form sau khi tạo thành công
+		} catch (error) {
+			console.error("Lỗi khi tạo kỳ thi:", error);
+		}
   };
   
   return (
@@ -297,6 +333,10 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 											// 👉 Chỉ fetch khi loại là auto + subjectId đã chọn
 											if (selectedValue === "auto" && examData.subjectId) {
 												fetchQuestionBankOptions("auto", examData.subjectId);
+											}
+											// 👉 Chỉ fetch ma trận khi loại là matrix + subjectId đã chọ
+											if (selectedValue === "matrix" && examData.subjectId) {
+												fetchMatrixOptions(examData.subjectId);
 											}
 										}}
 										renderInput={(params) => (
@@ -520,7 +560,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 								Danh sách ca thi
 							</Typography>
 								
-							{sessions.map((session, index) => (
+							{examData.sessions.map((session, index) => (
 								<Box 
 									className="box-shadow-custom"
 									key={index} 
@@ -538,7 +578,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 										<Typography className='fw-bold' variant="subtitle1" sx={{fontSize: "16px" }}>
 											Ca thi {index + 1}
 										</Typography>
-										{sessions.length > 1 && (
+										{examData.sessions.length > 1 && (
 											<IconButton
 												onClick={() => removeSession(index)}
 												sx={{ 
@@ -590,9 +630,9 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 											<LocalizationProvider dateAdapter={AdapterDayjs}>
 												<DateTimePicker
 													label={`Thời gian bắt đầu ca ${index + 1}`}
-													value={session.activeAt ? dayjs(session.activeAt) : null}
+													value={session.activeAt ? dayjs(session.startAt) : null}
 													onChange={(newValue) => 
-														handleSessionChange(index, 'activeAt', newValue ? newValue.toISOString() : '')
+														handleSessionChange(index, 'startAt', newValue ? newValue.toISOString() : '')
 													}
 													sx={{ width: '100%' }}
 													slotProps={{
@@ -627,9 +667,9 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 											<LocalizationProvider dateAdapter={AdapterDayjs}>
 												<DateTimePicker
 													label={`Thời gian kết thúc ca ${index + 1}`}
-													value={session.activeAt ? dayjs(session.activeAt) : null}
+													value={session.activeAt ? dayjs(session.finishAt) : null}
 													onChange={(newValue) => 
-														handleSessionChange(index, 'activeAt', newValue ? newValue.toISOString() : '')
+														handleSessionChange(index, 'finishAt', newValue ? newValue.toISOString() : '')
 													}
 													sx={{ width: '100%' }}
 													slotProps={{
