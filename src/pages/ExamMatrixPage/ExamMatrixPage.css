@@ -12,3 +12,8 @@ li.tbl-action.disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.dropdown-menu.dropdown-custom {
+  right: 50% !important;
+  transform: translate3d(-20px, -25px, 10px) !important;
+}
