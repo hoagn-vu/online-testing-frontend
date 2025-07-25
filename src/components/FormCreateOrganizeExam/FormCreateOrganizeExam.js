@@ -587,7 +587,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 									}}
 								>
 									<Grid item xs={0.5} sx={{ display: 'flex', justifyContent: "space-between", alignItems: "center", }}>
-										<Typography className='fw-bold' variant="subtitle1" sx={{fontSize: "16px" }}>
+										<Typography className='fw-bold mb-3' variant="subtitle1" sx={{fontSize: "16px" }}>
 											Ca thi {index + 1}
 										</Typography>
 										{examData.sessions.length > 1 && (
