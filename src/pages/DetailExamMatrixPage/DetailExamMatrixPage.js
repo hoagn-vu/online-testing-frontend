@@ -161,20 +161,18 @@ const DetailExamMatrixPage = () => {
 					}))
 				);
 			} else {
-				// ✅ Nếu chỉ chapter hoặc chỉ level → dùng luôn matrixTags
-				setData(matrixTags);
-			}
+        setData(matrixTags);
+      }
 
-			// ✅ Tổng điểm
-			const matrixTotalScore = (matrix.matrixTags || []).reduce(
-				(sum, tag) => sum + (tag.score || 0),
-				0
-			);
-			setTotalScore(matrixTotalScore || 10);
-		} catch (error) {
-			console.error("❌ Lỗi tải chi tiết ma trận:", error);
-			Swal.fire("Lỗi!", "Không thể tải chi tiết ma trận", "error");
-		}
+      const matrixTotalScore = (matrix.matrixTags || []).reduce(
+        (sum, tag) => sum + (tag.score || 0),
+        0
+      );
+      setTotalScore(matrixTotalScore || 10);
+    } catch (error) {
+      console.error("❌ Lỗi tải chi tiết ma trận:", error);
+      Swal.fire("Lỗi!", "Không thể tải chi tiết ma trận", "error");
+    }
 	};
 
 	useEffect(() => {
@@ -381,6 +379,10 @@ const DetailExamMatrixPage = () => {
 			Swal.fire("Lỗi!", "Không thể cập nhật ma trận!", "error");
 		}
 	};
+
+	useEffect(() => {
+		console.log("totalScore in DetailExamMatrixPage:", totalScore);
+	}, [totalScore]);
 
 	return (
 		<div className="p-4">
@@ -631,14 +633,18 @@ const DetailExamMatrixPage = () => {
     {finalType === "chapter" && (
       <MatrixChapter
         data={data}
+				handleInputChange={handleInputChange}
         personName={personName}
         totalSelectedQuestions={totalSelectedQuestionsChapter}
+				totalScore={totalScore}
+  			setTotalScore={setTotalScore}
       />
     )}
 
     {finalType === "level" && (
       <MatrixLevel
         data={data}
+				handleInputChange={handleInputChange}
         personName={personName}
         totalSelectedQuestions={totalSelectedQuestionsLevel}
       />

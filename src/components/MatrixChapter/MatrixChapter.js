@@ -1,30 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Paper } from "@mui/material";
 import PropTypes from 'prop-types';
+import Swal from "sweetalert2";
 
-const MatrixChapter = ({ data }) => {
+const MatrixChapter = ({ data, handleInputChange, totalScore, setTotalScore }) => {
   // State để lưu số lượng câu hỏi đã chọn theo chương + điểm/câu
  const [chapterData, setChapterData] = useState(() => {
   const chapterSummary = {};
   data
     .filter(item => item.chapter?.trim() !== "") // lọc chapter rỗng
-    .forEach((item) => {
+    .forEach((item, index) => {
       if (!chapterSummary[item.chapter]) {
         chapterSummary[item.chapter] = {
           chapter: item.chapter,
           // Nếu đang edit -> lấy trực tiếp questionCount, nếu đang thêm mới -> 0
-          totalSelected: item.questionCount ?? 0,
+          totalSelected: item.levels.reduce((sum, level) => sum + (level.questionCount ?? 0), 0),
           // total có thể undefined => fallback = questionCount
-          totalQuestions: item.total ?? item.questionCount ?? 0,
+          totalQuestions: item.levels.reduce((sum, level) => sum + (level.total ?? 0), 0),
           // Nếu đang edit -> lấy luôn score, nếu chưa có thì mặc định 0
-          score: item.score ?? 0,
+          score: item.levels.reduce((sum, level) => sum + (level.score ?? 0), 0),
+          originalIndex: index, // Lưu index gốc để ánh x
         };
       } else {
-        // Nếu chapter trùng -> cộng dồn
-        chapterSummary[item.chapter].totalSelected += item.questionCount ?? 0;
-        chapterSummary[item.chapter].totalQuestions += (item.total ?? item.questionCount ?? 0);
-        chapterSummary[item.chapter].score += item.score ?? 0;
-      }
+        chapterSummary[item.chapter].totalSelected += item.levels.reduce((sum, level) => sum + (level.questionCount ?? 0), 0);
+        chapterSummary[item.chapter].totalQuestions += item.levels.reduce((sum, level) => sum + (level.total ?? 0), 0);
+        chapterSummary[item.chapter].score += item.levels.reduce((sum, level) => sum + (level.score ?? 0), 0);
+        }
     });
 
   return Object.values(chapterSummary);
@@ -38,33 +39,54 @@ const MatrixChapter = ({ data }) => {
   //     setChapterData(newChapterData);
   // };
 
+  // Đồng bộ chapterData khi data thay đổi
+  useEffect(() => {
+    const chapterSummary = {};
+    data
+      .filter(item => item.chapter?.trim() !== "")
+      .forEach((item, index) => {
+        if (!chapterSummary[item.chapter]) {
+          chapterSummary[item.chapter] = {
+            chapter: item.chapter,
+            totalSelected: item.levels.reduce((sum, level) => sum + (level.questionCount ?? 0), 0),
+            totalQuestions: item.levels.reduce((sum, level) => sum + (level.total ?? 0), 0),
+            score: item.levels.reduce((sum, level) => sum + (level.score ?? 0), 0),
+            originalIndex: index,
+          };
+        } else {
+          chapterSummary[item.chapter].totalSelected += item.levels.reduce((sum, level) => sum + (level.questionCount ?? 0), 0);
+          chapterSummary[item.chapter].totalQuestions += item.levels.reduce((sum, level) => sum + (level.total ?? 0), 0);
+          chapterSummary[item.chapter].score += item.levels.reduce((sum, level) => sum + (level.score ?? 0), 0);
+        }
+      });
+    setChapterData(Object.values(chapterSummary));
+  }, [data]);
+
+  // Kiểm tra và log giá trị totalScore để debug
+  useEffect(() => {
+    console.log("totalScore in MatrixChapter:", totalScore);
+  }, [totalScore]);
+
   const handleInputChangeChapter = (index, key, value) => {
-    const newChapterData = [...chapterData];
-  
+    const chapterItem = chapterData[index];
     if (key === "score") {
       const currentTotal = chapterData.reduce((sum, item, i) =>
         i === index ? sum : sum + item.score, 0
       );
-  
-      if (currentTotal + value > maxTotalPointsChapter) {
-        alert("Tổng điểm vượt quá giới hạn đã đặt!");
+      const maxScore = totalScore ?? 10; // Fallback to 10 if totalScore is undefined
+      if (currentTotal + value > maxScore) {
+        Swal.fire({
+          icon: "warning",
+          title: "Tổng điểm vượt quá!",
+          text: `Tổng điểm không được vượt quá ${maxScore}.`,
+        });
         return;
       }
-  
-      newChapterData[index][key] = value;
-    } else {
-      newChapterData[index][key] = value;
     }
-  
-    setChapterData(newChapterData);
+    handleInputChange(chapterItem.originalIndex, 0, key, value);
   };  
 
-  const [maxTotalPointsChapter, setMaxTotalPoints] = useState(() => {
-    if (!data || data.length === 0) return 10;
-    const sum = data.reduce((sum, item) => sum + (item.questionCount * 1), 0);
-    return sum === 0 ? 10 : sum.toFixed(1);
-    }
-  ); 
+  const displayTotalScore = isNaN(totalScore) || totalScore === undefined ? 10 : totalScore; 
   
   return (
       <Box display="flex" gap={2} className="mt-3 w-full" justifyContent="space-between">
@@ -107,12 +129,12 @@ const MatrixChapter = ({ data }) => {
 
                         if (value < 0) value = 0;
 
-                        handleInputChangeChapter(index, "totalSelected", value)
+                        handleInputChangeChapter(index, "questionCount", value)
                       }}
                       className="border p-1 text-center"
                       style={{ width: "60px" }}
                     />{" "}
-                    / {item.totalQuestions}
+                    / {(item.totalQuestions ?? 0).toString().padStart(2, '0')}
                   </td>
                   <td className="text-center">Câu</td>
                   <td className="border p-2 text-center">
@@ -145,10 +167,15 @@ const MatrixChapter = ({ data }) => {
                 <td className="border p-2 text-center">
                   <input
                     type="number"
-                    value={maxTotalPointsChapter}
+                    value={displayTotalScore}
                     min="0"
                     step="0.1"
-                    onChange={(e) => setMaxTotalPoints(Number(e.target.value))}
+                    onChange={(e) => {
+                      const value = Number(e.target.value);
+                      if (!isNaN(value)) {
+                        setTotalScore(value);
+                      }
+                    }}                    
                     className="border p-1 text-center"
                     style={{ width: "60px" }}
                   />
@@ -191,7 +218,9 @@ const MatrixChapter = ({ data }) => {
   };
 MatrixChapter.propTypes = {
   data: PropTypes.array.isRequired,
-  totalSelectedQuestions: PropTypes.number.isRequired,
+  handleInputChange: PropTypes.func.isRequired,
+  totalScore: PropTypes.number.isRequired,
+  setTotalScore: PropTypes.number.isRequired,
 };
 
 export default MatrixChapter;
