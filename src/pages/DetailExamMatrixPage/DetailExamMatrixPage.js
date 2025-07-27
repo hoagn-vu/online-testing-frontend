@@ -17,6 +17,7 @@ import MatrixLevel from "../../components/MatrixLevel/MatrixLevel";
 import ApiService from "../../services/apiService";
 import Swal from "sweetalert2";
 import CancelButton from "../../components/CancelButton/CancelButton";
+import AddButton from "../../components/AddButton/AddButton";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -29,7 +30,7 @@ const MenuProps = {
 	},
 };
 
-const names = ['Chuyên đề','Mức độ',];
+const names = ['Chuyên đề','Mức độ'];
 
 const DetailExamMatrixPage = () => {
 	const [subjectOptions, setSubjectOptions] = useState([]);
@@ -46,6 +47,7 @@ const DetailExamMatrixPage = () => {
 	const [totalScore, setTotalScore] = useState(10);
 	const [matrixType, setMatrixType] = useState("both");
 	const isEditMode = Boolean(editMatrixId); // nếu có id -> đang chỉnh sửa
+	const [personName, setPersonName] = useState([]);
 	let finalType;
 
 	if (isEditMode && matrixType) {
@@ -193,7 +195,6 @@ const DetailExamMatrixPage = () => {
 		}
 	}, [subjectChosen, bankChosen]);
 
-	const [personName, setPersonName] = useState([]);
 
   const handleChange = (event) => {
     const value = event.target.value; 
@@ -407,7 +408,7 @@ const DetailExamMatrixPage = () => {
 							backgroundColor: "white",
 							"& .MuiOutlinedInput-root": {
 								minHeight: "40px",
-								minWidth: "250px",
+								minWidth: "220px",
 								fontSize: "14px",
 							},
 							"& .MuiInputLabel-root": {
@@ -430,7 +431,7 @@ const DetailExamMatrixPage = () => {
 								size="small"
 								sx={{
 									backgroundColor: "white",
-									width: 250,
+									minWidth: 220,
 									"& .MuiInputBase-root": {
 										height: "40px",
 									},
@@ -497,7 +498,7 @@ const DetailExamMatrixPage = () => {
 								size="small"
 								sx={{
 									backgroundColor: "white",
-									width: 250,
+									minWidth: 220,
 									"& .MuiInputBase-root": {
 										height: "40px",
 										fontSize: "14px",
@@ -552,7 +553,7 @@ const DetailExamMatrixPage = () => {
 						}}
 					/> */}
 
-					<FormControl sx={{ ml: 1, width: 250 }} size="small">
+					<FormControl sx={{ ml: 1, minWidth: 220 }} size="small">
 					<InputLabel
 							id="demo-multiple-checkbox-label"
 							sx={{ fontSize: "14px",  }}
@@ -570,7 +571,7 @@ const DetailExamMatrixPage = () => {
 								<OutlinedInput
 									label="Phân theo"
 									sx={{
-										
+										minWidth: 220,
 										"& .MuiInputBase-input": {
 											fontSize: "14px", // Font trong input
 										},
@@ -590,7 +591,6 @@ const DetailExamMatrixPage = () => {
 							}}
 							sx={{
 								backgroundColor: "white",
-								width: "205px",
 								height: "40px",
 								fontSize: "14px",
 							}}
@@ -609,13 +609,10 @@ const DetailExamMatrixPage = () => {
 				</div>
 				<div className="d-flex ms-auto">
 					<CancelButton onClick={() => navigate("/staff/matrix-exam")}>Hủy</CancelButton>
-					<button
-						className="add-btn ms-2"
-						onClick={handleSaveMatrix}
-					>
+					<AddButton onClick={handleSaveMatrix} className="ms-2">
 						<i className={`fas ${editMatrixId ? "fa-save" : "fa-plus"} me-2`}></i>
 						{editMatrixId ? "Cập nhật" : "Tạo ma trận"}
-					</button>
+					</AddButton>
 				</div>
 
 			</div>
