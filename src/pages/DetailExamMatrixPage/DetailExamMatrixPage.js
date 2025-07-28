@@ -705,6 +705,8 @@ const DetailExamMatrixPage = () => {
 				handleInputChange={handleInputChange}
         personName={personName}
         totalSelectedQuestions={totalSelectedQuestionsLevel}
+				totalScore={totalScore}
+  			setTotalScore={setTotalScore}
       />
     )}
 
