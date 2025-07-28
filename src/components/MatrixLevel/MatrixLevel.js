@@ -3,12 +3,14 @@ import { Box, Paper } from "@mui/material";
 import PropTypes from "prop-types";
 import Swal from "sweetalert2";
 
-const MatrixLevel = ({ data, handleInputChange, totalScore, setTotalScore }) => {
+const MatrixLevel = ({ data, handleInputChange, totalScore: propTotalScore, setTotalScore }) => {
   // State để lưu số lượng câu hỏi đã chọn theo mức độ + điểm/câu
   const [levelData, setLevelData] = useState(() => {
     const levelSummary = {};
+    console.log("Input data to MatrixLevel:", data); 
     data.forEach((item, index) => {
-      (item.levels || [item]).forEach((level) => {
+      const levels = Array.isArray(item.levels) ? item.levels : [item];
+      levels.forEach((level) => {
         if (!levelSummary[level.level]) {
           levelSummary[level.level] = {
             level: level.level || "Không xác định",
@@ -31,7 +33,8 @@ const MatrixLevel = ({ data, handleInputChange, totalScore, setTotalScore }) => 
   useEffect(() => {
     const levelSummary = {};
     data.forEach((item, index) => {
-      (item.levels || [item]).forEach((level) => {
+      const levels = Array.isArray(item.levels) ? item.levels : [item];
+      levels.forEach((level) => {
         if (!levelSummary[level.level]) {
           levelSummary[level.level] = {
             level: level.level || "Không xác định",
@@ -52,17 +55,20 @@ const MatrixLevel = ({ data, handleInputChange, totalScore, setTotalScore }) => 
 
   // Debug totalScore và levelData
   useEffect(() => {
-    console.log("totalScore in MatrixLevel:", totalScore);
+    console.log("propTotalScore in MatrixLevel:", propTotalScore);
     console.log("levelData in MatrixLevel:", levelData);
-  }, [totalScore, levelData]);
+  }, [propTotalScore, levelData]);
 
+    // Sử dụng totalScore từ prop hoặc tính từ levelData nếu undefined
+  const effectiveTotalScore = propTotalScore !== undefined ? propTotalScore : levelData.reduce((sum, item) => sum + (item.score || 0), 0);
+  
   const handleInputChangeLevel = (index, key, value) => {
     const levelItem = levelData[index];
     if (key === "score") {
       const currentTotal = levelData.reduce((sum, item, i) =>
         i === index ? sum : sum + item.score, 0
       );
-      const maxScore = totalScore ?? 10; // Fallback to 10 if totalScore is undefined
+      const maxScore = effectiveTotalScore ?? 10; // Fallback to 10 if totalScore is undefined
       if (currentTotal + value > maxScore) {
         Swal.fire({
           icon: "warning",
@@ -74,9 +80,6 @@ const MatrixLevel = ({ data, handleInputChange, totalScore, setTotalScore }) => 
     }
     handleInputChange(levelItem.originalIndex, 0, key, value);
   };
-
-  // Fallback để đảm bảo totalScore luôn là số hợp lệ
-  const displayTotalScore = isNaN(totalScore) || totalScore === undefined ? 10 : totalScore;
 
 
   return (
@@ -156,7 +159,7 @@ const MatrixLevel = ({ data, handleInputChange, totalScore, setTotalScore }) => 
               <td className="border p-2 text-center">
                   <input
                     type="number"
-                    value={displayTotalScore}
+                    value={effectiveTotalScore || 0}
                     min="0"
                     step="0.1"
                     onChange={(e) => {
@@ -164,7 +167,8 @@ const MatrixLevel = ({ data, handleInputChange, totalScore, setTotalScore }) => 
                       if (!isNaN(value)) {
                         setTotalScore(value);
                       }
-                    }}                    className="border p-1 text-center"
+                    }}                    
+                    className="border p-1 text-center"
                     style={{ width: "60px" }}
                   />
                 </td>
