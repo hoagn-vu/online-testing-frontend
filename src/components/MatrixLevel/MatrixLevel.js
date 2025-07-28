@@ -30,28 +30,31 @@ const MatrixLevel = ({ data, handleInputChange, totalScore: propTotalScore, setT
   });
 
   // Đồng bộ levelData khi data thay đổi
-  useEffect(() => {
+useEffect(() => {
+  setLevelData((prev) => {
     const levelSummary = {};
     data.forEach((item, index) => {
       const levels = Array.isArray(item.levels) ? item.levels : [item];
       levels.forEach((level) => {
-        if (!levelSummary[level.level]) {
-          levelSummary[level.level] = {
-            level: level.level || "Không xác định",
-            totalSelected: level.questionCount ?? 0,
+        const levelKey = level.level || "Không xác định";
+        if (!levelSummary[levelKey]) {
+          const existing = prev.find((p) => p.level === levelKey) || {};
+          levelSummary[levelKey] = {
+            level: levelKey,
+            totalSelected: existing.totalSelected ?? level.questionCount ?? 0,
             totalQuestions: level.total ?? 0,
-            score: level.score ?? 0,
+            score: existing.score ?? level.score ?? 0,
             originalIndex: index,
           };
         } else {
-          levelSummary[level.level].totalSelected += level.questionCount ?? 0;
-          levelSummary[level.level].totalQuestions += level.total ?? 0;
-          levelSummary[level.level].score += level.score ?? 0;
+          levelSummary[levelKey].totalQuestions += level.total ?? 0;
+          levelSummary[levelKey].score += level.score ?? 0;
         }
       });
     });
-    setLevelData(Object.values(levelSummary));
-  }, [data]);
+    return Object.values(levelSummary);
+  });
+}, [data]);
 
   // Debug totalScore và levelData
   useEffect(() => {
@@ -110,14 +113,17 @@ const MatrixLevel = ({ data, handleInputChange, totalScore: propTotalScore, setT
                     max={item.totalQuestions}
                     onChange={(e) => {
                       let value = Number(e.target.value);
-
                       if (isNaN(value)) value = 0;
-
                       if (value > item.totalQuestions) value = item.totalQuestions;
-
                       if (value < 0) value = 0;
 
-                      handleInputChangeLevel(index, "totalSelected", value)
+                      setLevelData((prev) => {
+                        const updated = [...prev];
+                        updated[index] = { ...updated[index], totalSelected: value };
+                        return updated;
+                      });
+
+                      handleInputChangeLevel(index, "totalSelected", value);
                     }}
                     onKeyDown={(e) => {
                       if ([".", ",", "e"].includes(e.key)) {
