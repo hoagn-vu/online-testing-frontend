@@ -63,6 +63,11 @@ const DetailExamMatrixPage = () => {
 				: "both";
 	}
 
+	// Debug personName
+  useEffect(() => {
+    console.log("personName:", personName);
+  }, [personName]);
+	
 	useEffect(() => {
 		if (inputRef.current) {
 			inputRef.current.focus();
