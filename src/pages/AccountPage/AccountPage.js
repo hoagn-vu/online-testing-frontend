@@ -527,29 +527,34 @@ const AccountPage = () => {
             sx={{
               width: "800px",
               backgroundColor: "white",
-              p: 3,
               borderRadius: "8px",
               boxShadow: 3,
               mx: "auto",
             }}
             onSubmit={handleSubmit}
           >
-            <div className="d-flex justify-content-between">   
-            <p className="fw-bold mb-4">
-              {editingAccount ? "Chỉnh sửa tài khoản" : "Thêm tài khoản mới"}
-            </p>
-            <button
-              type="button"
-              onClick={() => setShowForm(false)}
+            <div className="d-flex justify-content-between"
               style={{
-                border: 'none',
-                background: 'none',
-                fontSize: '20px',
-                cursor: 'pointer',
+                borderBottom: "1px solid #ccc",
+                marginBottom: "20px",
               }}
-            ><i className="fa-solid fa-xmark"></i></button>
+            >   
+              <p className="fw-bold p-4 pb-0">
+                {editingAccount ? "Chỉnh sửa tài khoản" : "Thêm tài khoản mới"}
+              </p>
+              <button
+                className="p-4"
+                type="button"
+                onClick={() => setShowForm(false)}
+                style={{
+                  border: 'none',
+                  background: 'none',
+                  fontSize: '20px',
+                  cursor: 'pointer',
+                }}
+              ><i className="fa-solid fa-xmark"></i></button>
             </div>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} sx={{p: 3, pt: 1}}>
               {/* Mã và Họ Tên */}
               <Grid item xs={6}>
                 <TextField
@@ -766,7 +771,7 @@ const AccountPage = () => {
             )}
 
             {/* Buttons */}
-            <Grid container spacing={2} sx={{ mt: 1, justifyContent:"flex-end" }}>
+            <Grid container spacing={2} sx={{justifyContent:"flex-end", p: 3, pt: 1 }}>
               <Grid item xs={3}>
                 <CancelButton onClick={() => setShowForm(false)} style={{width: "100%"}}>
                   Hủy
@@ -790,18 +795,24 @@ const AccountPage = () => {
             sx={{
               width: "800px",
               backgroundColor: "white",
-              p: 3,
               borderRadius: "8px",
               boxShadow: 3,
               mx: "auto",
             }}
             onSubmit={handlePasswordSubmit}
           >
-            <div className="d-flex justify-content-between">
-              <p className="fw-bold mb-4">
+            <div 
+              className="d-flex justify-content-between"
+              style={{
+                borderBottom: "1px solid #ccc",
+                marginBottom: "20px",
+              }}
+            >
+              <p className="fw-bold p-4 pb-0">
                 Đổi mật khẩu
               </p>
               <button
+                className="p-4"
                 type="button"
                 onClick={() => setShowPasswordForm(false)}
                 style={{
@@ -812,7 +823,7 @@ const AccountPage = () => {
                 }}
               ><i className="fa-solid fa-xmark"></i></button>            
             </div>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} sx={{p: 3, pt: 1}}>
               {/* Mã và Họ Tên */}
               <Grid item xs={12}>
                 <TextField
@@ -903,7 +914,7 @@ const AccountPage = () => {
               </Grid>
 
             {/* Buttons */}
-            <Grid container spacing={2} sx={{ mt: 1, justifyContent:"flex-end" }}>
+            <Grid container spacing={2} sx={{justifyContent:"flex-end", p: 3, pt: 1 }}>
               <Grid item xs={3}>
                 <CancelButton onClick={() => setShowPasswordForm(false)} style={{width: "100%"}}>
                   Hủy
