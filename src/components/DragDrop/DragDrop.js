@@ -63,13 +63,25 @@ const DragDropModal = ({ open, onClose, onFilesDropped }) => {
           }}
           onClick={onClose}
         >
-          <div className="p-5" 
+          <div className="p-4 pb-5" 
             style={{
               backgroundColor: "#ffff", 
               borderRadius: "16px", 
               width: 600,
             }}
           >
+            <div className="d-flex justify-content-end">
+            <button
+              type="button"
+              onClick={onClose}
+              style={{
+                border: 'none',
+                background: 'none',
+                fontSize: '20px',
+                cursor: 'pointer',
+              }}
+            ><i className="fa-solid fa-xmark"></i></button>                
+            </div>
             <div
               onClick={(e) => e.stopPropagation()}
               onDragOver={handleDragOver}

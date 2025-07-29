@@ -534,10 +534,21 @@ const AccountPage = () => {
             }}
             onSubmit={handleSubmit}
           >
+            <div className="d-flex justify-content-between">   
             <p className="fw-bold mb-4">
               {editingAccount ? "Chỉnh sửa tài khoản" : "Thêm tài khoản mới"}
             </p>
-
+            <button
+              type="button"
+              onClick={() => setShowForm(false)}
+              style={{
+                border: 'none',
+                background: 'none',
+                fontSize: '20px',
+                cursor: 'pointer',
+              }}
+            ><i className="fa-solid fa-xmark"></i></button>
+            </div>
             <Grid container spacing={2}>
               {/* Mã và Họ Tên */}
               <Grid item xs={6}>
@@ -786,10 +797,21 @@ const AccountPage = () => {
             }}
             onSubmit={handlePasswordSubmit}
           >
-            <p className="fw-bold mb-4">
-              Đổi mật khẩu
-            </p>
-
+            <div className="d-flex justify-content-between">
+              <p className="fw-bold mb-4">
+                Đổi mật khẩu
+              </p>
+              <button
+                type="button"
+                onClick={() => setShowPasswordForm(false)}
+                style={{
+                  border: 'none',
+                  background: 'none',
+                  fontSize: '20px',
+                  cursor: 'pointer',
+                }}
+              ><i className="fa-solid fa-xmark"></i></button>            
+            </div>
             <Grid container spacing={2}>
               {/* Mã và Họ Tên */}
               <Grid item xs={12}>

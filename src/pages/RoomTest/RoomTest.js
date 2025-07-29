@@ -17,7 +17,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import "./RoomTest.css";
 
-const RoomManagementPage = () => {
+const RoomTest = () => {
   const [listRoom, setListRoom] = useState([]);
 
   const [keyword, setKeyword] = useState("");
@@ -371,10 +371,21 @@ const [date, setDate] = useState(new Date());
             }}
             onSubmit={handleSubmit}
           >
-            <p className="fw-bold mb-3" style={{fontSize: "18px"}}>
-              {editingAccount ? "Chỉnh sửa thông tin phòng thi" : "Thêm phòng thi"}
-            </p>
-
+            <div className="d-flex justify-content-between">
+              <p className="fw-bold mb-3" style={{fontSize: "18px"}}>
+                {editingAccount ? "Chỉnh sửa thông tin phòng thi" : "Thêm phòng thi"}
+              </p>
+              <button
+                type="button"
+                onClick={() => setShowForm(false)}
+                style={{
+                  border: 'none',
+                  background: 'none',
+                  fontSize: '20px',
+                  cursor: 'pointer',
+                }}
+              ><i className="fa-solid fa-xmark"></i></button>
+            </div>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
@@ -452,4 +463,4 @@ const [date, setDate] = useState(new Date());
   );
 };
 
-export default RoomManagementPage;
+export default RoomTest;

@@ -271,11 +271,22 @@ const GroupUserPage = () => {
               }}
               onSubmit={handleSubmit}
             >
+            <div className="d-flex justify-content-between">
               {/* Add your form content here */}
               <p className="fw-bold">
                   {editingSubject ? "Chỉnh sửa nhóm người dùng" : "Thêm nhóm người đùng mới"}
               </p>
-
+              <button
+                type="button"
+                onClick={() => setShowForm(false)}
+                style={{
+                  border: 'none',
+                  background: 'none',
+                  fontSize: '20px',
+                  cursor: 'pointer',
+                }}
+              ><i className="fa-solid fa-xmark"></i></button>
+              </div>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <TextField

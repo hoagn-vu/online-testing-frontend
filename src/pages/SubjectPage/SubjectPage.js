@@ -270,12 +270,22 @@ const SubjectPage = () => {
                   mx: "auto",
               }}
               onSubmit={handleSubmit}
-            >
-              {/* Add your form content here */}
-              <p className="fw-bold">
+            >            
+              <div className="d-flex justify-content-between">
+                <p className="fw-bold">
                   {editingSubject ? "Chỉnh sửa phân môn" : "Thêm phân môn"}
-              </p>
-
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setShowForm(false)}
+                  style={{
+                    border: 'none',
+                    background: 'none',
+                    fontSize: '20px',
+                    cursor: 'pointer',
+                  }}
+                ><i className="fa-solid fa-xmark"></i></button>
+              </div>
               <Grid container>
                 <TextField
                   fullWidth

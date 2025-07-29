@@ -218,7 +218,19 @@ const ListUserInGroup = () => {
               }}
               onSubmit={handleSubmit}
             >
+              <div className="d-flex justify-content-between">
                 <p className="fw-bold mb-4">Thêm người dùng vào nhóm</p>
+                <button
+                type="button"
+                onClick={() => setShowForm(false)}
+                style={{
+                  border: 'none',
+                  background: 'none',
+                  fontSize: '20px',
+                  cursor: 'pointer',
+                }}
+              ><i className="fa-solid fa-xmark"></i></button>
+              </div>
                 <Grid container>	
                   <Grid item xs={12}>									
                     <TextField

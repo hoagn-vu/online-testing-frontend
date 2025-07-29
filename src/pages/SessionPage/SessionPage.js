@@ -323,7 +323,7 @@ const SessionPage = () => {
 						<tbody style={{ fontSize: "14px" }}>
 							{listSession.length === 0 ? (
 								<tr>
-									<td colSpan="7" className="text-center fw-semibold text-muted"
+									<td colSpan="8" className="text-center fw-semibold text-muted"
 											style={{ height: "100px", verticalAlign: "middle" }}>
 										Không có dữ liệu
 									</td>
@@ -483,10 +483,21 @@ const SessionPage = () => {
 						}}
 						onSubmit={handleSubmit}
 					>
+						<div className="d-flex justify-content-between">
 						<p className="fw-bold mb-4">
-								{editingAccount ? "Chỉnh sửa thông tin ca thi" : "Tạo ca thi"}
+							{editingAccount ? "Chỉnh sửa thông tin ca thi" : "Tạo ca thi"}
 						</p>
-
+						<button
+                type="button"
+                onClick={() => setShowForm(false)}
+                style={{
+                  border: 'none',
+                  background: 'none',
+                  fontSize: '20px',
+                  cursor: 'pointer',
+                }}
+              ><i className="fa-solid fa-xmark"></i></button>
+						</div>
 						<Grid container spacing={2}>										
 							<Grid item xs={12}>
 								<TextField
