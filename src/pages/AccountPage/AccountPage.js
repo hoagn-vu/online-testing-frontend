@@ -24,6 +24,8 @@ const AccountPage = () => {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [pageSize, setPageSize] = useState(100);
+  const [showAddGroupForm, setShowAddGroupForm] = useState(false);
+  const [groupName, setGroupName] = useState("");
 
   const [listAccount, setListAccount] = useState({
     "Thí sinh": [],
@@ -97,9 +99,9 @@ const AccountPage = () => {
 
   const handleSelectItem = (e, id) => {
     if (e.target.checked) {
-      setSelectedItems([...selectedItems, id]);
+      setSelectedItems(prev => [...prev, id]);
     } else {
-      setSelectedItems(selectedItems.filter((item) => item !== id));
+      setSelectedItems(prev => prev.filter(itemId => itemId !== id));
     }
   };
 
@@ -341,6 +343,12 @@ const AccountPage = () => {
   // hàm toggle
   const handleTogglePassword = () => setShowPassword((prev) => !prev);
 
+  const handleCreateGroup = (name, members) => {
+    console.log("Tạo nhóm:", name);
+    console.log("Danh sách ID:", members);
+    // Gọi API hoặc xử lý logic tại đây
+  };
+
   return (
     <div className="p-4">
       {/* Breadcrumbs */}
@@ -378,6 +386,9 @@ const AccountPage = () => {
             >
               Đổi mật khẩu
             </button>
+            <AddButton onClick={() => setShowAddGroupForm(true)}>
+              <i className="fas fa-plus me-2"></i> Thêm nhóm
+            </AddButton>
             <AddButton className="upload-btn-hover" style={{backgroundColor: "#28A745"}} onClick={handleUploadClick}>
               <i className="fas fa-upload me-2"></i>Upload File
             </AddButton>
@@ -948,6 +959,118 @@ const AccountPage = () => {
               </button>
 
             </div>
+          </div>
+        </div>
+      )}
+
+      {showAddGroupForm && (
+        <div className="form-overlay d-flex align-items-center justify-content-center">
+          <div
+            className="shadow"
+            style={{
+              width: "700px",
+              background: "#fff",
+              borderRadius: "5px",
+              overflow: "hidden",
+              animation: "fadeIn 0.3s ease-in-out",
+              maxHeight: "90vh", 
+              overflowY: "auto",
+            }}
+          >
+            <div
+              className="d-flex justify-content-between align-items-center"
+              style={{
+                borderBottom: "1px solid #ccc",
+                marginBottom: "20px",
+              }}
+            >
+              <h5 className="fw-bold text-start mb-0 p-4">Thêm nhóm mới</h5>
+
+              <button
+                className="mt-0 pe-4"
+                type="button"
+                onClick={() => setShowAddGroupForm(false)}
+                style={{
+                  border: 'none',
+                  background: 'none',
+                  fontSize: '24px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '40px',
+                  width: '40px'
+                }}
+              >
+                <i className="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+ 
+            <div className="p-4 pt-0 pb-0">
+              <div className="mb-3">
+                <label className="form-label fw-medium">Tên nhóm:</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={groupName}
+                  onChange={(e) => setGroupName(e.target.value)}
+                  placeholder="Nhập tên nhóm..."
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label fw-medium">Danh sách tài khoản đã chọn:</label>
+                <ul className="ps-0" style={{ listStyle: "none" }}>
+                  {listDisplay.filter(item => selectedItems.includes(item.id)).length > 0 ? (
+                    listDisplay
+                      .filter(item => selectedItems.includes(item.id))
+                      .map(item => (
+                        <li
+                          key={item.id}
+                          className="d-flex align-items-center mb-2 px-3 py-2"
+                          style={{
+                            backgroundColor: "#f1f3f5",
+                            borderRadius: "8px",
+                            fontSize: "15px",
+                          }}
+                        >
+                          <i className="fas fa-user me-2 text-primary"></i>
+                          <span>
+                            <strong>{item.userCode}</strong> - {item.fullName}
+                          </span>
+                        </li>
+                      ))
+                  ) : (
+                    <li className="text-muted">Chưa chọn tài khoản nào.</li>
+                  )}
+                </ul>
+              </div>
+            </div>
+            <Grid container spacing={2} sx={{justifyContent:"flex-end", p: 3, pt: 2, pe: 0 }}>
+              <Grid item xs={3}>
+                <CancelButton 
+                  onClick={() => {
+                    setShowAddGroupForm(false);
+                    setGroupName("");
+                  }} 
+                  style={{width: "100%"}}
+                >
+                  Hủy
+                </CancelButton>
+              </Grid>
+              <Grid item xs={3}>
+                <AddButton style={{width: "100%"}}
+                  onClick={() => {
+                  // Gửi dữ liệu lên server hoặc xử lý logic thêm nhóm
+                  handleCreateGroup(groupName, selectedItems);
+                  setShowAddGroupForm(false);
+                  setGroupName("");
+                }}
+                >
+                  {editingAccount ? "Cập nhật" : "Lưu"}
+                </AddButton>
+              </Grid>
+            </Grid>
           </div>
         </div>
       )}
