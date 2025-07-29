@@ -62,7 +62,24 @@ const DetailExamMatrixPage = () => {
 				? "level"
 				: "both";
 	}
-
+// Reset data when personName changes
+  useEffect(() => {
+    if (!isEditMode && tagClassification.length > 0) {
+      setData(
+        tagClassification.map((item) => ({
+          chapter: finalType === "level" ? "N/A" : item.chapter,
+          levels: [{
+            level: finalType === "chapter" ? "N/A" : item.level || "Không xác định",
+            total: item.total || 0,
+            questionCount: 0,
+            score: 0,
+          }],
+        }))
+      );
+      setTotalScore(10); // Reset totalScore to default
+    }
+  }, [personName, tagClassification, finalType, isEditMode]);
+	
 	// Debug personName
   useEffect(() => {
     console.log("personName:", personName);
