@@ -9,4 +9,7 @@
     padding: 0.25rem 0;    /* Thu gọn padding */
     transform: translateX(10px); /* đẩy sang phải */
   }
-  
+
+.css-1fn60ym-MuiButtonBase-root-MuiListItemButton-root:hover{
+  min-width: 200px !important;
+}
