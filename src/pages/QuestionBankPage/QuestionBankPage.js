@@ -273,18 +273,23 @@ const QuestionBankPage = () => {
           sx={{
               minWidth: "700px",
               backgroundColor: "white",
-              p: 3,
               borderRadius: "8px",
               boxShadow: 3,
               mx: "auto",
           }}
             onSubmit={handleSubmit}
         >
-          <div className="d-flex justify-content-between">
-            <p className="fw-bold mb-4">
+          <div className="d-flex justify-content-between"
+            style={{
+              borderBottom: "1px solid #ccc",
+              marginBottom: "20px",
+            }}
+          >
+            <p className="fw-bold p-4 pb-0">
             {editingBank ? "Chỉnh sửa bộ câu hỏi" : "Thêm bộ câu hỏi"}
             </p>
             <button
+              className="p-4"
               type="button"
               onClick={() => setShowForm(false)}
               style={{
@@ -295,7 +300,7 @@ const QuestionBankPage = () => {
               }}
             ><i className="fa-solid fa-xmark"></i></button>
           </div>
-          <Grid container>
+          <Grid container sx={{p: 3, pt: 1}}>
             <TextField
             fullWidth
             label="Tên bộ câu hỏi"
@@ -316,7 +321,7 @@ const QuestionBankPage = () => {
           </Grid>
 
           {/* Buttons */}
-          <Grid container spacing={2} sx={{ mt: 1, justifyContent: "flex-end"}}>
+          <Grid container spacing={2} sx={{justifyContent: "flex-end", p: 3, pt: 1 }}>
           <Grid item xs={3}>
             <CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>
               Hủy
