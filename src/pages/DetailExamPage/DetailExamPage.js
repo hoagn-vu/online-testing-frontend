@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams  } from "react-router-dom";
+import { Link, useParams, useNavigate  } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./DetailExamPage.css";
 import Swal from "sweetalert2";
@@ -21,7 +21,7 @@ const DetailExamPage = () => {
   const [scores, setScores] = useState({}); 
   const [examDetails, setExamDetails] = useState([]);
   const [showFormCreateExam, setShowFormCreateExam] = useState(false);
-
+  const navigate = useNavigate();
   const [newQuestion, setNewQuestion] = useState({
     questionText: "",
     options: [{ optionText: "", isCorrect: false }, { optionText: "", isCorrect: false }],
@@ -30,6 +30,12 @@ const DetailExamPage = () => {
 	
   const [selectedChapter, setSelectedChapter] = useState(null);
   const [selectedLevel, setSelectedLevel] = useState(null);
+
+  useEffect(() => {
+    if (location.state?.reload) {
+      fetchData(); 
+    }
+  }, [location.state]);
 
   useEffect(() => {
     const fetchExamDetails = async () => {
@@ -85,8 +91,26 @@ const DetailExamPage = () => {
   }, []); */
 
   const handleEditQuestion = () => {
+    const newSearchParams = new URLSearchParams(location.search);
+		newSearchParams.set("showFormCreateExam", "true");
+		navigate(`${location.pathname}?${newSearchParams.toString()}`);
     setShowFormCreateExam(true);  
   };
+
+  const handleCloseFormCreateExam = () => {
+    const newSearchParams = new URLSearchParams(location.search);
+    newSearchParams.delete("showFormCreateExam");
+    const newUrl = newSearchParams.toString()
+      ? `${location.pathname}?${newSearchParams.toString()}`
+      : location.pathname;
+    navigate(newUrl, { replace: true });
+    setShowFormCreateExam(false);
+  };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    setShowFormCreateExam(params.get("showFormCreateExam") === "true");
+  }, [location.search]);
 
   const handleAddOption = () => {
     setNewQuestion({
@@ -159,10 +183,6 @@ const DetailExamPage = () => {
 
     new window.bootstrap.Modal(document.getElementById("questionModal")).show();
   };*/
-
-  const handleCloseFormCreateExam = () => {
-    setShowFormCreateExam(false); // Đóng FormCreateExam
-  };
 
   const handleDeleteExam = (examId) => {
     Swal.fire({

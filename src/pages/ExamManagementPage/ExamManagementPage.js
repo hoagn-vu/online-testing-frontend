@@ -183,6 +183,28 @@ const ExamManagementPage = () => {
 		});
   };
 
+	const handleOpenFormCreateExam = () => {
+		const newSearchParams = new URLSearchParams(location.search);
+		newSearchParams.set("showFormCreateExam", "true");
+		navigate(`${location.pathname}?${newSearchParams.toString()}`);
+		setShowFormCreateExam(true);  
+	};
+
+	const handleCloseFormCreateExam = () => {
+		const newSearchParams = new URLSearchParams(location.search);
+		newSearchParams.delete("showFormCreateExam");
+		const newUrl = newSearchParams.toString()
+			? `${location.pathname}?${newSearchParams.toString()}`
+			: location.pathname;
+		navigate(newUrl, { replace: true });
+		setShowFormCreateExam(false);
+	};
+
+	useEffect(() => {
+		const params = new URLSearchParams(location.search);
+		setShowFormCreateExam(params.get("showFormCreateExam") === "true");
+	}, [location.search]);
+
 	return (
 		<div className="p-4">
 			{/* Breadcrumb */}
@@ -194,7 +216,9 @@ const ExamManagementPage = () => {
 			</nav>
 
 			{showFormCreateExam ? (
-				<FormCreateExam onClose={() => setShowFormCreateExam(false)}/>
+				<FormCreateExam
+					onClose={handleCloseFormCreateExam}
+				/>
 			):(
 			<div className="tbl-shadow p-3">
 				<div className="sample-card-header d-flex justify-content-between align-items-center mb-2">
@@ -212,7 +236,7 @@ const ExamManagementPage = () => {
           </div>
 
           <div className='right-header'>
-						<AddButton onClick={() => setShowFormCreateExam(true)}>
+						<AddButton onClick={handleOpenFormCreateExam}>
 							<i className="fas fa-plus me-2"></i>
               Thêm mới
 						</AddButton>
@@ -322,98 +346,98 @@ const ExamManagementPage = () => {
 			</div>
 			)}
 			
-			{/* Form thêm tài khoản */}
-				{showForm && (
-					<div className="form-overlay">
-						<Box
-							component="form"
-							sx={{
-								width: "700px",
-								backgroundColor: "white",
-								borderRadius: "8px",
-								boxShadow: 3,
-								mx: "auto",
+			{/* Form thêm đề thi */}
+			{showForm && (
+				<div className="form-overlay">
+					<Box
+						component="form"
+						sx={{
+							width: "700px",
+							backgroundColor: "white",
+							borderRadius: "8px",
+							boxShadow: 3,
+							mx: "auto",
+						}}
+						onSubmit={handleSubmit}
+					>
+						<div 
+							className="d-flex justify-content-between"
+							style={{
+								borderBottom: "1px solid #ccc",
+								marginBottom: "20px",
 							}}
-							onSubmit={handleSubmit}
 						>
-							<div 
-								className="d-flex justify-content-between"
+							<p className="fw-bold p-4 pb-0" style={{fontSize: "18px"}}>
+								{editingAccount ? "Chỉnh sửa thông tin đề thi" : "Tạo đề thi"}
+							</p>
+							<button
+								className="p-4"
+								type="button"
+								onClick={() => setShowPasswordForm(false)}
 								style={{
-									borderBottom: "1px solid #ccc",
-									marginBottom: "20px",
+									border: 'none',
+									background: 'none',
+									fontSize: '20px',
+									cursor: 'pointer',
 								}}
-							>
-								<p className="fw-bold p-4 pb-0" style={{fontSize: "18px"}}>
-									{editingAccount ? "Chỉnh sửa thông tin đề thi" : "Tạo đề thi"}
-								</p>
-								<button
-									className="p-4"
-									type="button"
-									onClick={() => setShowPasswordForm(false)}
-									style={{
-										border: 'none',
-										background: 'none',
-										fontSize: '20px',
-										cursor: 'pointer',
+							><i className="fa-solid fa-xmark"></i></button>
+						</div>
+						<Grid container spacing={2} sx={{p: 3, pt: 1}}>										
+							<Grid item xs={12}>
+								<TextField
+									fullWidth
+									label="Mã đề thi"
+									required
+									value={formData.examCode}
+									inputRef={inputRef}
+									onChange={(e) =>
+										setFormData({ ...formData, studentId: e.target.value })
+									}
+									sx={{
+										"& .MuiInputBase-input": {
+											fontSize: "14px",
+											paddingBottom: "11px",
+										},
+										"& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
 									}}
-								><i className="fa-solid fa-xmark"></i></button>
-							</div>
-							<Grid container spacing={2} sx={{p: 3, pt: 1}}>										
-								<Grid item xs={12}>
-									<TextField
-										fullWidth
-										label="Mã đề thi"
-										required
-										value={formData.examCode}
-										inputRef={inputRef}
-										onChange={(e) =>
-											setFormData({ ...formData, studentId: e.target.value })
-										}
-										sx={{
-											"& .MuiInputBase-input": {
-												fontSize: "14px",
-												paddingBottom: "11px",
-											},
-											"& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-										}}
-									/>
-								</Grid>
-	
-								<Grid item xs={12}>
-									<TextField
-										fullWidth
-										label="Tên đề thi"
-										required
-										value={formData.examName}
-										onChange={(e) =>
-											setFormData({ ...formData, name: e.target.value })
-										}
-										sx={{
-											"& .MuiInputBase-input": {
-												fontSize: "14px",
-												paddingBottom: "11px",
-											},
-											"& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-										}}
-									/>
-								</Grid>
-							</Grid>		
-							{/* Buttons */}
-							<Grid container spacing={2} sx={{justifyContent: "flex-end", p: 3, pt: 1 }}>
-								<Grid item xs={3}>
-									<CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>
-										Hủy
-									</CancelButton>
-								</Grid>
-								<Grid item xs={3}>
-									<AddButton style={{width: "100%"}}>
-										{editingAccount ? "Cập nhật" : "Lưu"}
-									</AddButton>
-								</Grid>
+								/>
 							</Grid>
-						</Box>
-					</div>
-				)}
+
+							<Grid item xs={12}>
+								<TextField
+									fullWidth
+									label="Tên đề thi"
+									required
+									value={formData.examName}
+									onChange={(e) =>
+										setFormData({ ...formData, name: e.target.value })
+									}
+									sx={{
+										"& .MuiInputBase-input": {
+											fontSize: "14px",
+											paddingBottom: "11px",
+										},
+										"& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+									}}
+								/>
+							</Grid>
+						</Grid>		
+						{/* Buttons */}
+						<Grid container spacing={2} sx={{justifyContent: "flex-end", p: 3, pt: 1 }}>
+							<Grid item xs={3}>
+								<CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>
+									Hủy
+								</CancelButton>
+							</Grid>
+							<Grid item xs={3}>
+								<AddButton style={{width: "100%"}}>
+									{editingAccount ? "Cập nhật" : "Lưu"}
+								</AddButton>
+							</Grid>
+						</Grid>
+					</Box>
+				</div>
+			)}
 		</div>
 	);
 };

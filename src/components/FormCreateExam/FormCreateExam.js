@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, use } from "react";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import "./FormCreateExam.css";
 import PropTypes from 'prop-types';
 import {TextField, Autocomplete, Grid, Box } from "@mui/material";
@@ -26,6 +27,17 @@ const FormCreateExam = ({ onClose, initialData  }) => {
   const [scores, setScores] = useState({});  
   const [examCode, setExamCode] = useState("");
   const [examName, setExamName] = useState("");
+  const [searchParams] = useSearchParams();
+  const { examId: editExamId } = useParams(); 
+  const isEditMode = Boolean(editExamId) && searchParams.get("showFormCreateExam") === "true";
+
+  // Gỡ lỗi editExamId
+  useEffect(() => {
+    console.log("editExamId:", editExamId);
+    console.log("showFormCreateExam:", searchParams.get("showFormCreateExam"));
+    console.log("isEditMode:", isEditMode);
+    console.log("URL hiện tại:", window.location.href);
+  }, [editExamId, searchParams]);
 
   useEffect(() => {
     if (inputRef.current) {
@@ -431,58 +443,58 @@ const handleSave = () => {
                 />
               </div>
             </div>
-            {initialData ? (
-              <div className="mt-3">
-                <p className="mb-1"> <span className="fw-bold">Phân môn: </span>{initialData.subjectName}</p>
-              </div>
-            ) : (
-              <Autocomplete
-                className="mt-3"
-                options={subjectOptions}
-                getOptionLabel={(option) => option.label}
-                value={subjectOptions.find((option) => option.value === subjectChosen) || null}
-                onChange={(event, newValue) => setSubjectChosen(newValue?.value)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Chọn phân môn"
-                    size="small"
-                    sx={{
-                      backgroundColor: "white",
-                      "& .MuiInputBase-root": { height: "40px", fontSize: "14px" },
-                      "& label": { fontSize: "14px" },
-                      "& input": { fontSize: "14px" },
-                    }}
-                  />
-                )}
-              />
-            )}
-            {initialData ? (
-              <div className="mt-3">
-                <p className="mb-1"> <span className="fw-bold">Bộ câu hỏi: </span>{initialData.questionBankName}</p>
-              </div>
-            ) : (
-              <Autocomplete
-                className="mt-3"
-                options={bankOptions}
-                getOptionLabel={(option) => option.label}
-                value={bankOptions.find((option) => option.value === bankChosen) || null}
-                onChange={(event, newValue) => setBankChosen(newValue?.value)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Chọn bộ câu hỏi"
-                    size="small"
-                    sx={{
-                      backgroundColor: "white",
-                      "& .MuiInputBase-root": { height: "40px", fontSize: "14px" },
-                      "& label": { fontSize: "14px" },
-                      "& input": { fontSize: "14px" },
-                    }}
-                  />
-                )}
-              />
-            )}
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <Autocomplete
+                  className="mt-3"
+                  disabled={isEditMode}                  
+                  options={subjectOptions}
+                  getOptionLabel={(option) => option.label}
+                  value={subjectOptions.find((option) => option.value === subjectChosen) || null}
+                  onChange={(event, newValue) => setSubjectChosen(newValue?.value)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Chọn phân môn"
+                      size="small"
+                      sx={{
+                        backgroundColor: "white",
+                        "& .MuiInputBase-root": { height: "40px", fontSize: "14px" },
+                        "& label": { fontSize: "14px" },
+                        "& input": { fontSize: "14px" },
+                      }}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <Autocomplete
+                  className="mt-3"
+                  disabled={isEditMode}
+                  options={bankOptions}
+                  getOptionLabel={(option) => option.label}
+                  value={bankOptions.find((option) => option.value === bankChosen) || null}
+                  onChange={(event, newValue) => {
+                    if (!isEditMode) {
+                      setBankChosen(newValue?.value);
+                    }
+                  }}                  
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Chọn bộ câu hỏi"
+                      size="small"
+                      sx={{
+                        backgroundColor: "white",
+                        "& .MuiInputBase-root": { height: "40px", fontSize: "14px" },
+                        "& label": { fontSize: "14px" },
+                        "& input": { fontSize: "14px" },
+                      }}
+                    />
+                  )}
+                />
+              </Grid>
+            </Grid>
             <Grid container spacing={2}>
               <Grid item xs={6}>
                 <Autocomplete
