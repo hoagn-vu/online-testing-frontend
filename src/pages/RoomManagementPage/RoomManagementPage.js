@@ -332,10 +332,21 @@ const RoomManagementPage = () => {
             }}
             onSubmit={handleSubmit}
           >
+            <div className="d-flex justify-content-between">
             <p className="fw-bold mb-3" style={{fontSize: "18px"}}>
               {editingAccount ? "Chỉnh sửa thông tin phòng thi" : "Thêm phòng thi"}
             </p>
-
+            <button
+              type="button"
+              onClick={() => setShowForm(false)}
+              style={{
+                border: 'none',
+                background: 'none',
+                fontSize: '20px',
+                cursor: 'pointer',
+              }}
+            ><i className="fa-solid fa-xmark"></i></button>
+            </div>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField

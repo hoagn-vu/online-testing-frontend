@@ -323,7 +323,7 @@ const SessionPage = () => {
 						<tbody style={{ fontSize: "14px" }}>
 							{listSession.length === 0 ? (
 								<tr>
-									<td colSpan="7" className="text-center fw-semibold text-muted"
+									<td colSpan="8" className="text-center fw-semibold text-muted"
 											style={{ height: "100px", verticalAlign: "middle" }}>
 										Không có dữ liệu
 									</td>
@@ -472,9 +472,8 @@ const SessionPage = () => {
 					<Box
 						component="form"
 						sx={{
-							width: "600px",
+							width: "700px",
 							backgroundColor: "white",
-							p: 3,
 							borderRadius: "8px",
 							boxShadow: 3,
 							mx: "auto",
@@ -483,11 +482,28 @@ const SessionPage = () => {
 						}}
 						onSubmit={handleSubmit}
 					>
-						<p className="fw-bold mb-4">
-								{editingAccount ? "Chỉnh sửa thông tin ca thi" : "Tạo ca thi"}
+						<div className="d-flex justify-content-between"
+							style={{
+                borderBottom: "1px solid #ccc",
+                marginBottom: "20px",
+              }}
+						>
+						<p className="fw-bold p-4 pb-0">
+							{editingAccount ? "Chỉnh sửa thông tin ca thi" : "Tạo ca thi"}
 						</p>
-
-						<Grid container spacing={2}>										
+						<button
+							className="p-4"
+							type="button"
+							onClick={() => setShowForm(false)}
+							style={{
+								border: 'none',
+								background: 'none',
+								fontSize: '20px',
+								cursor: 'pointer',
+							}}
+              ><i className="fa-solid fa-xmark"></i></button>
+						</div>
+						<Grid container spacing={2} sx={{p: 3, pt: 1}}>										
 							<Grid item xs={12}>
 								<TextField
 									fullWidth
@@ -565,7 +581,7 @@ const SessionPage = () => {
 							</Grid>
 						</Grid>		
 							{/* Buttons */}
-							<Grid container spacing={2} sx={{ mt: 1, justifyContent: "flex-end" }}>
+							<Grid container spacing={2} sx={{justifyContent: "flex-end", p: 3, pt: 1 }}>
 								<Grid item xs={3}>
 									<CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>
 										Hủy

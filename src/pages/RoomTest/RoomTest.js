@@ -17,7 +17,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import "./RoomTest.css";
 
-const RoomManagementPage = () => {
+const RoomTest = () => {
   const [listRoom, setListRoom] = useState([]);
 
   const [keyword, setKeyword] = useState("");
@@ -364,18 +364,34 @@ const [date, setDate] = useState(new Date());
             sx={{
               width: "750px",
               backgroundColor: "white",
-              p: 3,
               borderRadius: "8px",
               boxShadow: 3,
               mx: "auto",
             }}
             onSubmit={handleSubmit}
           >
-            <p className="fw-bold mb-3" style={{fontSize: "18px"}}>
-              {editingAccount ? "Chỉnh sửa thông tin phòng thi" : "Thêm phòng thi"}
-            </p>
-
-            <Grid container spacing={2}>
+            <div className="d-flex justify-content-between"
+              style={{
+                borderBottom: "1px solid #ccc",
+                marginBottom: "20px",
+              }}
+            >
+              <p className="fw-bold p-4 pb-0" style={{fontSize: "18px"}}>
+                {editingAccount ? "Chỉnh sửa thông tin phòng thi" : "Thêm phòng thi"}
+              </p>
+              <button
+                className="p-4"
+                type="button"
+                onClick={() => setShowForm(false)}
+                style={{
+                  border: 'none',
+                  background: 'none',
+                  fontSize: '20px',
+                  cursor: 'pointer',
+                }}
+              ><i className="fa-solid fa-xmark"></i></button>
+            </div>
+            <Grid container spacing={2} sx={{p: 3, pt: 1}}>
               <Grid item xs={12}>
                 <TextField
                   fullWidth
@@ -435,7 +451,7 @@ const [date, setDate] = useState(new Date());
             </Grid>
 
             {/* Buttons */}
-            <Grid container spacing={2} sx={{ mt: 1, justifyContent:"flex-end" }}>
+            <Grid container spacing={2} sx={{justifyContent:"flex-end", p: 3, pt: 1  }}>
               <Grid item xs={3}>
                 <CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>Hủy</CancelButton>
               </Grid>
@@ -452,4 +468,4 @@ const [date, setDate] = useState(new Date());
   );
 };
 
-export default RoomManagementPage;
+export default RoomTest;

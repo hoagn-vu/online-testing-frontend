@@ -1,69 +1,95 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Paper } from "@mui/material";
 import PropTypes from "prop-types";
+import Swal from "sweetalert2";
 
-const MatrixLevel = ({ data }) => {
+const MatrixLevel = ({ data, handleInputChange, totalScore: propTotalScore, setTotalScore }) => {
   // State để lưu số lượng câu hỏi đã chọn theo mức độ + điểm/câu
   const [levelData, setLevelData] = useState(() => {
     const levelSummary = {};
-    data
-      .filter(item => item.level?.trim() !== "") // lọc level rỗng
-      .forEach((item) => {
-        if (!levelSummary[item.level]) {
-          levelSummary[item.level] = {
-            level: item.level,
-            // Nếu đang edit -> lấy trực tiếp questionCount, nếu đang thêm mới -> 0
-            totalSelected: item.questionCount ?? 0,
-            // total có thể undefined => fallback = questionCount
-            totalQuestions: item.total ?? item.questionCount ?? 0,
-            // Nếu đang edit -> lấy luôn score, nếu chưa có thì mặc định 0
-            score: item.score ?? 0,
+    console.log("Input data to MatrixLevel:", data); 
+    data.forEach((item, index) => {
+      const levels = Array.isArray(item.levels) ? item.levels : [item];
+      levels.forEach((level) => {
+        if (!levelSummary[level.level]) {
+          levelSummary[level.level] = {
+            level: level.level || "Không xác định",
+            totalSelected: level.questionCount ?? 0,
+            totalQuestions: level.total ?? 0,
+            score: level.score ?? 0,
+            originalIndex: index,
           };
         } else {
-          // Nếu chapter trùng -> cộng dồn
-          levelSummary[item.level].totalSelected += item.questionCount ?? 0;
-          levelSummary[item.level].totalQuestions += (item.total ?? item.questionCount ?? 0);
-          levelSummary[item.level].score += item.score ?? 0;
+          levelSummary[level.level].totalSelected += level.questionCount ?? 0;
+          levelSummary[level.level].totalQuestions += level.total ?? 0;
+          levelSummary[level.level].score += level.score ?? 0;
         }
       });
-    console.log("📌 data nhận được ở MatrixLevel:", data);
-
+    });
     return Object.values(levelSummary);
   });
 
-  // Xử lý thay đổi input (Số lượng chọn, Điểm/câu)
-  // const handleInputChangeLevel = (index, key, value) => {
-  //   const newLevelData = [...levelData];
-  //   newLevelData[index][key] = value;
-  //   setLevelData(newLevelData);
-  // };
+  // Đồng bộ levelData khi data thay đổi
+  useEffect(() => {
+    setLevelData((prev) => {
+      const levelSummary = {};
+      data.forEach((item, index) => {
+        const levels = Array.isArray(item.levels) ? item.levels : [item];
+        levels.forEach((level) => {
+          const levelKey = level.level || "Không xác định";
+          if (!levelSummary[levelKey]) {
+            const existing = prev.find((p) => p.level === levelKey) || {};
+            levelSummary[levelKey] = {
+              level: levelKey,
+              totalSelected: existing.totalSelected ?? level.questionCount ?? 0,
+              totalQuestions: level.total ?? 0,
+              score: existing.score ?? level.score ?? 0,
+              originalIndex: index,
+            };
+          } else {
+            levelSummary[levelKey].totalQuestions += level.total ?? 0;
+            levelSummary[levelKey].score += level.score ?? 0;
+          }
+        });
+      });
+      return Object.values(levelSummary);
+    });
+  }, [data]);
+
+  // Debug totalScore và levelData
+  useEffect(() => {
+    console.log("propTotalScore in MatrixLevel:", propTotalScore);
+    console.log("levelData in MatrixLevel:", levelData);
+  }, [propTotalScore, levelData]);
+
+  // Sử dụng totalScore từ prop hoặc mặc định là 10 nếu undefined
+  const effectiveTotalScore = propTotalScore !== undefined ? propTotalScore : 10;
+
   const handleInputChangeLevel = (index, key, value) => {
-    const newLevelData = [...levelData];
-  
+    const levelItem = levelData[index];
     if (key === "score") {
       const currentTotal = levelData.reduce((sum, item, i) =>
-        i === index ? sum : sum + item.score, 0
+        i === index ? sum : sum + (item.score || 0), 0
       );
-  
-      if (currentTotal + value > maxTotalPointsLevel) {
-        alert("Tổng điểm vượt quá giới hạn đã đặt!");
+      const maxScore = effectiveTotalScore ?? 10;
+      if (currentTotal + value > maxScore) {
+        Swal.fire({
+          icon: "warning",
+          title: "Tổng điểm vượt quá!",
+          text: `Tổng điểm không được vượt quá ${maxScore}.`,
+        });
         return;
       }
-  
-      newLevelData[index][key] = value;
-    } else {
-      newLevelData[index][key] = value;
     }
-  
-    setLevelData(newLevelData);
-  }; 
-
-  const [maxTotalPointsLevel, setMaxTotalPoints] = useState(() => {
-    if (!data || data.length === 0) return 10;
-    const sum = data.reduce((sum, item) => sum + (item.questionCount * 1), 0);
-    return sum === 0 ? 10 : sum.toFixed(1);
-    }
-  ); 
+    // Cập nhật state nội bộ
+    setLevelData((prev) => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], [key]: value };
+      return updated;
+    });
+    // Truyền thay đổi lên cha
+    handleInputChange(levelItem.originalIndex, 0, key, value);
+  };
 
   return (
     <Box display="flex" gap={2} className="mt-3 w-full" justifyContent="space-between">
@@ -93,32 +119,28 @@ const MatrixLevel = ({ data }) => {
                     max={item.totalQuestions}
                     onChange={(e) => {
                       let value = Number(e.target.value);
-
                       if (isNaN(value)) value = 0;
-
                       if (value > item.totalQuestions) value = item.totalQuestions;
-
                       if (value < 0) value = 0;
-
-                      handleInputChangeLevel(index, "totalSelected", value)
+                      handleInputChangeLevel(index, "totalSelected", value);
                     }}
                     onKeyDown={(e) => {
                       if ([".", ",", "e"].includes(e.key)) {
-                        e.preventDefault(); // Chặn nhập số thập phân và ký tự không hợp lệ
+                        e.preventDefault();
                       }
                     }}
                     className="border p-1 text-center"
                     style={{ width: "60px" }}
-                  /> / {item.totalQuestions}
+                  /> / {(item.totalQuestions ?? 0).toString().padStart(2, '0')}
                 </td>
                 <td className="text-center">Câu</td>
                 <td className="border p-2 text-center">
                   <input
                     type="number"
-                    value={item.score} // giữ giá trị gốc để không reset caret
+                    value={item.score}
                     min="0"
                     step="0.1"
-                    onFocus={(e) => e.target.select()} // auto select khi click
+                    onFocus={(e) => e.target.select()}
                     onChange={(e) => handleInputChangeLevel(index, "score", Number(e.target.value))}
                     onBlur={(e) => {
                       const formatted = parseFloat(e.target.value || "0").toFixed(1);
@@ -138,21 +160,25 @@ const MatrixLevel = ({ data }) => {
             <tr className="bg-gray-300 font-semibold">
               <td className="border p-2 text-center" colSpan="2">Tổng</td>
               <td className="border p-2 text-center">{levelData.reduce((sum, item) => sum + item.totalSelected, 0)}</td>
-              <td className="border p-2 text-center">Câu</td>
+              <td className="text-center">Câu</td>
               <td className="border p-2 text-center">
-                  <input
-                    type="number"
-                    value={maxTotalPointsLevel}
-                    min="0"
-                    step="0.1"
-                    onChange={(e) => setMaxTotalPoints(Number(e.target.value))}
-                    className="border p-1 text-center"
-                    style={{ width: "60px" }}
-                  />
-                </td>
-              {/* <td className="border p-2 text-center">
-                {levelData.reduce((sum, item) => sum + item.score, 0).toFixed(2)}
-              </td> */}
+                <input
+                  type="number"
+                  value={effectiveTotalScore || 0}
+                  min="0"
+                  step="0.1"
+                  onChange={(e) => {
+                    const value = Number(e.target.value);
+                    if (!isNaN(value) && typeof setTotalScore === "function") {
+                      setTotalScore(value);
+                    } else {
+                      console.error("setTotalScore is not a function:", setTotalScore);
+                    }
+                  }}
+                  className="border p-1 text-center"
+                  style={{ width: "60px" }}
+                />
+              </td>
               <td className="border p-2 text-center">-</td>
             </tr>
           </tbody>
@@ -160,8 +186,12 @@ const MatrixLevel = ({ data }) => {
       </div>
 
       {/* Bảng thống kê theo mức độ */}
-      <Paper sx={{ 
-          padding: 2, height: "100%", width: "250px", fontSize: "14px", borderRadius: "8px",
+      <Paper sx={{
+          padding: 2,
+          height: "100%",
+          width: "250px",
+          fontSize: "14px",
+          borderRadius: "8px",
           boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
         }}>
         <h5 className="justify-content-center d-flex">Thống kê theo mức độ</h5>
@@ -188,6 +218,9 @@ const MatrixLevel = ({ data }) => {
 
 MatrixLevel.propTypes = {
   data: PropTypes.array.isRequired,
+  handleInputChange: PropTypes.func.isRequired,
+  totalScore: PropTypes.number,
+  setTotalScore: PropTypes.func.isRequired,
 };
 
 export default MatrixLevel;

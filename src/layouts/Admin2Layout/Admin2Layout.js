@@ -328,7 +328,7 @@ export default function Admin2Layout() {
                             ml: '35px',
                           }}
                         />
-                        <List component="div" disablePadding>
+                        <List component="div" disablePadding >
                           {item.children.map((subItem) => (
                             <ListItemButton
                               key={subItem.title}

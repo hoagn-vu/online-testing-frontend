@@ -62,7 +62,29 @@ const DetailExamMatrixPage = () => {
 				? "level"
 				: "both";
 	}
-
+// Reset data when personName changes
+  useEffect(() => {
+    if (!isEditMode && tagClassification.length > 0) {
+      setData(
+        tagClassification.map((item) => ({
+          chapter: finalType === "level" ? "N/A" : item.chapter,
+          levels: [{
+            level: finalType === "chapter" ? "N/A" : item.level || "Không xác định",
+            total: item.total || 0,
+            questionCount: 0,
+            score: 0,
+          }],
+        }))
+      );
+      setTotalScore(10); // Reset totalScore to default
+    }
+  }, [personName, tagClassification, finalType, isEditMode]);
+	
+	// Debug personName
+  useEffect(() => {
+    console.log("personName:", personName);
+  }, [personName]);
+	
 	useEffect(() => {
 		if (inputRef.current) {
 			inputRef.current.focus();
@@ -150,31 +172,62 @@ const DetailExamMatrixPage = () => {
 				}, []);
 
 				setData(
-					groupedData.map(item => ({
-						...item,
-						levels: item.levels.map(level => ({
-							...level,
-							total: level.total || 0,
-							questionCount: level.questionCount || 0,
-							score: level.score || 0,
-						})),
-					}))
-				);
-			} else {
-				// ✅ Nếu chỉ chapter hoặc chỉ level → dùng luôn matrixTags
-				setData(matrixTags);
-			}
-
-			// ✅ Tổng điểm
-			const matrixTotalScore = (matrix.matrixTags || []).reduce(
-				(sum, tag) => sum + (tag.score || 0),
-				0
-			);
-			setTotalScore(matrixTotalScore || 10);
-		} catch (error) {
-			console.error("❌ Lỗi tải chi tiết ma trận:", error);
-			Swal.fire("Lỗi!", "Không thể tải chi tiết ma trận", "error");
-		}
+          groupedData.map(item => ({
+            ...item,
+            levels: item.levels.map(level => ({
+              ...level,
+              total: level.total || 0,
+              questionCount: level.questionCount || 0,
+              score: level.score || 0,
+            })),
+          }))
+        );
+      } else if (detectedType === "level") {
+        const tagRes = await ApiService.get("/subjects/questions/tags-classification", {
+          params: { subjectId: matrix.subjectId, questionBankId: matrix.questionBankId },
+        });
+        const classification = tagRes.data;
+        setData(
+          matrixTags.map(tag => {
+            // Tìm tất cả các total theo level, lấy tổng hoặc giá trị lớn nhất
+            const matches = classification.filter(c => c.level === tag.level);
+            const total = matches.length > 0 ? matches.reduce((sum, c) => sum + c.total, 0) : (tag.total || 0);
+            return {
+              level: tag.level || "Không xác định",
+              total: total,
+              questionCount: tag.questionCount || 0,
+              score: tag.score || 0,
+            };
+          })
+        );
+      } else { // detectedType === "chapter"
+        const tagRes = await ApiService.get("/subjects/questions/tags-classification", {
+          params: { subjectId: matrix.subjectId, questionBankId: matrix.questionBankId },
+        });
+        const classification = tagRes.data;
+        setData(
+          matrixTags.map(tag => {
+            const matches = classification.filter(c => c.chapter === tag.chapter);
+            const total = matches.length > 0 ? matches.reduce((sum, c) => sum + c.total, 0) : (tag.total || 0);
+            return {
+              chapter: tag.chapter,
+              total: total,
+              questionCount: tag.questionCount || 0,
+              score: tag.score || 0,
+            };
+          })
+        );
+      }
+      const matrixTotalScore = (matrix.matrixTags || []).reduce(
+        (sum, tag) => sum + (tag.score || 0),
+        0
+      );
+      setTotalScore(matrixTotalScore > 0 ? matrixTotalScore : 10);
+			console.log("totalScore set in fetchMatrixDetail:", matrixTotalScore); // Debug giá trị totalScore
+    } catch (error) {
+      console.error("❌ Lỗi tải chi tiết ma trận:", error);
+      Swal.fire("Lỗi!", "Không thể tải chi tiết ma trận", "error");
+    }
 	};
 
 	useEffect(() => {
@@ -225,15 +278,35 @@ const DetailExamMatrixPage = () => {
 
 	const handleInputChange = (chapterIndex, levelIndex, field, value) => {
     setData((prevData) => {
-			const newData = [...prevData]; // Tạo bản sao của data
-			if (!newData[chapterIndex] || !newData[chapterIndex].levels[levelIndex]) {
-				console.error("Invalid index:", chapterIndex, levelIndex);
-				return prevData;
-			}
-			newData[chapterIndex].levels[levelIndex][field] = value; // Cập nhật giá trị
-			return newData;
+      const newData = [...prevData];
+      if (matrixType === "level") {
+        // Trong chế độ level, data là mảng object cấp 1, không có levels
+        if (!newData[chapterIndex]) {
+          console.error("Invalid index:", chapterIndex);
+          return prevData;
+        }
+        newData[chapterIndex] = { ...newData[chapterIndex], [field]: value };
+      } else if (matrixType === "chapter") {
+        // Trong chế độ chapter, data là mảng object cấp 1, không có levels
+        if (!newData[chapterIndex]) {
+          console.error("Invalid index:", chapterIndex);
+          return prevData;
+        }
+        newData[chapterIndex] = { ...newData[chapterIndex], [field]: value };
+      } else {
+        // Chế độ both, xử lý với levels
+        if (!newData[chapterIndex] || !newData[chapterIndex].levels[levelIndex]) {
+          console.error("Invalid index:", chapterIndex, levelIndex);
+          return prevData;
+        }
+        newData[chapterIndex].levels[levelIndex] = {
+          ...newData[chapterIndex].levels[levelIndex],
+          [field]: value,
+        };
+      }
+      return newData;
     });
-	};
+  };
 	
 	const totalSelectedQuestions = Array.isArray(data)
   ? data.reduce((sum, item) => {
@@ -381,6 +454,10 @@ const DetailExamMatrixPage = () => {
 			Swal.fire("Lỗi!", "Không thể cập nhật ma trận!", "error");
 		}
 	};
+
+	useEffect(() => {
+		console.log("totalScore in DetailExamMatrixPage:", totalScore);
+	}, [totalScore]);
 
 	return (
 		<div className="p-4">
@@ -631,16 +708,22 @@ const DetailExamMatrixPage = () => {
     {finalType === "chapter" && (
       <MatrixChapter
         data={data}
+				handleInputChange={handleInputChange}
         personName={personName}
         totalSelectedQuestions={totalSelectedQuestionsChapter}
+				totalScore={totalScore}
+  			setTotalScore={setTotalScore}
       />
     )}
 
     {finalType === "level" && (
       <MatrixLevel
         data={data}
+				handleInputChange={handleInputChange}
         personName={personName}
         totalSelectedQuestions={totalSelectedQuestionsLevel}
+				totalScore={totalScore}
+  			setTotalScore={setTotalScore}
       />
     )}
 

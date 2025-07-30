@@ -150,55 +150,55 @@ const ListUserInGroup = () => {
 
           <div className="session-table-container mt-3">
             <div className="table-responsive">
-                <table className="table sample-table tbl-organize table-striped">
-                    <thead style={{fontSize: "14px"}}>
-                        <tr className="align-middle fw-medium">
-                            <th className="text-center">STT</th> 
-                            <th>MSSV</th>
-                            <th>Họ và tên đệm</th>
-                            <th>Tên</th>
-                            <th className="text-center">Ngày sinh</th>
-                            <th className="text-center">Giới tính</th>
-                            <th scope="col" className="title-row">Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody style={{fontSize: "14px"}}>
-                      {processData(listCandidate).length === 0 ? (
-                          <tr>
-                              <td colSpan="7" className="text-center fw-semibold text-muted" 
-                                  style={{ height: "100px", verticalAlign: "middle" }}>
-                              Không có dữ liệu
-                              </td>
-                          </tr>
-                      ) : (
-                      processData(listCandidate).map((item, index) => (
-                          <tr key={item.candidateId} className="align-middle">
-                              <td className="text-center">{index + 1}</td>
-                              <td>{item.userCode}</td>
-                              <td>{item.lastName}</td>
-                              <td>{item.firstName}</td>
-                              <td className="text-center">{item.dateOfBirth}</td>
-                              <td className="text-center">{item.gender == "male" ? "Nam" : "Nữ"}</td>
-                              <td>
-                                  <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}  onClick={() => handleDelete(item.candidateId)}>
-                                      <i className="fas fa-trash-alt"></i>
-                                  </button>
-                              </td>
-                          </tr>
-                      )))}
-                    </tbody>
-                </table>
+              <table className="table sample-table tbl-organize table-striped">
+                <thead style={{fontSize: "14px"}}>
+                  <tr className="align-middle fw-medium">
+                    <th className="text-center">STT</th> 
+                    <th>MSSV</th>
+                    <th>Họ và tên đệm</th>
+                    <th>Tên</th>
+                    <th className="text-center">Ngày sinh</th>
+                    <th className="text-center">Giới tính</th>
+                    <th scope="col" className="title-row">Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody style={{fontSize: "14px"}}>
+                  {processData(listCandidate).length === 0 ? (
+                    <tr>
+                      <td colSpan="7" className="text-center fw-semibold text-muted" 
+                          style={{ height: "100px", verticalAlign: "middle" }}>
+                      Không có dữ liệu
+                      </td>
+                    </tr>
+                  ) : (
+                  processData(listCandidate).map((item, index) => (
+                    <tr key={item.candidateId} className="align-middle">
+                      <td className="text-center">{index + 1}</td>
+                      <td>{item.userCode}</td>
+                      <td>{item.lastName}</td>
+                      <td>{item.firstName}</td>
+                      <td className="text-center">{item.dateOfBirth}</td>
+                      <td className="text-center">{item.gender == "male" ? "Nam" : "Nữ"}</td>
+                      <td>
+                        <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}  onClick={() => handleDelete(item.candidateId)}>
+                          <i className="fas fa-trash-alt"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  )))}
+                </tbody>
+              </table>
             </div>
             <div className="d-flex justify-content-end mb-2">
-                { totalCount > 0 && (
-                    <Pagination
-                        count={Math.ceil(totalCount / pageSize)}
-                        shape="rounded"
-                        page={page}
-                        onChange={(e, value) => setPage(value)}
-                        color="primary"
-                    />
-                )}
+              { totalCount > 0 && (
+                <Pagination
+                  count={Math.ceil(totalCount / pageSize)}
+                  shape="rounded"
+                  page={page}
+                  onChange={(e, value) => setPage(value)}
+                  color="primary"
+                />
+              )}
             </div>
           </div>
         </div>
@@ -211,15 +211,32 @@ const ListUserInGroup = () => {
               sx={{
                 width: "700px",
                 backgroundColor: "white",
-                p: 3,
                 borderRadius: "8px",
                 boxShadow: 3,
                 mx: "auto",
               }}
               onSubmit={handleSubmit}
             >
-                <p className="fw-bold mb-4">Thêm người dùng vào nhóm</p>
-                <Grid container>	
+              <div className="d-flex justify-content-between"
+                style={{
+                  borderBottom: "1px solid #ccc",
+                  marginBottom: "20px",
+                }}
+              >
+                <p className="fw-bold p-4 pb-0">Thêm người dùng vào nhóm</p>
+                <button
+                  type="button"
+                  className="p-4"
+                  onClick={() => setShowForm(false)}
+                  style={{
+                    border: 'none',
+                    background: 'none',
+                    fontSize: '20px',
+                    cursor: 'pointer',
+                  }}><i className="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+                <Grid container sx={{p: 3, pt: 1}}>	
                   <Grid item xs={12}>									
                     <TextField
                       id="outlined-multiline-flexible"
@@ -243,7 +260,7 @@ const ListUserInGroup = () => {
                   </Grid>	
                 </Grid>		
                 {/* Buttons */}
-                <Grid container spacing={2} sx={{ mt: 1, justifyContent: "flex-end" }}>
+                <Grid container spacing={2} sx={{justifyContent: "flex-end", p: 3, pt: 1 }}>
                   <Grid item xs={3}>
                     <CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>
                       Hủy

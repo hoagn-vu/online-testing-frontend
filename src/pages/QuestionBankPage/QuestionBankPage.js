@@ -265,63 +265,79 @@ const QuestionBankPage = () => {
         </div>
       </div>
 
-            {/* Form thêm tài khoản */}
-            {showForm && (
-                <div className="form-overlay">
-                <Box
-                    component="form"
-                    sx={{
-                        minWidth: "700px",
-                        backgroundColor: "white",
-                        p: 3,
-                        borderRadius: "8px",
-                        boxShadow: 3,
-                        mx: "auto",
-                    }}
-                    onSubmit={handleSubmit}
-                >
-                    <p className="fw-bold mb-4">
-                    {editingBank ? "Chỉnh sửa bộ câu hỏi" : "Thêm bộ câu hỏi"}
-                    </p>
+      {/* Form thêm tài khoản */}
+      {showForm && (
+        <div className="form-overlay">
+        <Box
+          component="form"
+          sx={{
+              minWidth: "700px",
+              backgroundColor: "white",
+              borderRadius: "8px",
+              boxShadow: 3,
+              mx: "auto",
+          }}
+            onSubmit={handleSubmit}
+        >
+          <div className="d-flex justify-content-between"
+            style={{
+              borderBottom: "1px solid #ccc",
+              marginBottom: "20px",
+            }}
+          >
+            <p className="fw-bold p-4 pb-0">
+            {editingBank ? "Chỉnh sửa bộ câu hỏi" : "Thêm bộ câu hỏi"}
+            </p>
+            <button
+              className="p-4"
+              type="button"
+              onClick={() => setShowForm(false)}
+              style={{
+                border: 'none',
+                background: 'none',
+                fontSize: '20px',
+                cursor: 'pointer',
+              }}
+            ><i className="fa-solid fa-xmark"></i></button>
+          </div>
+          <Grid container sx={{p: 3, pt: 1}}>
+            <TextField
+            fullWidth
+            label="Tên bộ câu hỏi"
+            required
+            value={formData.questionBankName}
+            onChange={(e) =>
+                setFormData({ ...formData, questionBankName: e.target.value })
+            }
+            inputRef={inputRef}
+            sx={{
+              "& .MuiInputBase-input": {
+              fontSize: "14px",
+              paddingBottom: "11px",
+              },
+              "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+            }}
+            />
+          </Grid>
 
-                    <Grid container>
-                      <TextField
-                      fullWidth
-                      label="Tên bộ câu hỏi"
-                      required
-                      value={formData.questionBankName}
-                      onChange={(e) =>
-                          setFormData({ ...formData, questionBankName: e.target.value })
-                      }
-                      inputRef={inputRef}
-                      sx={{
-                        "& .MuiInputBase-input": {
-                        fontSize: "14px",
-                        paddingBottom: "11px",
-                        },
-                        "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-                      }}
-                      />
-                    </Grid>
-
-                    {/* Buttons */}
-                    <Grid container spacing={2} sx={{ mt: 1, justifyContent: "flex-end"}}>
-                    <Grid item xs={3}>
-                      <CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>
-                        Hủy
-                      </CancelButton>
-                    </Grid>
-                    <Grid item xs={3}>
-                      <AddButton style={{width: "100%"}}>
-                        {editingBank ? "Cập nhật" : "Lưu"}
-                      </AddButton>
-                    </Grid>
-                    </Grid>
-                </Box>
-                </div>
-            )}
+          {/* Buttons */}
+          <Grid container spacing={2} sx={{justifyContent: "flex-end", p: 3, pt: 1 }}>
+          <Grid item xs={3}>
+            <CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>
+              Hủy
+            </CancelButton>
+          </Grid>
+          <Grid item xs={3}>
+            <AddButton style={{width: "100%"}}>
+              {editingBank ? "Cập nhật" : "Lưu"}
+            </AddButton>
+          </Grid>
+          </Grid>
+        </Box>
         </div>
-    );
+      )}
+    </div>
+  );
 };
 
 export default QuestionBankPage;

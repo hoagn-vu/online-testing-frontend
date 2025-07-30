@@ -263,18 +263,36 @@ const CandidateOrganizePage = () => {
 					<Box
 						component="form"
 						sx={{
-							width: "500px",
+							width: "700px",
 							backgroundColor: "white",
-							p: 3,
 							borderRadius: "8px",
 							boxShadow: 3,
 							mx: "auto",
 						}}
 						onSubmit={handleSubmit}
 					>
-						<p className="fw-bold mb-4">Thêm thí sinh vào phòng thi</p>
+						<div 
+              className="d-flex justify-content-between"
+              style={{
+                borderBottom: "1px solid #ccc",
+                marginBottom: "20px",
+              }}
+            >
+							<p className="fw-bold p-4 pb-0">Thêm thí sinh vào phòng thi</p>
+							<button
+								className="p-4"
+								type="button"
+								onClick={() => setShowPasswordForm(false)}
+								style={{
+									border: 'none',
+									background: 'none',
+									fontSize: '20px',
+									cursor: 'pointer',
+								}}
+              ><i className="fa-solid fa-xmark"></i></button>            
+            </div>
 						<Grid container>	
-							<Grid item xs={12}>									
+							<Grid item xs={12} sx={{p: 3, pt: 1}}>									
 								<TextField
 									id="outlined-multiline-flexible"
 									label="Nhập mã sinh viên"
@@ -288,6 +306,7 @@ const CandidateOrganizePage = () => {
 										width: "100%",
 										"& .MuiInputBase-input": {
 											fontSize: "14px",
+											minHeight: "150px",
 										},
 										"& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
 									}}
@@ -295,7 +314,7 @@ const CandidateOrganizePage = () => {
 							</Grid>	
 						</Grid>		
 						{/* Buttons */}
-						<Grid container spacing={2} sx={{ mt: 1, justifyContent: "flex-end" }}>
+						<Grid container spacing={2} sx={{justifyContent: "flex-end", p: 3, pt: 1  }}>
 							<Grid item xs={3}>
 								<CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>
 									Hủy

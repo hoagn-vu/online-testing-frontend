@@ -42,7 +42,7 @@ import { setUser } from './redux/authSlice';
 
 import Login2 from "./pages/Login2/Login2";
 import LevelManagement from "./pages/LevelManagement/LevelManagement";
-import SchedulePage from "./pages/RoomTest/RoomTest";
+import RoomTest from "./pages/RoomTest/RoomTest";
 import CandidateExamResult from "./pages/CandidateExamResult/CandidateExamResult";
 
 function App() {
@@ -117,7 +117,7 @@ function App() {
           <Route path="matrix-exam/matrix-detail" element={<DetailExamMatrixPage />} />
           <Route path="exam" element={<ExamManagementPage />} />
           <Route path="exam/:examId" element={<DetailExamPage />} />
-          <Route path="room" element={<SchedulePage />} />
+          <Route path="room" element={<RoomTest />} />
           <Route path="level" element={<LevelManagement />} />
           <Route path="log" element={<LogPage />} />
         </Route>

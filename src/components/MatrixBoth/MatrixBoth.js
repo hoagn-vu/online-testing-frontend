@@ -1,8 +1,41 @@
 import React, { useEffect, useState } from "react";
 import { Box, Paper } from "@mui/material";
 import PropTypes from 'prop-types';
+import Swal from "sweetalert2";
 
-const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestions, difficultyData, totalScore, setTotalScore  }) => {
+const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestions, difficultyData, totalScore, setTotalScore }) => {
+    // State để lưu giá trị tạm thời của các input score
+  const [tempScores, setTempScores] = useState(() =>
+    data.reduce((acc, chapter, chapterIndex) => {
+      chapter.levels.forEach((level, levelIndex) => {
+        acc[`${chapterIndex}-${levelIndex}`] = level.score ?? 0;
+      });
+      return acc;
+    }, {})
+  );
+
+  // Đồng bộ tempScores khi data thay đổi
+  useEffect(() => {
+    setTempScores(
+      data.reduce((acc, chapter, chapterIndex) => {
+        chapter.levels.forEach((level, levelIndex) => {
+          acc[`${chapterIndex}-${levelIndex}`] = level.score ?? 0;
+        });
+        return acc;
+      }, {})
+    );
+  }, [data]);
+
+  // Debug totalScore, data, và tempScores
+  useEffect(() => {
+    console.log("totalScore in MatrixBoth:", totalScore);
+    console.log("data in MatrixBoth:", data);
+    console.log("tempScores in MatrixBoth:", tempScores);
+  }, [totalScore, data, tempScores]);
+
+  // Fallback để đảm bảo totalScore luôn là số hợp lệ
+  const displayTotalScore = isNaN(totalScore) || totalScore === undefined ? 10 : totalScore;
+
   return (
     <Box display="flex" gap={2} className="mt-3 w-full" justifyContent="space-between" >
       <div className="table-responsive tbl-shadow pb-0" 
@@ -70,7 +103,7 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
                       <input
                         type="number"
                         // Giữ giá trị gốc nhưng không ép format mỗi lần render
-                        value={level.score}
+                        value={tempScores[`${chapterIndex}-${levelIndex}`] ?? level.score}
                         min="0"
                         step="0.1"
                         onFocus={(e) => {
@@ -79,29 +112,73 @@ const MatrixBoth = ({ data, personName, handleInputChange, totalSelectedQuestion
                         }}
                         onChange={(e) => {
                           const newValue = Number(e.target.value);
-
                           const currentTotal = (data || []).reduce((total, chapter, cIndex) => {
-                            const levels = Array.isArray(chapter.levels) ? chapter.levels : [chapter]; // nếu không có levels => dùng chính chapter
-                            
+                            const levels = Array.isArray(chapter.levels) ? chapter.levels : [chapter];
                             return (
                               total +
                               levels.reduce((sum, lvl, lIndex) => {
-                                // Bỏ qua ô đang chỉnh sửa
                                 if (cIndex === chapterIndex && lIndex === levelIndex) return sum;
                                 return sum + (lvl.score || 0);
                               }, 0)
                             );
                           }, 0);
-                          if (newValue + currentTotal <= parseFloat(totalScore)) {
-                            handleInputChange(chapterIndex, levelIndex, "score", newValue);
-                          } else {
-                            alert("Tổng điểm không được vượt quá tổng điểm đã nhập!");
+                          const maxScore = displayTotalScore;
+                          if (currentTotal + newValue > maxScore) {
+                            Swal.fire({
+                              icon: "warning",
+                              title: "Tổng điểm vượt quá!",
+                              text: `Tổng điểm không được vượt quá ${maxScore}.`,
+                            });
+                            // Reset về giá trị tối đa hợp lệ
+                            const maxValidScore = Math.max(0, maxScore - currentTotal);
+                            setTempScores((prev) => ({
+                              ...prev,
+                              [`${chapterIndex}-${levelIndex}`]: maxValidScore,
+                            }));
+                            handleInputChange(chapterIndex, levelIndex, "score", maxValidScore);
+                            return;
                           }
+                          // Cập nhật tempScores
+                          setTempScores((prev) => ({
+                            ...prev,
+                            [`${chapterIndex}-${levelIndex}`]: newValue,
+                          }));
+                          // Cập nhật state chính thức
+                          handleInputChange(chapterIndex, levelIndex, "score", newValue);
                         }}
                         onBlur={(e) => {
-                          // Sau khi rời khỏi ô input -> ép về 1 chữ số thập phân
                           const formatted = parseFloat(e.target.value || "0").toFixed(1);
-                          handleInputChange(chapterIndex, levelIndex, "score", parseFloat(formatted));
+                          const formattedValue = parseFloat(formatted);
+                          const currentTotal = (data || []).reduce((total, chapter, cIndex) => {
+                            const levels = Array.isArray(chapter.levels) ? chapter.levels : [chapter];
+                            return (
+                              total +
+                              levels.reduce((sum, lvl, lIndex) => {
+                                if (cIndex === chapterIndex && lIndex === levelIndex) return sum;
+                                return sum + (lvl.score || 0);
+                              }, 0)
+                            );
+                          }, 0);
+                          const maxScore = displayTotalScore;
+                          if (currentTotal + formattedValue > maxScore) {
+                            Swal.fire({
+                              icon: "warning",
+                              title: "Tổng điểm vượt quá!",
+                              text: `Tổng điểm không được vượt quá ${maxScore}.`,
+                            });
+                            const maxValidScore = Math.max(0, maxScore - currentTotal);
+                            setTempScores((prev) => ({
+                              ...prev,
+                              [`${chapterIndex}-${levelIndex}`]: maxValidScore,
+                            }));
+                            handleInputChange(chapterIndex, levelIndex, "score", maxValidScore);
+                            return;
+                          }
+                          setTempScores((prev) => ({
+                            ...prev,
+                            [`${chapterIndex}-${levelIndex}`]: formattedValue,
+                          }));
+                          handleInputChange(chapterIndex, levelIndex, "score", formattedValue);
                         }}
                         className="border p-1 text-center"
                         style={{ width: "60px" }}
