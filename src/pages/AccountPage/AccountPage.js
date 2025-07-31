@@ -970,7 +970,7 @@ const AccountPage = () => {
             style={{
               width: "750px",
               background: "#fff",
-              borderRadius: "5px",
+              borderRadius: "8px",
               overflow: "hidden",
               animation: "fadeIn 0.3s ease-in-out",
               maxHeight: "100vh", 
