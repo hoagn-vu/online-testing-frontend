@@ -968,12 +968,12 @@ const AccountPage = () => {
           <div
             className="shadow"
             style={{
-              width: "700px",
+              width: "750px",
               background: "#fff",
               borderRadius: "5px",
               overflow: "hidden",
               animation: "fadeIn 0.3s ease-in-out",
-              maxHeight: "90vh", 
+              maxHeight: "100vh", 
               overflowY: "auto",
             }}
           >
@@ -1020,30 +1020,32 @@ const AccountPage = () => {
 
               <div className="mb-3">
                 <label className="form-label fw-medium">Danh sách tài khoản đã chọn:</label>
-                <ul className="ps-0" style={{ listStyle: "none" }}>
-                  {listDisplay.filter(item => selectedItems.includes(item.id)).length > 0 ? (
-                    listDisplay
-                      .filter(item => selectedItems.includes(item.id))
-                      .map(item => (
-                        <li
-                          key={item.id}
-                          className="d-flex align-items-center mb-2 px-3 py-2"
-                          style={{
-                            backgroundColor: "#f1f3f5",
-                            borderRadius: "8px",
-                            fontSize: "15px",
-                          }}
-                        >
-                          <i className="fas fa-user me-2 text-primary"></i>
-                          <span>
-                            <strong>{item.userCode}</strong> - {item.fullName}
-                          </span>
-                        </li>
-                      ))
-                  ) : (
-                    <li className="text-muted">Chưa chọn tài khoản nào.</li>
-                  )}
-                </ul>
+                <div style={{ maxHeight: "320px", overflowY: "auto", paddingRight: "6px" }}>
+                  <ul className="ps-0" style={{ listStyle: "none" }}>
+                    {listDisplay.filter(item => selectedItems.includes(item.id)).length > 0 ? (
+                      listDisplay
+                        .filter(item => selectedItems.includes(item.id))
+                        .map(item => (
+                          <li
+                            key={item.id}
+                            className="d-flex align-items-center mb-2 px-3 py-2"
+                            style={{
+                              backgroundColor: "#f1f3f5",
+                              borderRadius: "8px",
+                              fontSize: "15px",
+                            }}
+                          >
+                            <i className="fas fa-user me-2 text-primary"></i>
+                            <span>
+                              <strong>{item.userCode}</strong> - {item.fullName}
+                            </span>
+                          </li>
+                        ))
+                    ) : (
+                      <li className="text-muted">Chưa chọn tài khoản nào.</li>
+                    )}
+                  </ul>
+                </div>
               </div>
             </div>
             <Grid container spacing={2} sx={{justifyContent:"flex-end", p: 3, pt: 2, pe: 0 }}>
