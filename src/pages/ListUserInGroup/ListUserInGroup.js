@@ -206,15 +206,9 @@ const ListUserInGroup = () => {
         {/* Form thêm tài khoản */}
         {showForm && (
           <div className="form-overlay">
-            <Box
-              component="form"
-              sx={{
-                width: "700px",
-                backgroundColor: "white",
-                borderRadius: "8px",
-                boxShadow: 3,
-                mx: "auto",
-              }}
+            <div
+              className="shadow form-fade bg-white bd-radius-8"
+              style={{ width: "750px", boxShadow: 3,}}
               onSubmit={handleSubmit}
             >
               <div className="d-flex justify-content-between"
@@ -244,7 +238,7 @@ const ListUserInGroup = () => {
                       placeholder="Nhập mã sinh viên"
                       multiline
                       inputRef={inputRef}
-                      maxRows={10}
+                      maxRows={12}
                       sx={{
                         width: "100%",
                         "& .MuiInputBase-root": {
@@ -272,7 +266,7 @@ const ListUserInGroup = () => {
                     </AddButton>
                   </Grid>
                 </Grid>
-            </Box>
+            </div>
           </div>
         )}
       </div>

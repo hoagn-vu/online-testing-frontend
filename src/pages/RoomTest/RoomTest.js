@@ -359,17 +359,11 @@ const [date, setDate] = useState(new Date());
       {/* Form thêm tài khoản */}
       {showForm && (
         <div className="form-overlay">
-          <Box
-            component="form"
-            sx={{
-              width: "750px",
-              backgroundColor: "white",
-              borderRadius: "8px",
-              boxShadow: 3,
-              mx: "auto",
-            }}
-            onSubmit={handleSubmit}
-          >
+          <div
+						className="shadow form-fade bg-white bd-radius-8"
+						style={{ width: "750px", boxShadow: 3}}
+						onSubmit={handleSubmit}
+					>
             <div className="d-flex justify-content-between"
               style={{
                 borderBottom: "1px solid #ccc",
@@ -461,7 +455,7 @@ const [date, setDate] = useState(new Date());
                 </AddButton>
               </Grid>
             </Grid>
-          </Box>
+          </div>
         </div>
       )}
     </div>

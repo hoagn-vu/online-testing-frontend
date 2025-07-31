@@ -63,7 +63,7 @@ const DragDropModal = ({ open, onClose, onFilesDropped }) => {
           }}
           onClick={onClose}
         >
-          <div className="p-4 pb-5" 
+          <div className="p-4 pb-5 form-fade" 
             style={{
               backgroundColor: "#ffff", 
               borderRadius: "16px", 

@@ -268,72 +268,66 @@ const QuestionBankPage = () => {
       {/* Form thêm tài khoản */}
       {showForm && (
         <div className="form-overlay">
-        <Box
-          component="form"
-          sx={{
-              minWidth: "700px",
-              backgroundColor: "white",
-              borderRadius: "8px",
-              boxShadow: 3,
-              mx: "auto",
-          }}
+          <div
+            className="shadow form-fade bg-white bd-radius-8"
+            style={{ width: "750px", boxShadow: 3}}
             onSubmit={handleSubmit}
-        >
-          <div className="d-flex justify-content-between"
-            style={{
-              borderBottom: "1px solid #ccc",
-              marginBottom: "20px",
-            }}
           >
-            <p className="fw-bold p-4 pb-0">
-            {editingBank ? "Chỉnh sửa bộ câu hỏi" : "Thêm bộ câu hỏi"}
-            </p>
-            <button
-              className="p-4"
-              type="button"
-              onClick={() => setShowForm(false)}
+            <div className="d-flex justify-content-between"
               style={{
-                border: 'none',
-                background: 'none',
-                fontSize: '20px',
-                cursor: 'pointer',
+                borderBottom: "1px solid #ccc",
+                marginBottom: "20px",
               }}
-            ><i className="fa-solid fa-xmark"></i></button>
-          </div>
-          <Grid container sx={{p: 3, pt: 1}}>
-            <TextField
-            fullWidth
-            label="Tên bộ câu hỏi"
-            required
-            value={formData.questionBankName}
-            onChange={(e) =>
-                setFormData({ ...formData, questionBankName: e.target.value })
-            }
-            inputRef={inputRef}
-            sx={{
-              "& .MuiInputBase-input": {
-              fontSize: "14px",
-              paddingBottom: "11px",
-              },
-              "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-            }}
-            />
-          </Grid>
+            >
+              <p className="fw-bold p-4 pb-0">
+              {editingBank ? "Chỉnh sửa bộ câu hỏi" : "Thêm bộ câu hỏi"}
+              </p>
+              <button
+                className="p-4"
+                type="button"
+                onClick={() => setShowForm(false)}
+                style={{
+                  border: 'none',
+                  background: 'none',
+                  fontSize: '20px',
+                  cursor: 'pointer',
+                }}
+              ><i className="fa-solid fa-xmark"></i></button>
+            </div>
+            <Grid container sx={{p: 3, pt: 1}}>
+              <TextField
+              fullWidth
+              label="Tên bộ câu hỏi"
+              required
+              value={formData.questionBankName}
+              onChange={(e) =>
+                  setFormData({ ...formData, questionBankName: e.target.value })
+              }
+              inputRef={inputRef}
+              sx={{
+                "& .MuiInputBase-input": {
+                fontSize: "14px",
+                paddingBottom: "11px",
+                },
+                "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+              }}
+              />
+            </Grid>
 
-          {/* Buttons */}
-          <Grid container spacing={2} sx={{justifyContent: "flex-end", p: 3, pt: 1 }}>
-          <Grid item xs={3}>
-            <CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>
-              Hủy
-            </CancelButton>
-          </Grid>
-          <Grid item xs={3}>
-            <AddButton style={{width: "100%"}}>
-              {editingBank ? "Cập nhật" : "Lưu"}
-            </AddButton>
-          </Grid>
-          </Grid>
-        </Box>
+            {/* Buttons */}
+            <Grid container spacing={2} sx={{justifyContent: "flex-end", p: 3, pt: 1 }}>
+            <Grid item xs={3}>
+              <CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>
+                Hủy
+              </CancelButton>
+            </Grid>
+            <Grid item xs={3}>
+              <AddButton style={{width: "100%"}}>
+                {editingBank ? "Cập nhật" : "Lưu"}
+              </AddButton>
+            </Grid>
+            </Grid>
+          </div>
         </div>
       )}
     </div>

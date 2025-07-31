@@ -259,17 +259,11 @@ const SubjectPage = () => {
       {showForm && (
         <div className="form-overlay">
           <React.Fragment>
-            <Box
-              component="form"
-              sx={{
-                  width: "700px",
-                  backgroundColor: "white",
-                  borderRadius: "8px",
-                  boxShadow: 3,
-                  mx: "auto",
-              }}
+            <div
+              className="shadow form-fade bg-white bd-radius-8"
+              style={{ width: "750px", boxShadow: 3}}
               onSubmit={handleSubmit}
-            >            
+            >
               <div className="d-flex justify-content-between"
                 style={{
                   borderBottom: "1px solid #ccc",
@@ -343,7 +337,7 @@ const SubjectPage = () => {
                   </AddButton>
                 </Grid>
               </Grid>
-            </Box>
+            </div>
           </React.Fragment>
         </div>
       )}

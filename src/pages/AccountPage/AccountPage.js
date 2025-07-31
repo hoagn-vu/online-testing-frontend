@@ -533,15 +533,9 @@ const AccountPage = () => {
       {/* Form thêm tài khoản */}
       {showForm && (
         <div className="form-overlay">
-          <Box
-            component="form"
-            sx={{
-              width: "800px",
-              backgroundColor: "white",
-              borderRadius: "8px",
-              boxShadow: 3,
-              mx: "auto",
-            }}
+          <div
+            className="shadow form-fade bg-white bd-radius-8"
+            style={{ width: "800px", boxShadow: 3,}}
             onSubmit={handleSubmit}
           >
             <div className="d-flex justify-content-between"
@@ -739,7 +733,7 @@ const AccountPage = () => {
 
             {/* Phân quyền nếu là Cán bộ phụ trách kỳ thi */}
             {formData.role === "staff" && (
-              <FormControl component="fieldset" sx={{ mt: 2 }}>
+              <FormControl component="fieldset" sx={{p: 3, pt: 0 }}>
                 <label style={{ fontSize: "14px", fontWeight: "bold" }}>
                   Phân quyền:
                 </label>
@@ -794,22 +788,16 @@ const AccountPage = () => {
                 </AddButton>
               </Grid>
             </Grid>
-          </Box>
+          </div>
         </div>
       )}
 
       {/* Form Đổi mật khẩu */}
       {showPasswordForm && (
         <div className="form-overlay">
-          <Box
-            component="form"
-            sx={{
-              width: "800px",
-              backgroundColor: "white",
-              borderRadius: "8px",
-              boxShadow: 3,
-              mx: "auto",
-            }}
+          <div
+            className="shadow form-fade bg-white bd-radius-8"
+            style={{ width: "800px", boxShadow: 3,}}
             onSubmit={handlePasswordSubmit}
           >
             <div 
@@ -937,7 +925,7 @@ const AccountPage = () => {
                 </AddButton>
               </Grid>
             </Grid>
-          </Box>
+          </div>
         </div>
       )}
       {/* Form Chọn nhóm */}
@@ -966,14 +954,10 @@ const AccountPage = () => {
       {showAddGroupForm && (
         <div className="form-overlay d-flex align-items-center justify-content-center">
           <div
-            className="shadow"
+            className="shadow form-fade bg-white bd-radius-8"
             style={{
-              width: "700px",
-              background: "#fff",
-              borderRadius: "5px",
-              overflow: "hidden",
-              animation: "fadeIn 0.3s ease-in-out",
-              maxHeight: "90vh", 
+              width: "750px",
+              maxHeight: "100vh", 
               overflowY: "auto",
             }}
           >
@@ -1020,30 +1004,32 @@ const AccountPage = () => {
 
               <div className="mb-3">
                 <label className="form-label fw-medium">Danh sách tài khoản đã chọn:</label>
-                <ul className="ps-0" style={{ listStyle: "none" }}>
-                  {listDisplay.filter(item => selectedItems.includes(item.id)).length > 0 ? (
-                    listDisplay
-                      .filter(item => selectedItems.includes(item.id))
-                      .map(item => (
-                        <li
-                          key={item.id}
-                          className="d-flex align-items-center mb-2 px-3 py-2"
-                          style={{
-                            backgroundColor: "#f1f3f5",
-                            borderRadius: "8px",
-                            fontSize: "15px",
-                          }}
-                        >
-                          <i className="fas fa-user me-2 text-primary"></i>
-                          <span>
-                            <strong>{item.userCode}</strong> - {item.fullName}
-                          </span>
-                        </li>
-                      ))
-                  ) : (
-                    <li className="text-muted">Chưa chọn tài khoản nào.</li>
-                  )}
-                </ul>
+                <div style={{ maxHeight: "320px", overflowY: "auto", paddingRight: "6px" }}>
+                  <ul className="ps-0" style={{ listStyle: "none" }}>
+                    {listDisplay.filter(item => selectedItems.includes(item.id)).length > 0 ? (
+                      listDisplay
+                        .filter(item => selectedItems.includes(item.id))
+                        .map(item => (
+                          <li
+                            key={item.id}
+                            className="d-flex align-items-center mb-2 px-3 py-2"
+                            style={{
+                              backgroundColor: "#f1f3f5",
+                              borderRadius: "8px",
+                              fontSize: "15px",
+                            }}
+                          >
+                            <i className="fas fa-user me-2 text-primary"></i>
+                            <span>
+                              <strong>{item.userCode}</strong> - {item.fullName}
+                            </span>
+                          </li>
+                        ))
+                    ) : (
+                      <li className="text-muted">Chưa chọn tài khoản nào.</li>
+                    )}
+                  </ul>
+                </div>
               </div>
             </div>
             <Grid container spacing={2} sx={{justifyContent:"flex-end", p: 3, pt: 2, pe: 0 }}>
