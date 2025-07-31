@@ -469,17 +469,9 @@ const SessionPage = () => {
 			{/* Form thêm tài khoản */}
 			{showForm && (
 				<div className="form-overlay">
-					<Box
-						component="form"
-						sx={{
-							width: "700px",
-							backgroundColor: "white",
-							borderRadius: "8px",
-							boxShadow: 3,
-							mx: "auto",
-							position: "relative",
-							top: "-60px",
-						}}
+					<div
+						className="shadow form-fade bg-white bd-radius-8"
+						style={{ width: "750px", boxShadow: 3, top: "-60px", position: "relative",}}
 						onSubmit={handleSubmit}
 					>
 						<div className="d-flex justify-content-between"
@@ -526,56 +518,56 @@ const SessionPage = () => {
 							<Grid item xs={6}>
 								<LocalizationProvider dateAdapter={AdapterDayjs}>
 									<DateTimePicker
-											label="Start at"
-											value={formData.activeAt ? dayjs(formData.activeAt) : null}
-											onChange={(newValue) => 
-											setFormData({ ...formData, activeAt: newValue ? newValue.toISOString() : "" })
-											}
-											sx={{
-												width: "100%", 
-											}}
-											slotProps={{
-												textField: {
-													fullWidth: true,
-													sx: {
-														"& .MuiInputBase-root": {
-																height: "50px", 
-																fontSize: "16px",
-														},
-														"& .MuiInputLabel-root": {
-																fontSize: "14px",
-														},
+										label="Start at"
+										value={formData.activeAt ? dayjs(formData.activeAt) : null}
+										onChange={(newValue) => 
+										setFormData({ ...formData, activeAt: newValue ? newValue.toISOString() : "" })
+										}
+										sx={{
+											width: "100%", 
+										}}
+										slotProps={{
+											textField: {
+												fullWidth: true,
+												sx: {
+													"& .MuiInputBase-root": {
+															height: "50px", 
+															fontSize: "16px",
+													},
+													"& .MuiInputLabel-root": {
+															fontSize: "14px",
 													},
 												},
-											}}
+											},
+										}}
 									/>
 								</LocalizationProvider>
 							</Grid>
 							<Grid item xs={6}>
 								<LocalizationProvider dateAdapter={AdapterDayjs}>
 									<DateTimePicker
-											label="Finish at"
-											value={formData.activeAt ? dayjs(formData.activeAt) : null}
-											onChange={(newValue) => 
-											setFormData({ ...formData, activeAt: newValue ? newValue.toISOString() : "" })
-											}
-											sx={{
-												width: "100%", 
-											}}
-											slotProps={{
-												textField: {
-													fullWidth: true,
-													sx: {
-														"& .MuiInputBase-root": {
-																height: "50px", 
-																fontSize: "16px",
-														},
-														"& .MuiInputLabel-root": {
-																fontSize: "14px",
-														},
+										label="Finish at"
+										value={formData.activeAt ? dayjs(formData.activeAt) : null}
+										onChange={(newValue) => 
+										setFormData({ ...formData, activeAt: newValue ? newValue.toISOString() : "" })
+										}
+										sx={{
+											width: "100%", 
+										}}
+										slotProps={{
+											textField: {
+												fullWidth: true,
+												sx: {
+													"& .MuiInputBase-root": {
+															height: "50px", 
+															fontSize: "16px",
+													},
+													"& .MuiInputLabel-root": {
+															fontSize: "14px",
 													},
 												},
-											}}
+											},
+										}}
 									/>
 								</LocalizationProvider>
 							</Grid>
@@ -593,7 +585,7 @@ const SessionPage = () => {
 									</AddButton>
 								</Grid>
 							</Grid>
-					</Box>
+					</div>
 				</div>
 			)}
 		</div>

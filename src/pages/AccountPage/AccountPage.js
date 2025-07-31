@@ -533,15 +533,9 @@ const AccountPage = () => {
       {/* Form thêm tài khoản */}
       {showForm && (
         <div className="form-overlay">
-          <Box
-            component="form"
-            sx={{
-              width: "800px",
-              backgroundColor: "white",
-              borderRadius: "8px",
-              boxShadow: 3,
-              mx: "auto",
-            }}
+          <div
+            className="shadow form-fade bg-white bd-radius-8"
+            style={{ width: "800px", boxShadow: 3,}}
             onSubmit={handleSubmit}
           >
             <div className="d-flex justify-content-between"
@@ -739,7 +733,7 @@ const AccountPage = () => {
 
             {/* Phân quyền nếu là Cán bộ phụ trách kỳ thi */}
             {formData.role === "staff" && (
-              <FormControl component="fieldset" sx={{ mt: 2 }}>
+              <FormControl component="fieldset" sx={{p: 3, pt: 0 }}>
                 <label style={{ fontSize: "14px", fontWeight: "bold" }}>
                   Phân quyền:
                 </label>
@@ -794,22 +788,16 @@ const AccountPage = () => {
                 </AddButton>
               </Grid>
             </Grid>
-          </Box>
+          </div>
         </div>
       )}
 
       {/* Form Đổi mật khẩu */}
       {showPasswordForm && (
         <div className="form-overlay">
-          <Box
-            component="form"
-            sx={{
-              width: "800px",
-              backgroundColor: "white",
-              borderRadius: "8px",
-              boxShadow: 3,
-              mx: "auto",
-            }}
+          <div
+            className="shadow form-fade bg-white bd-radius-8"
+            style={{ width: "800px", boxShadow: 3,}}
             onSubmit={handlePasswordSubmit}
           >
             <div 
@@ -937,7 +925,7 @@ const AccountPage = () => {
                 </AddButton>
               </Grid>
             </Grid>
-          </Box>
+          </div>
         </div>
       )}
       {/* Form Chọn nhóm */}
@@ -966,13 +954,9 @@ const AccountPage = () => {
       {showAddGroupForm && (
         <div className="form-overlay d-flex align-items-center justify-content-center">
           <div
-            className="shadow"
+            className="shadow form-fade bg-white bd-radius-8"
             style={{
               width: "750px",
-              background: "#fff",
-              borderRadius: "8px",
-              overflow: "hidden",
-              animation: "fadeIn 0.3s ease-in-out",
               maxHeight: "100vh", 
               overflowY: "auto",
             }}

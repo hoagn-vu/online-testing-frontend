@@ -260,15 +260,9 @@ const CandidateOrganizePage = () => {
 			{/* Form thêm tài khoản */}
 			{showForm && (
 				<div className="form-overlay">
-					<Box
-						component="form"
-						sx={{
-							width: "700px",
-							backgroundColor: "white",
-							borderRadius: "8px",
-							boxShadow: 3,
-							mx: "auto",
-						}}
+					<div
+						className="shadow form-fade bg-white bd-radius-8"
+						style={{ width: "700px", boxShadow: 3}}
 						onSubmit={handleSubmit}
 					>
 						<div 
@@ -282,7 +276,7 @@ const CandidateOrganizePage = () => {
 							<button
 								className="p-4"
 								type="button"
-								onClick={() => setShowPasswordForm(false)}
+								onClick={() => setShowForm(false)}
 								style={{
 									border: 'none',
 									background: 'none',
@@ -301,7 +295,7 @@ const CandidateOrganizePage = () => {
 									onChange={(e) => setFormData({ ...formData, userCodes: e.target.value.split("\n").map(id => id.trim()).filter(id => id) })}
 									// value={formData.userCodes.join("\n")}
 									inputRef={inputRef}
-									maxRows={10}
+									maxRows={12}
 									sx={{
 										width: "100%",
 										"& .MuiInputBase-input": {
@@ -326,7 +320,7 @@ const CandidateOrganizePage = () => {
 								</AddButton>
 							</Grid>
 						</Grid>
-					</Box>
+					</div>
 				</div>
 			)}
 		</div>

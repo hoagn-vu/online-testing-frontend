@@ -292,3 +292,16 @@
 .swal2-container {
   z-index: 99999;
 }
+
+.form-fade {
+  overflow: hidden;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.bg-white {
+  background-color: #ffff;
+}
+
+.bd-radius-8 {
+  border-radius: 8px;
+}
