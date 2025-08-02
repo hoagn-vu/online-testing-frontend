@@ -27,11 +27,29 @@ const QuestionBankPage = () => {
   const navigate = useNavigate();
   const [showForm, setShowForm] = useState(false);
   const [editingBank, setEditingBank] = useState(null);
+  const [openDropdownId, setOpenDropdownId] = useState(null);
 
   const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
     setPage(1);
   };
+
+  const toggleDropdown = (id) => {
+    setOpenDropdownId(prev => prev === id ? null : id);
+  };
+
+  const closeDropdown = () => {
+    setOpenDropdownId(null);
+  };
+
+  useEffect(() => {
+    // Đóng khi click bên ngoài
+    const handleClickOutside = () => {
+      closeDropdown();
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -226,35 +244,30 @@ const QuestionBankPage = () => {
                         <p className="badge bg-light text-dark border d-inline-block" style={{ fontSize: "12px" }}>
                         {item.totalQuestions} câu hỏi
                         </p>
-                        <div className="dropdown">
+                        <div className="dropdown" onClick={(e) => e.stopPropagation()}>
                           <button
                             className="dropdown-toggle-icon dropdown-custom"
                             type="button"
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
-                            onClick={(e) => e.stopPropagation()}
+                            onClick={() => toggleDropdown(item.questionBankId)}
                           >
                             <i className="fas fa-ellipsis-v"></i>
                           </button>
-                          <ul className="dropdown-menu dropdown-menu-end ">
-                            <li>
-                              <button className="dropdown-item" onClick={() => handlePreEdit(item)}>
-                                <i className="fas fa-edit me-2"></i> Chỉnh sửa
+                          <ul className={`dropdown-menu dropdown-menu-end custom-dropdown ${openDropdownId === item.questionBankId ? 'show' : ''}`}>
+                            <li className="tbl-action">
+                              <button className="dropdown-item tbl-action" onClick={() => handlePreEdit(item)}>
+                                Chỉnh sửa
                               </button>
                             </li>
-                            <li>
-                              <button className="dropdown-item text-danger" onClick={() => handleDelete(item.questionBankId)}>
-                                <i className="fas fa-trash me-2"></i> Xoá
+                            <li className="tbl-action">
+                              <button className="dropdown-item tbl-action" onClick={() => handleDelete(item.questionBankId)}>
+                                Xoá
                               </button>
                             </li>
                           </ul>
                         </div>
                       </div>
-                    </div>
-
-                    {/* Footer: edited time + menu */}
-                    <div className="d-flex justify-content-between align-items-center mt-auto">
-                      
                     </div>
                   </div>
                 </div>
@@ -263,7 +276,7 @@ const QuestionBankPage = () => {
           </div>
         </div>
 
-        <div className="sample-pagination d-flex justify-content-end align-items-center ">
+        <div className="sample-pagination d-flex justify-content-end align-items-center mt-3">
           { totalCount > 0 && (
             <Pagination
               count={Math.ceil(totalCount / pageSize)}

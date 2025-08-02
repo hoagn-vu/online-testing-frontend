@@ -56,3 +56,7 @@
 .badge {
   font-weight: 100;
 }
+
+.custom-dropdown {
+  transform: translateX(-35px) !important;
+}
