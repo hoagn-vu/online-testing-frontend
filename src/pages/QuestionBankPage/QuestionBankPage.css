@@ -44,3 +44,15 @@
 .question-bank-pagination ul li button {
   font-family: Arial, sans-serif
 }
+
+.shadow-custom {
+  box-shadow: 4px 4px 27px 0 rgba(181, 180, 180, 0.25);
+}
+
+.btn-three-dot {
+  background-color: #ffff !important;
+}
+
+.badge {
+  font-weight: 100;
+}
