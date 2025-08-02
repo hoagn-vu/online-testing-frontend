@@ -59,3 +59,32 @@
   width: 240px;
   min-width: 240px;
 }
+
+.list-options {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    padding: 8px;
+    border-radius: 8px;
+    border: var(--bs-list-group-border-width) solid var(--bs-list-group-border-color);
+    background-color: #f8f8f8;
+}
+.list-group-item-success {
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.question-card {
+    border: 1px solid #c9c9c9;
+}
+
+.question-text {
+    border: 1px solid #c9c9c9;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+}
+
+.question-image-card {
+    border: 1px solid #c9c9c9;
+
+}

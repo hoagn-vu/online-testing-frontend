@@ -14,6 +14,7 @@ import CancelButton from "../../components/CancelButton/CancelButton";
 import AiGenerate from "../../components/AiGenerate/AiGenerate";
 import AddQuestion from "../../components/AddQuestion/AddQuestion";
 import DragDropModal from "../../components/DragDrop/DragDrop";
+import Modal from "react-bootstrap/Modal";
 
 const ListQuestionPage = () => {
 	const user = useSelector((state) => state.auth.user);
@@ -41,7 +42,9 @@ const ListQuestionPage = () => {
 	const [selectedQuestions, setSelectedQuestions] = useState([]); // State để theo dõi câu hỏi được chọn
   const [showModal, setShowModal] = useState(false);
 	const navigate = useNavigate();
+	const [modalImage, setModalImage] = useState(null);
 
+  const handleClose = () => setModalImage(null);
 	const handleOpenFormAddQuestion = () => {
 		const newSearchParams = new URLSearchParams(location.search);
 		newSearchParams.set("showAddQuestionForm", "true");
@@ -506,7 +509,7 @@ const ListQuestionPage = () => {
 					) : (
 					Object.entries(filteredQuestions).map(([chapter, levels]) => (
 						<div className="container-chapter p-3 mt-2" key={chapter}>
-							<div className="d-flex justify-content-between align-items-center mb-2">
+							<div className="d-flex justify-content-between align-items-center mb-1">
 								<div className="mb-2" style={{ display: "flex", alignItems: "center", gap: "8px", flexGrow: 1, width: "100%" }}>
 									{editingChapter === chapter ? (
 										<div className="d-flex align-items-center gap-2 w-100">
@@ -554,7 +557,7 @@ const ListQuestionPage = () => {
 											</button>
 										</div>
 									) : (
-										<h4 className="m-0">
+										<h5 className="m-0">
 											{chapter}
 											<i
 												className="fa-solid fa-pen-to-square ms-3"
@@ -564,7 +567,7 @@ const ListQuestionPage = () => {
 													setEditedName(chapter);
 												}}
 											></i>
-										</h4>
+										</h5>
 									)}
 								</div>
 								<button
@@ -584,50 +587,124 @@ const ListQuestionPage = () => {
 							{!collapsedChapters[chapter] && (
 								<div className="chapter-content">
 									{Object.entries(levels).map(([level, questions]) => (
-										<div key={level}>
-											<div>
-												{questions.map((question) => (
-													<div key={question.questionId} className="card mb-2">
-														<div className="card-header d-flex justify-content-between ps-2">
-															<div className="d-flex ">
-																<button 
-																	className="btn btn-link text-decoration-none position p-0 pe-1 "
-																	style={{color: "black"}}
-																	data-bs-toggle="collapse" 
-																	data-bs-target={`#collapse-${question.questionId}`}
-																	aria-expanded="false"
-																	aria-controls={`collapse-${question.questionId}`}
-																>            
-																	<ArrowDropDownIcon />
-																</button>
-																<div className="d-flex flex-column justify-content-center">
-																	<h6 className="mb-0">{question.questionText}</h6>
-																	{question.tags?.slice(1).map((tag, index) => (
-																		<p className="m-0 tag-level" key={index}>{tag}</p>
-																	))}
+										<div key={level}>		
+											{questions.map((question) => {
+												const hasImage = question.imgLinks && question.imgLinks.length > 0;
+
+												return (
+													<div key={question.questionId} className="question-card mb-3 p-3 bd-radius-8 pb-2 border shadow-sm bg-white">
+														<div className="d-flex">
+															{/* Nội dung câu hỏi */}
+															<div className={`${hasImage ? "col-9" : "col-12"} card-header mb-2`}>
+																<div className="d-flex">
+																	<button 
+																		className="btn btn-link text-decoration-none position p-0"
+																		style={{ color: "black" }}
+																		data-bs-toggle="collapse" 
+																		data-bs-target={`#collapse-${question.questionId}`}
+																		aria-expanded="false"
+																		aria-controls={`collapse-${question.questionId}`}
+																	>            
+																		<ArrowDropDownIcon />
+																	</button>
+
+																	<div className="question-text d-flex justify-content-between align-items-start p-2"
+																		style={{
+																			width: "100%", 
+																			...(hasImage ? { minHeight: "160px", marginRight: "10px"} : {})
+																		}}
+																	>
+																		<div className="me-2">
+																			<p className="mb-1" style={{ fontSize: "14px" }}>
+																				<strong>Câu hỏi:</strong> {question.questionText}
+																			</p>
+																			{question.tags?.slice(1).map((tag, index) => (
+																				<p className="m-0 tag-level" key={index}>{tag}</p>
+																			))}
+																		</div>
+
+																		{/* Dấu 3 chấm phía bên phải */}
+																		<div className="dropdown">
+																			<button
+																				className="btn btn-link p-0"
+																				type="button"
+																				data-bs-toggle="dropdown"
+																				aria-expanded="false"
+																			>
+																				<i className="fa-solid fa-ellipsis-vertical" style={{ fontSize: "20px", color: "#A6A6A6" }}></i>
+																			</button>
+																			<ul className="dropdown-menu dropdown-menu-end">
+																				<li>
+																					<button className="dropdown-item" onClick={() => preEditQuestion(question)}>
+																						<i className="fa-solid fa-pen-to-square me-2"></i> Chỉnh sửa
+																					</button>
+																				</li>
+																				<li>
+																					<button className="dropdown-item text-danger" onClick={() => handleDelete(question.questionId)}>
+																						<i className="fa-solid fa-trash-can me-2"></i> Xóa
+																					</button>
+																				</li>
+																			</ul>
+																		</div>
+																	</div>
 																</div>
 															</div>
-															<div className="d-flex" style={{ marginLeft: "50px" }}>
-																<button className="btn pe-1 ps-1" style={{ fontSize: "20px" }} onClick={() => preEditQuestion(question)}>
-																	<i className="fa-solid fa-pen-to-square" style={{color: "#A6A6A6"}}></i>	
-																</button>
-																<button className="btn pe-1 ps-1" style={{ fontSize: "20px" }} onClick={() => handleDelete(question.questionId)}>
-																	<i className="fa-solid fa-trash-can" style={{color: "#A6A6A6"}}></i>
-																</button>
-															</div>
+
+															{/* Hình ảnh nếu có */}
+															{hasImage && (
+																<div
+																	className="col-3 question-image-card bd-radius-8 mb-0"
+																	style={{
+																		maxHeight: "160px",
+																		display: "flex",
+																		justifyContent: "center",
+																		alignItems: "center",
+																		overflow: "hidden"
+																	}}
+																>
+																	{question.imgLinks.map((img, index) => (
+																		<img
+																			key={index}
+																			src={img}
+																			alt={`Hình ${index + 1}`}
+																			style={{
+																				height: "100%",
+																				width: "auto",
+																				objectFit: "contain"
+																			}}
+																		/>
+																	))}
+																</div>
+															)}
 														</div>
+
+														{/* Đáp án */}
 														<div id={`collapse-${question.questionId}`} className="collapse show">
 															<ul className="list-group" style={{ borderRadius: "0 0 5px 5px" }}>
 																{question.options.map((option, index) => (
-																	<li key={index} className={option.isCorrect ? "list-group-item list-group-item-success" : "list-group-item"}>
-																		{option.optionText}
-																	</li>
+																	<div key={index} className="d-flex align-items-center mb-1">
+																		<input
+																			type="radio"
+																			name={`answer-${question.questionId}`}
+																			className="form-check-input mt-1 me-2"
+																			checked={option.isCorrect}
+																			readOnly
+																		/>
+																		<li
+																			className={`flex-grow-1 ${
+																				option.isCorrect ? "list-group-item-success" : "list-options"
+																			}`}
+																			style={{ listStyle: "none" }}
+																		>
+																			{option.optionText}
+																		</li>
+																	</div>
 																))}
 															</ul>
 														</div>
 													</div>
-												))}
-											</div>
+												);
+											})}
 										</div>
 									))}
 								</div>
@@ -756,6 +833,16 @@ const ListQuestionPage = () => {
 				onClose={() => setOpenModal(false)}
 				onFilesDropped={handleFilesDropped}
 			/>
+			{/* Modal hiển thị ảnh lớn */}
+      <Modal show={!!modalImage} onHide={handleClose} centered size="lg">
+        <Modal.Body className="text-center p-0">
+          <img
+            src={modalImage}
+            alt="Xem ảnh lớn"
+            style={{ width: "100%", height: "auto", objectFit: "contain" }}
+          />
+        </Modal.Body>
+      </Modal>
     </div>
   )
 }
