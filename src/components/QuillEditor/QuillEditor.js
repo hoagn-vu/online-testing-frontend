@@ -16,7 +16,6 @@ const QuillEditor = ({ value, onChange }) => {
         modules: {
           toolbar: [
             ['bold', 'italic', 'underline'],
-            ['image']
           ]
         }
       });
@@ -47,7 +46,7 @@ const QuillEditor = ({ value, onChange }) => {
       <div
         ref={editorRef}
         style={{
-          minHeight: '80px',
+          minHeight: '170px',
           maxHeight: '200px',
           overflowY: 'auto',
           fontSize: "16px"

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Modal, Box, Typography, Button, Link, List, ListItem } from "@mui/material";
 import FolderIcon from "@mui/icons-material/Folder";
 
-const DragDropModal = ({ open, onClose, onFilesDropped }) => {
+const DragDropModal = ({ open, onClose, onFilesDropped, title = "Kéo Thả Tệp Tài Liệu Vào Đây" }) => {
   const [dragActive, setDragActive] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]); // ✅ Lưu danh sách file
   const fileInputRef = useRef(null);
@@ -105,7 +105,7 @@ const DragDropModal = ({ open, onClose, onFilesDropped }) => {
               ></i>
 
               <p style={{ color: "#444", marginBottom: "8px" }}>
-                Kéo Thả Tệp Tài Liệu Vào Đây
+                {title}
               </p>
 
               <p style={{ color: "#888", margin: "10px 0" }}>─── Hoặc ───</p>
@@ -186,6 +186,7 @@ DragDropModal.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onFilesDropped: PropTypes.func.isRequired,
+  title: PropTypes.string,
 };
 
 export default DragDropModal;
