@@ -247,7 +247,7 @@ const AddQuestion = ({ onClose  }) => {
             />
 
             <div className="d-flex justify-content-between align-items-center mb-3 mt-3">
-              <div className="form-check m-0">
+              <div className="form-check form-switch m-0">
                 <input className="form-check-input" type="checkbox" />
                 <label className="form-check-label">Đảo thứ tự đáp án</label>
               </div>
