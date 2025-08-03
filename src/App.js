@@ -35,6 +35,8 @@ import NotFound from "./pages/NotFound/NotFound";
 import GroupUserPage from "./pages/GroupUserPage/GroupUserPage";
 import ListUserInGroup from "./pages/ListUserInGroup/ListUserInGroup";
 
+import WelcomePage from "./pages/WelcomePage/WelcomePage";
+
 import { authApi, useGetProfileQuery } from "./services/authApi";
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from "prop-types";
@@ -88,6 +90,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login2 />} />
         <Route path="/not-found" element={<NotFound />} />
+        <Route path="/test" element={<WelcomePage />} />
       </Routes>
       <Routes>
         <Route 
