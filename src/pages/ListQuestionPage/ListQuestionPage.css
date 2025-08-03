@@ -49,6 +49,7 @@
     background-color: #ffff;
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(73, 73, 73, 0.13);
+    width: 100%;
 }
 
 .list-group-item-success {
@@ -67,7 +68,7 @@
     padding: 8px;
     border-radius: 8px;
     border: var(--bs-list-group-border-width) solid var(--bs-list-group-border-color);
-    background-color: #f8f8f8;
+    /* background-color: #f8f8f8; */
 }
 .list-group-item-success {
     padding: 8px;
@@ -75,16 +76,16 @@
 }
 
 .question-card {
-    border: 1px solid #c9c9c9;
+    /* border: 1px solid #c9c9c9; */
+    box-shadow: 2px 2px 10px rgba(121, 121, 121, 0.13);
 }
 
 .question-text {
     border: 1px solid #c9c9c9;
     border-radius: 8px;
-    background-color: #f8f8f8;
+    /* background-color: #f8f8f8; */
 }
 
 .question-image-card {
     border: 1px solid #c9c9c9;
-
 }

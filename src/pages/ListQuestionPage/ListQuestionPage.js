@@ -450,27 +450,27 @@ const ListQuestionPage = () => {
 							<div className="modal-dialog modal-dialog-centered small-modal" >
 								<div className="modal-content text-center p-4 container" style={{ width: "500px" }}>
 									<div className="modal-body">
-											{/* Vòng tròn tiến trình MUI */}
-											<Box sx={{ position: "relative", display: "inline-flex" }}>
-												<CircularProgress variant="determinate" value={uploadProgress} size={80} />
-												<Box
-													sx={{
-														top: 0,
-														left: 0,
-														bottom: 0,
-														right: 0,
-														position: "absolute",
-														display: "flex",
-														alignItems: "center",
-														justifyContent: "center",
-													}}
-												>
-													<Typography variant="caption" component="div" sx={{ color: "text.secondary", fontSize: "18px" }}>
-															{`${uploadProgress}%`}
-													</Typography>
-												</Box>
+										{/* Vòng tròn tiến trình MUI */}
+										<Box sx={{ position: "relative", display: "inline-flex" }}>
+											<CircularProgress variant="determinate" value={uploadProgress} size={80} />
+											<Box
+												sx={{
+													top: 0,
+													left: 0,
+													bottom: 0,
+													right: 0,
+													position: "absolute",
+													display: "flex",
+													alignItems: "center",
+													justifyContent: "center",
+												}}
+											>
+												<Typography variant="caption" component="div" sx={{ color: "text.secondary", fontSize: "18px" }}>
+													{`${uploadProgress}%`}
+												</Typography>
 											</Box>
-											<p className="mt-3">Đang tải lên...</p>
+										</Box>
+										<p className="mt-3">Đang tải lên...</p>
 									</div>
 								</div>
 							</div>
@@ -508,8 +508,8 @@ const ListQuestionPage = () => {
 					</div>
 					) : (
 					Object.entries(filteredQuestions).map(([chapter, levels]) => (
-						<div className="container-chapter p-3 mt-2" key={chapter}>
-							<div className="d-flex justify-content-between align-items-center mb-1">
+						<div className="mt-2 pb-0" key={chapter}>
+							<div className="d-flex justify-content-between align-items-center mb-0">
 								<div className="mb-2" style={{ display: "flex", alignItems: "center", gap: "8px", flexGrow: 1, width: "100%" }}>
 									{editingChapter === chapter ? (
 										<div className="d-flex align-items-center gap-2 w-100">
@@ -557,32 +557,35 @@ const ListQuestionPage = () => {
 											</button>
 										</div>
 									) : (
-										<h5 className="m-0">
-											{chapter}
-											<i
-												className="fa-solid fa-pen-to-square ms-3"
-												style={{ fontSize: "18px", cursor: "pointer" }}
-												onClick={() => {
-													setEditingChapter(chapter);
-													setEditedName(chapter);
-												}}
-											></i>
-										</h5>
+										<div className="container-chapter d-flex justify-content-between align-items-center">
+											<h5 className="m-0 p-2 py-3">
+												{chapter}
+												<i
+													className="fa-solid fa-pen-to-square ms-3"
+													style={{ fontSize: "18px", cursor: "pointer" }}
+													onClick={() => {
+														setEditingChapter(chapter);
+														setEditedName(chapter);
+													}}
+												></i>
+											</h5>
+											<button
+												className="btn btn-link text-decoration-none position p-0 pe-1 "
+												style={{ color: "black" }}
+												onClick={() => toggleChapter(chapter)}
+											>
+												<ArrowDropDownIcon
+													fontSize="large"
+													style={{
+														transform: collapsedChapters[chapter] ? "rotate(180deg)" : "rotate(0deg)",
+														transition: "transform 0.3s ease",
+													}}
+												/>
+											</button>
+										</div>
 									)}
 								</div>
-								<button
-									className="btn btn-link text-decoration-none position p-0 pe-1"
-									style={{ color: "black" }}
-									onClick={() => toggleChapter(chapter)}
-								>
-									<ArrowDropDownIcon
-										fontSize="large"
-										style={{
-											transform: collapsedChapters[chapter] ? "rotate(180deg)" : "rotate(0deg)",
-											transition: "transform 0.3s ease",
-										}}
-									/>
-								</button>
+								
 							</div>
 							{!collapsedChapters[chapter] && (
 								<div className="chapter-content">
@@ -592,12 +595,13 @@ const ListQuestionPage = () => {
 												const hasImage = question.imgLinks && question.imgLinks.length > 0;
 
 												return (
-													<div key={question.questionId} className="question-card mb-3 p-3 bd-radius-8 pb-2 border shadow-sm bg-white">
+													<div key={question.questionId} className="question-card mb-3 p-3 bd-radius-8 pb-2 bg-white">
+														<p className="mb-1 fw-bold">Câu hỏi:</p>
 														<div className="d-flex">
 															{/* Nội dung câu hỏi */}
 															<div className={`${hasImage ? "col-9" : "col-12"} card-header mb-2`}>
 																<div className="d-flex">
-																	<button 
+																	{/* <button
 																		className="btn btn-link text-decoration-none position p-0"
 																		style={{ color: "black" }}
 																		data-bs-toggle="collapse" 
@@ -606,7 +610,7 @@ const ListQuestionPage = () => {
 																		aria-controls={`collapse-${question.questionId}`}
 																	>            
 																		<ArrowDropDownIcon />
-																	</button>
+																	</button> */}
 
 																	<div className="question-text d-flex justify-content-between align-items-start p-2"
 																		style={{
@@ -616,7 +620,7 @@ const ListQuestionPage = () => {
 																	>
 																		<div className="me-2">
 																			<p className="mb-1" style={{ fontSize: "14px" }}>
-																				<strong>Câu hỏi:</strong> {question.questionText}
+																				{question.questionText}
 																			</p>
 																			{question.tags?.slice(1).map((tag, index) => (
 																				<p className="m-0 tag-level" key={index}>{tag}</p>
@@ -676,6 +680,26 @@ const ListQuestionPage = () => {
 																	))}
 																</div>
 															)}
+														</div>
+														<div className="d-flex justify-content-between align-items-center mb-3 mt-1">
+															<div className="form-check form-switch m-0 ">
+																<input 
+																	className="form-check-input" 
+																	type="checkbox" 
+																	checked={question.isRandomOrder}
+																	readOnly
+																/>
+																<label className="form-check-label">Đảo thứ tự đáp án</label>
+															</div>
+															<div className="form-check form-switch m-0">
+																<input 
+																	className="form-check-input" 
+																	type="checkbox" 
+																	checked={question.questionType === 'multiple-choice'}
+																	readOnly
+																/>
+																<label className="form-check-label">Multiple Choice</label>
+															</div>
 														</div>
 
 														{/* Đáp án */}
