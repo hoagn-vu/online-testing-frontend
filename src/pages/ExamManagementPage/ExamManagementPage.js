@@ -198,6 +198,8 @@ const ExamManagementPage = () => {
 			: location.pathname;
 		navigate(newUrl, { replace: true });
 		setShowFormCreateExam(false);
+
+		fetchData();
 	};
 
 	useEffect(() => {

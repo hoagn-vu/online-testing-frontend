@@ -20,20 +20,20 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 	const [subjectOptions, setSubjectOptions] = useState([]);
 	const [questionBankOptions, setQuestionBankOptions] = useState([]);
 	const [matrixOptions, setMatrixOptions] = useState([]);
+	const [examOptions, setExamOptions] = useState([]);
 	const navigate = useNavigate();
 
   // State cho thông tin kỳ thi
   const [examData, setExamData] = useState({
     organizeExamName: '',
-    duration: '',
-    maxScore: '',
+    duration: 60,
+    maxScore: 10,
     subjectId: null,
     examType: null,
     questionBankId: null,
-    totalQuestions: '',
+    totalQuestions: null,
 		sessions: [
-		{ sessionName: '', startAt: '', finishAt: '' },
-    { sessionName: '', startAt: '', finishAt: '' }
+			{ sessionName: '', startAt: '', finishAt: '' },
 		],
   });
 
@@ -134,10 +134,47 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
   // Xử lý submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const payload = {
-      ...examData,
-      //sessions: sessions.filter(session => session.sessionName && session.activeAt)
-    };
+    let payload;
+		switch (selectedType) {
+			case "auto":
+				payload = {
+					organizeExamName: examData.organizeExamName,
+					duration: examData.duration,
+					totalQuestions: examData.totalQuestions,
+					maxScore: examData.maxScore,
+					subjectId: examData.subjectId,
+					questionBankId: examData.questionBankId,
+					examType: examData.examType,
+					sessions: examData.sessions,
+				};
+				break;
+			case "matrix":
+				payload = {
+					organizeExamName: examData.organizeExamName,
+					duration: examData.duration,
+					maxScore: examData.maxScore,
+					subjectId: examData.subjectId,
+					matrixId: examData.matrixId,
+					examType: examData.examType,
+					sessions: examData.sessions,
+				};
+				break;
+			case "exams":
+				payload = {
+					organizeExamName: examData.organizeExamName,
+					duration: examData.duration,
+					maxScore: examData.maxScore,
+					subjectId: examData.subjectId,
+					exams: examData.examId ? [examData.examId] : [],
+					examType: examData.examType,
+					sessions: examData.sessions,
+				};
+				break;
+			default:
+				console.error("Invalid exam type selected");
+				return;
+		}
+
     console.log('Submitting:', payload);
     // Gọi API ở đây
 		try {
@@ -157,11 +194,27 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 			console.error("Lỗi khi tạo kỳ thi:", error);
 		}
   };
-  
+
+	const fetchExamOptions = async (subjectId) => {
+		try {
+			const response = await ApiService.get("/exams/options", {
+				params: { subjectId: subjectId },
+			});
+			const options = response.data.data.map((exam) => ({
+				value: exam.id,
+				label: `${exam.examName} - ${exam.examCode}`,
+			}));
+			setExamOptions(options);
+		}
+		catch (error) {
+			console.error("Failed to fetch exam options", error);
+		}
+	};
+
   return (
     <Box sx={{}}>
       <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: '#1976d2',  }}>
-            Tạo kỳ thi mới
+				Tạo kỳ thi mới
       </Typography>
       <Box component="form" onSubmit={handleSubmit}>
         <div className='d-flex'>
@@ -350,6 +403,10 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 											if (selectedValue === "matrix" && examData.subjectId) {
 												fetchMatrixOptions(examData.subjectId);
 											}
+
+											if (selectedValue === "exams") {
+												fetchExamOptions(examData.subjectId);
+											}
 										}}
 										renderInput={(params) => (
 											<TextField
@@ -387,9 +444,9 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 									<Grid item xs={12}>
 										<Autocomplete
 											fullWidth
-											options={subjectOptions}
+											options={examOptions}
 											getOptionLabel={(option) => option.label || ""}
-											value={subjectOptions.find((opt) => opt.value === examData.examId) || null}
+											value={examOptions.find((opt) => opt.value === examData.examId) || null}
 											onChange={(e, newValue) => {
 												setExamData({ ...examData, examId: newValue?.value || null });
 											}}

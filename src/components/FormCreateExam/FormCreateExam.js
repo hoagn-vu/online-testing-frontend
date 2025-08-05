@@ -23,13 +23,14 @@ const FormCreateExam = ({ onClose, initialData  }) => {
   const [levelOptions, setLevelOptions] = useState([]);
   const [selectedChapter, setSelectedChapter] = useState(null); 
   const [selectedLevel, setSelectedLevel] = useState(null);
-  const [totalScore, setTotalScore] = useState(0);
+  const [totalScore, setTotalScore] = useState(10);
   const [scores, setScores] = useState({});  
   const [examCode, setExamCode] = useState("");
   const [examName, setExamName] = useState("");
   const [searchParams] = useSearchParams();
   const { examId: editExamId } = useParams(); 
   const isEditMode = Boolean(editExamId) && searchParams.get("showFormCreateExam") === "true";
+  const [formData, setFormData] = useState({});
 
   // Gỡ lỗi editExamId
   useEffect(() => {
@@ -252,11 +253,35 @@ const handleSave = () => {
     return;
   }
 
-  Swal.fire({
-    icon: "success",
-    title: "Thành công",
-    text: "Đã lưu thành công!",
-  });
+  const payload = {
+    examCode: examCode,
+    examName: examName,
+    subjectId: subjectChosen,
+    questionBankId: bankChosen,
+    questionSets: selectedItems.map((qid) => ({
+      questionId: qid,
+      questionScore: scores[qid] ?? (initialData.questions.find(q => q.questionId === qid)?.questionScore ?? 0),
+    })),
+    examStatus: "available",
+  };
+
+  try {
+    if (isEditMode) {
+      console.log("Updating exam with data:", payload);
+    } else {
+      const res = ApiService.post("/exams", payload);
+      
+      onClose();
+    }
+  } catch (error) {
+    console.error("Error saving exam:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Lỗi",
+      text: "Không thể lưu đề thi, vui lòng thử lại sau!",
+    });
+    return;
+  }
 };
 
   /*const handleSave = () => {

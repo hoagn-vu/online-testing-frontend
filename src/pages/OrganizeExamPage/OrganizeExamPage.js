@@ -48,6 +48,8 @@ const OrganizeExamPage = () => {
 			: location.pathname;
 		navigate(newUrl, { replace: true });
 		setShowFormCreate(false);
+		
+		fetchData();
 	};
 
 	useEffect(() => {
