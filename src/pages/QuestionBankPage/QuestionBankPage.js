@@ -254,7 +254,7 @@ const QuestionBankPage = () => {
                           >
                             <i className="fas fa-ellipsis-v"></i>
                           </button>
-                          <ul className={`dropdown-menu dropdown-menu-end custom-dropdown ${openDropdownId === item.questionBankId ? 'show' : ''}`}>
+                          <ul className={`dropdown-menu dropdown-menu-end custom-dropdown-questionbank ${openDropdownId === item.questionBankId ? 'show' : ''}`}>
                             <li className="tbl-action">
                               <button className="dropdown-item tbl-action" onClick={() => handlePreEdit(item)}>
                                 Chỉnh sửa
