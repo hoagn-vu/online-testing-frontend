@@ -25,6 +25,7 @@ const AddQuestion = ({ onClose  }) => {
   const [imageList, setImageList] = useState([]); // mảng ảnh cho từng câu hỏi
   const [openAddImageModal, setOpenAddImageModal] = useState(false);
   const [selectedQIndex, setSelectedQIndex] = useState(null); // câu hỏi đang sửa ảnh
+  const [isMultipleChoice, setIsMultipleChoice] = useState(false);
 
   const handleQuestionTextChange = (index, newContent) => {
     const updated = [...addedQuestions];
@@ -40,7 +41,24 @@ const AddQuestion = ({ onClose  }) => {
 
   const handleToggleCorrect = (qIndex, optIndex) => {
     const updated = [...addedQuestions];
-    updated[qIndex].options[optIndex].isCorrect = !updated[qIndex].options[optIndex].isCorrect;
+    const currentOptions = updated[qIndex].options;
+
+    // Chỉ cho phép tick nhiều checkbox nếu isMultipleChoice là true
+    if (isMultipleChoice || !currentOptions[optIndex].isCorrect) {
+      currentOptions[optIndex].isCorrect = !currentOptions[optIndex].isCorrect;
+    } else {
+      // Chế độ Single Choice: Chỉ cho phép một checkbox được tick, nhưng cho phép uncheck
+      const currentCorrectCount = currentOptions.filter((opt) => opt.isCorrect).length;
+      if (currentCorrectCount === 1 && currentOptions[optIndex].isCorrect) {
+        // Nếu chỉ còn một đáp án đúng và đang uncheck, cho phép uncheck
+        currentOptions[optIndex].isCorrect = false;
+      } else {
+        // Uncheck tất cả các đáp án khác và chỉ tick cái được chọn
+        currentOptions.forEach((opt, i) => {
+          opt.isCorrect = i === optIndex;
+        });
+      }
+    }
     setAddedQuestions(updated);
   };
 
@@ -67,6 +85,7 @@ const AddQuestion = ({ onClose  }) => {
     options: [{ optionText: "", isCorrect: false }, { optionText: "", isCorrect: false }],
     isRandomOrder: false,
     tags: ["", ""],
+    imageLinks: [],
   });
 
   const handleAddOption = () => {
@@ -252,7 +271,12 @@ const AddQuestion = ({ onClose  }) => {
                 <label className="form-check-label">Đảo thứ tự đáp án</label>
               </div>
               <div className="form-check form-switch m-0">
-                <input className="form-check-input" type="checkbox" />
+                <input 
+                  className="form-check-input" 
+                  type="checkbox" 
+                  checked={isMultipleChoice}
+                  onChange={(e) => setIsMultipleChoice(e.target.checked)}
+                />
                 <label className="form-check-label">Multiple Choice</label>
               </div>
             </div>
@@ -265,6 +289,7 @@ const AddQuestion = ({ onClose  }) => {
                     type="checkbox"
                     checked={opt.isCorrect}
                     onChange={() => handleToggleCorrect(qIndex, optIndex)}
+                    disabled={!isMultipleChoice && addedQuestions[qIndex].options.filter(o => o.isCorrect).length > 0 && !opt.isCorrect}
                   />
                 </div>
                 <textarea
