@@ -15,6 +15,7 @@ import AiGenerate from "../../components/AiGenerate/AiGenerate";
 import AddQuestion from "../../components/AddQuestion/AddQuestion";
 import DragDropModal from "../../components/DragDrop/DragDrop";
 import Modal from "react-bootstrap/Modal";
+import image from "../../../src/assets/images/img-def.png"
 
 const ListQuestionPage = () => {
 	const user = useSelector((state) => state.auth.user);
@@ -43,7 +44,16 @@ const ListQuestionPage = () => {
   const [showModal, setShowModal] = useState(false);
 	const navigate = useNavigate();
 	const [modalImage, setModalImage] = useState(null);
-
+	const [openAddImageModal, setOpenAddImageModal] = useState(false);
+	const [newQuestion, setNewQuestion] = useState({
+			questionType: "single-choice",
+			questionStatus: "available",
+			questionText: "",
+			options: [{ optionText: "", isCorrect: false }, { optionText: "", isCorrect: false }],
+			isRandomOrder: false,
+			tags: ["", ""],
+			imageLinks: [],
+		});
   const handleClose = () => setModalImage(null);
 	const handleOpenFormAddQuestion = () => {
 		const newSearchParams = new URLSearchParams(location.search);
@@ -219,15 +229,6 @@ const ListQuestionPage = () => {
 	const [selectedQuestionBankId, setSelectedQuestionBankId] = useState(null);
 	const [selectedGroups, setSelectedGroups] = useState([]);
 
-	const [newQuestion, setNewQuestion] = useState({
-		questionType: "single-choice",
-		questionStatus: "available",
-		questionText: "",
-		options: [{ optionText: "", isCorrect: false }, { optionText: "", isCorrect: false }],
-		isRandomOrder: false,
-		tags: ["", ""],
-	});
-
 	const handleAddOption = () => {
 		setNewQuestion({ ...newQuestion, options: [...newQuestion.options, { optionText: "", isCorrect: false }] });
 	};
@@ -255,6 +256,7 @@ const ListQuestionPage = () => {
 			{ optionText: "", isCorrect: false }],
 			tags: ["", ""],
 			isRandomOrder: false,
+			imageLinks: [],
 		});
 		setSelectedGroups([]);
 	};
@@ -315,8 +317,16 @@ const ListQuestionPage = () => {
 			console.log("Thêm câu hỏi mới:", newQuestion);
 			handleAddQuestion();
 		}
-			setNewQuestion({ questionText: "", options: [{ optionText: "", isCorrect: false }, { optionText: "", isCorrect: false }], tags: ["", ""], isRandomOrder: false });
-			document.getElementById("closeModalBtn").click();
+		setNewQuestion({
+      questionType: "single-choice",
+      questionStatus: "available",
+      questionText: "",
+      options: [{ optionText: "", isCorrect: false }, { optionText: "", isCorrect: false }],
+      tags: ["", ""],
+      isRandomOrder: false,
+      imageLinks: [],
+    });			
+		document.getElementById("closeModalBtn").click();
 	};
 
 	// const handleAddQuestion = () => {
@@ -331,15 +341,6 @@ const ListQuestionPage = () => {
 
 		// const chapter = question.tags?.[0] ? { label: question.tags[0], value: question.tags[0] } : "";
 		// const level = question.tags?.[1] ? { label: question.tags[1], value: question.tags[1] } : "";
-
-		setNewQuestion({ 
-			questionType: question.questionType,
-			questionStatus: question.questionStatus,
-			questionText: question.questionText, 
-			options: question.options,
-			isRandomOrder: question.isRandomOrder,
-			tags: [question.tags?.[0], question.tags?.[1]],
-		});
 
 		new window.bootstrap.Modal(document.getElementById("questionModal")).show(); 
 	};
@@ -381,6 +382,69 @@ const ListQuestionPage = () => {
 
 	const [editingChapter, setEditingChapter] = useState(null);
 	const [editedName, setEditedName] = useState("");
+
+	useEffect(() => {
+		if (editQuestionId) {
+			const question = questions.find((q) => q.questionId === editQuestionId);
+			if (question) {
+				setNewQuestion({
+					questionType: question.questionType,
+					questionStatus: question.questionStatus,
+					questionText: question.questionText,
+					options: question.options,
+					isRandomOrder: question.isRandomOrder,
+					tags: [question.tags?.[0] || "", question.tags?.[1] || ""],
+					imageLinks: question.imgLinks || [],
+				});
+			}
+		}
+	}, [editQuestionId, questions]);
+
+	const handleImageFilesDropped = (files) => {
+		if (files.length > 0) {
+			const file = files[0];
+			const newImageUrl = URL.createObjectURL(file); // Tạo URL tạm thời từ file
+
+			setNewQuestion((prev) => ({
+				...prev,
+				imageLinks: [newImageUrl], // Cập nhật imageLinks với URL tạm thời
+			}));
+			setOpenAddImageModal(false); // Đóng modal
+		}
+	};
+
+	/*const handleImageFilesDropped = (files) => {
+		if (files.length > 0) {
+			const file = files[0];
+			const formData = new FormData();
+			formData.append("image", file);
+
+			try {
+				Giả sử API upload ảnh trả về URL
+				ApiService.post("/upload", formData, {
+					params: { subjectId, questionBankId, userId: user.id },
+					headers: { "Content-Type": "multipart/form-data" },
+				}).then((response) => {
+					const newImageUrl = response.data.imageUrl; // Điều chỉnh theo cấu trúc API
+					setNewQuestion((prev) => ({
+						...prev,
+						imageLinks: [newImageUrl], // Thay ảnh hiện tại
+					}));
+					setOpenAddImageModal(false); // Đóng modal
+				});
+			} catch (error) {
+				Swal.fire({ title: "Lỗi", text: "Không thể tải ảnh lên!", icon: "error" });
+			}
+		}
+	};*/
+
+  // Hàm xóa ảnh
+	const handleRemoveImage = () => {
+		setNewQuestion((prev) => ({
+			...prev,
+			imageLinks: [],
+		}));
+	};
 
 	return (
 		<div className="p-4">
@@ -595,8 +659,33 @@ const ListQuestionPage = () => {
 												const hasImage = question.imgLinks && question.imgLinks.length > 0;
 
 												return (
-													<div key={question.questionId} className="question-card mb-3 p-3 bd-radius-8 pb-2 bg-white">
-														<p className="mb-1 fw-bold">Câu hỏi:</p>
+													<div key={question.questionId} className="question-card mb-3 p-3 bd-radius-8 pb-2 bg-white pt-2">
+														<div className="d-flex justify-content-between align-items-center">
+															<p className="fw-bold pb-0 mb-0">Câu hỏi:</p>
+															{/* Dấu 3 chấm phía bên phải */}
+															<div className="dropdown">
+																<button
+																	className="btn btn-link p-0"
+																	type="button"
+																	data-bs-toggle="dropdown"
+																	aria-expanded="false"
+																>
+																	<i className="fa-solid fa-ellipsis-vertical" style={{ fontSize: "18px", color: "#000000ff" }}></i>
+																</button>
+																<ul className="dropdown-menu dropdown-menu-end">
+																	<li>
+																		<button className="dropdown-item" onClick={() => preEditQuestion(question)}>
+																			<i className="fa-solid fa-pen-to-square me-2"></i> Chỉnh sửa
+																		</button>
+																	</li>
+																	<li>
+																		<button className="dropdown-item text-danger" onClick={() => handleDelete(question.questionId)}>
+																			<i className="fa-solid fa-trash-can me-2"></i> Xóa
+																		</button>
+																	</li>
+																</ul>
+															</div>
+														</div>
 														<div className="d-flex">
 															{/* Nội dung câu hỏi */}
 															<div className={`${hasImage ? "col-9" : "col-12"} card-header mb-2`}>
@@ -625,31 +714,7 @@ const ListQuestionPage = () => {
 																			{question.tags?.slice(1).map((tag, index) => (
 																				<p className="m-0 tag-level" key={index}>{tag}</p>
 																			))}
-																		</div>
-
-																		{/* Dấu 3 chấm phía bên phải */}
-																		<div className="dropdown">
-																			<button
-																				className="btn btn-link p-0"
-																				type="button"
-																				data-bs-toggle="dropdown"
-																				aria-expanded="false"
-																			>
-																				<i className="fa-solid fa-ellipsis-vertical" style={{ fontSize: "20px", color: "#A6A6A6" }}></i>
-																			</button>
-																			<ul className="dropdown-menu dropdown-menu-end">
-																				<li>
-																					<button className="dropdown-item" onClick={() => preEditQuestion(question)}>
-																						<i className="fa-solid fa-pen-to-square me-2"></i> Chỉnh sửa
-																					</button>
-																				</li>
-																				<li>
-																					<button className="dropdown-item text-danger" onClick={() => handleDelete(question.questionId)}>
-																						<i className="fa-solid fa-trash-can me-2"></i> Xóa
-																					</button>
-																				</li>
-																			</ul>
-																		</div>
+																		</div>									
 																	</div>
 																</div>
 															</div>
@@ -739,7 +804,7 @@ const ListQuestionPage = () => {
 				{/* Modal Bootstrap thuần */}
 				<div className="modal fade" id="questionModal" tabIndex="-1" aria-hidden="true">
 				<div className="modal-dialog modal-dialog-centered modal-xl">
-					<div className="modal-content p-3">
+					<div className="modal-content p-2">
 						<div className="modal-header">
 							<h5 className="modal-title">{editQuestionId ? "Chỉnh sửa câu hỏi" : "Thêm câu hỏi mới"}</h5>
 							<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -781,13 +846,79 @@ const ListQuestionPage = () => {
 							</div>
 								<div>
 									<p className="mb-1 mt-2"> <span style={{ color: "red" }}>*</span> Câu hỏi:</p>
-									<textarea
-										type="text"
-										className="form-control mb-2"
-										placeholder="Nhập câu hỏi"
-										value={newQuestion.questionText}
-										onChange={(e) => setNewQuestion({ ...newQuestion, questionText: e.target.value })}
-									/>
+									<div className="d-flex" style={{gap: "10px"}}>
+										<textarea
+											type="text"
+											className="form-control mb-2"
+											placeholder="Nhập câu hỏi"
+											style={{maxHeight: "160px"}}
+											value={newQuestion.questionText}
+											onChange={(e) => setNewQuestion({ ...newQuestion, questionText: e.target.value })}
+										/>				
+										<div
+											className="col-3 question-image-card bd-radius-8 mb-0"
+											style={{
+												maxHeight: "160px",
+												display: "flex",
+												justifyContent: "center",
+												alignItems: "center",
+												overflow: "hidden"
+											}}
+										>
+										<div style={{ width: "100%", height: "100%", position: "relative", paddingTop: "56.25%" }}>
+											<img
+												src={
+													newQuestion.imageLinks.length > 0
+														? newQuestion.imageLinks[0]
+														: image
+												}
+												alt="Ảnh câu hỏi"
+												onChange={(e) => setNewQuestion({ ...newQuestion, imageLinks: e.target.value })}
+												style={{
+													position: "absolute",
+													top: 0,
+													left: 0,
+													width: "100%",
+													height: "100%",
+													objectFit: "cover",
+													borderRadius: "8px"
+												}}
+											/>
+											{/* Nút thay ảnh + xoá ảnh */}
+											<div style={{
+												position: "absolute",
+												top: "8px",
+												right: "8px",
+												display: "flex",
+												gap: "8px"
+											}}>
+												<button
+													//onClick={() => handleAddImage(qIndex)}
+													className="btn btn-light shadow-sm border"
+													style={{}}
+													title="Thay ảnh"
+													onClick={() => {
+														setOpenAddImageModal(true); // ✅ mở modal
+													}}
+												>
+													<i className="fas fa-upload"></i>
+												</button>
+
+												{newQuestion.imageLinks.length > 0 && (
+													<button
+														className="btn btn-light shadow-sm border"
+														style={{}}
+														title="Xoá ảnh"
+														onClick={() => handleRemoveImage()}
+													>
+														<i className="fas fa-trash"></i>
+													</button>
+												)}
+											</div>
+										</div>
+									</div>
+								</div>
+									
 								</div>
 								<div className="form-check mt-0 mb-2">
 									<input
@@ -856,6 +987,14 @@ const ListQuestionPage = () => {
 				open={openModal}
 				onClose={() => setOpenModal(false)}
 				onFilesDropped={handleFilesDropped}
+			/>
+			<DragDropModal
+				open={openAddImageModal}
+				onClose={() => {
+					setOpenAddImageModal(false);
+				}}
+				onFilesDropped={handleImageFilesDropped}
+				title="Kéo Thả Ảnh Vào Đây"
 			/>
 			{/* Modal hiển thị ảnh lớn */}
       <Modal show={!!modalImage} onHide={handleClose} centered size="lg">
