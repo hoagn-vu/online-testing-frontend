@@ -11,6 +11,7 @@ import SearchBox from "../../components/SearchBox/SearchBox";
 import ApiService from "../../services/apiService";
 import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
+import ThesisImage from "../../../src/assets/images/Thesis-bro.png";
 
 const QuestionBankPage = () => {
   const { subjectId } = useParams();
@@ -26,11 +27,29 @@ const QuestionBankPage = () => {
   const navigate = useNavigate();
   const [showForm, setShowForm] = useState(false);
   const [editingBank, setEditingBank] = useState(null);
+  const [openDropdownId, setOpenDropdownId] = useState(null);
 
   const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
     setPage(1);
   };
+
+  const toggleDropdown = (id) => {
+    setOpenDropdownId(prev => prev === id ? null : id);
+  };
+
+  const closeDropdown = () => {
+    setOpenDropdownId(null);
+  };
+
+  useEffect(() => {
+    // Đóng khi click bên ngoài
+    const handleClickOutside = () => {
+      closeDropdown();
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -146,8 +165,8 @@ const QuestionBankPage = () => {
         <span className="breadcrumb-current">{subjectName}</span>
       </nav>
 
-      <div className="tbl-shadow p-3">
-        <div className="question-bank-card-header d-flex justify-content-between align-items-center mb-3">
+      <div className="">
+        <div className="question-bank-card-header d-flex justify-content-between align-items-center mb-4">
           <div className='left-header d-flex align-items-center'>
             <div className="search-box me-2 rounded d-flex align-items-center">
               <i className="search-icon me-3 pb-0 fa-solid fa-magnifying-glass" style={{fontSize: "12px"}}></i>
@@ -169,90 +188,95 @@ const QuestionBankPage = () => {
           </div>
         </div>
 
-        <div className="table-responsive">
-          <table className="table question-bank-table tbl-organize-hover table-hover" style={{fontSize: "14px"}}>
-            <thead>
-              <tr className="align-middle">
-                <th className="text-center" style={{ width: "50px"}}>STT</th>
-                <th>Bộ câu hỏi cho phân môn: {subjectName}</th>
-                <th className="text-center">Số lượng câu hỏi</th>
-                <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
-              </tr>
-            </thead>
-            <tbody>
+        <div className="container p-0">
+          <div
+            className="d-grid"
+            style={{
+              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+              gap: "16px",
+            }}
+          >
             {listQuestionBank.length === 0 ? (
-								<tr>
-									<td colSpan="4" className="text-center fw-semibold text-muted"
-											style={{ height: "100px", verticalAlign: "middle" }}>
-										Không có dữ liệu
-									</td>
-								</tr>
-							) : (
+              <div className="text-center text-muted fw-semibold py-5">
+                Không có dữ liệu
+              </div>
+            ) : (
               listQuestionBank.map((item, index) => (
-                <tr key={item.questionBankId} className="align-middle">
-                  <td className="text-center">{index+1}</td>
-                  <td
-                    onClick={() => {
-                      navigate(`/staff/question/${subjectId}/${item.questionBankId}`, {
-                        state: {
-                          questionBankName: item.questionBankName,
-                        },
-                      });
-                    }}
-                    style={{ cursor: "pointer", color: "black" }}
-                    className="text-hover-primary"
-                  >
-                    {item.questionBankName}
-                  </td>
-                  <td
-                    onClick={() => {
-                      navigate(`/staff/question/${subjectId}/${item.questionBankId}`, {
-                        state: {
-                          questionBankName: item.questionBankName,
-                        },
-                      });
-                    }}
-                    style={{ cursor: "pointer", color: "black" }}
-                    className="text-center"
-                  >
-                    {item.totalQuestions}
-                  </td>
-                  <td className="text-center align-middle">
-                    <div className="dropdown d-inline-block">
-                      <button
-                        type="button"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                        className="dropdown-toggle-icon"
-                      >
-                        <i className="fas fa-ellipsis-v"></i>
-                      </button>
-                      <ul className="dropdown-menu dropdown-menu-end dropdown-menu-custom "
-                        style={{
-                          right: "50%",
-                          transform: 'translate3d(-10px, 10px, 0px)',
-                        }}
-                      >
-                        <li className="tbl-action" onClick={() => handlePreEdit(item)}> 
-                          <button className="dropdown-item tbl-action" onClick={() => handlePreEdit(item)}>
-                             Chỉnh sửa
+                <div key={item.questionBankId}
+                  className="card h-100 shadow-custom border-0 bd-radius-8"
+                  style={{ cursor: "pointer" }}
+                  onClick={() =>
+                    navigate(`/staff/question/${subjectId}/${item.questionBankId}`, {
+                      state: { questionBankName: item.questionBankName },
+                    })
+                  }
+                >
+                  {/* Ảnh đại diện */}
+                  <img
+                    src={ThesisImage} 
+                    className="card-img-top rounded-top-4"
+                    alt="thumbnail"
+                    style={{ height: "160px", objectFit: "cover" }}
+                  />
+
+                  <div className="card-body d-flex flex-column justify-content-between">
+                    {/* Tiêu đề */}
+                    <h5
+                      className="card-title fw-bold text-truncate mb-3"
+                      style={{ cursor: "pointer" }}
+                      onClick={() =>
+                        navigate(`/staff/question/${subjectId}/${item.questionBankId}`, {
+                          state: {
+                            questionBankName: item.questionBankName,
+                          },
+                        })
+                      }
+                    >
+                      {item.questionBankName}
+                    </h5>
+
+                    {/* Tags dạng chip */}
+                    <div className="mb-2">
+                      <p className="badge bg-light text-dark border d-inline-block mb-2" style={{ fontSize: "12px" }}>
+                        Phân môn: {subjectName}
+                      </p><br />
+                      <div className="d-flex justify-content-between">
+                        <p className="badge bg-light text-dark border d-inline-block" style={{ fontSize: "12px" }}>
+                        {item.totalQuestions} câu hỏi
+                        </p>
+                        <div className="dropdown" onClick={(e) => e.stopPropagation()}>
+                          <button
+                            className="dropdown-toggle-icon dropdown-custom"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            onClick={() => toggleDropdown(item.questionBankId)}
+                          >
+                            <i className="fas fa-ellipsis-v"></i>
                           </button>
-                        </li>
-                        <li className="tbl-action" onClick={() => handleDelete(item.questionBankId)}>
-                          <button className="dropdown-item tbl-action" onClick={() => handleDelete(item.questionBankId)}>
-                             Xoá
-                          </button>
-                        </li>
-                      </ul>
+                          <ul className={`dropdown-menu dropdown-menu-end custom-dropdown-questionbank ${openDropdownId === item.questionBankId ? 'show' : ''}`}>
+                            <li className="tbl-action">
+                              <button className="dropdown-item tbl-action" onClick={() => handlePreEdit(item)}>
+                                Chỉnh sửa
+                              </button>
+                            </li>
+                            <li className="tbl-action">
+                              <button className="dropdown-item tbl-action" onClick={() => handleDelete(item.questionBankId)}>
+                                Xoá
+                              </button>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
                     </div>
-                  </td>
-                </tr>
-              )))}
-            </tbody>
-          </table>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
 
-        <div className="sample-pagination d-flex justify-content-end align-items-center ">
+        <div className="sample-pagination d-flex justify-content-end align-items-center mt-3">
           { totalCount > 0 && (
             <Pagination
               count={Math.ceil(totalCount / pageSize)}

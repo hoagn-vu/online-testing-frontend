@@ -10,6 +10,8 @@ import PropTypes from 'prop-types';
 import QuillEditor from "../QuillEditor/QuillEditor";
 import { CircularProgress, Typography, Box } from "@mui/material";
 import CreatableSelect from "react-select/creatable";
+import image from "../../../src/assets/images/img-def.png"
+import DragDropModal from "../../components/DragDrop/DragDrop";
 
 const AddQuestion = ({ onClose  }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -19,6 +21,11 @@ const AddQuestion = ({ onClose  }) => {
   const { subjectId, questionBankId } = useParams();
   const [ subjectName, setSubjectName ] = useState("");
   const [ questionBankName, setQuestionBankName ] = useState("");	
+  //const [openAddImageModal, setOpenAddImageModal] = useState(false);
+  const [imageList, setImageList] = useState([]); // mảng ảnh cho từng câu hỏi
+  const [openAddImageModal, setOpenAddImageModal] = useState(false);
+  const [selectedQIndex, setSelectedQIndex] = useState(null); // câu hỏi đang sửa ảnh
+  const [isMultipleChoice, setIsMultipleChoice] = useState(false);
 
   const handleQuestionTextChange = (index, newContent) => {
     const updated = [...addedQuestions];
@@ -34,7 +41,24 @@ const AddQuestion = ({ onClose  }) => {
 
   const handleToggleCorrect = (qIndex, optIndex) => {
     const updated = [...addedQuestions];
-    updated[qIndex].options[optIndex].isCorrect = !updated[qIndex].options[optIndex].isCorrect;
+    const currentOptions = updated[qIndex].options;
+
+    // Chỉ cho phép tick nhiều checkbox nếu isMultipleChoice là true
+    if (isMultipleChoice || !currentOptions[optIndex].isCorrect) {
+      currentOptions[optIndex].isCorrect = !currentOptions[optIndex].isCorrect;
+    } else {
+      // Chế độ Single Choice: Chỉ cho phép một checkbox được tick, nhưng cho phép uncheck
+      const currentCorrectCount = currentOptions.filter((opt) => opt.isCorrect).length;
+      if (currentCorrectCount === 1 && currentOptions[optIndex].isCorrect) {
+        // Nếu chỉ còn một đáp án đúng và đang uncheck, cho phép uncheck
+        currentOptions[optIndex].isCorrect = false;
+      } else {
+        // Uncheck tất cả các đáp án khác và chỉ tick cái được chọn
+        currentOptions.forEach((opt, i) => {
+          opt.isCorrect = i === optIndex;
+        });
+      }
+    }
     setAddedQuestions(updated);
   };
 
@@ -61,6 +85,7 @@ const AddQuestion = ({ onClose  }) => {
     options: [{ optionText: "", isCorrect: false }, { optionText: "", isCorrect: false }],
     isRandomOrder: false,
     tags: ["", ""],
+    imageLinks: [],
   });
 
   const handleAddOption = () => {
@@ -99,6 +124,34 @@ const AddQuestion = ({ onClose  }) => {
   };
   const [allChapters, setAllChapters] = useState([]);
   const [allLevels, setAllLevels] = useState([]);
+
+  const handleAddImage = () => {
+    setOpenAddImageModal(true);
+  };
+
+  const handleFilesDropped = (files) => {
+    if (files.length > 0 && selectedQIndex !== null) {
+      const newImageUrl = URL.createObjectURL(files[0]);
+
+      setImageList(prev => {
+        const updated = [...prev];
+        updated[selectedQIndex] = newImageUrl;
+        return updated;
+      });
+
+      setOpenAddImageModal(false); // đóng modal
+      setSelectedQIndex(null);     // reset
+    }
+  };
+
+  const handleRemoveImage = (qIndex) => {
+    setImageList(prev => {
+      const updated = [...prev];
+      updated[qIndex] = null; // hoặc undefined
+      return updated;
+    });
+  };
+
   return (
     <div className="">
       {/* <h5 className="mb-3 fw-bold" style={{color: '#1976d2', fontSize: "20px"}}>Thêm câu hỏi</h5> */}
@@ -149,15 +202,81 @@ const AddQuestion = ({ onClose  }) => {
               ></button>
             </div>
 
-            <QuillEditor value={q.questionText} onChange={(val) => handleQuestionTextChange(qIndex, val)} />
+            <div className="row">
+              <div className="col-8">
+                <QuillEditor value={q.questionText} onChange={(val) => handleQuestionTextChange(qIndex, val)} />
+              </div>
+              <div className="col-4">
+                <div style={{ width: "100%", height: "100%", position: "relative", paddingTop: "56.25%" }}>
+                  <img
+                    src={imageList[qIndex] || image}
+                    alt="Ảnh câu hỏi"
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      borderRadius: "8px"
+                    }}
+                  />
+                  {/* Nút thay ảnh + xoá ảnh */}
+                  <div style={{
+                    position: "absolute",
+                    top: "8px",
+                    right: "8px",
+                    display: "flex",
+                    gap: "8px"
+                  }}>
+                    <button
+                      //onClick={() => handleAddImage(qIndex)}
+                      className="btn btn-light shadow-sm border"
+                      style={{}}
+                      title="Thay ảnh"
+                      onClick={() => {
+                        setSelectedQIndex(qIndex); // ✅ lưu chỉ số câu hỏi
+                        setOpenAddImageModal(true); // ✅ mở modal
+                      }}
+                    >
+                      <i className="fas fa-upload"></i>
+                    </button>
+
+                    <button
+                      onClick={() => handleRemoveImage(qIndex)}
+                      className="btn btn-light shadow-sm border"
+                      style={{}}
+                      title="Xoá ảnh"
+                    >
+                      <i className="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </div>  
+              </div>
+            </div>
+
+            <DragDropModal
+              open={openAddImageModal}
+              onClose={() => {
+                setOpenAddImageModal(false);
+                setSelectedQIndex(null);
+              }}
+              onFilesDropped={handleFilesDropped}
+              title="Kéo Thả Ảnh Vào Đây"
+            />
 
             <div className="d-flex justify-content-between align-items-center mb-3 mt-3">
-              <div className="form-check m-0">
+              <div className="form-check form-switch m-0">
                 <input className="form-check-input" type="checkbox" />
                 <label className="form-check-label">Đảo thứ tự đáp án</label>
               </div>
               <div className="form-check form-switch m-0">
-                <input className="form-check-input" type="checkbox" />
+                <input 
+                  className="form-check-input" 
+                  type="checkbox" 
+                  checked={isMultipleChoice}
+                  onChange={(e) => setIsMultipleChoice(e.target.checked)}
+                />
                 <label className="form-check-label">Multiple Choice</label>
               </div>
             </div>
@@ -170,6 +289,7 @@ const AddQuestion = ({ onClose  }) => {
                     type="checkbox"
                     checked={opt.isCorrect}
                     onChange={() => handleToggleCorrect(qIndex, optIndex)}
+                    disabled={!isMultipleChoice && addedQuestions[qIndex].options.filter(o => o.isCorrect).length > 0 && !opt.isCorrect}
                   />
                 </div>
                 <textarea

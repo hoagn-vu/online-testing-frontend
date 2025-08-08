@@ -14,6 +14,8 @@ import CancelButton from "../../components/CancelButton/CancelButton";
 import AiGenerate from "../../components/AiGenerate/AiGenerate";
 import AddQuestion from "../../components/AddQuestion/AddQuestion";
 import DragDropModal from "../../components/DragDrop/DragDrop";
+import Modal from "react-bootstrap/Modal";
+import image from "../../../src/assets/images/img-def.png"
 
 const ListQuestionPage = () => {
 	const user = useSelector((state) => state.auth.user);
@@ -41,7 +43,18 @@ const ListQuestionPage = () => {
 	const [selectedQuestions, setSelectedQuestions] = useState([]); // State để theo dõi câu hỏi được chọn
   const [showModal, setShowModal] = useState(false);
 	const navigate = useNavigate();
-
+	const [modalImage, setModalImage] = useState(null);
+	const [openAddImageModal, setOpenAddImageModal] = useState(false);
+	const [newQuestion, setNewQuestion] = useState({
+			questionType: "single-choice",
+			questionStatus: "available",
+			questionText: "",
+			options: [{ optionText: "", isCorrect: false }, { optionText: "", isCorrect: false }],
+			isRandomOrder: false,
+			tags: ["", ""],
+			imageLinks: [],
+		});
+  const handleClose = () => setModalImage(null);
 	const handleOpenFormAddQuestion = () => {
 		const newSearchParams = new URLSearchParams(location.search);
 		newSearchParams.set("showAddQuestionForm", "true");
@@ -216,15 +229,6 @@ const ListQuestionPage = () => {
 	const [selectedQuestionBankId, setSelectedQuestionBankId] = useState(null);
 	const [selectedGroups, setSelectedGroups] = useState([]);
 
-	const [newQuestion, setNewQuestion] = useState({
-		questionType: "single-choice",
-		questionStatus: "available",
-		questionText: "",
-		options: [{ optionText: "", isCorrect: false }, { optionText: "", isCorrect: false }],
-		isRandomOrder: false,
-		tags: ["", ""],
-	});
-
 	const handleAddOption = () => {
 		setNewQuestion({ ...newQuestion, options: [...newQuestion.options, { optionText: "", isCorrect: false }] });
 	};
@@ -252,6 +256,7 @@ const ListQuestionPage = () => {
 			{ optionText: "", isCorrect: false }],
 			tags: ["", ""],
 			isRandomOrder: false,
+			imageLinks: [],
 		});
 		setSelectedGroups([]);
 	};
@@ -312,8 +317,16 @@ const ListQuestionPage = () => {
 			console.log("Thêm câu hỏi mới:", newQuestion);
 			handleAddQuestion();
 		}
-			setNewQuestion({ questionText: "", options: [{ optionText: "", isCorrect: false }, { optionText: "", isCorrect: false }], tags: ["", ""], isRandomOrder: false });
-			document.getElementById("closeModalBtn").click();
+		setNewQuestion({
+      questionType: "single-choice",
+      questionStatus: "available",
+      questionText: "",
+      options: [{ optionText: "", isCorrect: false }, { optionText: "", isCorrect: false }],
+      tags: ["", ""],
+      isRandomOrder: false,
+      imageLinks: [],
+    });			
+		document.getElementById("closeModalBtn").click();
 	};
 
 	// const handleAddQuestion = () => {
@@ -328,15 +341,6 @@ const ListQuestionPage = () => {
 
 		// const chapter = question.tags?.[0] ? { label: question.tags[0], value: question.tags[0] } : "";
 		// const level = question.tags?.[1] ? { label: question.tags[1], value: question.tags[1] } : "";
-
-		setNewQuestion({ 
-			questionType: question.questionType,
-			questionStatus: question.questionStatus,
-			questionText: question.questionText, 
-			options: question.options,
-			isRandomOrder: question.isRandomOrder,
-			tags: [question.tags?.[0], question.tags?.[1]],
-		});
 
 		new window.bootstrap.Modal(document.getElementById("questionModal")).show(); 
 	};
@@ -378,6 +382,69 @@ const ListQuestionPage = () => {
 
 	const [editingChapter, setEditingChapter] = useState(null);
 	const [editedName, setEditedName] = useState("");
+
+	useEffect(() => {
+		if (editQuestionId) {
+			const question = questions.find((q) => q.questionId === editQuestionId);
+			if (question) {
+				setNewQuestion({
+					questionType: question.questionType,
+					questionStatus: question.questionStatus,
+					questionText: question.questionText,
+					options: question.options,
+					isRandomOrder: question.isRandomOrder,
+					tags: [question.tags?.[0] || "", question.tags?.[1] || ""],
+					imageLinks: question.imgLinks || [],
+				});
+			}
+		}
+	}, [editQuestionId, questions]);
+
+	const handleImageFilesDropped = (files) => {
+		if (files.length > 0) {
+			const file = files[0];
+			const newImageUrl = URL.createObjectURL(file); // Tạo URL tạm thời từ file
+
+			setNewQuestion((prev) => ({
+				...prev,
+				imageLinks: [newImageUrl], // Cập nhật imageLinks với URL tạm thời
+			}));
+			setOpenAddImageModal(false); // Đóng modal
+		}
+	};
+
+	/*const handleImageFilesDropped = (files) => {
+		if (files.length > 0) {
+			const file = files[0];
+			const formData = new FormData();
+			formData.append("image", file);
+
+			try {
+				Giả sử API upload ảnh trả về URL
+				ApiService.post("/upload", formData, {
+					params: { subjectId, questionBankId, userId: user.id },
+					headers: { "Content-Type": "multipart/form-data" },
+				}).then((response) => {
+					const newImageUrl = response.data.imageUrl; // Điều chỉnh theo cấu trúc API
+					setNewQuestion((prev) => ({
+						...prev,
+						imageLinks: [newImageUrl], // Thay ảnh hiện tại
+					}));
+					setOpenAddImageModal(false); // Đóng modal
+				});
+			} catch (error) {
+				Swal.fire({ title: "Lỗi", text: "Không thể tải ảnh lên!", icon: "error" });
+			}
+		}
+	};*/
+
+  // Hàm xóa ảnh
+	const handleRemoveImage = () => {
+		setNewQuestion((prev) => ({
+			...prev,
+			imageLinks: [],
+		}));
+	};
 
 	return (
 		<div className="p-4">
@@ -447,27 +514,27 @@ const ListQuestionPage = () => {
 							<div className="modal-dialog modal-dialog-centered small-modal" >
 								<div className="modal-content text-center p-4 container" style={{ width: "500px" }}>
 									<div className="modal-body">
-											{/* Vòng tròn tiến trình MUI */}
-											<Box sx={{ position: "relative", display: "inline-flex" }}>
-												<CircularProgress variant="determinate" value={uploadProgress} size={80} />
-												<Box
-													sx={{
-														top: 0,
-														left: 0,
-														bottom: 0,
-														right: 0,
-														position: "absolute",
-														display: "flex",
-														alignItems: "center",
-														justifyContent: "center",
-													}}
-												>
-													<Typography variant="caption" component="div" sx={{ color: "text.secondary", fontSize: "18px" }}>
-															{`${uploadProgress}%`}
-													</Typography>
-												</Box>
+										{/* Vòng tròn tiến trình MUI */}
+										<Box sx={{ position: "relative", display: "inline-flex" }}>
+											<CircularProgress variant="determinate" value={uploadProgress} size={80} />
+											<Box
+												sx={{
+													top: 0,
+													left: 0,
+													bottom: 0,
+													right: 0,
+													position: "absolute",
+													display: "flex",
+													alignItems: "center",
+													justifyContent: "center",
+												}}
+											>
+												<Typography variant="caption" component="div" sx={{ color: "text.secondary", fontSize: "18px" }}>
+													{`${uploadProgress}%`}
+												</Typography>
 											</Box>
-											<p className="mt-3">Đang tải lên...</p>
+										</Box>
+										<p className="mt-3">Đang tải lên...</p>
 									</div>
 								</div>
 							</div>
@@ -505,8 +572,8 @@ const ListQuestionPage = () => {
 					</div>
 					) : (
 					Object.entries(filteredQuestions).map(([chapter, levels]) => (
-						<div className="container-chapter p-3 mt-2" key={chapter}>
-							<div className="d-flex justify-content-between align-items-center mb-2">
+						<div className="mt-2 pb-0" key={chapter}>
+							<div className="d-flex justify-content-between align-items-center mb-0">
 								<div className="mb-2" style={{ display: "flex", alignItems: "center", gap: "8px", flexGrow: 1, width: "100%" }}>
 									{editingChapter === chapter ? (
 										<div className="d-flex align-items-center gap-2 w-100">
@@ -554,80 +621,179 @@ const ListQuestionPage = () => {
 											</button>
 										</div>
 									) : (
-										<h4 className="m-0">
-											{chapter}
-											<i
-												className="fa-solid fa-pen-to-square ms-3"
-												style={{ fontSize: "18px", cursor: "pointer" }}
-												onClick={() => {
-													setEditingChapter(chapter);
-													setEditedName(chapter);
-												}}
-											></i>
-										</h4>
+										<div className="container-chapter d-flex justify-content-between align-items-center">
+											<h5 className="m-0 p-2 py-3">
+												{chapter}
+												<i
+													className="fa-solid fa-pen-to-square ms-3"
+													style={{ fontSize: "18px", cursor: "pointer" }}
+													onClick={() => {
+														setEditingChapter(chapter);
+														setEditedName(chapter);
+													}}
+												></i>
+											</h5>
+											<button
+												className="btn btn-link text-decoration-none position p-0 pe-1 "
+												style={{ color: "black" }}
+												onClick={() => toggleChapter(chapter)}
+											>
+												<ArrowDropDownIcon
+													fontSize="large"
+													style={{
+														transform: collapsedChapters[chapter] ? "rotate(180deg)" : "rotate(0deg)",
+														transition: "transform 0.3s ease",
+													}}
+												/>
+											</button>
+										</div>
 									)}
 								</div>
-								<button
-									className="btn btn-link text-decoration-none position p-0 pe-1"
-									style={{ color: "black" }}
-									onClick={() => toggleChapter(chapter)}
-								>
-									<ArrowDropDownIcon
-										fontSize="large"
-										style={{
-											transform: collapsedChapters[chapter] ? "rotate(180deg)" : "rotate(0deg)",
-											transition: "transform 0.3s ease",
-										}}
-									/>
-								</button>
+								
 							</div>
 							{!collapsedChapters[chapter] && (
 								<div className="chapter-content">
 									{Object.entries(levels).map(([level, questions]) => (
-										<div key={level}>
-											<div>
-												{questions.map((question) => (
-													<div key={question.questionId} className="card mb-2">
-														<div className="card-header d-flex justify-content-between ps-2">
-															<div className="d-flex ">
-																<button 
-																	className="btn btn-link text-decoration-none position p-0 pe-1 "
-																	style={{color: "black"}}
-																	data-bs-toggle="collapse" 
-																	data-bs-target={`#collapse-${question.questionId}`}
+										<div key={level}>		
+											{questions.map((question) => {
+												const hasImage = question.imgLinks && question.imgLinks.length > 0;
+
+												return (
+													<div key={question.questionId} className="question-card mb-3 p-3 bd-radius-8 pb-2 bg-white pt-2">
+														<div className="d-flex justify-content-between align-items-center">
+															<p className="fw-bold pb-0 mb-0">Câu hỏi:</p>
+															{/* Dấu 3 chấm phía bên phải */}
+															<div className="dropdown">
+																<button
+																	className="btn btn-link p-0"
+																	type="button"
+																	data-bs-toggle="dropdown"
 																	aria-expanded="false"
-																	aria-controls={`collapse-${question.questionId}`}
-																>            
-																	<ArrowDropDownIcon />
+																>
+																	<i className="fa-solid fa-ellipsis-vertical" style={{ fontSize: "18px", color: "#000000ff" }}></i>
 																</button>
-																<div className="d-flex flex-column justify-content-center">
-																	<h6 className="mb-0">{question.questionText}</h6>
-																	{question.tags?.slice(1).map((tag, index) => (
-																		<p className="m-0 tag-level" key={index}>{tag}</p>
-																	))}
-																</div>
-															</div>
-															<div className="d-flex" style={{ marginLeft: "50px" }}>
-																<button className="btn pe-1 ps-1" style={{ fontSize: "20px" }} onClick={() => preEditQuestion(question)}>
-																	<i className="fa-solid fa-pen-to-square" style={{color: "#A6A6A6"}}></i>	
-																</button>
-																<button className="btn pe-1 ps-1" style={{ fontSize: "20px" }} onClick={() => handleDelete(question.questionId)}>
-																	<i className="fa-solid fa-trash-can" style={{color: "#A6A6A6"}}></i>
-																</button>
+																<ul className="dropdown-menu dropdown-menu-end">
+																	<li>
+																		<button className="dropdown-item" onClick={() => preEditQuestion(question)}>
+																			<i className="fa-solid fa-pen-to-square me-2"></i> Chỉnh sửa
+																		</button>
+																	</li>
+																	<li>
+																		<button className="dropdown-item text-danger" onClick={() => handleDelete(question.questionId)}>
+																			<i className="fa-solid fa-trash-can me-2"></i> Xóa
+																		</button>
+																	</li>
+																</ul>
 															</div>
 														</div>
+														<div className="d-flex">
+															{/* Nội dung câu hỏi */}
+															<div className={`${hasImage ? "col-9" : "col-12"} card-header mb-2`}>
+																<div className="d-flex">
+																	{/* <button
+																		className="btn btn-link text-decoration-none position p-0"
+																		style={{ color: "black" }}
+																		data-bs-toggle="collapse" 
+																		data-bs-target={`#collapse-${question.questionId}`}
+																		aria-expanded="false"
+																		aria-controls={`collapse-${question.questionId}`}
+																	>            
+																		<ArrowDropDownIcon />
+																	</button> */}
+
+																	<div className="question-text d-flex justify-content-between align-items-start p-2"
+																		style={{
+																			width: "100%", 
+																			...(hasImage ? { minHeight: "160px", marginRight: "10px"} : {})
+																		}}
+																	>
+																		<div className="me-2">
+																			<p className="mb-1" style={{ fontSize: "14px" }}>
+																				{question.questionText}
+																			</p>
+																			{question.tags?.slice(1).map((tag, index) => (
+																				<p className="m-0 tag-level" key={index}>{tag}</p>
+																			))}
+																		</div>									
+																	</div>
+																</div>
+															</div>
+
+															{/* Hình ảnh nếu có */}
+															{hasImage && (
+																<div
+																	className="col-3 question-image-card bd-radius-8 mb-0"
+																	style={{
+																		maxHeight: "160px",
+																		display: "flex",
+																		justifyContent: "center",
+																		alignItems: "center",
+																		overflow: "hidden"
+																	}}
+																>
+																	{question.imgLinks.map((img, index) => (
+																		<img
+																			key={index}
+																			src={img}
+																			alt={`Hình ${index + 1}`}
+																			style={{
+																				height: "100%",
+																				width: "auto",
+																				objectFit: "contain"
+																			}}
+																		/>
+																	))}
+																</div>
+															)}
+														</div>
+														<div className="d-flex justify-content-between align-items-center mb-3 mt-1">
+															<div className="form-check form-switch m-0 ">
+																<input 
+																	className="form-check-input" 
+																	type="checkbox" 
+																	checked={question.isRandomOrder}
+																	readOnly
+																/>
+																<label className="form-check-label">Đảo thứ tự đáp án</label>
+															</div>
+															<div className="form-check form-switch m-0">
+																<input 
+																	className="form-check-input" 
+																	type="checkbox" 
+																	checked={question.questionType === 'multiple-choice'}
+																	readOnly
+																/>
+																<label className="form-check-label">Multiple Choice</label>
+															</div>
+														</div>
+
+														{/* Đáp án */}
 														<div id={`collapse-${question.questionId}`} className="collapse show">
 															<ul className="list-group" style={{ borderRadius: "0 0 5px 5px" }}>
 																{question.options.map((option, index) => (
-																	<li key={index} className={option.isCorrect ? "list-group-item list-group-item-success" : "list-group-item"}>
-																		{option.optionText}
-																	</li>
+																	<div key={index} className="d-flex align-items-center mb-1">
+																		<input
+																			type="radio"
+																			name={`answer-${question.questionId}`}
+																			className="form-check-input mt-1 me-2"
+																			checked={option.isCorrect}
+																			readOnly
+																		/>
+																		<li
+																			className={`flex-grow-1 ${
+																				option.isCorrect ? "list-group-item-success" : "list-options"
+																			}`}
+																			style={{ listStyle: "none" }}
+																		>
+																			{option.optionText}
+																		</li>
+																	</div>
 																))}
 															</ul>
 														</div>
 													</div>
-												))}
-											</div>
+												);
+											})}
 										</div>
 									))}
 								</div>
@@ -638,7 +804,7 @@ const ListQuestionPage = () => {
 				{/* Modal Bootstrap thuần */}
 				<div className="modal fade" id="questionModal" tabIndex="-1" aria-hidden="true">
 				<div className="modal-dialog modal-dialog-centered modal-xl">
-					<div className="modal-content p-3">
+					<div className="modal-content p-2">
 						<div className="modal-header">
 							<h5 className="modal-title">{editQuestionId ? "Chỉnh sửa câu hỏi" : "Thêm câu hỏi mới"}</h5>
 							<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -680,13 +846,79 @@ const ListQuestionPage = () => {
 							</div>
 								<div>
 									<p className="mb-1 mt-2"> <span style={{ color: "red" }}>*</span> Câu hỏi:</p>
-									<textarea
-										type="text"
-										className="form-control mb-2"
-										placeholder="Nhập câu hỏi"
-										value={newQuestion.questionText}
-										onChange={(e) => setNewQuestion({ ...newQuestion, questionText: e.target.value })}
-									/>
+									<div className="d-flex" style={{gap: "10px"}}>
+										<textarea
+											type="text"
+											className="form-control mb-2"
+											placeholder="Nhập câu hỏi"
+											style={{maxHeight: "160px"}}
+											value={newQuestion.questionText}
+											onChange={(e) => setNewQuestion({ ...newQuestion, questionText: e.target.value })}
+										/>				
+										<div
+											className="col-3 question-image-card bd-radius-8 mb-0"
+											style={{
+												maxHeight: "160px",
+												display: "flex",
+												justifyContent: "center",
+												alignItems: "center",
+												overflow: "hidden"
+											}}
+										>
+										<div style={{ width: "100%", height: "100%", position: "relative", paddingTop: "56.25%" }}>
+											<img
+												src={
+													newQuestion.imageLinks.length > 0
+														? newQuestion.imageLinks[0]
+														: image
+												}
+												alt="Ảnh câu hỏi"
+												onChange={(e) => setNewQuestion({ ...newQuestion, imageLinks: e.target.value })}
+												style={{
+													position: "absolute",
+													top: 0,
+													left: 0,
+													width: "100%",
+													height: "100%",
+													objectFit: "cover",
+													borderRadius: "8px"
+												}}
+											/>
+											{/* Nút thay ảnh + xoá ảnh */}
+											<div style={{
+												position: "absolute",
+												top: "8px",
+												right: "8px",
+												display: "flex",
+												gap: "8px"
+											}}>
+												<button
+													//onClick={() => handleAddImage(qIndex)}
+													className="btn btn-light shadow-sm border"
+													style={{}}
+													title="Thay ảnh"
+													onClick={() => {
+														setOpenAddImageModal(true); // ✅ mở modal
+													}}
+												>
+													<i className="fas fa-upload"></i>
+												</button>
+
+												{newQuestion.imageLinks.length > 0 && (
+													<button
+														className="btn btn-light shadow-sm border"
+														style={{}}
+														title="Xoá ảnh"
+														onClick={() => handleRemoveImage()}
+													>
+														<i className="fas fa-trash"></i>
+													</button>
+												)}
+											</div>
+										</div>
+									</div>
+								</div>
+									
 								</div>
 								<div className="form-check mt-0 mb-2">
 									<input
@@ -756,6 +988,24 @@ const ListQuestionPage = () => {
 				onClose={() => setOpenModal(false)}
 				onFilesDropped={handleFilesDropped}
 			/>
+			<DragDropModal
+				open={openAddImageModal}
+				onClose={() => {
+					setOpenAddImageModal(false);
+				}}
+				onFilesDropped={handleImageFilesDropped}
+				title="Kéo Thả Ảnh Vào Đây"
+			/>
+			{/* Modal hiển thị ảnh lớn */}
+      <Modal show={!!modalImage} onHide={handleClose} centered size="lg">
+        <Modal.Body className="text-center p-0">
+          <img
+            src={modalImage}
+            alt="Xem ảnh lớn"
+            style={{ width: "100%", height: "auto", objectFit: "contain" }}
+          />
+        </Modal.Body>
+      </Modal>
     </div>
   )
 }
