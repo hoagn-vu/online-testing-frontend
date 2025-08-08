@@ -260,7 +260,7 @@ const CandidateOrganizePage = () => {
 			{/* Form thêm tài khoản */}
 			{showForm && (
 				<div className="form-overlay">
-					<div
+					<form
 						className="shadow form-fade bg-white bd-radius-8"
 						style={{ width: "700px", boxShadow: 3}}
 						onSubmit={handleSubmit}
@@ -320,7 +320,7 @@ const CandidateOrganizePage = () => {
 								</AddButton>
 							</Grid>
 						</Grid>
-					</div>
+					</form>
 				</div>
 			)}
 		</div>

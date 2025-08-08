@@ -5,30 +5,28 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFlag } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from "prop-types";
 
-const QuestionCard = ({ question, options, questionNumber, allowMultiple, onAnswerSelect, flagged, onToggleFlag }) => {
-  const [selectedOptions, setSelectedOptions] = useState([]);
+const QuestionCard = ({ question, options, questionId, questionNumber, allowMultiple, onAnswerSelect, flagged, onToggleFlag, questionIndex }) => {
+  const [selectedOptionIds, setSelectedOptionIds] = useState([]);
   
-  const handleOptionChange = (option) => {
+  const handleOptionChange = (optionId) => {
     let updatedSelection;
 
     if (allowMultiple) {
-      updatedSelection = selectedOptions.includes(option)
-        ? selectedOptions.filter((o) => o !== option)
-        : [...selectedOptions, option];
+      updatedSelection = selectedOptionIds.includes(optionId)
+        ? selectedOptionIds.filter((id) => id !== optionId)
+        : [...selectedOptionIds, optionId];
     } else {
-      updatedSelection = [option];
+      updatedSelection = [optionId];
     }
 
-    setSelectedOptions(updatedSelection);
-    
+    setSelectedOptionIds(updatedSelection);
   };
 
-  // Gọi callback khi selectedOptions thay đổi
   useEffect(() => {
-    if (selectedOptions.length > 0 && onAnswerSelect) {
-      onAnswerSelect(questionNumber); // Truyền index câu hỏi
+    if (selectedOptionIds.length > 0 && onAnswerSelect) {
+      onAnswerSelect(questionId, selectedOptionIds, questionIndex);
     }
-  }, [selectedOptions, onAnswerSelect, questionNumber]);
+  }, [selectedOptionIds]);
 
   return (
     <div className="question-card">
@@ -45,15 +43,15 @@ const QuestionCard = ({ question, options, questionNumber, allowMultiple, onAnsw
         </div>
         <ul className="options-take-exam">
           {options.map((option, index) => (
-            <li key={index} className={`option ${selectedOptions.includes(option) ? 'selected' : ''}`}>
+            <li key={option.optionId} className={`option ${selectedOptionIds.includes(option.optionId) ? 'selected' : ''}`}>
               <label className='d-flex pt-1'>
                 <div>
                   <input
                     type={allowMultiple ? 'checkbox' : 'radio'}
-                    name={allowMultiple ? undefined : `question-${questionNumber}`}
-                    value={option}
-                    checked={selectedOptions.includes(option)}
-                    onChange={() => handleOptionChange(option)}
+                    name={allowMultiple ? undefined : `question-${questionId}`}
+                    value={option.optionId}
+                    checked={selectedOptionIds.includes(option.optionId)}
+                    onChange={() => handleOptionChange(option.optionId)}
                   />
                 </div>
                 <span>{option.optionText}</span>
@@ -69,12 +67,19 @@ const QuestionCard = ({ question, options, questionNumber, allowMultiple, onAnsw
 
 QuestionCard.propTypes = {
   question: PropTypes.string.isRequired,
-  options: PropTypes.arrayOf(PropTypes.string).isRequired,
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      optionId: PropTypes.string.isRequired,
+      optionText: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  questionId: PropTypes.string.isRequired,
   questionNumber: PropTypes.number.isRequired,
   allowMultiple: PropTypes.bool,
   onAnswerSelect: PropTypes.func,
   flagged: PropTypes.bool,
   onToggleFlag: PropTypes.func,
+  questionIndex: PropTypes.number.isRequired,
 };
 
 export default QuestionCard;
