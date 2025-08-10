@@ -12,7 +12,7 @@ import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
 
 const GroupUserPage = () => {
-  const [listSubject, setListSubject] = useState([]);
+  const [listGroup, setListGroup] = useState([]);
 
   const [keyword, setKeyword] = useState("");
   const [page, setPage] = useState(1);
@@ -21,6 +21,7 @@ const GroupUserPage = () => {
   const [totalCount, setTotalCount] = useState(0);
 
   const [showForm, setShowForm] = useState(false);
+  const [showFormEdit, setShowFormEdit] = useState(false);
   const [editingSubject, setEditingSubject] = useState(null);
   const navigate = useNavigate();
   const handleKeywordChange = (e) => {
@@ -31,21 +32,21 @@ const GroupUserPage = () => {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const response = await ApiService.get("/subjects", {
+      const response = await ApiService.get("/groupUser", {
         params: { keyword, page, pageSize },
       });
-      setListSubject(response.data.subjects);
-      setTotalCount(response.data.totalCount);
+      setListGroup(response.data);
+      //setTotalCount(response.data.totalCount);
     } catch (error) {
       console.error("Failed to fetch data: ", error);
     }
     setIsLoading(false);
   };
 
-  const createSubject = async (subject) => {
+  const createGroup = async (group) => {
     setIsLoading(true);
     try {
-      await ApiService.post("/subjects/add-subject", subject);
+      await ApiService.post("/groupUser/create-group-users", group);
       fetchData();
     } catch (error) {
       console.error("Failed to create subject: ", error);
@@ -53,16 +54,25 @@ const GroupUserPage = () => {
     setIsLoading(false);
   };
 
-  const updateSubject = async (subject) => {
+  const updateGroup = async (groupId, groupName) => {
     setIsLoading(true);
     try {
-      await ApiService.put(`/subjects/update/${subject.id}`, subject);
-      fetchData();
+      await ApiService.put(`/groupUser/update/${groupId}`, groupName, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.status >= 200 && response.status < 300) {
+        await fetchData(); // Chỉ gọi khi thành công
+        return true; // Trả về true để biểu thị thành công
+      }
+      throw new Error('Cập nhật thất bại');
+    } catch (error) {
+      console.error('Failed to update group:', error);
+      throw new Error('Lỗi không cập nhật được');
+    } finally {
+      setIsLoading(false);
     }
-    catch (error) {
-      console.error("Failed to update subject: ", error);
-    }
-    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -71,7 +81,7 @@ const GroupUserPage = () => {
 
   const preAddNew = () => {
     setEditingSubject(null);
-    setFormData({ subjectName: "" });
+    setFormData({ groupName: "", listUser: [] });
     setShowForm(true);
   };
 
@@ -83,28 +93,94 @@ const GroupUserPage = () => {
     }
   }, [showForm]);
 
+  useEffect(() => {
+    if (showFormEdit && inputRef.current) {
+        inputRef.current.focus();
+    }
+  }, [showFormEdit]);
+
   const [formData, setFormData] = useState({
-      subjectName: "",
+    groupName: "",
+    listUser: [],
+    listUserText: ""
   });
 
-  const handleSubmit = (e) => {
+  const [formDataEdit, setFormDataEdit] = useState({
+    groupName: "",
+  });
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editingSubject) {
-      updateSubject({ ...editingSubject, ...formData });
-    } else {
-      // Thêm mới dữ liệu
-      createSubject(formData);
+
+    // Kiểm tra dữ liệu trước khi gửi
+    if (!formData.groupName && !editingSubject) {
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi",
+        text: "Tên nhóm không được để trống",
+      });
+      return;
     }
-    setShowForm(false);
+
+    if (editingSubject && !formDataEdit.groupName) {
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi",
+        text: "Tên nhóm không được để trống",
+      });
+      return;
+    }
+
+    // Tách listUserText thành mảng
+    const lines = formData.listUserText
+      .split("\n")
+      .map(line => line.trim())
+      .filter(line => line); // Loại bỏ dòng rỗng
+
+    // Payload gửi lên server
+    const payloadCreate = {
+      ...formData,
+      listUser: lines
+    };
+
+    const payloadEdit = {
+      groupName: formDataEdit.groupName,
+    };
+
+    try {
+      if (editingSubject) {
+        await updateGroup(editingSubject.id, formDataEdit.groupName);
+        Swal.fire({
+          icon: "success",
+          title: "Cập nhật thành công",
+          draggable: true
+        });
+      } else {
+        await createGroup(payloadCreate);
+        Swal.fire({
+          icon: "success",
+          title: "Tạo nhóm thành công",
+          draggable: true
+        });
+      }
+      setShowForm(false);
+      setShowFormEdit(false);
+    }catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Có lỗi xảy ra",
+        text: error?.message || "Không thể xử lý yêu cầu",
+      });;
+    }
   };
 
-  const preEdit = (subject) => {
-    setFormData({ subjectName: subject.subjectName });
-    setEditingSubject(subject);
-    setShowForm(true);
+  const preEdit = (group) => {
+    setFormDataEdit({ groupName: group.groupName });
+    setEditingSubject(group);
+    setShowFormEdit(true);
   };
 
-  const handleDelete = (subjectId) => {
+  const handleDelete = async (groupId) => {
     Swal.fire({
       title: "Bạn có chắc chắn xóa?",
       text: "Bạn sẽ không thể hoàn tác hành động này!",
@@ -114,16 +190,20 @@ const GroupUserPage = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Xóa",
       cancelButtonText: "Hủy",
-    }).then((result) => {
+    }).then(async(result) => {
       if (result.isConfirmed) {
-        // Xóa phân môn khỏi danh sách
-        setListSubject(prev => prev.filter(subject => subject.id !== subjectId));
-        
-        Swal.fire({
-          title: "Đã xóa!",
-          text: "Phân môn đã bị xóa.",
-          icon: "success",
-        });
+        try {
+          await ApiService.delete(`/delete/${groupId}`);
+          fetchData();
+          Swal.fire({
+            title: "Đã xóa!",
+            text: "Nhóm người dùng đã bị xóa.",
+            icon: "success",
+          });
+        }
+        catch (error) {
+          console.error("Failed to update group: ", error);
+        }
       }
     });
   };
@@ -187,7 +267,7 @@ const GroupUserPage = () => {
                     </div>
                   </td>
                 </tr>
-              ) : listSubject.map((item, index) => (  
+              ) : listGroup.map((item, index) => (  
                 <tr key={item.id} className="align-middle">
                   <td className="text-center">{index + 1}</td>
                   <td
@@ -196,7 +276,7 @@ const GroupUserPage = () => {
                     style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
                     className="text-hover-primary"
                   >
-                    {item.subjectName}
+                    {item.groupName}
                   </td>
                   <td
                     onClick={() => navigate(`groupuserId`, {
@@ -204,7 +284,7 @@ const GroupUserPage = () => {
                     style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
                     className="text-center"
                   >
-                    {item.totalQuestionBanks}
+                    {item.listUser?.length || 0}
                   </td>
                   <td className="text-center align-middle">
                     <div className="dropdown d-inline-block">
@@ -258,7 +338,7 @@ const GroupUserPage = () => {
       {showForm && (
         <div className="form-overlay">
           <React.Fragment>
-            <div
+            <form
               className="shadow form-fade bg-white bd-radius-8"
               style={{ width: "750px", boxShadow: 3,}}
               onSubmit={handleSubmit}
@@ -271,7 +351,7 @@ const GroupUserPage = () => {
             >
               {/* Add your form content here */}
               <p className="fw-bold p-4 pb-0">
-                {editingSubject ? "Chỉnh sửa nhóm người dùng" : "Thêm nhóm người đùng mới"}
+                Thêm nhóm người đùng mới
               </p>
               <button
                 className="p-4"
@@ -291,10 +371,10 @@ const GroupUserPage = () => {
                     fullWidth
                     label="Tên nhóm"
                     required
-                    value={formData.subjectName}
+                    value={formData.groupName}
                     inputRef={inputRef}
                     onChange={(e) =>
-                      setFormData({ ...formData, subjectName: e.target.value })
+                      setFormData({ ...formData, groupName: e.target.value })
                     }
                     sx={{
                       "& .MuiInputBase-input": {
@@ -310,8 +390,15 @@ const GroupUserPage = () => {
                     id="outlined-multiline-flexible"
                     label="Nhập mã sinh viên"
                     placeholder="Nhập mã sinh viên"
+                    value={formData.listUserText}
                     multiline
                     maxRows={12}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        listUserText: e.target.value
+                      });
+                    }}
                     sx={{
                       width: "100%",
                       "& .MuiInputBase-root": {
@@ -332,17 +419,84 @@ const GroupUserPage = () => {
                   <CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>Hủy</CancelButton>
                 </Grid>
                 <Grid item xs={3}>
-                  <AddButton style={{width: "100%"}}>
+                  <AddButton style={{width: "100%"}} onClick={handleSubmit}>
                     {editingSubject ? "Cập nhật" : "Lưu"}
                   </AddButton>
                 </Grid>
               </Grid>
-            </div>
+            </form>
           </React.Fragment>
         </div>
       )}
+
+      {showFormEdit && (
+        <div className="form-overlay">
+          <React.Fragment>
+            <form
+              className="shadow form-fade bg-white bd-radius-8"
+              style={{ width: "750px", boxShadow: 3,}}
+              onSubmit={handleSubmit}
+            >
+            <div className="d-flex justify-content-between"
+              style={{
+                borderBottom: "1px solid #ccc",
+                marginBottom: "20px",
+              }}
+            >
+              {/* Add your form content here */}
+              <p className="fw-bold p-4 pb-0">
+                Chỉnh sửa nhóm người dùng
+              </p>
+              <button
+                className="p-4"
+                type="button"
+                onClick={() => setShowFormEdit(false)}
+                style={{
+                  border: 'none',
+                  background: 'none',
+                  fontSize: '20px',
+                  cursor: 'pointer',
+                }}
+              ><i className="fa-solid fa-xmark"></i></button>
+              </div>
+              <Grid container spacing={2} sx={{p: 3, pt: 1}}>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Tên nhóm"
+                    required
+                    value={formDataEdit.groupName}
+                    inputRef={inputRef}
+                    onChange={(e) =>
+                      setFormDataEdit({ ...formDataEdit, groupName: e.target.value })
+                    }
+                    sx={{
+                      "& .MuiInputBase-input": {
+                        fontSize: "14px",
+                        paddingBottom: "11px",
+                      },
+                      "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+                    }}
+                  />
+                </Grid>                
+              </Grid>
+
+              <Grid container spacing={2} sx={{justifyContent: "flex-end", p: 3, pt: 1}}>
+                <Grid item xs={3}>
+                  <CancelButton style={{width: "100%"}} onClick={() => setShowFormEdit(false)}>Hủy</CancelButton>
+                </Grid>
+                <Grid item xs={3}>
+                  <AddButton style={{width: "100%"}} onClick={handleSubmit}>
+                    Cập nhật
+                  </AddButton>
+                </Grid>
+              </Grid>
+            </form>
+          </React.Fragment>
         </div>
-    );
+      )}
+    </div>
+  );
 };
 
 export default GroupUserPage;
