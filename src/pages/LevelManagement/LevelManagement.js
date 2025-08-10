@@ -12,7 +12,7 @@ import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
 
 const LevelManagement = () => {
-  const [listSubject, setListSubject] = useState([]);
+  const [listLevel, setListLevel] = useState([]);
 
   const [keyword, setKeyword] = useState("");
   const [page, setPage] = useState(1);
@@ -31,36 +31,36 @@ const LevelManagement = () => {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const response = await ApiService.get("/subjects", {
+      const response = await ApiService.get("/level", {
         params: { keyword, page, pageSize },
       });
-      setListSubject(response.data.subjects);
-      setTotalCount(response.data.totalCount);
+      setListLevel(response.data);
+      //setTotalCount(response.data.totalCount);
     } catch (error) {
       console.error("Failed to fetch data: ", error);
     }
     setIsLoading(false);
   };
 
-  const createSubject = async (subject) => {
+  const createLevel = async (level) => {
     setIsLoading(true);
     try {
-      await ApiService.post("/subjects/add-subject", subject);
+      await ApiService.post("/level", level);
       fetchData();
     } catch (error) {
-      console.error("Failed to create subject: ", error);
+      console.error("Failed to create level: ", error);
     }
     setIsLoading(false);
   };
 
-  const updateSubject = async (subject) => {
+  const updateLevel = async (level) => {
     setIsLoading(true);
     try {
-      await ApiService.put(`/subjects/update/${subject.id}`, subject);
+      await ApiService.put(`/level/${level.id}`, level);
       fetchData();
     }
     catch (error) {
-      console.error("Failed to update subject: ", error);
+      console.error("Failed to update level: ", error);
     }
     setIsLoading(false);
   };
@@ -71,7 +71,7 @@ const LevelManagement = () => {
 
   const preAddNew = () => {
     setEditingSubject(null);
-    setFormData({ subjectName: "" });
+    setFormData({ levelName: "" });
     setShowForm(true);
   };
 
@@ -84,27 +84,27 @@ const LevelManagement = () => {
   }, [showForm]);
 
   const [formData, setFormData] = useState({
-      subjectName: "",
+    levelName: "",
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (editingSubject) {
-      updateSubject({ ...editingSubject, ...formData });
+      updateLevel({ ...editingSubject, ...formData });
     } else {
       // Thêm mới dữ liệu
-      createSubject(formData);
+      createLevel(formData);
     }
     setShowForm(false);
   };
 
   const preEdit = (subject) => {
-    setFormData({ subjectName: subject.subjectName });
+    setFormData({ levelName: subject.levelName });
     setEditingSubject(subject);
     setShowForm(true);
   };
 
-  const handleDelete = (subjectId) => {
+  const handleDelete = async (levelId) => {
     Swal.fire({
       title: "Bạn có chắc chắn xóa?",
       text: "Bạn sẽ không thể hoàn tác hành động này!",
@@ -114,16 +114,22 @@ const LevelManagement = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Xóa",
       cancelButtonText: "Hủy",
-    }).then((result) => {
+    }).then(async(result) => {
       if (result.isConfirmed) {
         // Xóa phân môn khỏi danh sách
-        setListSubject(prev => prev.filter(subject => subject.id !== subjectId));
-        
-        Swal.fire({
-          title: "Đã xóa!",
-          text: "Mức độ đã bị xóa.",
-          icon: "success",
-        });
+        //setListSubject(prev => prev.filter(subject => subject.id !== subjectId));
+        try {
+          await ApiService.delete(`/level/${levelId}`);
+          fetchData();
+          Swal.fire({
+            title: "Đã xóa!",
+            text: "Mức độ đã bị xóa.",
+            icon: "success",
+          });
+        }
+        catch (error) {
+          console.error("Failed to update level: ", error);
+        }
       }
     });
   };
@@ -186,10 +192,10 @@ const LevelManagement = () => {
                     </div>
                   </td>
                 </tr>
-              ) : listSubject.map((item, index) => (  
+              ) : listLevel.map((item, index) => (  
                 <tr key={item.id} className="align-middle">
                   <td className="text-center">{index + 1}</td>
-                  <td >{item.subjectName}</td>
+                  <td >{item.levelName}</td>
                   <td className="text-center align-middle">
                     <div className="dropdown d-inline-block">
                       <button
@@ -243,7 +249,7 @@ const LevelManagement = () => {
       {showForm && (
         <div className="form-overlay">
           <React.Fragment>
-            <div
+            <form
               className="shadow form-fade bg-white bd-radius-8"
               style={{ width: "750px", boxShadow: 3}}
               onSubmit={handleSubmit}
@@ -274,9 +280,9 @@ const LevelManagement = () => {
                   fullWidth
                   label="Tên mức độ"
                   required
-                  value={formData.subjectName}
+                  value={formData.levelName}
                   onChange={(e) =>
-                    setFormData({ ...formData, subjectName: e.target.value })
+                    setFormData({ ...formData, levelName: e.target.value })
                   }
                   inputRef={inputRef}
                   sx={{
@@ -321,7 +327,7 @@ const LevelManagement = () => {
                   </AddButton>
                 </Grid>
               </Grid>
-            </div>
+            </form>
           </React.Fragment>
         </div>
       )}
