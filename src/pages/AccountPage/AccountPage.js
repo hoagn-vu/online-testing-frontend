@@ -125,6 +125,12 @@ const AccountPage = () => {
     }
   }, [showForm]);
 
+  useEffect(() => {
+    if (showAddGroupForm && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [showAddGroupForm]);
+
   const permissionOptions = [
     "Quản lý kỳ thi",
     "Quản lý ngân hàng câu hỏi",
@@ -343,10 +349,66 @@ const AccountPage = () => {
   // hàm toggle
   const handleTogglePassword = () => setShowPassword((prev) => !prev);
 
-  const handleCreateGroup = (name, members) => {
-    console.log("Tạo nhóm:", name);
-    console.log("Danh sách ID:", members);
-    // Gọi API hoặc xử lý logic tại đây
+  const handleCreateGroup = async (groupName, selectedItems) => {    
+    if (!groupName) {
+      await Swal.fire({
+        icon: 'error',
+        title: 'Lỗi',
+        text: 'Tên nhóm không được để trống',
+        draggable: true
+      });
+      return false;
+    }
+    
+    // Map selectedItems (IDs) to userCodes
+    const listUser = selectedItems.map(id => {
+      const user = listDisplay.find(item => String(item.id) === String(id)); 
+      return user ? user.userCode : null;
+    }).filter(code => code !== null); // Loại bỏ các giá trị null (nếu có)
+    
+    // Debug: Log listUser to verify mapping result
+    console.log('Tạo nhóm:', groupName);
+    console.log('Danh sách ID:', selectedItems);
+    console.log('Danh sách userCode:', listUser);
+
+    if (!selectedItems || selectedItems.length === 0) {
+      await Swal.fire({
+        icon: 'error',
+        title: 'Lỗi',
+        text: 'Vui lòng chọn ít nhất một tài khoản',
+        draggable: true
+      });
+      setShowAddGroupForm(false);
+      return false;
+    }
+
+    const payload = {
+      groupName,
+      listUser,
+    };
+
+    setIsLoading(true);
+    try {
+      await ApiService.post('/groupUser/create-group-users', payload);
+      await fetchData(); // Làm mới danh sách sau khi tạo nhóm
+      await Swal.fire({
+        icon: 'success',
+        title: 'Tạo nhóm thành công',
+        draggable: true
+      });
+      setSelectedItems([]); // Reset checkbox
+      await fetchData(); // Làm mới danh sách
+      setShowAddGroupForm(false);
+    } catch (error) {
+      console.error('Failed to create group:', error.response?.data || error);
+      await Swal.fire({
+        icon: 'error',
+        title: 'Lỗi',
+        text: error.message || 'Không thể tạo nhóm',
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -999,6 +1061,7 @@ const AccountPage = () => {
                   value={groupName}
                   onChange={(e) => setGroupName(e.target.value)}
                   placeholder="Nhập tên nhóm..."
+                  ref={inputRef}
                 />
               </div>
 
@@ -1046,12 +1109,9 @@ const AccountPage = () => {
               </Grid>
               <Grid item xs={3}>
                 <AddButton style={{width: "100%"}}
-                  onClick={() => {
-                  // Gửi dữ liệu lên server hoặc xử lý logic thêm nhóm
-                  handleCreateGroup(groupName, selectedItems);
-                  setShowAddGroupForm(false);
-                  setGroupName("");
-                }}
+                  onClick={async () => {
+                    await handleCreateGroup(groupName, selectedItems);
+                  }}
                 >
                   {editingAccount ? "Cập nhật" : "Lưu"}
                 </AddButton>
