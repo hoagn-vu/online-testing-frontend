@@ -45,7 +45,7 @@ const SubjectPage = () => {
   const createSubject = async (subject) => {
     setIsLoading(true);
     try {
-      await ApiService.post("/subjects/add-subject", subject);
+      await ApiService.post("/subjects", subject);
       fetchData();
     } catch (error) {
       console.error("Failed to create subject: ", error);
@@ -259,7 +259,7 @@ const SubjectPage = () => {
       {showForm && (
         <div className="form-overlay">
           <React.Fragment>
-            <div
+            <form
               className="shadow form-fade bg-white bd-radius-8"
               style={{ width: "750px", boxShadow: 3}}
               onSubmit={handleSubmit}
@@ -337,7 +337,7 @@ const SubjectPage = () => {
                   </AddButton>
                 </Grid>
               </Grid>
-            </div>
+            </form>
           </React.Fragment>
         </div>
       )}

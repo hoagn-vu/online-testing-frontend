@@ -73,7 +73,7 @@ const QuestionBankPage = () => {
   const createQuestionBank = async (questionBankName) => {
     setIsLoading(true);
     try {
-      await ApiService.post("/subjects/add-question-bank", {
+      await ApiService.post("/subjects/question-bank", {
         subjectId: subjectId,
         questionBankName: questionBankName,
       });
@@ -298,7 +298,7 @@ const QuestionBankPage = () => {
       {/* Form thêm tài khoản */}
       {showForm && (
         <div className="form-overlay">
-          <div
+          <form
             className="shadow form-fade bg-white bd-radius-8"
             style={{ width: "750px", boxShadow: 3}}
             onSubmit={handleSubmit}
@@ -357,7 +357,7 @@ const QuestionBankPage = () => {
               </AddButton>
             </Grid>
             </Grid>
-          </div>
+          </form>
         </div>
       )}
     </div>
