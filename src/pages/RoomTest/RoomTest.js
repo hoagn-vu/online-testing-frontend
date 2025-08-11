@@ -27,6 +27,11 @@ const RoomTest = () => {
   const [totalCount, setTotalCount] = useState(0);
 
   const [rows, setRows] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [editingAccount, setEditingAccount] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [accountToDelete, setAccountToDelete] = useState(null);
+  const inputRef = useRef(null);
 
   const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
@@ -45,6 +50,35 @@ const RoomTest = () => {
       console.error("Failed to fetch data: ", error);
     }
     setIsLoading(false);
+  };
+
+  const createRoom = async (room) => {
+    setIsLoading(true);
+    try {
+      await ApiService.post("/rooms", room);
+      fetchData();
+    } catch (error) {
+      console.error("Failed to create room: ", error);
+    }
+    setIsLoading(false);
+  };
+
+  const updateRoom = async (room) => {
+    setIsLoading(true);
+    try {
+      const response = await ApiService.put(`/rooms/${room.id}`, room);
+      if (response.status >= 200 && response.status < 300) {
+        await fetchData();
+        return true; // thành công
+      } else {
+        throw new Error("Cập nhật thất bại");
+      }
+    } catch (error) {
+      console.error("Failed to update level:", error);
+      throw error; // ném lỗi ra ngoài để handleSubmit bắt được
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -69,12 +103,6 @@ const RoomTest = () => {
     }
   };
 
-  const [showForm, setShowForm] = useState(false);
-  const [editingAccount, setEditingAccount] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [accountToDelete, setAccountToDelete] = useState(null);
-  const inputRef = useRef(null);
-
   useEffect(() => {
   if (showForm && inputRef.current) {
       inputRef.current.focus();
@@ -91,7 +119,7 @@ const RoomTest = () => {
     roomName: "",
     roomLocation: "",
     roomCapacity: "",
-    roomStatus: "active",
+    roomStatus: "available",
   });
 
   const handleAddNew = () => {
@@ -100,25 +128,39 @@ const RoomTest = () => {
       roomName: "",
       roomLocation: "",
       roomCapacity: "",
-      roomStatus: "active",
+      roomStatus: "available",
     });
     setTimeout(() => setShowForm(true), 0); // Đợi React cập nhật state rồi mới hiển thị form
   };
 
-  const handlePermissionChange = (permission) => {
-    setFormData((prevData) => {
-      const updatedPermissions = prevData.permissions.includes(permission)
-        ? prevData.permissions.filter((p) => p !== permission)
-        : [...prevData.permissions, permission];
-
-      return { ...prevData, permissions: updatedPermissions };
-    });
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Dữ liệu thêm mới:", formData);
-    setShowForm(false);
+    try {
+      if (editingAccount) {
+        await updateRoom({ ...editingAccount, ...formData });
+        Swal.fire({
+          icon: "success",
+          title: "Cập nhật phòng thành công",
+          draggable: true
+        });
+        setShowForm(false);
+      } else {
+        // Thêm mới dữ liệu
+        await createRoom(formData);
+        Swal.fire({
+          icon: "success",
+          title: "Tạo phòng thành công",
+          draggable: true
+        });
+        setShowForm(false);
+      }
+    }catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Có lỗi xảy ra",
+        text: error?.message || "Không thể xử lý yêu cầu",
+      });;
+    }
   };
 
   const handleEdit = (id) => {
@@ -132,7 +174,7 @@ const RoomTest = () => {
     setShowForm(true);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     Swal.fire({
       title: "Bạn có chắc chắn xóa?",
       text: "Bạn sẽ không thể hoàn tác hành động này!",
@@ -142,16 +184,20 @@ const RoomTest = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Xóa",
       cancelButtonText: "Hủy",
-    }).then((result) => {
+    }).then(async(result) => {
       if (result.isConfirmed) {
-        console.log("Xóa phòng thi có ID:", id);
-
-        Swal.fire({
-          title: "Đã xóa!",
-          text: "Phòng thi đã bị xóa.",
-          icon: "success",
-        });
-        setListRoom(prev => prev.filter(room => room.id !== id));
+        try {
+          await ApiService.delete(`/rooms/delete-room/${id}`);
+          fetchData();
+          Swal.fire({
+            title: "Đã xóa!",
+            text: "Phòng đã bị xóa thành công",
+            icon: "success",
+          });
+        }
+        catch (error) {
+          console.error("Failed to delete room: ", error);
+        }
       }
     });
   };
@@ -210,7 +256,7 @@ const [date, setDate] = useState(new Date());
 
       <div className="container">
         <div className="row">
-          <div className="tbl-shadow p-3 col-4">
+          <div className="tbl-shadow p-3 col-5">
             <div className="sample-card-header d-flex justify-content-between align-items-center mb-3">
               <div className='left-header d-flex align-items-center'>
                 <div className="search-box me-2 rounded d-flex align-items-center">
@@ -327,7 +373,7 @@ const [date, setDate] = useState(new Date());
                 )}
             </div>
           </div>
-          <div className="col-8 pe-0">
+          <div className="col-7 pe-0">
             <div className="tbl-shadow">
               <FullCalendar
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -359,7 +405,7 @@ const [date, setDate] = useState(new Date());
       {/* Form thêm tài khoản */}
       {showForm && (
         <div className="form-overlay">
-          <div
+          <form
 						className="shadow form-fade bg-white bd-radius-8"
 						style={{ width: "750px", boxShadow: 3}}
 						onSubmit={handleSubmit}
@@ -394,7 +440,7 @@ const [date, setDate] = useState(new Date());
                   value={formData.roomName}
                   inputRef={inputRef}
                   onChange={(e) =>
-                    setFormData({ ...formData, studentId: e.target.value })
+                    setFormData({ ...formData, roomName: e.target.value })
                   }
                   sx={{
                     "& .MuiInputBase-input": {
@@ -412,7 +458,7 @@ const [date, setDate] = useState(new Date());
                   required
                   value={formData.roomLocation}
                   onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
+                    setFormData({ ...formData, roomLocation: e.target.value })
                   }
                   sx={{
                     "& .MuiInputBase-input": {
@@ -431,7 +477,7 @@ const [date, setDate] = useState(new Date());
                   type="number"
                   value={formData.roomCapacity}
                   onChange={(e) =>
-                    setFormData({ ...formData, dob: e.target.value })
+                    setFormData({ ...formData, roomCapacity: e.target.value })
                   }
                   sx={{
                     "& .MuiInputBase-input": {
@@ -455,7 +501,7 @@ const [date, setDate] = useState(new Date());
                 </AddButton>
               </Grid>
             </Grid>
-          </div>
+          </form>
         </div>
       )}
     </div>
