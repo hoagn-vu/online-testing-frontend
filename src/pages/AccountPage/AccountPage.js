@@ -411,6 +411,19 @@ const AccountPage = () => {
     }
   };
 
+  const processData = (data) => {
+    return data.map((item) => {
+      const nameParts = item.fullName.trim().split(" ");
+      const firstName = nameParts.pop(); // Lấy phần cuối cùng là firstName
+      const lastName = nameParts.join(" "); // Phần còn lại là lastName
+      return {
+        ...item,
+        firstName, 
+        lastName
+      };
+    });
+  };
+
   return (
     <div className="p-4">
       {/* Breadcrumbs */}
@@ -507,7 +520,7 @@ const AccountPage = () => {
                   </td>
                 </tr>
               ) :
-              listDisplay.map((item, index) => (
+              processData(listDisplay).map((item, index) => (
                 <tr key={item.id} className="align-middle">
                   <td className=" text-center" style={{ width: "50px" }}>
                     <input
@@ -519,8 +532,8 @@ const AccountPage = () => {
                   </td>
                   <td>{item.userCode}</td>
                   <td>{item.username}</td>
-                  <td>{item.fullName}</td>
-                  <td>{item.fullName}</td>
+                  <td>{item.lastName}</td>
+                  <td>{item.firstName}</td>
                   <td className="text-center">{item.dateOfBirth}</td>
                   <td className="text-center">{item.gender}</td>
                   <td className="text-center">{item.groupName}</td>
