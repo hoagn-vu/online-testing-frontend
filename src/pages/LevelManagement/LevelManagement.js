@@ -35,7 +35,7 @@ const LevelManagement = () => {
         params: { keyword, page, pageSize },
       });
       setListLevel(response.data);
-      //setTotalCount(response.data.totalCount);
+      setTotalCount(response.data.totalCount);
     } catch (error) {
       console.error("Failed to fetch data: ", error);
     }
@@ -148,7 +148,7 @@ const LevelManagement = () => {
           fetchData();
           Swal.fire({
             title: "Đã xóa!",
-            text: "Mức độ đã bị xóa.",
+            text: "Mức độ đã bị xóa thành công",
             icon: "success",
           });
         }
