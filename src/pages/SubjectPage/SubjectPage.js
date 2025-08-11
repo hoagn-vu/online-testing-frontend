@@ -45,7 +45,7 @@ const SubjectPage = () => {
   const createSubject = async (subject) => {
     setIsLoading(true);
     try {
-      await ApiService.post("/subjects/add-subject", subject);
+      await ApiService.post("/subjects", subject);
       fetchData();
     } catch (error) {
       console.error("Failed to create subject: ", error);
