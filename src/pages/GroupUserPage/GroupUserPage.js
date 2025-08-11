@@ -35,8 +35,8 @@ const GroupUserPage = () => {
       const response = await ApiService.get("/groupUser", {
         params: { keyword, page, pageSize },
       });
-      setListGroup(response.data);
-      //setTotalCount(response.data.totalCount);
+      setListGroup(response.data.groups);
+      setTotalCount(response.data.totalCount);
     } catch (error) {
       console.error("Failed to fetch data: ", error);
     }
@@ -193,7 +193,7 @@ const GroupUserPage = () => {
     }).then(async(result) => {
       if (result.isConfirmed) {
         try {
-          await ApiService.delete(`groupUser/delete/${groupId}`);
+          await ApiService.delete(`/groupUser/delete/${groupId}`);
           fetchData();
           Swal.fire({
             title: "Đã xóa!",
@@ -276,7 +276,7 @@ const GroupUserPage = () => {
                 <tr key={item.id} className="align-middle">
                   <td className="text-center">{index + 1}</td>
                   <td
-                    onClick={() => navigate(`groupuserId`, {
+                    onClick={() => navigate(`/staff/groupuser/${item.id}`, {
                     })}
                     style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
                     className="text-hover-primary"
@@ -284,7 +284,7 @@ const GroupUserPage = () => {
                     {item.groupName}
                   </td>
                   <td
-                    onClick={() => navigate(`groupuserId`, {
+                    onClick={() => navigate(`/staff/groupuser/${item.id}`, {
                     })}
                     style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
                     className="text-center"
