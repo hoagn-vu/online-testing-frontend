@@ -197,8 +197,14 @@ const QuestionBankPage = () => {
             }}
           >
             {listQuestionBank.length === 0 ? (
-              <div className="text-center text-muted fw-semibold py-5">
-                Không có dữ liệu
+              <div
+                className="d-flex justify-content-center align-items-center text-center text-muted fw-semibold"
+                style={{ minHeight: "200px", gridColumn: "1 / -1" }}
+              >
+                <div className="text-center p-4 rounded shadow-sm bg-light text-muted" style={{ width: "400px"}}>
+                  <i className="fa-solid fa-circle-info fa-2x mb-2"></i>
+                  <h5>Không có dữ liệu</h5>
+                </div>
               </div>
             ) : (
               listQuestionBank.map((item, index) => (
