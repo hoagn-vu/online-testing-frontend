@@ -34,7 +34,7 @@ const LevelManagement = () => {
       const response = await ApiService.get("/level", {
         params: { keyword, page, pageSize },
       });
-      setListLevel(response.data);
+      setListLevel(response.data.levels);
       setTotalCount(response.data.totalCount);
     } catch (error) {
       console.error("Failed to fetch data: ", error);
