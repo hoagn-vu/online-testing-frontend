@@ -14,6 +14,7 @@ import CancelButton from "../../components/CancelButton/CancelButton";
 import ApiService from "../../services/apiService";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import Popper from '@mui/material/Popper';
 
 const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 	const [editingOrganizeExam, setEditingOrganizeExam] = useState(null);
@@ -40,8 +41,8 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 	useEffect(() => {
 		const fetchSubjectOptions = async () => {
 			try {
-				const response = await ApiService.get("/subjects");
-				setSubjectOptions(response.data.subjects.map((subject) => ({
+				const response = await ApiService.get("/subjects/options");
+				setSubjectOptions(response.data.map((subject) => ({
 					value: subject.id,
 					label: subject.subjectName,
 				})));
@@ -180,7 +181,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 		try {
 			const response = await ApiService.post("/organize-exams", payload);
 			Swal.fire({
-				title: "Kỳ thi đã được tạo thành công",
+				text: "Kỳ thi đã được tạo thành công",
 				icon: "success",
 				draggable: true
 			}).then((result) => {
@@ -211,11 +212,13 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 		}
 	};
 
+	function CustomPopper(props) {
+		return <Popper {...props} placement="bottom-start" />;
+	}
+
   return (
     <Box sx={{}}>
-      <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: '#1976d2',  }}>
-				Tạo kỳ thi mới
-      </Typography>
+
       <Box component="form" onSubmit={handleSubmit}>
         <div className='d-flex'>
 					{/* Phần thông tin kỳ thi */}
@@ -295,7 +298,6 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 													fontSize: "14px",
 													width: "100%",
 													left: "0",
-													top: "-5px", // Đã điều chỉnh từ 0px lên 10px
 													"&.Mui-focused": {
 															transform: "translate(13px, -3px) scale(0.75)", // Điều chỉnh khi focus
 													},
@@ -325,7 +327,6 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 													fontSize: "14px",
 													width: "100%",
 													left: "0",
-													top: "-5px", // Đã điều chỉnh từ 0px lên 10px
 													"&.Mui-focused": {
 															transform: "translate(13px, -3px) scale(0.75)", // Điều chỉnh khi focus
 													},
@@ -478,6 +479,8 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 													sx: {
 														fontSize: "14px",
 														zIndex: 9999,
+														maxHeight: "220px",
+														overflowY: "auto",
 													},
 												},
 											}}
@@ -489,13 +492,14 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 									<Grid item xs={12}>
 										<Autocomplete
 											fullWidth
-											options={subjectOptions} 
+											options={matrixOptions} 
 											getOptionLabel={(option) => option.label || ""}
-											value={subjectOptions.find((opt) => opt.value === examData.matrixId) || null}
+											value={matrixOptions.find((opt) => opt.value === examData.matrixId) || null}
 											onChange={(e, newValue) => {
 												setExamData({ ...examData, matrixId: newValue?.value || null });
 											}}
 											disabled={editingOrganizeExam}
+											PopperComponent={CustomPopper}
 											renderInput={(params) => (
 												<TextField
 													{...params}
@@ -524,6 +528,8 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 														fontSize: "14px",
 														zIndex: 9999,
 														width: "100%", // giữ dropdown khớp chiều rộng
+														maxHeight: "220px",
+														overflowY: "auto",
 													},
 												},
 											}}

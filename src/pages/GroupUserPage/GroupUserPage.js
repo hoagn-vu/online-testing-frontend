@@ -23,6 +23,8 @@ const GroupUserPage = () => {
   const [showForm, setShowForm] = useState(false);
   const [showFormEdit, setShowFormEdit] = useState(false);
   const [editingSubject, setEditingSubject] = useState(null);
+  const [listUserText, setListUserText] = useState("");
+
   const navigate = useNavigate();
   const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
@@ -118,6 +120,9 @@ const GroupUserPage = () => {
         icon: "error",
         title: "Lỗi",
         text: "Tên nhóm không được để trống",
+        didClose: () => {
+          inputRef.current.focus()
+        }
       });
       return;
     }
@@ -127,6 +132,21 @@ const GroupUserPage = () => {
         icon: "error",
         title: "Lỗi",
         text: "Tên nhóm không được để trống",
+        didClose: () => {
+          inputRef.current.focus()
+        }
+      });
+      return;
+    }
+
+    if (!formData.listUserText || formData.listUserText.trim() === "") {
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi",
+        text: "Vui lòng thêm ít nhất 1 mã sinh viên",
+        didClose: () => {
+          inputRef.current.focus()
+        }
       });
       return;
     }

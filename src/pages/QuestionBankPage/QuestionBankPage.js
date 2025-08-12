@@ -116,22 +116,47 @@ const QuestionBankPage = () => {
   
   const inputRef = useRef(null);
     
+  useEffect(() => {
+    if (showForm && inputRef.current) {
+        inputRef.current.focus();
+    }
+  }, [showForm]);
+
   const [formData, setFormData] = useState({
     questionBankName: "",
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editingBank) {
-      updateQuestionBank(editingBank.questionBankId, formData.questionBankName);
-    } else {
-      createQuestionBank(formData.questionBankName);
+    try {
+      if (editingBank) {
+        await updateQuestionBank(editingBank.questionBankId, formData.questionBankName);
+        Swal.fire({
+          icon: "success",
+          text: "Cập nhật bộ câu hỏi thành công",
+          draggable: true
+        });
+        setShowForm(false);
+      } else {
+        // Thêm mới dữ liệu
+        await createQuestionBank(formData.questionBankName);
+        Swal.fire({
+          icon: "success",
+          text: "Tạo bộ câu hỏi thành công",
+          draggable: true
+        });
+        setShowForm(false);
+      }
+    }catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Có lỗi xảy ra",
+        text: error?.message || "Không thể xử lý yêu cầu",
+      });;
     }
-    setShowForm(false);
   };
 
-
-  const handleDelete = (questionBankId) => {
+  const handleDelete = async (questionBankId) => {
     Swal.fire({
       title: "Bạn có chắc chắn xóa?",
       text: "Bạn sẽ không thể hoàn tác hành động này!",
@@ -141,16 +166,20 @@ const QuestionBankPage = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Xóa",
       cancelButtonText: "Hủy",
-    }).then((result) => {
+    }).then(async(result) => {
       if (result.isConfirmed) {
-        // Xóa ngân hàng câu hỏi khỏi danh sách
-        setListQuestionBank(prev => prev.filter(bank => bank.questionBankId !== questionBankId));
-                
-        Swal.fire({
-          title: "Đã xóa!",
-          text: "Ngân hàng câu hỏi đã bị xóa.",
-          icon: "success",
-        });
+        try {
+          await ApiService.delete(`/subjects/delete-question-bank?subjectId=${subjectId}&questionBankId=${questionBankId}`);
+          fetchData();
+          Swal.fire({
+            title: "Đã xóa!",
+            text: "Bộ câu hỏi bị xóa thành công",
+            icon: "success",
+          });
+        }
+        catch (error) {
+          console.error("Failed to update level: ", error);
+        }
       }
     });
   };

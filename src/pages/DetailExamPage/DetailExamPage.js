@@ -33,40 +33,40 @@ const DetailExamPage = () => {
 
   useEffect(() => {
     if (location.state?.reload) {
-      fetchData(); 
+      fetchExamDetails(); 
     }
   }, [location.state]);
 
-  useEffect(() => {
-    const fetchExamDetails = async () => {
-      try {
-        console.log("🔍 examId changed:", examId);
-        const response = await ApiService.get("/exams/questions", {
-          params: { examId: examId },
-        });
-        const data = response.data;
-        setExamDetails({
-          id: data.id,
-          examCode: data.examCode,
-          examName: data.examName,
-          subjectName: data.subjectName,
-          questionBankName: data.questionBankName,
-        });
-        setQuestions(data.listQuestion || []);
-        // Tính tổng điểm từ questionScore
-        const total = data.listQuestion.reduce((sum, q) => sum + (q.questionScore || 0), 0);
-        setTotalScore(total);
-        // Khởi tạo scores từ questionScore
-        const initialScores = {};
-        data.listQuestion.forEach((q) => {
-          initialScores[q.questionId] = q.questionScore || 0;
-        });
-        setScores(initialScores);
-      } catch (error) {
-        console.error("Failed to fetch exam details: ", error);
-      }
-    };
+  const fetchExamDetails = async () => {
+    try {
+      console.log("🔍 examId changed:", examId);
+      const response = await ApiService.get("/exams/questions", {
+        params: { examId: examId },
+      });
+      const data = response.data;
+      setExamDetails({
+        id: data.id,
+        examCode: data.examCode,
+        examName: data.examName,
+        subjectName: data.subjectName,
+        questionBankName: data.questionBankName,
+      });
+      setQuestions(data.listQuestion || []);
+      // Tính tổng điểm từ questionScore
+      const total = data.listQuestion.reduce((sum, q) => sum + (q.questionScore || 0), 0);
+      setTotalScore(total);
+      // Khởi tạo scores từ questionScore
+      const initialScores = {};
+      data.listQuestion.forEach((q) => {
+        initialScores[q.questionId] = q.questionScore || 0;
+      });
+      setScores(initialScores);
+    } catch (error) {
+      console.error("Failed to fetch exam details: ", error);
+    }
+  };
 
+  useEffect(() => {
     if (examId) {
       fetchExamDetails();
     } else {
@@ -105,6 +105,7 @@ const DetailExamPage = () => {
       : location.pathname;
     navigate(newUrl, { replace: true });
     setShowFormCreateExam(false);
+    fetchExamDetails();
   };
 
   useEffect(() => {
