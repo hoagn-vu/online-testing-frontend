@@ -31,6 +31,8 @@ const FormCreateExam = ({ onClose, initialData  }) => {
   const { examId: editExamId } = useParams(); 
   const isEditMode = Boolean(editExamId) && searchParams.get("showFormCreateExam") === "true";
   const [formData, setFormData] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const { examId } = useParams();
 
   // Gỡ lỗi editExamId
   useEffect(() => {
@@ -174,6 +176,22 @@ const FormCreateExam = ({ onClose, initialData  }) => {
     }
   }, [selectedItems, totalScore, initialData]);
 
+  const updateExam = async (examId, data) => {
+    setIsLoading(true);
+    try {
+      const response = await ApiService.post(`/exams/update/${examId}`, data);
+      if (response.status >= 200 && response.status < 300) {
+        return true; // thành công
+      } else {
+        throw new Error("Cập nhật thất bại");
+      }
+    } catch (error) {
+      console.error("Failed to update exam:", error);
+      throw error; // ném lỗi ra ngoài để handleSubmit bắt được
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -239,7 +257,7 @@ const FormCreateExam = ({ onClose, initialData  }) => {
   });
 };
 
-const handleSave = () => {
+const handleSave = async () => {
   const currentTotal = selectedItems.reduce((sum, qid) => {
     return sum + (scores[qid] ?? (initialData.questions.find(q => q.questionId === qid)?.questionScore ?? 0));
   }, 0);
@@ -268,6 +286,13 @@ const handleSave = () => {
   try {
     if (isEditMode) {
       console.log("Updating exam with data:", payload);
+      await updateExam(examId, payload);
+      Swal.fire({
+        icon: "success",
+        text: "Cập nhật đề thi thành công",
+        draggable: true
+      });
+      setShowForm(false);
     } else {
       const res = ApiService.post("/exams", payload);
       
