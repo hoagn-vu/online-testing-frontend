@@ -40,8 +40,8 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 	useEffect(() => {
 		const fetchSubjectOptions = async () => {
 			try {
-				const response = await ApiService.get("/subjects");
-				setSubjectOptions(response.data.subjects.map((subject) => ({
+				const response = await ApiService.get("/subjects/options");
+				setSubjectOptions(response.data.map((subject) => ({
 					value: subject.id,
 					label: subject.subjectName,
 				})));
