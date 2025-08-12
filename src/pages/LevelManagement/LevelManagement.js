@@ -100,7 +100,7 @@ const LevelManagement = () => {
         await updateLevel({ ...editingSubject, ...formData });
         Swal.fire({
           icon: "success",
-          title: "Cập nhật mức độ thành công",
+          text: "Cập nhật mức độ thành công",
           draggable: true
         });
         setShowForm(false);
@@ -109,7 +109,7 @@ const LevelManagement = () => {
         await createLevel(formData);
         Swal.fire({
           icon: "success",
-          title: "Tạo mức độ thành công",
+          text: "Tạo mức độ thành công",
           draggable: true
         });
         setShowForm(false);
