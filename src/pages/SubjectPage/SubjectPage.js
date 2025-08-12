@@ -56,13 +56,19 @@ const SubjectPage = () => {
   const updateSubject = async (subject) => {
     setIsLoading(true);
     try {
-      await ApiService.put(`/subjects/update/${subject.id}`, subject);
-      fetchData();
-    }
-    catch (error) {
+      const response = await ApiService.put(`/subjects/update/${subject.id}`, subject);
+      if (response.status >= 200 && response.status < 300) {
+        await fetchData();
+        return true; // thành công
+      } else {
+        throw new Error("Cập nhật thất bại");
+      }
+    } catch (error) {
       console.error("Failed to update subject: ", error);
+      throw error;
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -87,15 +93,34 @@ const SubjectPage = () => {
       subjectName: "",
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editingSubject) {
-      updateSubject({ ...editingSubject, ...formData });
-    } else {
-      // Thêm mới dữ liệu
-      createSubject(formData);
+    try {
+      if (editingSubject) {
+        await updateSubject({ ...editingSubject, ...formData });
+        Swal.fire({
+          icon: "success",
+          text: "Cập nhật phân môn thành công",
+          draggable: true
+        });
+        setShowForm(false);
+      } else {
+        // Thêm mới dữ liệu
+        await createSubject(formData);
+        Swal.fire({
+          icon: "success",
+          text: "Tạo phân môn thành công",
+          draggable: true
+        });
+        setShowForm(false);
+      }
+    }catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Có lỗi xảy ra",
+        text: error?.message || "Không thể xử lý yêu cầu",
+      });;
     }
-    setShowForm(false);
   };
 
   const preEdit = (subject) => {
@@ -104,7 +129,7 @@ const SubjectPage = () => {
     setShowForm(true);
   };
 
-  const handleDelete = (subjectId) => {
+  const handleDelete = async (subjectId) => {
     Swal.fire({
       title: "Bạn có chắc chắn xóa?",
       text: "Bạn sẽ không thể hoàn tác hành động này!",
@@ -114,16 +139,22 @@ const SubjectPage = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Xóa",
       cancelButtonText: "Hủy",
-    }).then((result) => {
+    }).then(async(result) => {
       if (result.isConfirmed) {
         // Xóa phân môn khỏi danh sách
-        setListSubject(prev => prev.filter(subject => subject.id !== subjectId));
-        
-        Swal.fire({
-          title: "Đã xóa!",
-          text: "Phân môn đã bị xóa.",
-          icon: "success",
-        });
+        //setListSubject(prev => prev.filter(subject => subject.id !== subjectId));
+        try {
+          await ApiService.delete(`/subjects/delete-subject?subjectId=${subjectId}`);
+          fetchData();
+          Swal.fire({
+            title: "Đã xóa!",
+            text: "Phân môn bị xóa thành công",
+            icon: "success",
+          });
+        }
+        catch (error) {
+          console.error("Failed to delete subject: ", error);
+        }
       }
     });
   };
