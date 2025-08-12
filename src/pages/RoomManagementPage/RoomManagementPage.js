@@ -21,8 +21,10 @@ const RoomManagementPage = () => {
   const [pageSize, setPageSize] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
-
   const [rows, setRows] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [editingAccount, setEditingAccount] = useState(null);
+  const inputRef = useRef(null);
 
   const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
@@ -43,33 +45,40 @@ const RoomManagementPage = () => {
     setIsLoading(false);
   };
 
+  const createRoom = async (room) => {
+    setIsLoading(true);
+    try {
+      await ApiService.post("/rooms", room);
+      fetchData();
+    } catch (error) {
+      console.error("Failed to create room: ", error);
+    }
+    setIsLoading(false);
+  };
+
+  const updateRoom = async (room) => {
+    setIsLoading(true);
+    try {
+      const response = await ApiService.put(`/rooms/${room.id}`, room);
+      if (response.status >= 200 && response.status < 300) {
+        await fetchData();
+        return true; // thành công
+      } else {
+        throw new Error("Cập nhật thất bại");
+      }
+    } catch (error) {
+      console.error("Failed to update level:", error);
+      throw error; // ném lỗi ra ngoài để handleSubmit bắt được
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, [keyword, page, pageSize]);
 
   const [selectedItems, setSelectedItems] = useState([]);
-
-  const handleSelectItem = (e, id) => {
-    if (e.target.checked) {
-      setSelectedItems([...selectedItems, id]);
-    } else {
-      setSelectedItems(selectedItems.filter((item) => item !== id));
-    }
-  };
-
-  const handleSelectAll = (e) => {
-    if (e.target.checked) {
-      setSelectedItems(listRoom.map((item) => item.id));
-    } else {
-      setSelectedItems([]);
-    }
-  };
-
-  const [showForm, setShowForm] = useState(false);
-  const [editingAccount, setEditingAccount] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [accountToDelete, setAccountToDelete] = useState(null);
-  const inputRef = useRef(null);
 
   useEffect(() => {
   if (showForm && inputRef.current) {
@@ -87,7 +96,7 @@ const RoomManagementPage = () => {
     roomName: "",
     roomLocation: "",
     roomCapacity: "",
-    roomStatus: "active",
+    roomStatus: "available",
   });
 
   const handleAddNew = () => {
@@ -96,7 +105,7 @@ const RoomManagementPage = () => {
       roomName: "",
       roomLocation: "",
       roomCapacity: "",
-      roomStatus: "active",
+      roomStatus: "available",
     });
     setTimeout(() => setShowForm(true), 0); // Đợi React cập nhật state rồi mới hiển thị form
   };
@@ -111,10 +120,34 @@ const RoomManagementPage = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Dữ liệu thêm mới:", formData);
-    setShowForm(false);
+    try {
+      if (editingAccount) {
+        await updateRoom({ ...editingAccount, ...formData });
+        Swal.fire({
+          icon: "success",
+          title: "Cập nhật phòng thành công",
+          draggable: true
+        });
+        setShowForm(false);
+      } else {
+        // Thêm mới dữ liệu
+        await createRoom(formData);
+        Swal.fire({
+          icon: "success",
+          title: "Tạo phòng thành công",
+          draggable: true
+        });
+        setShowForm(false);
+      }
+    }catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Có lỗi xảy ra",
+        text: error?.message || "Không thể xử lý yêu cầu",
+      });;
+    }
   };
 
   const handleEdit = (id) => {
@@ -227,14 +260,14 @@ const RoomManagementPage = () => {
               </tr>
             </thead>
             <tbody>
-            {listRoom.length === 0 ? (
-								<tr>
-									<td colSpan="6" className="text-center fw-semibold text-muted"
-											style={{ height: "100px", verticalAlign: "middle" }}>
-										Không có dữ liệu
-									</td>
-								</tr>
-							) : (
+              {listRoom.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="text-center fw-semibold text-muted"
+                      style={{ height: "100px", verticalAlign: "middle" }}>
+                    Không có dữ liệu
+                  </td>
+                </tr>
+              ) : (
               listRoom.map((item, index) => (
                 <tr key={item.id} className="align-middle">
                   <td className=" text-center" style={{ width: "50px" }}>{index + 1}</td>
@@ -274,12 +307,12 @@ const RoomManagementPage = () => {
                       >
                         <li className="tbl-action" onClick={() => handleEdit(item)}> 
                           <button className="dropdown-item tbl-action" onClick={() => handleEdit(item)}>
-                             Chỉnh sửa
+                              Chỉnh sửa
                           </button>
                         </li>
                         <li className="tbl-action" onClick={() => handleDelete(item.id)}>
                           <button className="dropdown-item tbl-action" onClick={() => handleDelete(item.id)}>
-                             Xoá
+                              Xoá
                           </button>
                         </li>
                         <li className="tbl-action" onClick={() => handleToggleStatus(item.id, item.roomStatus)}>
@@ -320,104 +353,105 @@ const RoomManagementPage = () => {
       {/* Form thêm tài khoản */}
       {showForm && (
         <div className="form-overlay">
-          <Box
-            component="form"
-            sx={{
-              width: "750px",
-              backgroundColor: "white",
-              p: 3,
-              borderRadius: "8px",
-              boxShadow: 3,
-              mx: "auto",
-            }}
-            onSubmit={handleSubmit}
-          >
-            <div className="d-flex justify-content-between">
-            <p className="fw-bold mb-3" style={{fontSize: "18px"}}>
-              {editingAccount ? "Chỉnh sửa thông tin phòng thi" : "Thêm phòng thi"}
-            </p>
-            <button
-              type="button"
-              onClick={() => setShowForm(false)}
+          <React.Fragment>
+            <form
               style={{
-                border: 'none',
-                background: 'none',
-                fontSize: '20px',
-                cursor: 'pointer',
+                width: "750px",
+                backgroundColor: "white",
+                p: 3,
+                borderRadius: "8px",
+                boxShadow: 3,
+                mx: "auto",
               }}
-            ><i className="fa-solid fa-xmark"></i></button>
-            </div>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Tên phòng"
-                  required
-                  value={formData.roomName}
-                  inputRef={inputRef}
-                  onChange={(e) =>
-                    setFormData({ ...formData, studentId: e.target.value })
-                  }
-                  sx={{
-                    "& .MuiInputBase-input": {
-                      fontSize: "14px",
-                      paddingBottom: "11px",
-                    },
-                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Địa điểm"
-                  required
-                  value={formData.roomLocation}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  sx={{
-                    "& .MuiInputBase-input": {
-                      fontSize: "14px",
-                      paddingBottom: "11px",
-                    },
-                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-                  }}
-                />
+              onSubmit={handleSubmit}
+            >
+              <div className="d-flex justify-content-between">
+              <p className="fw-bold mb-3" style={{fontSize: "18px"}}>
+                {editingAccount ? "Chỉnh sửa thông tin phòng thi" : "Thêm phòng thi"}
+              </p>
+              <button
+                type="button"
+                onClick={() => setShowForm(false)}
+                style={{
+                  border: 'none',
+                  background: 'none',
+                  fontSize: '20px',
+                  cursor: 'pointer',
+                }}
+              ><i className="fa-solid fa-xmark"></i></button>
+              </div>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Tên phòng"
+                    required
+                    value={formData.roomName}
+                    inputRef={inputRef}
+                    onChange={(e) =>
+                      setFormData({ ...formData, roomName: e.target.value })
+                    }
+                    sx={{
+                      "& .MuiInputBase-input": {
+                        fontSize: "14px",
+                        paddingBottom: "11px",
+                      },
+                      "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Địa điểm"
+                    required
+                    value={formData.roomLocation}
+                    onChange={(e) =>
+                      setFormData({ ...formData, roomLocation: e.target.value })
+                    }
+                    sx={{
+                      "& .MuiInputBase-input": {
+                        fontSize: "14px",
+                        paddingBottom: "11px",
+                      },
+                      "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+                    }}
+                  />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Số lượng chỗ ngồi"
+                    type="number"
+                    value={formData.roomCapacity}
+                    onChange={(e) =>
+                      setFormData({ ...formData, roomCapacity: e.target.value })
+                    }
+                    sx={{
+                      "& .MuiInputBase-input": {
+                        fontSize: "14px",
+                        paddingBottom: "11px",
+                      },
+                      "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+                    }}
+                  />
+                </Grid>
               </Grid>
 
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Số lượng chỗ ngồi"
-                  type="number"
-                  value={formData.roomCapacity}
-                  onChange={(e) =>
-                    setFormData({ ...formData, dob: e.target.value })
-                  }
-                  sx={{
-                    "& .MuiInputBase-input": {
-                      fontSize: "14px",
-                      paddingBottom: "11px",
-                    },
-                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-                  }}
-                />
+              {/* Buttons */}
+              <Grid container spacing={2} sx={{ mt: 1, justifyContent:"flex-end" }}>
+                <Grid item xs={3}>
+                  <CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>Hủy</CancelButton>
+                </Grid>
+                <Grid item xs={3}>
+                  <AddButton style={{width: "100%"}}>
+                    {editingAccount ? "Cập nhật" : "Lưu"}
+                  </AddButton>
+                </Grid>
               </Grid>
-            </Grid>
-
-            {/* Buttons */}
-            <Grid container spacing={2} sx={{ mt: 1, justifyContent:"flex-end" }}>
-              <Grid item xs={3}>
-                <CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>Hủy</CancelButton>
-              </Grid>
-              <Grid item xs={3}>
-                <AddButton style={{width: "100%"}}>
-                  {editingAccount ? "Cập nhật" : "Lưu"}
-                </AddButton>
-              </Grid>
-            </Grid>
-          </Box>
+            </form>
+          </React.Fragment>
         </div>
       )}
     </div>

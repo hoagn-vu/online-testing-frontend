@@ -103,7 +103,7 @@ function App() {
         >
           <Route path="accountmanage" element={<AccountPage />} />
           <Route path="groupuser" element={<GroupUserPage />} />
-          <Route path="groupuser/groupuserId" element={<ListUserInGroup />} />
+          <Route path="groupuser/:groupuserId" element={<ListUserInGroup />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="organize" element={<OrganizeExamPage />} />
           <Route path="organize/report/:organizeId" element={<ReportEachOrganizePage />} />

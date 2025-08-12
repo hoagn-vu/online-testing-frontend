@@ -34,8 +34,8 @@ const LevelManagement = () => {
       const response = await ApiService.get("/level", {
         params: { keyword, page, pageSize },
       });
-      setListLevel(response.data);
-      //setTotalCount(response.data.totalCount);
+      setListLevel(response.data.levels);
+      setTotalCount(response.data.totalCount);
     } catch (error) {
       console.error("Failed to fetch data: ", error);
     }
@@ -56,13 +56,19 @@ const LevelManagement = () => {
   const updateLevel = async (level) => {
     setIsLoading(true);
     try {
-      await ApiService.put(`/level/${level.id}`, level);
-      fetchData();
+      const response = await ApiService.put(`/level/${level.id}`, level);
+      if (response.status >= 200 && response.status < 300) {
+        await fetchData();
+        return true; // thành công
+      } else {
+        throw new Error("Cập nhật thất bại");
+      }
+    } catch (error) {
+      console.error("Failed to update level:", error);
+      throw error; // ném lỗi ra ngoài để handleSubmit bắt được
+    } finally {
+      setIsLoading(false);
     }
-    catch (error) {
-      console.error("Failed to update level: ", error);
-    }
-    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -87,15 +93,34 @@ const LevelManagement = () => {
     levelName: "",
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editingSubject) {
-      updateLevel({ ...editingSubject, ...formData });
-    } else {
-      // Thêm mới dữ liệu
-      createLevel(formData);
+    try {
+      if (editingSubject) {
+        await updateLevel({ ...editingSubject, ...formData });
+        Swal.fire({
+          icon: "success",
+          title: "Cập nhật mức độ thành công",
+          draggable: true
+        });
+        setShowForm(false);
+      } else {
+        // Thêm mới dữ liệu
+        await createLevel(formData);
+        Swal.fire({
+          icon: "success",
+          title: "Tạo mức độ thành công",
+          draggable: true
+        });
+        setShowForm(false);
+      }
+    }catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Có lỗi xảy ra",
+        text: error?.message || "Không thể xử lý yêu cầu",
+      });;
     }
-    setShowForm(false);
   };
 
   const preEdit = (subject) => {
@@ -123,7 +148,7 @@ const LevelManagement = () => {
           fetchData();
           Swal.fire({
             title: "Đã xóa!",
-            text: "Mức độ đã bị xóa.",
+            text: "Mức độ đã bị xóa thành công",
             icon: "success",
           });
         }
