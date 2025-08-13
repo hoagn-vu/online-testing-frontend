@@ -13,7 +13,10 @@ const ReportEachOrganizePage = () => {
   const [organizeExamName, setOrganizeExamName] = useState([]);
   const [subjectName, setSubjectName] = useState([]);
   const [totalCandidate, setTotalCandidate] = useState([]);
-  const [scoreDistribution, setScoreDistribution] = useState([]);
+  const [scoreDistributionArray, setScoreDistributionArray] = useState([]);
+
+  const [dataPoints, setDataPoints] = useState([])
+  const [labels, setLabels] = useState([])
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -24,7 +27,10 @@ const ReportEachOrganizePage = () => {
       setOrganizeExamName(response.data.organizeExamName);
       setSubjectName(response.data.subjectName);
       setTotalCandidate(response.data.totalCandidates);
-      setScoreDistribution(response.data.scoreDistribution);
+      const { array, ranges, counts } = convertBinsToArray(response.data.scoreDistribution);
+      setScoreDistributionArray(array);
+      setLabels(ranges);
+      setDataPoints(counts);
     } catch (error) {
       console.error("Lỗi lấy dữ liệu:", error);
     }
@@ -34,6 +40,28 @@ const ReportEachOrganizePage = () => {
   useEffect(() => {
     fetchData();
   }, [organizeExamId]);
+
+  const convertBinsToArray = (obj) => {
+    const arr = Object.entries(obj)
+      .map(([key, value]) => {
+        const match = key.match(/bin(\d+)_(\d+)/);
+        if (match) {
+          const start = match[1];
+          const end = match[2];
+          return {
+            range: `${start} đến <${end}`,
+            count: value
+          };
+        }
+        return null;
+      })
+      .filter(Boolean);
+
+    const ranges = arr.map(item => item.range);
+    const counts = arr.map(item => item.count);
+
+    return { array: arr, ranges, counts };
+  };
 
   const handlePrint = () => {
     const printContent = document.getElementById("printable-report-table").innerHTML;
@@ -45,32 +73,7 @@ const ReportEachOrganizePage = () => {
     window.location.reload(); 
   };
 
-  // const labels = ["0 đến <1", "1 đến <2", "2 đến <3", "3 đến <4", "4 đến <5", "5 đến <6", "6 đến <7", "7 đến <8", "8 đến <9", "9 đến <10"];
-  // const dataPoints = [10, 20, 30, 25, 15, 35,10, 20, 50, 25];
-
-  
-  // Tính tỷ lệ phần trăm dựa trên tổng số sinh viên
   const calculatePercentage = (count, total) => ((count / total) * 100).toFixed(2) + "%";
-  
-  //const labels = sampleReportData.scoreDistribution.map(item => item.range);
-  //const dataPoints = sampleReportData.scoreDistribution.map(item => item.count);
-  //console.log(labels);
-  //console.log(dataPoints);
-  // Chuyển object {bin0_1: 2, bin1_2: 0, ...} => array [{range: '0-1', count: 2}, ...]
-  const scoreDistributionArray = React.useMemo(() => {
-    if (!scoreDistribution || Object.keys(scoreDistribution).length === 0) return [];
-    return Object.entries(scoreDistribution).map(([key, value]) => {
-      const [start, end] = key.replace("bin", "").split("_").map(Number);
-      return { range: `${start} đến <${end}`, count: value };
-    });
-  }, [scoreDistribution]);
-
-  const [dataPoints, setDataPoints] = useState([])
-  const [labels, setLabels] = useState([])
-  useEffect(() => {
-    setDataPoints(scoreDistributionArray.map(item => item.count));
-    setLabels(scoreDistributionArray.map(item => item.range));
-  },[scoreDistributionArray]);
   
   console.log(scoreDistributionArray);
   console.log(labels);
@@ -88,7 +91,6 @@ const ReportEachOrganizePage = () => {
       </nav>
 
       <div className="mb-3 d-flex ms-auto justify-content-end">
-        {/* <Print onClick={handlePrint}></Print> */}
         <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={handlePrint}>
           <i className="fas fa-print me-2 mt-1 "></i>  
           In báo cáo
@@ -102,88 +104,93 @@ const ReportEachOrganizePage = () => {
           padding: "2cm", 
           backgroundColor: "white",
           boxSizing: "border-box" 
-        }}>
-        <div className="report-header" style={{fontSize: "14px"}}>
-          <div>
-          <h6>TRƯỜNG ĐẠI HỌC ABC</h6>
-          <p>PHÒNG ĐẢM BẢO CHẤT LƯỢNG</p>
-          <hr className="underline-report container"></hr>
-          </div>
-          <div>
-          <h6>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</h6>
-          <p>Độc lập - Tự do - Hạnh phúc</p>
-          <hr className="underline-report container"></hr>
-          </div>
-        </div>
+        }}
+      >
+        {!isLoading ? (
+          <>
+            <div className="report-header" style={{fontSize: "14px"}}>
+              <div>
+              <h6>TRƯỜNG ĐẠI HỌC CMC</h6>
+              <p>PHÒNG ĐẢM BẢO CHẤT LƯỢNG</p>
+              <hr className="underline-report container"></hr>
+              </div>
+              <div>
+              <h6>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</h6>
+              <p>Độc lập - Tự do - Hạnh phúc</p>
+              <hr className="underline-report container"></hr>
+              </div>
+            </div>
 
-        {/* Tiêu đề báo cáo */}
-        <h4 className="report-title">BÁO CÁO KẾT QUẢ PHÂN TÍCH PHỔ ĐIỂM</h4>
+            <h4 className="report-title">BÁO CÁO KẾT QUẢ PHÂN TÍCH PHỔ ĐIỂM</h4>
 
-        {/* Thông tin chung */}
-        <h6 style={{ fontSize: "14px" }}>1. Thông tin chung</h6>
-        <div className="mb-1 ms-3" style={{ fontSize: "14px" }}>
-          <p className="mb-0"><strong>- Kỳ thi: </strong>{organizeExamName}</p>
-          <p className="mb-0"><strong>- Môn học: </strong>{subjectName}</p>
-        </div>
+            <h6 style={{ fontSize: "14px" }}>1. Thông tin chung</h6>
+            <div className="mb-1 ms-3" style={{ fontSize: "14px" }}>
+              <p className="mb-0"><strong>- Kỳ thi: </strong>{organizeExamName}</p>
+              <p className="mb-0"><strong>- Môn học: </strong>{subjectName}</p>
+            </div>
 
-        {/* Bảng tần số */}
-        <p style={{ fontSize: "14px" }} className="mb-1">2. Báo cáo chung kết quả phân tích phổ điểm</p>
-        <p style={{ fontSize: "14px" }} className="mb-2">2.1 Bảng tần số</p>
-        <table className="table table-bordered table-custom-score table-custom-freq">
-          <thead>
-            <tr>
-              <th>Phổ điểm</th>
-              <th className="text-center">Số lượng</th>
-              <th className="text-center">Tỷ lệ</th>
-            </tr>
-          </thead>
-          <tbody>
-            {scoreDistributionArray.map((item, index) => (
-              <tr key={index}>
-                <td>{item.range}</td>
-                <td className="text-center">{item.count}</td>
-                <td className="text-center">{calculatePercentage(item.count, totalCandidate)}</td>
+            <p style={{ fontSize: "14px" }} className="mb-1">2. Báo cáo chung kết quả phân tích phổ điểm</p>
+            <p style={{ fontSize: "14px" }} className="mb-2">2.1 Bảng tần số</p>
+            <table className="table table-bordered table-custom-score table-custom-freq">
+              <thead>
+                <tr>
+                  <th>Phổ điểm</th>
+                  <th className="text-center">Số lượng</th>
+                  <th className="text-center">Tỷ lệ</th>
+                </tr>
+              </thead>
+              <tbody>
+                {scoreDistributionArray.map((item, index) => (
+                  <tr key={index}>
+                    <td>{item.range}</td>
+                    <td className="text-center">{item.count}</td>
+                    <td className="text-center">{calculatePercentage(item.count, totalCandidate)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <h6 className="mt-3 mb-2" style={{ fontSize: "14px" }} >2.2 Phổ điểm</h6>
+            {chartImage ? (
+              <img src={chartImage} alt="Biểu đồ phổ điểm" style={{ width: "100%" }} />
+            ) : (
+              <BarChart
+                title="Tỷ lệ phân bố điểm"
+                labels={labels}
+                dataPoints={dataPoints}
+                width="100%"
+                height="300px"
+                isShowLegend={false}
+                onImageGenerated={setChartImage}
+                convertToImage={true} 
+              />
+            )}
+
+            <h6 className="mt-3 mb-3" style={{ fontSize: "14px" }} >2.3 Một số chỉ số thống kê cơ bản</h6>
+            <table className="table table-bordered table-custom-score tbl-analyse">
+              <thead>
+              <tr>
+                <th>Tiêu chí</th>
+                <th className="text-center">Giá trị</th>
+                <th className="text-center">Phần trăm</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {/* Biểu đồ phổ điểm */}
-        <h6 className="mt-3 mb-2" style={{ fontSize: "14px" }} >2.2 Phổ điểm</h6>
-        {chartImage ? (
-          <img src={chartImage} alt="Biểu đồ phổ điểm" style={{ width: "100%" }} />
-        ) : (
-          <BarChart
-            title="Tỷ lệ phân bố điểm"
-            labels={labels}
-            dataPoints={dataPoints}
-            width="100%"
-            height="300px"
-            isShowLegend={false}
-            onImageGenerated={setChartImage}
-            convertToImage={true} 
-          />
-        )}
-
-        {/* Chỉ số thống kê cơ bản */}
-        <h6 className="mt-3 mb-3" style={{ fontSize: "14px" }} >2.3 Một số chỉ số thống kê cơ bản</h6>
-        <table className="table table-bordered table-custom-score tbl-analyse">
-          <thead>
-          <tr>
-            <th>Tiêu chí</th>
-            <th className="text-center">Giá trị</th>
-            <th className="text-center">Phần trăm</th>
-          </tr>
-          </thead>
-          <tbody>
-            <tr className="text-center"><td>Tổng số sinh viên dự thi</td><td>{totalCandidate}</td><td>100%</td></tr>
-            <tr className="text-center"><td>Điểm trung bình</td><td>{totalCandidate}</td><td>-</td></tr>
-            <tr className="text-center"><td>Điểm cao nhất</td><td>{totalCandidate}</td><td>-</td></tr>
-            <tr className="text-center"><td>Điểm thấp nhất</td><td>{totalCandidate}</td><td>-</td></tr>
-            {/* <tr className="text-center"><td>Điểm số nhiều thí sinh đạt nhất</td><td>{sampleReportData.mostCommonScore}</td><td>-</td></tr> */}
-            <tr className="text-center"><td>Số sinh viên đạt &lt;5</td><td>{totalCandidate}</td><td> </td></tr>
-          </tbody>
-        </table>
+              </thead>
+              <tbody>
+                <tr className="text-center"><td>Tổng số sinh viên dự thi</td><td>{totalCandidate}</td><td>100%</td></tr>
+                <tr className="text-center"><td>Điểm trung bình</td><td>{totalCandidate}</td><td>-</td></tr>
+                <tr className="text-center"><td>Điểm cao nhất</td><td>{totalCandidate}</td><td>-</td></tr>
+                <tr className="text-center"><td>Điểm thấp nhất</td><td>{totalCandidate}</td><td>-</td></tr>
+                {/* <tr className="text-center"><td>Điểm số nhiều thí sinh đạt nhất</td><td>{sampleReportData.mostCommonScore}</td><td>-</td></tr> */}
+                <tr className="text-center"><td>Số sinh viên đạt &lt;5</td><td>{totalCandidate}</td><td> </td></tr>
+              </tbody>
+            </table>
+          </>
+      ) : (
+        <div className="text-center" style={{ fontSize: "14px" }}>
+          <i className="fa fa-spinner fa-spin fa-3x"></i>
+          <p>Đang tải dữ liệu...</p>
+        </div>
+      )}
       </div>
     </div>
   );
