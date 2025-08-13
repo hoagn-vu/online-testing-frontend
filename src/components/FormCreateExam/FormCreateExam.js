@@ -292,7 +292,7 @@ const handleSave = async () => {
         text: "Cập nhật đề thi thành công",
         draggable: true
       });
-      setShowForm(false);
+      onClose();
     } else {
       const res = ApiService.post("/exams", payload);
       
