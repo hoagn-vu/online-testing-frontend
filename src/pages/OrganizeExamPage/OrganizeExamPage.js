@@ -430,14 +430,13 @@ const OrganizeExamPage = () => {
 																</button>
 															</li>
 															<li className="tbl-action">
-																<button className="dropdown-item tbl-action">
-																	<Link
-																		to={`/staff/organize/report/${item.id}`}  
-																		style={{color: "black", textDecoration: "none"}}   
-																	>
-																		Báo cáo
-																	</Link>
-																</button>
+																<Link
+																	to={`/staff/organize/report/${item.id}`}
+																	className="dropdown-item tbl-action"
+																	style={{ color: "black", textDecoration: "none", display: "block" }}
+																>
+																	Báo cáo
+																</Link>
 															</li>
 															<li className="tbl-action" onClick={() => handleToggleStatus(item.id, item.organizeExamStatus)}>
 																<button

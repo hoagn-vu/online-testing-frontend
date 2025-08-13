@@ -184,6 +184,7 @@ const Dashboard = () => {
               <p className="fw-bold m-0" style={{fontSize: "18px"}}>Danh sách kỳ thi</p>
               <div className="d-flex align-items-center all-btn"
                 style={{ cursor: "pointer" }}
+                onClick={() => navigate("/staff/organize")}
               >
                 <p className="m-0" style={{color: '#545454'}}>Hiển thị tất cả</p>
                 <i className="fa-solid fa-angle-right ms-2" aria-hidden="true" style={{ color: "#545454" }}></i>
@@ -213,7 +214,7 @@ const Dashboard = () => {
                         </td>
                       </tr>
                     ) : (
-                      listOrganizeExam.map((item, index) => (
+                      listOrganizeExam.slice(0, 5).map((item, index) => (
                         <tr key={item.id} className="align-middle">
                           <td
                             onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {

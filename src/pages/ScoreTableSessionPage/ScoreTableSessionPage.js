@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./ScoreTableSessionPage.css";
 import Print from "@mui/icons-material/Print";
 import { Link, useParams, useLocation } from "react-router-dom";
-
+import ApiService from "../../services/apiService";
 
 const ScoreTableSessionPage = () => {
   const listCandidate = [
@@ -29,9 +29,51 @@ const ScoreTableSessionPage = () => {
   ];
 
   const { organizeId, sessionId } = useParams();
+  const { roomId } = useParams();
   const location = useLocation();
-  const { sessionName} = location.state || {};
-  const organizeExamName = location.state?.organizeExamName || localStorage.getItem("organizeExamName");
+  const { sessionNameFromLocate} = location.state || {};
+  const organizeExamNameFromLocate = location.state?.organizeExamName || localStorage.getItem("organizeExamName");
+  const [isLoading, setIsLoading] = useState(false);
+  const [listCandidateWithResult, setListCandidateWithResult] = useState([]);
+  const [subjectName, setSubjectName] = useState([]);
+  const [organizeName, setOrganizeName] = useState([]);
+  const [sessionName, setSessionName] = useState([]);
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await ApiService.get("/trackexam/get-report-info", {
+        params: { 
+					organizeExamId: organizeId, 
+					sessionId: sessionId, 
+          roomId: roomId,
+        },
+      });
+      setListCandidateWithResult(response.data.candidates);
+      setSubjectName(response.data.subjectName);
+      setOrganizeName(response.data.organizeName);
+      setSessionName(response.data.sessionName);
+    } catch (error) {
+      console.error("Lỗi lấy dữ liệu:", error);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [organizeId, sessionId, roomId]);
+
+  const processData = (data) => {
+    return data.map((item) => {
+      const nameParts = item.fullName.trim().split(" ");
+      const firstName = nameParts.pop(); // Lấy phần cuối cùng là firstName
+      const lastName = nameParts.join(" "); // Phần còn lại là lastName
+      return {
+        ...item,
+        firstName, 
+        lastName
+      };
+    });
+  };
 
   // Hàm chỉ in nội dung bảng điểm
   const handlePrint = () => {
@@ -55,9 +97,9 @@ const ScoreTableSessionPage = () => {
 				<span className="breadcrumb-between">
 				<Link 
 					to={`/staff/organize/${organizeId}`} 
-					state={{ organizeExamName: organizeExamName }} 
+					state={{ organizeExamName: organizeExamNameFromLocate }} 
 					className="breadcrumb-between">
-					{organizeExamName}
+					{organizeExamNameFromLocate}
 				</Link></span>
 				<span className="ms-2 me-2"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
 				<span className="breadcrumb-current">In bảng điểm</span>
@@ -75,7 +117,7 @@ const ScoreTableSessionPage = () => {
       <div className="score-table-container p-4 border container" id="printable-score-table">
         <div className="d-flex justify-content-between text-center mb-3" style={{fontSize: "14px"}}>
           <div>
-            <h6 className="fw-bold">TRƯỜNG ĐẠI HỌC CMC</h6>
+            <h6 className="fw-bold">TRƯỜNG ĐẠI HỌC ABC</h6>
             <p>PHÒNG ĐẢM BẢO CHẤT LƯỢNG</p>
             <hr className="underline-report container"></hr>
           </div>
@@ -87,16 +129,16 @@ const ScoreTableSessionPage = () => {
         </div>
 
         <div className="d-flex justify-content-end mb-3">
-          <span>Ngày</span><span className="ms-4 me-4">tháng</span><span>năm</span>
+          <span>Ngày</span><span className="ms-5 me-5">tháng</span><span>năm</span>
         </div>
         {/* Thông tin kỳ thi */}
         <div className="text-center mb-3">
           <h5 className="fw-bold">KẾT QUẢ THI</h5>
         </div>
         <div >
-          <p className="mb-1"><strong>Kỳ thi:</strong> Cuối kỳ</p>
-          <p className="mb-1"><strong>Phòng thi:</strong> 101</p>
-          <p><strong>Môn thi:</strong> Toán cao cấp</p>
+          <p className="mb-1"><strong>Kỳ thi:</strong> {organizeName}</p>
+          <p className="mb-1"><strong>Phòng thi:</strong> {organizeName}</p>
+          <p><strong>Môn thi:</strong> {organizeName}</p>
         </div>
 
         {/* Bảng điểm */}
@@ -113,13 +155,13 @@ const ScoreTableSessionPage = () => {
             </tr>
           </thead>
           <tbody>
-            {listCandidate.map((student, index) => (
-              <tr key={student.candidateId}>
+            {processData(listCandidateWithResult).map((student, index) => (
+              <tr key={student.userId}>
                 <td className="text-center">{index + 1}</td>
                 <td>{student.userCode}</td>
-                <td>{student.fullName}</td>
+                <td>{student.lastName}</td>
                 <td>{student.firstName}</td>
-                <td className="text-center">{student.score}</td>
+                <td className="text-center">{student.totalScore}</td>
                 <td>{student.signature}</td>
                 <td>{student.note}</td>
               </tr>

@@ -89,6 +89,7 @@ const BarChart = ({ title, labels, dataPoints, width, height, isShowLegend=true,
           display: true,
         },
         beginAtZero: true,
+        min: 0,
       },
     },
   };

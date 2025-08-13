@@ -5,6 +5,7 @@ import "./MonitorOrganizePage.css";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import dayjs from "dayjs";
 import { Chip } from "@mui/material";
+import ApiService from "../../services/apiService";
 
 const MonitorOrganizePage = () => {
   const listCandidate = [
@@ -30,6 +31,31 @@ const MonitorOrganizePage = () => {
 	const location = useLocation();
 	const { sessionName} = location.state || {};
 	const organizeExamName = location.state?.organizeExamName || localStorage.getItem("organizeExamName");
+	const [listRoom, setListRoom] = useState([]);
+	const [isLoading, setIsLoading] = useState(false);
+	const [keyword, setKeyword] = useState("");
+	const [page, setPage] = useState(1);
+	const [pageSize, setPageSize] = useState(10);
+
+	const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await ApiService.get("/organize-exams/rooms", {
+        params: { 
+					orgExamId: organizeId, 
+					ssId: sessionId, 
+					keyword, page, pageSize },
+      });
+      setListRoom(response.data.rooms);
+    } catch (error) {
+      console.error("Lỗi lấy dữ liệu:", error);
+    }
+    setIsLoading(false);
+  };
+
+	useEffect(() => {
+		fetchData();
+	}, [organizeId, sessionId, keyword, page, pageSize]);
 
   // Xử lý khi nhấn vào bài thi
   const handleExamClick = (exam) => {
@@ -90,7 +116,7 @@ const MonitorOrganizePage = () => {
 										</tr>
 									</thead>
 									<tbody style={{ fontSize: "14px" }}>
-										{listCandidate.length === 0 ? (
+										{listRoom.length === 0 ? (
 											<tr>
 												<td colSpan="6" className="text-center fw-semibold text-muted"
 														style={{ height: "100px", verticalAlign: "middle" }}>
@@ -98,8 +124,8 @@ const MonitorOrganizePage = () => {
 												</td>
 											</tr>
 										) : (
-											rows.map((row, index) =>
-													<tr key={row.roomId} className="align-middle">
+											listRoom.map((row, index) =>
+													<tr key={row.roomInSessionId} className="align-middle">
 														<td className="text-center">{index + 1}</td>
 														<td>{row.roomName}</td>
 														<td className="text-center">?/?</td>
@@ -114,7 +140,7 @@ const MonitorOrganizePage = () => {
 														</td>											
 														<td className="text-center">
 															<Link className="text-hover-primary"
-																	to={`/staff/organize/score/${organizeId}/${sessionId}`}
+																	to={`/staff/organize/score/${organizeId}/${sessionId}/${row.roomInSessionId}`}
 																	style={{ textDecoration: "none", color: "blue", cursor: "pointer" }}>
 																In bảng điểm
 															</Link>
