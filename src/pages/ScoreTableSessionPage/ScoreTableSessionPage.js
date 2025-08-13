@@ -117,7 +117,7 @@ const ScoreTableSessionPage = () => {
       <div className="score-table-container p-4 border container" id="printable-score-table">
         <div className="d-flex justify-content-between text-center mb-3" style={{fontSize: "14px"}}>
           <div>
-            <h6 className="fw-bold">TRƯỜNG ĐẠI HỌC CMC</h6>
+            <h6 className="fw-bold">TRƯỜNG ĐẠI HỌC ABC</h6>
             <p>PHÒNG ĐẢM BẢO CHẤT LƯỢNG</p>
             <hr className="underline-report container"></hr>
           </div>
@@ -129,7 +129,7 @@ const ScoreTableSessionPage = () => {
         </div>
 
         <div className="d-flex justify-content-end mb-3">
-          <span>Ngày</span><span className="ms-4 me-4">tháng</span><span>năm</span>
+          <span>Ngày</span><span className="ms-5 me-5">tháng</span><span>năm</span>
         </div>
         {/* Thông tin kỳ thi */}
         <div className="text-center mb-3">
