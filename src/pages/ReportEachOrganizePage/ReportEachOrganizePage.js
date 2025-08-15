@@ -11,12 +11,18 @@ const ReportEachOrganizePage = () => {
   const { organizeExamId } = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [organizeExamName, setOrganizeExamName] = useState([]);
-  const [subjectName, setSubjectName] = useState([]);
+  const [subjecName, setSubjecName] = useState([]);
   const [totalCandidate, setTotalCandidate] = useState([]);
+  const [maxScore, setMaxScore] = useState([]);
+  const [minScore, setMinScore] = useState([]);
+  const [averageScore, setAverageScore] = useState([]);
   const [scoreDistributionArray, setScoreDistributionArray] = useState([]);
 
   const [dataPoints, setDataPoints] = useState([])
   const [labels, setLabels] = useState([])
+
+  const [belowFiveCount, setBelowFiveCount] = useState(0);
+  const [belowFivePercent, setBelowFivePercent] = useState("0%");
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -25,8 +31,16 @@ const ReportEachOrganizePage = () => {
         params: { organizeExamId: organizeExamId },
       });
       setOrganizeExamName(response.data.organizeExamName);
-      setSubjectName(response.data.subjectName);
+      setSubjecName(response.data.subjecName);
       setTotalCandidate(response.data.totalCandidates);
+      setMaxScore(response.data.maxScore);
+      setMinScore(response.data.minScore);
+      setAverageScore(response.data.averageScore);
+
+      const count = getBelowFiveCount(response.data.scoreDistribution);
+      setBelowFiveCount(count);
+      setBelowFivePercent(((count / response.data.totalCandidates) * 100).toFixed(2) + "%");
+      
       const { array, ranges, counts } = convertBinsToArray(response.data.scoreDistribution);
       setScoreDistributionArray(array);
       setLabels(ranges);
@@ -40,6 +54,20 @@ const ReportEachOrganizePage = () => {
   useEffect(() => {
     fetchData();
   }, [organizeExamId]);
+
+  const getBelowFiveCount = (scoreDistribution) => {
+    let count = 0;
+    for (const [key, value] of Object.entries(scoreDistribution)) {
+      const match = key.match(/bin(\d+)_(\d+)/);
+      if (match) {
+        const end = parseInt(match[2], 10);
+        if (end <= 5) {
+          count += value;
+        }
+      }
+    }
+    return count;
+  };
 
   const convertBinsToArray = (obj) => {
     const arr = Object.entries(obj)
@@ -126,7 +154,7 @@ const ReportEachOrganizePage = () => {
             <h6 style={{ fontSize: "14px" }}>1. Thông tin chung</h6>
             <div className="mb-1 ms-3" style={{ fontSize: "14px" }}>
               <p className="mb-0"><strong>- Kỳ thi: </strong>{organizeExamName}</p>
-              <p className="mb-0"><strong>- Môn học: </strong>{subjectName}</p>
+              <p className="mb-0"><strong>- Môn học: </strong>{subjecName}</p>
             </div>
 
             <p style={{ fontSize: "14px" }} className="mb-1">2. Báo cáo chung kết quả phân tích phổ điểm</p>
@@ -177,11 +205,11 @@ const ReportEachOrganizePage = () => {
               </thead>
               <tbody>
                 <tr className="text-center"><td>Tổng số sinh viên dự thi</td><td>{totalCandidate}</td><td>100%</td></tr>
-                <tr className="text-center"><td>Điểm trung bình</td><td>{totalCandidate}</td><td>-</td></tr>
-                <tr className="text-center"><td>Điểm cao nhất</td><td>{totalCandidate}</td><td>-</td></tr>
-                <tr className="text-center"><td>Điểm thấp nhất</td><td>{totalCandidate}</td><td>-</td></tr>
+                <tr className="text-center"><td>Điểm trung bình</td><td>{averageScore}</td><td>-</td></tr>
+                <tr className="text-center"><td>Điểm cao nhất</td><td>{maxScore}</td><td>-</td></tr>
+                <tr className="text-center"><td>Điểm thấp nhất</td><td>{minScore}</td><td>-</td></tr>
                 {/* <tr className="text-center"><td>Điểm số nhiều thí sinh đạt nhất</td><td>{sampleReportData.mostCommonScore}</td><td>-</td></tr> */}
-                <tr className="text-center"><td>Số sinh viên đạt &lt;5</td><td>{totalCandidate}</td><td> </td></tr>
+                <tr className="text-center"><td>Số sinh viên đạt &lt;5</td><td>{belowFiveCount}</td><td>{belowFivePercent}</td></tr>
               </tbody>
             </table>
           </>
