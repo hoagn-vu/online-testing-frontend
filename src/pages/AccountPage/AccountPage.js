@@ -38,11 +38,11 @@ const AccountPage = () => {
     "Cán bộ phụ trách kỳ thi": [],
     "Giảng viên": [],
   });
-  
+  const [selectedGroup, setSelectedGroup] = useState(null);
   const [rows, setRows] = useState(Object.values(listAccount).flat()); 
   const [listDisplay, setListDisplay] = useState([]);
   const [selectedRole, setSelectedRole] = useState("Thí sinh");
-  
+  const [listGroupName, setListGroupName] = useState([]);
   const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
     setPage(1);
@@ -129,6 +129,28 @@ const AccountPage = () => {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const getGroupUser = async () => {
+      setIsLoading(true);
+      try {
+        const response = await ApiService.get("/groupUser", {
+          params: { keyword, page, pageSize },
+        });
+        const options = response.data.groups.map((item) => ({
+          value: item.id,
+          label: item.groupName
+        }));
+        setListGroupName(options);
+      } catch (error) {
+        console.error("Failed to get group: ", error);
+      }
+      setIsLoading(false);
+    };
+    getGroupUser();
+  }, []);
+  
+  console.log("listGroupName raw:", listGroupName);
 
   useEffect(() => {
     setSelectedRole("Thí sinh");
@@ -446,16 +468,18 @@ const AccountPage = () => {
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
 
-  const handleCreateGroup = async (groupName, selectedItems) => {    
-    if (!groupName) {
+  const handleCreateGroup = async (selectedGroup, selectedItems) => {  
+    console.log("selectedGroup in handleCreateGroup:", selectedGroup);
+    console.log("selectedItems:", selectedItems);  
+    if (!selectedGroup || !selectedGroup.label) {
       await Swal.fire({
         icon: 'error',
         title: 'Lỗi',
-        text: 'Tên nhóm không được để trống',
-        draggable: true
+        text: 'Vui lòng chọn hoặc nhập tên nhóm',
       });
       return false;
     }
+
     
     // Map selectedItems (IDs) to userCodes
     const listUser = selectedItems.map(id => {
@@ -463,29 +487,28 @@ const AccountPage = () => {
       return user ? user.userCode : null;
     }).filter(code => code !== null); // Loại bỏ các giá trị null (nếu có)
     
+    if (!listUser.length) {
+    await Swal.fire({
+      icon: 'error',
+      title: 'Lỗi',
+      text: 'Vui lòng chọn ít nhất một tài khoản',
+      draggable: true
+    });
+    return false;
+  }
+
     // Debug: Log listUser to verify mapping result
     console.log('Tạo nhóm:', groupName);
     console.log('Danh sách ID:', selectedItems);
     console.log('Danh sách userCode:', listUser);
 
-    if (!selectedItems || selectedItems.length === 0) {
-      await Swal.fire({
-        icon: 'error',
-        title: 'Lỗi',
-        text: 'Vui lòng chọn ít nhất một tài khoản',
-        draggable: true
-      });
-      setShowAddGroupForm(false);
-      return false;
-    }
-
     const payload = {
-      groupName,
+      groupName: selectedGroup.label,
       listUser,
     };
 
     setIsLoading(true);
-    try {
+    /*try {
       await ApiService.post('/groupUser/create-group-users', payload);
       await fetchData(); // Làm mới danh sách sau khi tạo nhóm
       await Swal.fire({
@@ -502,6 +525,44 @@ const AccountPage = () => {
         icon: 'error',
         title: 'Lỗi',
         text: error.message || 'Không thể tạo nhóm',
+      });
+    } finally {
+      setIsLoading(false);
+    }*/
+    try {
+      if (selectedGroup.__isNew__) {
+        // 👉 Nhóm mới: gọi API create-group-users
+        const payload = {
+          groupName: selectedGroup.label, // vì CreatableSelect tạo option mới có label
+          listUser,
+        };
+
+        await ApiService.post('/groupUser/create-group-users', payload);
+        await Swal.fire({
+          icon: 'success',
+          text: 'Tạo nhóm thành công',
+          draggable: true
+        });
+      } else {
+        // 👉 Nhóm đã có: gọi API add-users
+        const groupId = selectedGroup.value; // value của option có thể là groupId
+        await ApiService.post(
+          `/groupUser/add-users?groupId=${groupId}`,
+          listUser,
+          { headers: { "Content-Type": "application/json" } }
+        );
+        await Swal.fire({ icon: 'success', text: 'Thêm người dùng vào nhóm thành công', draggable: true });
+      }
+
+      await fetchData(); // refresh lại danh sách
+      setSelectedItems([]);
+      setShowAddGroupForm(false);
+    } catch (error) {
+      console.error("Lỗi khi xử lý nhóm:", error.response?.data || error);
+      await Swal.fire({
+        icon: 'error',
+        title: 'Lỗi',
+        text: error.message || 'Không thể xử lý nhóm'
       });
     } finally {
       setIsLoading(false);
@@ -1063,12 +1124,17 @@ const AccountPage = () => {
             <div className="p-4 pt-0 pb-0">
               <div className="mb-3">
                 <label className="form-label fw-medium">Tên nhóm:</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={groupName}
-                  onChange={(e) => setGroupName(e.target.value)}
-                  placeholder="Nhập tên nhóm..."
+                <CreatableSelect
+                  isClearable
+                  options={listGroupName}
+                  value={selectedGroup || null} 
+                  onChange={(newValue) => setSelectedGroup(newValue)}
+                  menuPortalTarget={document.body}
+                  placeholder="Chọn nhóm người dùng"
+                  styles={{
+                    menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                    container: (provided) => ({ ...provided, flex: 1 })
+                  }}
                   ref={inputRef}
                 />
               </div>
@@ -1118,7 +1184,7 @@ const AccountPage = () => {
               <Grid item xs={3}>
                 <AddButton style={{width: "100%"}}
                   onClick={async () => {
-                    await handleCreateGroup(groupName, selectedItems);
+                    await handleCreateGroup(selectedGroup, selectedItems);
                   }}
                 >
                   {editingAccount ? "Cập nhật" : "Lưu"}
