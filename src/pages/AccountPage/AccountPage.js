@@ -14,6 +14,7 @@ import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import DragDropModal from "../../components/DragDrop/DragDrop";
+import { CircularProgress } from "@mui/material";
 
 const AccountPage = () => {
   const [listAccountUser, setListAccountUser] = useState([]);
@@ -30,6 +31,7 @@ const AccountPage = () => {
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [editingAccount, setEditingAccount] = useState(null);
   const [accountToDelete, setAccountToDelete] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [listAccount, setListAccount] = useState({
     "Thí sinh": [],
     "Giám thị": [],
@@ -222,7 +224,7 @@ const AccountPage = () => {
       const finalData = {
         ...formData,
         username: formData.userCode.toLowerCase(),
-        password: "123456",
+        password: formData.userCode.toLowerCase(),
       };
 
       if (editingAccount) {
@@ -317,9 +319,55 @@ const AccountPage = () => {
     setOpenModal(true);
   };
 
-  const handleFilesDropped = (files) => {
+  const handleFilesDropped = async (files) => {
     console.log("Files received:", files);
-    // 👉 Ở đây bạn có thể xử lý upload API
+    const formData = new FormData();
+		formData.append("file", files[0]);
+
+		setIsLoading(true);
+		setUploadProgress(0);
+		document.getElementById("uploadModal").classList.add("show");
+		document.getElementById("uploadModal").style.display = "block";
+
+		try {
+      const userLogId = "67c5cee0194f0c8804a6bd21";
+			const response = await ApiService.post(`/file/upload-file-user`, formData, {
+				params: { userLogId },
+				headers: { "Content-Type": "multipart/form-data" },
+				onUploadProgress: (progressEvent) => {
+					if (progressEvent.total) {
+						const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+
+						setUploadProgress((prevProgress) => {
+							// Tăng từ từ, nhưng không nhảy đột ngột
+							if (percentCompleted > prevProgress) {
+									return percentCompleted < 99 ? percentCompleted : 99;
+							}
+							return prevProgress;
+						});
+					}
+					},
+			});
+
+			setUploadProgress(100); // Khi hoàn thành, đặt 100%
+
+			await Swal.fire({
+					title: "Tải lên thành công",
+					icon: "success",
+			});
+			await fetchData();
+		} catch (error) {
+				Swal.fire({
+					title: "Lỗi",
+					text: error.message,
+					icon: "error",
+				});
+		}
+
+		document.getElementById("uploadModal").classList.remove("show");
+		document.getElementById("uploadModal").style.display = "none";
+		setIsLoading(false);
+		setUploadProgress(0);
     setOpenModal(false);
   };
 
@@ -539,6 +587,37 @@ const AccountPage = () => {
             <AddButton className="upload-btn-hover" style={{backgroundColor: "#28A745"}} onClick={handleUploadClick}>
               <i className="fas fa-upload me-2"></i>Upload File
             </AddButton>
+            <div className="modal fade" id="uploadModal" tabIndex="-1" aria-hidden="true"
+            style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+            >
+              <div className="modal-dialog modal-dialog-centered small-modal" >
+                <div className="modal-content text-center p-4 container" style={{ width: "500px" }}>
+                  <div className="modal-body">
+                    {/* Vòng tròn tiến trình MUI */}
+                    <Box sx={{ position: "relative", display: "inline-flex" }}>
+                      <CircularProgress variant="determinate" value={uploadProgress} size={80} />
+                      <Box
+                        sx={{
+                          top: 0,
+                          left: 0,
+                          bottom: 0,
+                          right: 0,
+                          position: "absolute",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Typography variant="caption" component="div" sx={{ color: "text.secondary", fontSize: "18px" }}>
+                          {`${uploadProgress}%`}
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <p className="mt-3">Đang tải lên...</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

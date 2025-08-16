@@ -193,7 +193,7 @@ const ListQuestionPage = () => {
 					icon: "success",
 			});
 			await fetchData();
-			await window.location.reload();
+			window.location.reload();
 		} catch (error) {
 				Swal.fire({
 					title: "Lỗi",
