@@ -18,7 +18,6 @@ import DragDropModal from "../../components/DragDrop/DragDrop";
 const AccountPage = () => {
   const [listAccountUser, setListAccountUser] = useState([]);
   const inputRef = useRef(null);
-
   const [keyword, setKeyword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -27,7 +26,10 @@ const AccountPage = () => {
   const [showAddGroupForm, setShowAddGroupForm] = useState(false);
   const [groupName, setGroupName] = useState("");
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-
+  const [showForm, setShowForm] = useState(false);
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [editingAccount, setEditingAccount] = useState(null);
+  const [accountToDelete, setAccountToDelete] = useState(null);
   const [listAccount, setListAccount] = useState({
     "Thí sinh": [],
     "Giám thị": [],
@@ -35,7 +37,8 @@ const AccountPage = () => {
     "Cán bộ phụ trách kỳ thi": [],
     "Giảng viên": [],
   });
-
+  
+  const [rows, setRows] = useState(Object.values(listAccount).flat()); 
   const [listDisplay, setListDisplay] = useState([]);
   const [selectedRole, setSelectedRole] = useState("Thí sinh");
   
@@ -108,6 +111,24 @@ const AccountPage = () => {
     setIsLoading(false);
   };
 
+  const updateUser = async (user) => {
+    setIsLoading(true);
+    try {
+      const response = await ApiService.post(`/users/update/${user.id}`, user);
+      if (response.status >= 200 && response.status < 300) {
+        await fetchData();
+        return true; // thành công
+      } else {
+        throw new Error("Cập nhật thất bại");
+      }
+    } catch (error) {
+      console.error("Failed to update level:", error);
+      throw error; // ném lỗi ra ngoài để handleSubmit bắt được
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     setSelectedRole("Thí sinh");
     setListDisplay(listAccount["Thí sinh"]);
@@ -129,13 +150,7 @@ const AccountPage = () => {
     } else {
       setSelectedItems([]);
     }
-  };
-
-  const [showForm, setShowForm] = useState(false);
-  const [showPasswordForm, setShowPasswordForm] = useState(false);
-  const [editingAccount, setEditingAccount] = useState(null);
-  const [accountToDelete, setAccountToDelete] = useState(null);
-  const [rows, setRows] = useState(Object.values(listAccount).flat());  
+  }; 
 
   useEffect(() => {
     if (showForm && inputRef.current) {
@@ -203,12 +218,32 @@ const AccountPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await createUser(formData)
-    Swal.fire({
-      icon: "success",
-      text: "Thêm người dùng thành công",
-      draggable: true
-    });
+    try {
+      if (editingAccount) {
+        await updateUser({ ...editingAccount, ...formData });
+        Swal.fire({
+          icon: "success",
+          text: "Cập nhật thông tin người dùng thành công",
+          draggable: true
+        });
+        setShowForm(false);
+      } else {
+        // Thêm mới dữ liệu
+        await createUser(formData)
+        Swal.fire({
+          icon: "success",
+          text: "Thêm người dùng thành công",
+          draggable: true
+        });
+        setShowForm(false);
+      }
+    }catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Có lỗi xảy ra",
+        text: error?.message || "Không thể xử lý yêu cầu",
+      });;
+    }
     console.log("Dữ liệu thêm mới:", formData);
     setShowForm(false);
   };
@@ -231,7 +266,7 @@ const AccountPage = () => {
     dateOfBirth: account.dateOfBirth || "",
     gender: account.gender || "Nam",
     username: account.username || "",
-    // password: "", // Để rỗng vì lý do bảo mật
+    password: "123456", // Để rỗng vì lý do bảo mật
     role: account.role || selectedRole, // Ưu tiên role của account
     status: account.accountStatus || "active",
     permissions: account.permissions || [],
