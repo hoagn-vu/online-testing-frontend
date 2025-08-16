@@ -259,22 +259,22 @@ const AccountPage = () => {
   };
 
   const handleEdit = (account) => {
-  setEditingAccount(account);
-  setFormData({
-    userCode: account.userCode || "",
-    fullName: account.fullName || "",
-    dateOfBirth: account.dateOfBirth || "",
-    gender: account.gender || "Nam",
-    username: account.username || "",
-    password: "123456", // Để rỗng vì lý do bảo mật
-    role: account.role || selectedRole, // Ưu tiên role của account
-    status: account.accountStatus || "active",
-    permissions: account.permissions || [],
-  });
-  setShowForm(true);
-};
+    setEditingAccount(account);
+    setFormData({
+      userCode: account.userCode || "",
+      fullName: account.fullName || "",
+      dateOfBirth: account.dateOfBirth || "",
+      gender: account.gender || "Nam",
+      username: account.username || "",
+      password: "123456", // Để rỗng vì lý do bảo mật
+      role: account.role || selectedRole, // Ưu tiên role của account
+      status: account.accountStatus || "active",
+      permissions: account.permissions || [],
+    });
+    setShowForm(true);
+  };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     Swal.fire({
       title: "Bạn có chắc chắn xóa?",
       text: "Bạn sẽ không thể hoàn tác hành động này!",
@@ -284,16 +284,21 @@ const AccountPage = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Xóa",
       cancelButtonText: "Hủy",
-    }).then((result) => {
+    }).then(async(result) => {
       if (result.isConfirmed) {
+        try {
+          await ApiService.delete(`/users/delete/${id}`);
+          fetchData();
+          Swal.fire({
+            title: "Đã xóa!",
+            text: "Người dùng đã bị xóa thành công",
+            icon: "success",
+          });
+        }
+        catch (error) {
+          console.error("Failed to delete users: ", error);
+        }
         console.log("Xóa tài khoản có ID:", id);
-        setListDisplay(prev => prev.filter(item => item.id !== id));
-        Swal.fire({
-          title: "Đã xóa!",
-          text: "Tài khoản đã bị xóa.",
-          icon: "success",
-        });
-        setRows(rows.filter((row) => row.id !== id));
       }
     });
   };
