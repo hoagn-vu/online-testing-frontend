@@ -17,95 +17,52 @@ import DragDropModal from "../../components/DragDrop/DragDrop";
 import { CircularProgress } from "@mui/material";
 
 const AccountPage = () => {
-  const [listAccountUser, setListAccountUser] = useState([]);
   const inputRef = useRef(null);
-  const [keyword, setKeyword] = useState("");
+
+  const [listAccount, setListAccount] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [keyword, setKeyword] = useState("");
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [selectedRole, setSelectedRole] = useState("candidate");
   const [totalCount, setTotalCount] = useState(0);
-  const [pageSize, setPageSize] = useState(100);
   const [showAddGroupForm, setShowAddGroupForm] = useState(false);
   const [groupName, setGroupName] = useState("");
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  const [showForm, setShowForm] = useState(false);
-  const [showPasswordForm, setShowPasswordForm] = useState(false);
-  const [editingAccount, setEditingAccount] = useState(null);
-  const [accountToDelete, setAccountToDelete] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [listAccount, setListAccount] = useState({
-    "Thí sinh": [],
     "Giám thị": [],
-    "Quản trị viên": [],
-    "Cán bộ phụ trách kỳ thi": [],
-    "Giảng viên": [],
-  });
-  
-  const [rows, setRows] = useState(Object.values(listAccount).flat()); 
-  const [listDisplay, setListDisplay] = useState([]);
-  const [selectedRole, setSelectedRole] = useState("Thí sinh");
+
+  const roleTabs = [
+    { label: "Thí sinh", value: "candidate" },
+    { label: "Giám thị", value: "supervisor" },
+    { label: "Giảng viên", value: "lecturer" },
+    { label: "Quản trị viên", value: "admin" },
+    { label: "Cán bộ phụ trách kỳ thi", value: "staff" },
+  ];
   
   const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
     setPage(1);
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [page, pageSize, keyword]); // phụ thuộc để tự động gọi lại khi có thay đổi  
-
   const fetchData = async () => {
     setIsLoading(true);
     try {
       const response = await ApiService.get("/users", {
-        params: { page, pageSize, keyword },
+        params: { page, pageSize, keyword, role: selectedRole },
       });
-  
-      // Cập nhật danh sách hiển thị theo phân trang
-      setListAccountUser(response.data.users);
-      setTotalCount(response.data.total);
-  
-      // Tạo object phân loại tài khoản
-      const newAccounts = {
-        "Thí sinh": [],
-        "Giám thị": [],
-        "Quản trị viên": [],
-        "Cán bộ phụ trách kỳ thi": [],
-        "Giảng viên": [],
-      };
-  
-      response.data.users.forEach((user) => {
-        if (user.role === "candidate") {
-          newAccounts["Thí sinh"].push(user);
-        }
-        if (user.role === "supervisor") {
-          newAccounts["Giám thị"].push(user);
-        }
-        if (user.role === "admin") {
-          newAccounts["Quản trị viên"].push(user);
-        }
-        if (user.role === "staff") {
-          newAccounts["Cán bộ phụ trách kỳ thi"].push(user);
-        }
-        if (user.role === "lecturer") {
-          newAccounts["Giảng viênc"].push(user);
-        }
-      });
-  
-      setListAccount(newAccounts);
+
+      setListAccount(response.data.users);
+      setTotalCount(response.data.totalCount);
     } catch (error) {
-      console.error("Lỗi khi lấy dữ liệu tài khoản:", error);
-    } finally {
-      setIsLoading(false);
+      console.error("Error fetching data:", error);
     }
-  };  
+    setIsLoading(false);
+  };
 
   const createUser = async (user) => {
     setIsLoading(true);
     try {
-      const userLogId = "67c5cee0194f0c8804a6bd21";
-      await ApiService.post("/users", user, {
-        params: { userLogId },
-      });
+      await ApiService.post("/users", user);
       await fetchData();
     } catch (error) {
       console.error("Failed to create user: ", error);
@@ -116,7 +73,7 @@ const AccountPage = () => {
   const updateUser = async (user) => {
     setIsLoading(true);
     try {
-      const response = await ApiService.post(`/users/update/${user.id}`, user);
+      const response = await ApiService.put(`/users/update/${user.id}`, user);
       if (response.status >= 200 && response.status < 300) {
         await fetchData();
         return true; // thành công
@@ -132,9 +89,8 @@ const AccountPage = () => {
   };
 
   useEffect(() => {
-    setSelectedRole("Thí sinh");
-    setListDisplay(listAccount["Thí sinh"]);
-  }, [listAccount]);
+    fetchData();
+  }, [page, pageSize, keyword, selectedRole]);
 
   const [selectedItems, setSelectedItems] = useState([]);
 
@@ -148,11 +104,51 @@ const AccountPage = () => {
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedItems(listDisplay.map((item) => item.id));
+      setSelectedItems(listAccount.map((item) => item.id));
     } else {
       setSelectedItems([]);
     }
-  }; 
+  };
+
+  const convertGender = (gender) => {
+    switch (gender) {
+      case "male":
+        return "Nam";
+      case "female":
+        return "Nữ";
+      default:
+        return "Khác";
+    }
+  };
+
+  const convertStatus = (status) => {
+    switch (status) {
+      case "active":
+        return { label: "Hoạt động", className: "bg-primary" };
+      case "disabled":
+        return { label: "Không hoạt động", className: "bg-secondary" };
+    }
+  };
+
+  const [formData, setFormData] = useState({
+    id: null,
+    userCode: null,
+    userName: null,
+    fullName: null,
+    dateOfBirth: null,
+    role: null,
+    gender: null,
+    password: "",
+    accountStatus: "active",
+    groupName: [],
+    authenticate: []
+  });
+
+  const [showForm, setShowForm] = useState(false);
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [editingAccount, setEditingAccount] = useState(null);
+  const [accountToDelete, setAccountToDelete] = useState(null);
+  const [rows, setRows] = useState(Object.values(listAccount).flat());  
 
   useEffect(() => {
     if (showForm && inputRef.current) {
@@ -173,18 +169,6 @@ const AccountPage = () => {
     "Quản lý ma trận đề thi",
     "Quản lý phòng thi",
   ];
-
-  const [formData, setFormData] = useState({
-    userCode: "",
-    fullName: "",
-    dateOfBirth: "",
-    gender: "male",
-    username: "",
-    password: "",
-    role: selectedRole,
-    accountStatus: "active",
-    permissions: [],
-  });
 
   const handleAddNew = () => {
     setEditingAccount(null);
@@ -239,12 +223,12 @@ const AccountPage = () => {
       } else {
         // Thêm mới dữ liệu
         await createUser(finalData)
+        console.log("Dữ liệu thêm mới:", finalData);
         Swal.fire({
           icon: "success",
           text: "Thêm người dùng thành công",
           draggable: true
         });
-        console.log("Dữ liệu thêm mới:", finalData);
         setShowForm(false);
       }
     }catch (error) {
@@ -401,26 +385,6 @@ const AccountPage = () => {
   }
 };*/
 
-  const handleRoleChange = (role) => {
-    switch (role) {
-      case "Thí sinh":
-        setListDisplay(listAccount["Thí sinh"]);
-        break;
-      case "Giám thị":
-        setListDisplay(listAccount["Giám thị"]);
-        break;
-      case "Quản trị viên":
-        setListDisplay(listAccount["Quản trị viên"]);
-        break;
-      case "Cán bộ phụ trách kỳ thi":
-        setListDisplay(listAccount["Cán bộ phụ trách kỳ thi"]);
-        break;
-      default:
-        break;
-    }
-    setSelectedRole(role);
-  };
-
   const colourOptions = [
     { value: "22IT1", label: "22IT1" },
     { value: "22IT2", label: "22IT2" },
@@ -482,14 +446,9 @@ const AccountPage = () => {
     
     // Map selectedItems (IDs) to userCodes
     const listUser = selectedItems.map(id => {
-      const user = listDisplay.find(item => String(item.id) === String(id)); 
+      const user = listAccount.find(item => String(item.id) === String(id)); 
       return user ? user.userCode : null;
     }).filter(code => code !== null); // Loại bỏ các giá trị null (nếu có)
-    
-    // Debug: Log listUser to verify mapping result
-    console.log('Tạo nhóm:', groupName);
-    console.log('Danh sách ID:', selectedItems);
-    console.log('Danh sách userCode:', listUser);
 
     if (!selectedItems || selectedItems.length === 0) {
       await Swal.fire({
@@ -621,19 +580,18 @@ const AccountPage = () => {
           </div>
         </div>
 
-        {/* Tabs để chọn loại tài khoản */}
         <ul className="nav nav-tabs ">
-          {Object.keys(listAccount).map((role) => (
-            <li className="nav-item" key={role}>
+          { roleTabs.map((role) => (
+            <li className="nav-item" key={role.value}>
               <a
-                className={`nav-link ${selectedRole === role ? "active" : ""}`}
+                className={`nav-link ${selectedRole === role.value ? "active" : ""}`}
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleRoleChange(role);
+                  setSelectedRole(role.value);
                 }}
               >
-                {role}
+                {role.label}
               </a>
             </li>
           ))}
@@ -648,7 +606,7 @@ const AccountPage = () => {
                     className="form-check-input"
                     type="checkbox"
                     onChange={handleSelectAll}
-                    checked={listDisplay.length > 0 && listDisplay.every((item) => selectedItems.includes(item.id))}                  />
+                    checked={listAccount.length > 0 && listAccount.every((item) => selectedItems.includes(item.id))}                  />
                 </th>
                 <th scope="col" className="title-row">Mã</th>
                 <th scope="col" className="title-row">Tài khoản</th>
@@ -671,7 +629,7 @@ const AccountPage = () => {
                   </td>
                 </tr>
               ) :
-              processData(listDisplay).map((item, index) => (
+              processData(listAccount).map((item, index) => (
                 <tr key={item.id} className="align-middle">
                   <td className=" text-center" style={{ width: "50px" }}>
                     <input
@@ -685,26 +643,13 @@ const AccountPage = () => {
                   <td>{item.username}</td>
                   <td>{item.lastName}</td>
                   <td>{item.firstName}</td>
-                  <td className="text-center">
-                    {item.dateOfBirth
-                      ? (() => {
-                          const [year, month, day] = item.dateOfBirth.split("-");
-                          return `${day.padStart(2, "0")}/${month.padStart(2, "0")}/${year}`;
-                        })()
-                      : ""}
-                  </td>
-                  <td className="text-center">
-                    {item.gender === "female"
-                      ? "Nữ"
-                      : item.gender === "male"
-                      ? "Nam"
-                      : ""}
-                  </td>
+                  <td className="text-center">{item.dateOfBirth}</td>
+                  <td className="text-center">{convertGender(item.gender)}</td>
                   {/* <td className="text-center">{item.groupName}</td> */}
                   <td className="text-center">
                     <div className="d-flex align-items-center justify-content-center">
-                      <span className={`badge ms-2 mt-1 ${item.accountStatus?.toLowerCase() === "active" ? "bg-primary" : "bg-secondary"}`}>
-                        {item.accountStatus?.toLowerCase() === "active" ? "Hoạt động" : "Không hoạt động"}
+                      <span className={`badge ms-2 mt-1 ${convertStatus(item.accountStatus).className}`}>
+                        {convertStatus(item.accountStatus).label}
                       </span>
                     </div>
                   </td>
@@ -749,7 +694,6 @@ const AccountPage = () => {
                       </ul>
                     </div>
                   </td>
-
                 </tr>
               ))}
             </tbody>
@@ -1246,8 +1190,8 @@ const AccountPage = () => {
                 <label className="form-label fw-medium">Danh sách tài khoản đã chọn:</label>
                 <div style={{ maxHeight: "320px", overflowY: "auto", paddingRight: "6px" }}>
                   <ul className="ps-0" style={{ listStyle: "none" }}>
-                    {listDisplay.filter(item => selectedItems.includes(item.id)).length > 0 ? (
-                      listDisplay
+                    {listAccount.filter(item => selectedItems.includes(item.id)).length > 0 ? (
+                      listAccount
                         .filter(item => selectedItems.includes(item.id))
                         .map(item => (
                           <li
