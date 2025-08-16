@@ -88,12 +88,13 @@ const ChapterSidebar = ({ onChapterSelect }) => {
                   '&:hover': {
                     backgroundColor: '#e0f0ff',
                   }, 
+                  mb: 1,
                 }}
                 button
               >
                 <ListItemText primary={chapter} />
                 <button 
-                  className="btn btn-link text-decoration-none position p-0 pe-1 "
+                  className="btn btn-link text-decoration-none position p-0 pe-0"
                   style={{color: "black"}}
                   onClick={(e) => { e.stopPropagation(); toggleChapter(chapter); }}
                   
