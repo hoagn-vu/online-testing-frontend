@@ -224,7 +224,7 @@ const AccountPage = () => {
       const finalData = {
         ...formData,
         username: formData.userCode.toLowerCase(),
-        password: "123456",
+        password: formData.userCode.toLowerCase(),
       };
 
       if (editingAccount) {
