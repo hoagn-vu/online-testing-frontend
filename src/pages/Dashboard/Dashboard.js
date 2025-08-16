@@ -5,7 +5,7 @@ import {Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement,
   Legend,
   PointElement,
 } from "chart.js";
-import {Chip, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Pagination, NumberInput, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
+import {Autocomplete, TextField} from "@mui/material";
 import "bootstrap/dist/css/bootstrap.min.css";
 import BarChart from "../../components/BarChart/BarChart";
 import CardDashboard from "../../components/CardDashboard/CardDashboard";
@@ -31,10 +31,11 @@ ChartJS.register(
 
 const Dashboard = () => {
   // Thông tin linechart gian lận
-  const labels = ["0-1", "1-2", "2-3", "3-4", "4-5", "5-6", "6-7", "7-8", "8-9", "9-10"];
-  const dataPoints = [10, 20, 30, 65, 113, 155, 96, 35, 25, 15];
+  //const labels = ["0-1", "1-2", "2-3", "3-4", "4-5", "5-6", "6-7", "7-8", "8-9", "9-10"];
+  //const dataPoints = [10, 20, 30, 65, 113, 155, 96, 35, 25, 15];
   const [listOrganizeExam, setListOrganizeExam] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
+  const [totalRoom, setTotalRoom] = useState(0);
   const [keyword, setKeyword] = useState("");
   const [page, setPage] = useState(1);
   const [role, setRole] = useState();
@@ -44,7 +45,13 @@ const Dashboard = () => {
   const subjectOptions = [/*...*/];
   const [totalCandidate, setTotalCandidate] = useState(0);
   const [totalOthers, setTotalOthers] = useState(0);
-
+  const [organizeExamOptions, setOrganizeExamOptions] = useState([]);
+  const [organizeExamChosen, setOrganizeExamChosen] = useState();
+  const [subjectName, setSubjectName] = useState();
+  const [dataPoints, setDataPoints] = useState([])
+  const [labels, setLabels] = useState([])
+  const [organizeExamId, setOrganizeExamId] = useState(null);
+  const [scoreDistributionArray, setScoreDistributionArray] = useState([]);
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -53,6 +60,18 @@ const Dashboard = () => {
       });
       setListOrganizeExam(response.data.organizeExams);
       setTotalCount(response.data.totalCount);
+    } catch (error) {
+      console.error("Failed to fetch data", error);
+    }
+  };
+
+  const fetchDataRoom = async () => {
+    setIsLoading(true);
+    try {
+      const response = await ApiService.get('/rooms', {
+        params: { page, pageSize, keyword },
+      });
+      setTotalRoom(response.data.total);
     } catch (error) {
       console.error("Failed to fetch data", error);
     }
@@ -82,7 +101,82 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
+    const fetchOrganizeExamOptions = async () => {
+      try {
+        const response = await ApiService.get("/organize-exams");
+        const options = response.data.organizeExams.map((item) => ({
+          value: item.id,
+          label: item.organizeExamName
+        }));
+        setOrganizeExamOptions(options);
+        if (options.length > 0) {
+        // ✅ Chọn kỳ thi đầu tiên (mới nhất)
+        const latestExam = options[0];
+        setOrganizeExamChosen(latestExam.value);
+        setOrganizeExamId(latestExam.value);
+        fetchChart(latestExam.value);
+      }
+      } catch (error) {
+        console.error("Failed to fetch subject options: ", error);
+      }
+    };
+
+    fetchOrganizeExamOptions();
+  }, []);
+
+  useEffect(() => {
+    if (organizeExamId) {
+      fetchChart(organizeExamId);
+    }
+  }, [organizeExamId]);
+
+  useEffect(() => {
+    fetchChart(organizeExamId);
+  }, [organizeExamId]);
+
+  const convertBinsToArray = (obj) => {
+    const arr = Object.entries(obj)
+      .map(([key, value]) => {
+        const match = key.match(/bin(\d+)_(\d+)/);
+        if (match) {
+          const start = match[1];
+          const end = match[2];
+          return {
+            range: `${start} - ${end}`,
+            count: value
+          };
+        }
+        return null;
+      })
+      .filter(Boolean);
+
+    const ranges = arr.map(item => item.range);
+    const counts = arr.map(item => item.count);
+
+    return { array: arr, ranges, counts };
+  };
+
+  const fetchChart = async (id) => {
+    setIsLoading(true);
+    try {
+      const response = await ApiService.get("/statistics/organize-exam-by-id", {
+        params: { organizeExamId: id },
+      });
+      setSubjectName(response.data.subjecName);
+      
+      const { array, ranges, counts } = convertBinsToArray(response.data.scoreDistribution);
+      setScoreDistributionArray(array);
+      setLabels(ranges);
+      setDataPoints(counts);
+    } catch (error) {
+      console.error("Lỗi lấy dữ liệu:", error);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
     fetchData();
+    fetchDataRoom();
   }, [page, pageSize, keyword]);
 
   useEffect(() => {
@@ -108,8 +202,8 @@ const Dashboard = () => {
           icon={<i className="fa-solid fa-calendar"></i>}
         />
         <CardDashboard
-          title="Người dùng mới"
-          value="+200"
+          title="Số lượng phòng thi"
+          value={"+" + totalRoom}
           icon={<FaDollarSign />}
         />
       </div>
@@ -119,7 +213,7 @@ const Dashboard = () => {
           <div className="barchart-score">
             <div className="d-flex justify-content-between align-items-center">
               <div>
-                <p className="m-0 ps-3 pt-3 fw-bold">Tỷ lệ phân bố điểm: Giải tích 1</p>
+                <p className="m-0 ps-3 pt-3 fw-bold">Tỷ lệ phân bố điểm: {subjectName}</p>
               </div>
               <div className="d-flex gap-2 pt-3 pe-3">
                 {/* <select className="form-select form-select-sm" aria-label="Small select example"
@@ -130,7 +224,7 @@ const Dashboard = () => {
                   <option value="2">Triết học</option>
                   <option value="3">Thiết kế giao diện người dùng</option>
                 </select> */}
-                <ReactSelect
+                {/* <ReactSelect
                   className="basic-single"
                   classNamePrefix="select"
                   placeholder="Chọn phân môn"
@@ -163,11 +257,11 @@ const Dashboard = () => {
                       zIndex: 9999,
                     }),
                   }}								
-                />
-                <ReactSelect
+                /> */}
+                {/* <ReactSelect
                   className="basic-single"
                   classNamePrefix="select"
-                  placeholder="Chọn kỳ"
+                  placeholder="Chọn kỳ thi"
                   options={subjectOptions}
                   onChange={(selectedOption) => 
                     setExamData({...examData, subjectId: selectedOption?.value})
@@ -177,7 +271,7 @@ const Dashboard = () => {
                       ...base,
                       height: "30px",        // Chiều cao tổng thể
                       fontSize: "13px",
-                      width: "200px",
+                      width: "250px",
                       minHeight: "30px",
                       borderRadius: "6px"
                     }),
@@ -197,6 +291,43 @@ const Dashboard = () => {
                       zIndex: 9999,
                     }),
                   }}								
+                /> */}
+                <Autocomplete
+                  className="ms-2"
+                  options={organizeExamOptions} 
+                  getOptionLabel={(option) => option.label}
+                  value={
+                    organizeExamOptions.find((opt) => opt.value === organizeExamId) || null
+                  }
+                  onChange={(event, newValue) => setOrganizeExamId(newValue?.value || null)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Chọn kỳ thi"
+                      size="small"
+                      sx={{
+                        backgroundColor: "white",
+                        minWidth: 220,
+                        "& .MuiInputBase-root": {
+                          height: "40px",
+                          width: "300px",
+                        },
+                        "& label": {
+                          fontSize: "14px",
+                        },
+                        "& input": {
+                          fontSize: "14px",
+                        },
+                      }}
+                    />
+                  )}
+                  slotProps={{
+                    paper: {
+                      sx: {
+                        fontSize: "14px", // ✅ Cỡ chữ dropdown
+                      },
+                    },
+                  }}
                 />
               </div>
             </div>
