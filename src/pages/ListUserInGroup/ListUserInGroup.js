@@ -228,7 +228,14 @@ const ListUserInGroup = () => {
                     <td>{item.userCode}</td>
                     <td>{item.lastName}</td>
                     <td>{item.firstName}</td>
-                    <td className="text-center">{item.dateOfBirth}</td>
+                    <td className="text-center">
+                      {item.dateOfBirth
+                        ? (() => {
+                            const [year, month, day] = item.dateOfBirth.split("-");
+                            return `${day.padStart(2, "0")}/${month.padStart(2, "0")}/${year}`;
+                          })()
+                        : ""}
+                    </td>
                     <td className="text-center">{item.gender == "male" ? "Nam" : "Nữ"}</td>
                     <td>
                       <button className="btn btn-danger btn-sm ms-2" style={{width: "35px", height: "35px"}}  onClick={() => handleDelete(groupuserId, item.userId)}>
