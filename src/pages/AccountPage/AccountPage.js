@@ -26,6 +26,7 @@ const AccountPage = () => {
   const [pageSize, setPageSize] = useState(100);
   const [showAddGroupForm, setShowAddGroupForm] = useState(false);
   const [groupName, setGroupName] = useState("");
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
   const [listAccount, setListAccount] = useState({
     "Thí sinh": [],
@@ -80,6 +81,9 @@ const AccountPage = () => {
         if (user.role === "staff") {
           newAccounts["Cán bộ phụ trách kỳ thi"].push(user);
         }
+        if (user.role === "lecturer") {
+          newAccounts["Giảng viênc"].push(user);
+        }
       });
   
       setListAccount(newAccounts);
@@ -89,6 +93,20 @@ const AccountPage = () => {
       setIsLoading(false);
     }
   };  
+
+  const createUser = async (user) => {
+    setIsLoading(true);
+    try {
+      const userLogId = "67c5cee0194f0c8804a6bd21";
+      await ApiService.post("/users", user, {
+        params: { userLogId },
+      });
+      await fetchData();
+    } catch (error) {
+      console.error("Failed to create user: ", error);
+    }
+    setIsLoading(false);
+  };
 
   useEffect(() => {
     setSelectedRole("Thí sinh");
@@ -145,7 +163,7 @@ const AccountPage = () => {
     dateOfBirth: "",
     gender: "male",
     username: "",
-    // password: "",
+    password: "123456",
     role: selectedRole,
     accountStatus: "active",
     permissions: [],
@@ -159,7 +177,7 @@ const AccountPage = () => {
       dateOfBirth: "",
       gender: "male",
       username: "",
-      // password: "",
+      password: "123456",
       role: "candidate",
       accountStatus: "active",
       permissions: [],
@@ -183,8 +201,14 @@ const AccountPage = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    await createUser(formData)
+    Swal.fire({
+      icon: "success",
+      text: "Thêm người dùng thành công",
+      draggable: true
+    });
     console.log("Dữ liệu thêm mới:", formData);
     setShowForm(false);
   };
@@ -539,8 +563,8 @@ const AccountPage = () => {
                   <td className="text-center">{item.groupName}</td>
                   <td className="text-center">
                     <div className="d-flex align-items-center justify-content-center">
-                      <span className={`badge ms-2 mt-1 ${item.accountStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
-                        {item.accountStatus === "Active" || "available" ? "Hoạt động" : "Không hoạt động"}
+                      <span className={`badge ms-2 mt-1 ${item.accountStatus?.toLowerCase() === "active" ? "bg-primary" : "bg-secondary"}`}>
+                        {item.accountStatus?.toLowerCase() === "active" ? "Hoạt động" : "Không hoạt động"}
                       </span>
                     </div>
                   </td>
@@ -608,7 +632,7 @@ const AccountPage = () => {
       {/* Form thêm tài khoản */}
       {showForm && (
         <div className="form-overlay">
-          <div
+          <form
             className="shadow form-fade bg-white bd-radius-8"
             style={{ width: "800px", boxShadow: 3,}}
             onSubmit={handleSubmit}
@@ -863,7 +887,7 @@ const AccountPage = () => {
                 </AddButton>
               </Grid>
             </Grid>
-          </div>
+          </form>
         </div>
       )}
 
