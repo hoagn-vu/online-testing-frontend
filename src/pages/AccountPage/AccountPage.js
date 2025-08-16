@@ -29,7 +29,6 @@ const AccountPage = () => {
   const [showAddGroupForm, setShowAddGroupForm] = useState(false);
   const [groupName, setGroupName] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
-    "Giám thị": [],
 
   const roleTabs = [
     { label: "Thí sinh", value: "candidate" },
