@@ -529,7 +529,7 @@ const AccountPage = () => {
                 <th scope="col" className="title-row">Tên</th>
                 <th className="text-center">Ngày sinh</th>
                 <th className="text-center">Giới tính</th>
-                <th className="text-center">Nhóm</th>
+                {/* <th className="text-center">Nhóm</th> */}
                 <th className="text-center">Trạng thái</th>
                 <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
               </tr>
@@ -558,9 +558,22 @@ const AccountPage = () => {
                   <td>{item.username}</td>
                   <td>{item.lastName}</td>
                   <td>{item.firstName}</td>
-                  <td className="text-center">{item.dateOfBirth}</td>
-                  <td className="text-center">{item.gender}</td>
-                  <td className="text-center">{item.groupName}</td>
+                  <td className="text-center">
+                    {item.dateOfBirth
+                      ? (() => {
+                          const [year, month, day] = item.dateOfBirth.split("-");
+                          return `${day.padStart(2, "0")}/${month.padStart(2, "0")}/${year}`;
+                        })()
+                      : ""}
+                  </td>
+                  <td className="text-center">
+                    {item.gender === "female"
+                      ? "Nữ"
+                      : item.gender === "male"
+                      ? "Nam"
+                      : ""}
+                  </td>
+                  {/* <td className="text-center">{item.groupName}</td> */}
                   <td className="text-center">
                     <div className="d-flex align-items-center justify-content-center">
                       <span className={`badge ms-2 mt-1 ${item.accountStatus?.toLowerCase() === "active" ? "bg-primary" : "bg-secondary"}`}>
