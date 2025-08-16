@@ -178,7 +178,7 @@ const AccountPage = () => {
     dateOfBirth: "",
     gender: "male",
     username: "",
-    password: "123456",
+    password: "",
     role: selectedRole,
     accountStatus: "active",
     permissions: [],
@@ -192,7 +192,7 @@ const AccountPage = () => {
       dateOfBirth: "",
       gender: "male",
       username: "",
-      password: "123456",
+      password: "",
       role: "candidate",
       accountStatus: "active",
       permissions: [],
@@ -219,22 +219,30 @@ const AccountPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const finalData = {
+        ...formData,
+        username: formData.userCode.toLowerCase(),
+        password: "123456",
+      };
+
       if (editingAccount) {
-        await updateUser({ ...editingAccount, ...formData });
+        await updateUser({ ...editingAccount, ...finalData });
         Swal.fire({
           icon: "success",
           text: "Cập nhật thông tin người dùng thành công",
           draggable: true
         });
+        console.log("Dữ liệu thêm mới:", finalData);
         setShowForm(false);
       } else {
         // Thêm mới dữ liệu
-        await createUser(formData)
+        await createUser(finalData)
         Swal.fire({
           icon: "success",
           text: "Thêm người dùng thành công",
           draggable: true
         });
+        console.log("Dữ liệu thêm mới:", finalData);
         setShowForm(false);
       }
     }catch (error) {
@@ -244,7 +252,7 @@ const AccountPage = () => {
         text: error?.message || "Không thể xử lý yêu cầu",
       });;
     }
-    console.log("Dữ liệu thêm mới:", formData);
+    
     setShowForm(false);
   };
 
@@ -794,7 +802,7 @@ const AccountPage = () => {
               </Grid>
 
               {/* Username và Password */}
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <TextField
                   fullWidth
                   label="Username"
@@ -810,7 +818,7 @@ const AccountPage = () => {
                     "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
                   }}
                 />
-              </Grid>
+              </Grid> */}
               {/* <Grid item xs={6}>
                 <TextField
                   fullWidth
