@@ -28,7 +28,6 @@ const AccountPage = () => {
   const [groupName, setGroupName] = useState("");
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const [showForm, setShowForm] = useState(false);
-  const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [editingAccount, setEditingAccount] = useState(null);
   const [accountToDelete, setAccountToDelete] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -202,12 +201,6 @@ const AccountPage = () => {
     setShowForm(true);
   };
 
-  const [passwordData, setPasswordData] = useState({
-    role: "candidate",
-    newPassword: "",
-    confirmPassword: "",
-  });
-
   const handlePermissionChange = (permission) => {
     setFormData((prevData) => {
       const updatedPermissions = prevData.permissions.includes(permission)
@@ -256,16 +249,6 @@ const AccountPage = () => {
     }
     
     setShowForm(false);
-  };
-
-  const handlePasswordSubmit = (e) => {
-    e.preventDefault();
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      alert("Mật khẩu xác nhận không khớp!");
-      return;
-    }
-    console.log("Cập nhật mật khẩu cho vai trò:", passwordData);
-    setShowPasswordForm(false);
   };
 
   const handleEdit = (account) => {
@@ -462,12 +445,6 @@ const AccountPage = () => {
   };
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
-  // state quản lý hiện/ẩn
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  // hàm toggle
-  const handleTogglePassword = () => setShowPassword((prev) => !prev);
 
   const handleCreateGroup = async (groupName, selectedItems) => {    
     if (!groupName) {
@@ -571,16 +548,6 @@ const AccountPage = () => {
             <AddButton onClick={handleAddNew}>
               <i className="fas fa-plus me-2"></i> Thêm mới
             </AddButton>
-            {/* <button className="btn btn-primary add-btn-hover" style={{fontSize: "14px"}} onClick={handleAddNew}>
-              <i className="fas fa-plus me-2"></i>
-              Thêm mới
-            </button> */}
-            <button
-              className="change-password-btn btn-size align-items-center d-flex"
-              onClick={() => setShowPasswordForm(true)}
-            >
-              Đổi mật khẩu
-            </button>
             <AddButton onClick={() => setShowAddGroupForm(true)}>
               <i className="fas fa-plus me-2"></i> Thêm nhóm
             </AddButton>
@@ -1031,142 +998,6 @@ const AccountPage = () => {
         </div>
       )}
 
-      {/* Form Đổi mật khẩu */}
-      {showPasswordForm && (
-        <div className="form-overlay">
-          <div
-            className="shadow form-fade bg-white bd-radius-8"
-            style={{ width: "800px", boxShadow: 3,}}
-            onSubmit={handlePasswordSubmit}
-          >
-            <div 
-              className="d-flex justify-content-between"
-              style={{
-                borderBottom: "1px solid #ccc",
-                marginBottom: "20px",
-              }}
-            >
-              <p className="fw-bold p-4 pb-0">
-                Đổi mật khẩu
-              </p>
-              <button
-                className="p-4"
-                type="button"
-                onClick={() => setShowPasswordForm(false)}
-                style={{
-                  border: 'none',
-                  background: 'none',
-                  fontSize: '20px',
-                  cursor: 'pointer',
-                }}
-              ><i className="fa-solid fa-xmark"></i></button>            
-            </div>
-            <Grid container spacing={2} sx={{p: 3, pt: 1}}>
-              {/* Mã và Họ Tên */}
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  select
-                  required
-                  label="Vai trò"
-                  value={passwordData.role}
-                  onChange={(e) =>
-                    setPasswordData({ ...passwordData, role: e.target.value })
-                  }
-                  sx={{
-                    "& .MuiInputBase-input": {
-                      fontSize: "14px",
-                      paddingBottom: "11px",
-                    },
-                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-                  }}
-                >
-                  <MenuItem value="candidate">Thí sinh</MenuItem>
-                  <MenuItem value="supervisor">Giám thị</MenuItem>
-                  <MenuItem value="teacher">Giảng viên</MenuItem>
-                  <MenuItem value="admin">Quản trị viên</MenuItem>
-                  <MenuItem value="staff">Cán bộ phụ trách kỳ thi</MenuItem>
-                </TextField>
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Mật khẩu mới"
-                  type={showPassword ? "text" : "password"}
-                  required
-                  inputRef={inputRef}
-                  value={formData.newPassword}
-                  onChange={(e) =>
-                    setPasswordData({ ...passwordData, newPassword: e.target.value })
-                  }
-                  sx={{
-                    "& .MuiInputBase-input": {
-                      fontSize: "14px",
-                      paddingBottom: "11px",
-                    },
-                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-                  }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton onClick={handleTogglePassword} edge="end">
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Xác nhận mật khẩu"
-                  required
-                  inputRef={inputRef}
-                  type={showConfirmPassword  ? "text" : "password"}
-                  value={formData.confirmPassword}
-                  onChange={(e) =>
-                    setPasswordData({ ...passwordData, confirmPassword: e.target.value })
-                  }
-                  sx={{
-                    "& .MuiInputBase-input": {
-                      fontSize: "14px",
-                      paddingBottom: "11px",
-                    },
-                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-                  }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                          edge="end"
-                        >
-                          {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              </Grid>
-
-            {/* Buttons */}
-            <Grid container spacing={2} sx={{justifyContent:"flex-end", p: 3, pt: 1 }}>
-              <Grid item xs={3}>
-                <CancelButton onClick={() => setShowPasswordForm(false)} style={{width: "100%"}}>
-                  Hủy
-                </CancelButton>
-              </Grid>
-              <Grid item xs={3}>
-                <AddButton style={{width: "100%"}}>
-                  {editingAccount ? "Cập nhật" : "Lưu"}
-                </AddButton>
-              </Grid>
-            </Grid>
-          </div>
-        </div>
-      )}
       {/* Form Chọn nhóm */}
       {showGroupForm && (
         <div className="form-overlay">
