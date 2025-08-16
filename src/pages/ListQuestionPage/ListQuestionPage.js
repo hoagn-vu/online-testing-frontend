@@ -157,71 +157,56 @@ const ListQuestionPage = () => {
 		setOpenModal(true);
 	};
 
-	const handleFilesDropped = (files) => {
+	const handleFilesDropped = async (files) => {
 		console.log("Files received:", files);
-		// 👉 Ở đây bạn có thể xử lý upload API
-		setOpenModal(false);
-	};
+		const formData = new FormData();
+		formData.append("file", files[0]);
 
-	const handleUploadfile = async () => {
-    const { value: file } = await Swal.fire({
-			title: "Chọn file",
-			input: "file",
-			inputAttributes: {
-					accept: ".docx,.txt",
-					"aria-label": "Tải lên",
-			},
-    });
+		setIsUploading(true);
+		setUploadProgress(0);
+		document.getElementById("uploadModal").classList.add("show");
+		document.getElementById("uploadModal").style.display = "block";
 
-    if (file) {
-			const formData = new FormData();
-			formData.append("file", file);
+		try {
+			const response = await ApiService.post(`/file/upload-file-question`, formData, {
+				params: { subjectId, questionBankId },
+				headers: { "Content-Type": "multipart/form-data" },
+				onUploadProgress: (progressEvent) => {
+					if (progressEvent.total) {
+						const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
 
-			setIsUploading(true);
-			setUploadProgress(0);
-			document.getElementById("uploadModal").classList.add("show");
-			document.getElementById("uploadModal").style.display = "block";
+						setUploadProgress((prevProgress) => {
+							// Tăng từ từ, nhưng không nhảy đột ngột
+							if (percentCompleted > prevProgress) {
+									return percentCompleted < 99 ? percentCompleted : 99;
+							}
+							return prevProgress;
+						});
+					}
+					},
+			});
 
-			try {
-				const response = await ApiService.post(`/file/upload-file-question`, formData, {
-					params: { subjectId, questionBankId },
-					headers: { "Content-Type": "multipart/form-data" },
-					onUploadProgress: (progressEvent) => {
-						if (progressEvent.total) {
-							const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+			setUploadProgress(100); // Khi hoàn thành, đặt 100%
 
-							setUploadProgress((prevProgress) => {
-								// Tăng từ từ, nhưng không nhảy đột ngột
-								if (percentCompleted > prevProgress) {
-										return percentCompleted < 99 ? percentCompleted : 99;
-								}
-								return prevProgress;
-							});
-						}
-						},
-				});
-
-				setUploadProgress(100); // Khi hoàn thành, đặt 100%
-
+			await Swal.fire({
+					title: "Tải lên thành công",
+					icon: "success",
+			});
+			await fetchData();
+			await window.location.reload();
+		} catch (error) {
 				Swal.fire({
-						title: "Tải lên thành công",
-						icon: "success",
+					title: "Lỗi",
+					text: error.message,
+					icon: "error",
 				});
+		}
 
-				fetchData();
-			} catch (error) {
-					Swal.fire({
-						title: "Lỗi",
-						text: error.message,
-						icon: "error",
-					});
-			}
-
-			document.getElementById("uploadModal").classList.remove("show");
-			document.getElementById("uploadModal").style.display = "none";
-			setIsUploading(false);
-			setUploadProgress(0);
-    }
+		document.getElementById("uploadModal").classList.remove("show");
+		document.getElementById("uploadModal").style.display = "none";
+		setIsUploading(false);
+		setUploadProgress(0);
+		setOpenModal(false);
 	};
 
 	const [editQuestionId, setEditQuestionId] = useState(null);
