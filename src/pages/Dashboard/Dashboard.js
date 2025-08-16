@@ -37,10 +37,13 @@ const Dashboard = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [keyword, setKeyword] = useState("");
   const [page, setPage] = useState(1);
+  const [role, setRole] = useState();
   const [pageSize, setPageSize] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const subjectOptions = [/*...*/];
+  const [totalCandidate, setTotalCandidate] = useState(0);
+  const [totalOthers, setTotalOthers] = useState(0);
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -55,26 +58,53 @@ const Dashboard = () => {
     }
   };
 
+  const fetchTotals = async () => {
+    try {
+      const roles = ['candidate', 'admin', 'staff', 'supervisor', 'lecturer'];
+      const results = await Promise.all(
+        roles.map(role =>
+          ApiService.get('/users', { params: { role } })
+        )
+      );
+
+      setTotalCandidate(results[0].data.total);
+      const others = results
+      .slice(1)
+      .reduce((sum, res) => sum + res.data.total, 0);
+      setTotalOthers(others);
+
+      console.log('Candidate total:', totalCandidate);
+      console.log('Others total:', totalOthers);
+      console.log('Tổng tất cả:', totalCandidate + totalOthers);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, [page, pageSize, keyword]);
+
+  useEffect(() => {
+    fetchTotals();
+  }, [page, pageSize, keyword, role]);
 
   return (
     <div className="dashboard-page p-4">
       <div className="justify-between gap-4 w-full card-dash">
         <CardDashboard
           title="Số lượng thí sinh"
-          value="+200"
+          value={"+" + totalCandidate}
           icon={<i className="fa-solid fa-users"></i>}
         />
         <CardDashboard
           title="Cán bộ nhân viên"
-          value="+200"
+          value={"+" + totalOthers}
           icon={<i className="fa-solid fa-chalkboard-user"></i>}
         />
         <CardDashboard
           title="Kỳ thi đã tổ chức"
-          value="+200"
+          value={"+" + totalCount}
           icon={<i className="fa-solid fa-calendar"></i>}
         />
         <CardDashboard

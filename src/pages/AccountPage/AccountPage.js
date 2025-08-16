@@ -18,7 +18,6 @@ import DragDropModal from "../../components/DragDrop/DragDrop";
 const AccountPage = () => {
   const [listAccountUser, setListAccountUser] = useState([]);
   const inputRef = useRef(null);
-
   const [keyword, setKeyword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -26,7 +25,11 @@ const AccountPage = () => {
   const [pageSize, setPageSize] = useState(100);
   const [showAddGroupForm, setShowAddGroupForm] = useState(false);
   const [groupName, setGroupName] = useState("");
-
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const [showForm, setShowForm] = useState(false);
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [editingAccount, setEditingAccount] = useState(null);
+  const [accountToDelete, setAccountToDelete] = useState(null);
   const [listAccount, setListAccount] = useState({
     "Thí sinh": [],
     "Giám thị": [],
@@ -34,7 +37,8 @@ const AccountPage = () => {
     "Cán bộ phụ trách kỳ thi": [],
     "Giảng viên": [],
   });
-
+  
+  const [rows, setRows] = useState(Object.values(listAccount).flat()); 
   const [listDisplay, setListDisplay] = useState([]);
   const [selectedRole, setSelectedRole] = useState("Thí sinh");
   
@@ -80,6 +84,9 @@ const AccountPage = () => {
         if (user.role === "staff") {
           newAccounts["Cán bộ phụ trách kỳ thi"].push(user);
         }
+        if (user.role === "lecturer") {
+          newAccounts["Giảng viênc"].push(user);
+        }
       });
   
       setListAccount(newAccounts);
@@ -89,6 +96,38 @@ const AccountPage = () => {
       setIsLoading(false);
     }
   };  
+
+  const createUser = async (user) => {
+    setIsLoading(true);
+    try {
+      const userLogId = "67c5cee0194f0c8804a6bd21";
+      await ApiService.post("/users", user, {
+        params: { userLogId },
+      });
+      await fetchData();
+    } catch (error) {
+      console.error("Failed to create user: ", error);
+    }
+    setIsLoading(false);
+  };
+
+  const updateUser = async (user) => {
+    setIsLoading(true);
+    try {
+      const response = await ApiService.post(`/users/update/${user.id}`, user);
+      if (response.status >= 200 && response.status < 300) {
+        await fetchData();
+        return true; // thành công
+      } else {
+        throw new Error("Cập nhật thất bại");
+      }
+    } catch (error) {
+      console.error("Failed to update level:", error);
+      throw error; // ném lỗi ra ngoài để handleSubmit bắt được
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     setSelectedRole("Thí sinh");
@@ -111,13 +150,7 @@ const AccountPage = () => {
     } else {
       setSelectedItems([]);
     }
-  };
-
-  const [showForm, setShowForm] = useState(false);
-  const [showPasswordForm, setShowPasswordForm] = useState(false);
-  const [editingAccount, setEditingAccount] = useState(null);
-  const [accountToDelete, setAccountToDelete] = useState(null);
-  const [rows, setRows] = useState(Object.values(listAccount).flat());  
+  }; 
 
   useEffect(() => {
     if (showForm && inputRef.current) {
@@ -145,7 +178,7 @@ const AccountPage = () => {
     dateOfBirth: "",
     gender: "male",
     username: "",
-    // password: "",
+    password: "",
     role: selectedRole,
     accountStatus: "active",
     permissions: [],
@@ -159,7 +192,7 @@ const AccountPage = () => {
       dateOfBirth: "",
       gender: "male",
       username: "",
-      // password: "",
+      password: "",
       role: "candidate",
       accountStatus: "active",
       permissions: [],
@@ -183,9 +216,43 @@ const AccountPage = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Dữ liệu thêm mới:", formData);
+    try {
+      const finalData = {
+        ...formData,
+        username: formData.userCode.toLowerCase(),
+        password: "123456",
+      };
+
+      if (editingAccount) {
+        await updateUser({ ...editingAccount, ...finalData });
+        Swal.fire({
+          icon: "success",
+          text: "Cập nhật thông tin người dùng thành công",
+          draggable: true
+        });
+        console.log("Dữ liệu thêm mới:", finalData);
+        setShowForm(false);
+      } else {
+        // Thêm mới dữ liệu
+        await createUser(finalData)
+        Swal.fire({
+          icon: "success",
+          text: "Thêm người dùng thành công",
+          draggable: true
+        });
+        console.log("Dữ liệu thêm mới:", finalData);
+        setShowForm(false);
+      }
+    }catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Có lỗi xảy ra",
+        text: error?.message || "Không thể xử lý yêu cầu",
+      });;
+    }
+    
     setShowForm(false);
   };
 
@@ -200,22 +267,22 @@ const AccountPage = () => {
   };
 
   const handleEdit = (account) => {
-  setEditingAccount(account);
-  setFormData({
-    userCode: account.userCode || "",
-    fullName: account.fullName || "",
-    dateOfBirth: account.dateOfBirth || "",
-    gender: account.gender || "Nam",
-    username: account.username || "",
-    // password: "", // Để rỗng vì lý do bảo mật
-    role: account.role || selectedRole, // Ưu tiên role của account
-    status: account.accountStatus || "active",
-    permissions: account.permissions || [],
-  });
-  setShowForm(true);
-};
+    setEditingAccount(account);
+    setFormData({
+      userCode: account.userCode || "",
+      fullName: account.fullName || "",
+      dateOfBirth: account.dateOfBirth || "",
+      gender: account.gender || "Nam",
+      username: account.username || "",
+      password: "123456", // Để rỗng vì lý do bảo mật
+      role: account.role || selectedRole, // Ưu tiên role của account
+      status: account.accountStatus || "active",
+      permissions: account.permissions || [],
+    });
+    setShowForm(true);
+  };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     Swal.fire({
       title: "Bạn có chắc chắn xóa?",
       text: "Bạn sẽ không thể hoàn tác hành động này!",
@@ -225,16 +292,21 @@ const AccountPage = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Xóa",
       cancelButtonText: "Hủy",
-    }).then((result) => {
+    }).then(async(result) => {
       if (result.isConfirmed) {
+        try {
+          await ApiService.delete(`/users/delete/${id}`);
+          fetchData();
+          Swal.fire({
+            title: "Đã xóa!",
+            text: "Người dùng đã bị xóa thành công",
+            icon: "success",
+          });
+        }
+        catch (error) {
+          console.error("Failed to delete users: ", error);
+        }
         console.log("Xóa tài khoản có ID:", id);
-        setListDisplay(prev => prev.filter(item => item.id !== id));
-        Swal.fire({
-          title: "Đã xóa!",
-          text: "Tài khoản đã bị xóa.",
-          icon: "success",
-        });
-        setRows(rows.filter((row) => row.id !== id));
       }
     });
   };
@@ -505,7 +577,7 @@ const AccountPage = () => {
                 <th scope="col" className="title-row">Tên</th>
                 <th className="text-center">Ngày sinh</th>
                 <th className="text-center">Giới tính</th>
-                <th className="text-center">Nhóm</th>
+                {/* <th className="text-center">Nhóm</th> */}
                 <th className="text-center">Trạng thái</th>
                 <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
               </tr>
@@ -534,13 +606,26 @@ const AccountPage = () => {
                   <td>{item.username}</td>
                   <td>{item.lastName}</td>
                   <td>{item.firstName}</td>
-                  <td className="text-center">{item.dateOfBirth}</td>
-                  <td className="text-center">{item.gender}</td>
-                  <td className="text-center">{item.groupName}</td>
+                  <td className="text-center">
+                    {item.dateOfBirth
+                      ? (() => {
+                          const [year, month, day] = item.dateOfBirth.split("-");
+                          return `${day.padStart(2, "0")}/${month.padStart(2, "0")}/${year}`;
+                        })()
+                      : ""}
+                  </td>
+                  <td className="text-center">
+                    {item.gender === "female"
+                      ? "Nữ"
+                      : item.gender === "male"
+                      ? "Nam"
+                      : ""}
+                  </td>
+                  {/* <td className="text-center">{item.groupName}</td> */}
                   <td className="text-center">
                     <div className="d-flex align-items-center justify-content-center">
-                      <span className={`badge ms-2 mt-1 ${item.accountStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
-                        {item.accountStatus === "Active" || "available" ? "Hoạt động" : "Không hoạt động"}
+                      <span className={`badge ms-2 mt-1 ${item.accountStatus?.toLowerCase() === "active" ? "bg-primary" : "bg-secondary"}`}>
+                        {item.accountStatus?.toLowerCase() === "active" ? "Hoạt động" : "Không hoạt động"}
                       </span>
                     </div>
                   </td>
@@ -608,7 +693,7 @@ const AccountPage = () => {
       {/* Form thêm tài khoản */}
       {showForm && (
         <div className="form-overlay">
-          <div
+          <form
             className="shadow form-fade bg-white bd-radius-8"
             style={{ width: "800px", boxShadow: 3,}}
             onSubmit={handleSubmit}
@@ -717,7 +802,7 @@ const AccountPage = () => {
               </Grid>
 
               {/* Username và Password */}
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <TextField
                   fullWidth
                   label="Username"
@@ -733,7 +818,7 @@ const AccountPage = () => {
                     "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
                   }}
                 />
-              </Grid>
+              </Grid> */}
               {/* <Grid item xs={6}>
                 <TextField
                   fullWidth
@@ -863,7 +948,7 @@ const AccountPage = () => {
                 </AddButton>
               </Grid>
             </Grid>
-          </div>
+          </form>
         </div>
       )}
 

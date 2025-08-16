@@ -6,28 +6,6 @@ import { Link, useParams, useLocation } from "react-router-dom";
 import ApiService from "../../services/apiService";
 
 const ScoreTableSessionPage = () => {
-  const listCandidate = [
-    { candidateId: "CAND001", userCode: "BIT220172", fullName: "Hoàng Nguyên Vũ", firstName: "Vũ", score: 9.0, signature: "", note: "" },
-    { candidateId: "CAND002", userCode: "BIT220089", fullName: "Ngô Đức Thuận", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", userCode: "BIT220025", fullName: "Phan Thị Phương", firstName: "Linh", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", userCode: "BIT220005", fullName: "Hoàng", firstName: "Mai", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", userCode: "BIT220002", fullName: "Ngô Đức Minh", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", userCode: "BIT220001", fullName: "Nguyễn Mai", firstName: "Anh", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", userCode: "BIT220080", fullName: "Mai Đức", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", userCode: "BIT220081", fullName: "Ngô Đức", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", userCode: "BIT220085", fullName: "Phùng Đức", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", userCode: "BIT220096", fullName: "Ngô Đức", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", userCode: "BIT220115", fullName: "Nguyễn Đức", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", userCode: "BIT220125", fullName: "Phạm Đức", firstName: "Vũ", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", userCode: "BIT220147", fullName: "Ngô Đức", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", userCode: "BIT220135", fullName: "Hoàng Đức", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", userCode: "BIT220144", fullName: "Ngô Đức", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", userCode: "BIT220202", fullName: "Lê Đức", firstName: "Hoàng", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", userCode: "BIT220222", fullName: "Ngô Đức", firstName: "Thuận", score: 8.5, signature: "", note: "" },
-    { candidateId: "CAND002", userCode: "BIT220258", fullName: "Lê Đức", firstName: "Minh", score: 8.5, signature: "", note: "" },
-    
-  ];
-
   const { organizeId, sessionId } = useParams();
   const { roomId } = useParams();
   const location = useLocation();
@@ -37,7 +15,7 @@ const ScoreTableSessionPage = () => {
   const [listCandidateWithResult, setListCandidateWithResult] = useState([]);
   const [subjectName, setSubjectName] = useState([]);
   const [organizeName, setOrganizeName] = useState([]);
-  const [sessionName, setSessionName] = useState([]);
+  const [roomName, setRoomName] = useState([]);
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -51,7 +29,7 @@ const ScoreTableSessionPage = () => {
       setListCandidateWithResult(response.data.candidates);
       setSubjectName(response.data.subjectName);
       setOrganizeName(response.data.organizeName);
-      setSessionName(response.data.sessionName);
+      setRoomName(response.data.roomName);
     } catch (error) {
       console.error("Lỗi lấy dữ liệu:", error);
     }
@@ -137,8 +115,8 @@ const ScoreTableSessionPage = () => {
         </div>
         <div >
           <p className="mb-1"><strong>Kỳ thi:</strong> {organizeName}</p>
-          <p className="mb-1"><strong>Phòng thi:</strong> {organizeName}</p>
-          <p><strong>Môn thi:</strong> {organizeName}</p>
+          <p className="mb-1"><strong>Phòng thi:</strong> {roomName}</p>
+          <p><strong>Môn thi:</strong> {subjectName}</p>
         </div>
 
         {/* Bảng điểm */}

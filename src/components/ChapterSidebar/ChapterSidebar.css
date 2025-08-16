@@ -9,3 +9,8 @@
   max-height: 500px; /* hoặc lớn hơn nếu cần */
   opacity: 1;
 }
+
+.MuiListItemText-primary {
+  white-space: normal !important;
+  word-break: break-word !important;
+}

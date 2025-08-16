@@ -120,7 +120,7 @@ const DragDropModal = ({ open, onClose, onFilesDropped, title = "Kéo Thả Tệ
                   }}
                   onClick={handleBrowseClick}
                 >
-                  Browse files
+                  Chọn file
                 </span>
               </p>
 
