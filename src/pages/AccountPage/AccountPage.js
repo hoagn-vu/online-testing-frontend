@@ -51,7 +51,7 @@ const AccountPage = () => {
       });
 
       setListAccount(response.data.users);
-      setTotalCount(response.data.totalCount);
+      setTotalCount(response.data.total);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
