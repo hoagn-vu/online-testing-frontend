@@ -17,94 +17,51 @@ import DragDropModal from "../../components/DragDrop/DragDrop";
 import { CircularProgress } from "@mui/material";
 
 const AccountPage = () => {
-  const [listAccountUser, setListAccountUser] = useState([]);
   const inputRef = useRef(null);
-  const [keyword, setKeyword] = useState("");
+
+  const [listAccount, setListAccount] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [keyword, setKeyword] = useState("");
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [selectedRole, setSelectedRole] = useState("candidate");
   const [totalCount, setTotalCount] = useState(0);
-  const [pageSize, setPageSize] = useState(100);
   const [showAddGroupForm, setShowAddGroupForm] = useState(false);
   const [groupName, setGroupName] = useState("");
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  const [showForm, setShowForm] = useState(false);
-  const [editingAccount, setEditingAccount] = useState(null);
-  const [accountToDelete, setAccountToDelete] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [listAccount, setListAccount] = useState({
-    "Thí sinh": [],
-    "Giám thị": [],
-    "Quản trị viên": [],
-    "Cán bộ phụ trách kỳ thi": [],
-    "Giảng viên": [],
-  });
-  const [selectedGroup, setSelectedGroup] = useState(null);
-  const [rows, setRows] = useState(Object.values(listAccount).flat()); 
-  const [listDisplay, setListDisplay] = useState([]);
-  const [selectedRole, setSelectedRole] = useState("Thí sinh");
-  const [listGroupName, setListGroupName] = useState([]);
+
+  const roleTabs = [
+    { label: "Thí sinh", value: "candidate" },
+    { label: "Giám thị", value: "supervisor" },
+    { label: "Giảng viên", value: "lecturer" },
+    { label: "Quản trị viên", value: "admin" },
+    { label: "Cán bộ phụ trách kỳ thi", value: "staff" },
+  ];
+  
   const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
     setPage(1);
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [page, pageSize, keyword]); // phụ thuộc để tự động gọi lại khi có thay đổi  
-
   const fetchData = async () => {
     setIsLoading(true);
     try {
       const response = await ApiService.get("/users", {
-        params: { page, pageSize, keyword },
+        params: { page, pageSize, keyword, role: selectedRole },
       });
-  
-      // Cập nhật danh sách hiển thị theo phân trang
-      setListAccountUser(response.data.users);
+
+      setListAccount(response.data.users);
       setTotalCount(response.data.total);
-  
-      // Tạo object phân loại tài khoản
-      const newAccounts = {
-        "Thí sinh": [],
-        "Giám thị": [],
-        "Quản trị viên": [],
-        "Cán bộ phụ trách kỳ thi": [],
-        "Giảng viên": [],
-      };
-  
-      response.data.users.forEach((user) => {
-        if (user.role === "candidate") {
-          newAccounts["Thí sinh"].push(user);
-        }
-        if (user.role === "supervisor") {
-          newAccounts["Giám thị"].push(user);
-        }
-        if (user.role === "admin") {
-          newAccounts["Quản trị viên"].push(user);
-        }
-        if (user.role === "staff") {
-          newAccounts["Cán bộ phụ trách kỳ thi"].push(user);
-        }
-        if (user.role === "lecturer") {
-          newAccounts["Giảng viênc"].push(user);
-        }
-      });
-  
-      setListAccount(newAccounts);
     } catch (error) {
-      console.error("Lỗi khi lấy dữ liệu tài khoản:", error);
-    } finally {
-      setIsLoading(false);
+      console.error("Error fetching data:", error);
     }
-  };  
+    setIsLoading(false);
+  };
 
   const createUser = async (user) => {
     setIsLoading(true);
     try {
-      const userLogId = "67c5cee0194f0c8804a6bd21";
-      await ApiService.post("/users", user, {
-        params: { userLogId },
-      });
+      await ApiService.post("/users", user);
       await fetchData();
     } catch (error) {
       console.error("Failed to create user: ", error);
@@ -115,7 +72,7 @@ const AccountPage = () => {
   const updateUser = async (user) => {
     setIsLoading(true);
     try {
-      const response = await ApiService.post(`/users/update/${user.id}`, user);
+      const response = await ApiService.put(`/users/update/${user.id}`, user);
       if (response.status >= 200 && response.status < 300) {
         await fetchData();
         return true; // thành công
@@ -131,31 +88,8 @@ const AccountPage = () => {
   };
 
   useEffect(() => {
-    const getGroupUser = async () => {
-      setIsLoading(true);
-      try {
-        const response = await ApiService.get("/groupUser", {
-          params: { keyword, page, pageSize },
-        });
-        const options = response.data.groups.map((item) => ({
-          value: item.id,
-          label: item.groupName
-        }));
-        setListGroupName(options);
-      } catch (error) {
-        console.error("Failed to get group: ", error);
-      }
-      setIsLoading(false);
-    };
-    getGroupUser();
-  }, []);
-  
-  console.log("listGroupName raw:", listGroupName);
-
-  useEffect(() => {
-    setSelectedRole("Thí sinh");
-    setListDisplay(listAccount["Thí sinh"]);
-  }, [listAccount]);
+    fetchData();
+  }, [page, pageSize, keyword, selectedRole]);
 
   const [selectedItems, setSelectedItems] = useState([]);
 
@@ -169,11 +103,51 @@ const AccountPage = () => {
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedItems(listDisplay.map((item) => item.id));
+      setSelectedItems(listAccount.map((item) => item.id));
     } else {
       setSelectedItems([]);
     }
-  }; 
+  };
+
+  const convertGender = (gender) => {
+    switch (gender) {
+      case "male":
+        return "Nam";
+      case "female":
+        return "Nữ";
+      default:
+        return "Khác";
+    }
+  };
+
+  const convertStatus = (status) => {
+    switch (status) {
+      case "active":
+        return { label: "Hoạt động", className: "bg-primary" };
+      case "disabled":
+        return { label: "Không hoạt động", className: "bg-secondary" };
+    }
+  };
+
+  const [formData, setFormData] = useState({
+    id: null,
+    userCode: null,
+    userName: null,
+    fullName: null,
+    dateOfBirth: null,
+    role: null,
+    gender: null,
+    password: "",
+    accountStatus: "active",
+    groupName: [],
+    authenticate: []
+  });
+
+  const [showForm, setShowForm] = useState(false);
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [editingAccount, setEditingAccount] = useState(null);
+  const [accountToDelete, setAccountToDelete] = useState(null);
+  const [rows, setRows] = useState(Object.values(listAccount).flat());  
 
   useEffect(() => {
     if (showForm && inputRef.current) {
@@ -195,18 +169,6 @@ const AccountPage = () => {
     "Quản lý phòng thi",
   ];
 
-  const [formData, setFormData] = useState({
-    userCode: "",
-    fullName: "",
-    dateOfBirth: "",
-    gender: "male",
-    username: "",
-    password: "",
-    role: selectedRole,
-    accountStatus: "active",
-    permissions: [],
-  });
-
   const handleAddNew = () => {
     setEditingAccount(null);
     setFormData({
@@ -222,6 +184,12 @@ const AccountPage = () => {
     });
     setShowForm(true);
   };
+
+  const [passwordData, setPasswordData] = useState({
+    role: "candidate",
+    newPassword: "",
+    confirmPassword: "",
+  });
 
   const handlePermissionChange = (permission) => {
     setFormData((prevData) => {
@@ -254,12 +222,12 @@ const AccountPage = () => {
       } else {
         // Thêm mới dữ liệu
         await createUser(finalData)
+        console.log("Dữ liệu thêm mới:", finalData);
         Swal.fire({
           icon: "success",
           text: "Thêm người dùng thành công",
           draggable: true
         });
-        console.log("Dữ liệu thêm mới:", finalData);
         setShowForm(false);
       }
     }catch (error) {
@@ -271,6 +239,16 @@ const AccountPage = () => {
     }
     
     setShowForm(false);
+  };
+
+  const handlePasswordSubmit = (e) => {
+    e.preventDefault();
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      alert("Mật khẩu xác nhận không khớp!");
+      return;
+    }
+    console.log("Cập nhật mật khẩu cho vai trò:", passwordData);
+    setShowPasswordForm(false);
   };
 
   const handleEdit = (account) => {
@@ -406,26 +384,6 @@ const AccountPage = () => {
   }
 };*/
 
-  const handleRoleChange = (role) => {
-    switch (role) {
-      case "Thí sinh":
-        setListDisplay(listAccount["Thí sinh"]);
-        break;
-      case "Giám thị":
-        setListDisplay(listAccount["Giám thị"]);
-        break;
-      case "Quản trị viên":
-        setListDisplay(listAccount["Quản trị viên"]);
-        break;
-      case "Cán bộ phụ trách kỳ thi":
-        setListDisplay(listAccount["Cán bộ phụ trách kỳ thi"]);
-        break;
-      default:
-        break;
-    }
-    setSelectedRole(role);
-  };
-
   const colourOptions = [
     { value: "22IT1", label: "22IT1" },
     { value: "22IT2", label: "22IT2" },
@@ -467,48 +425,48 @@ const AccountPage = () => {
   };
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
+  // state quản lý hiện/ẩn
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleCreateGroup = async (selectedGroup, selectedItems) => {  
-    console.log("selectedGroup in handleCreateGroup:", selectedGroup);
-    console.log("selectedItems:", selectedItems);  
-    if (!selectedGroup || !selectedGroup.label) {
+  // hàm toggle
+  const handleTogglePassword = () => setShowPassword((prev) => !prev);
+
+  const handleCreateGroup = async (groupName, selectedItems) => {    
+    if (!groupName) {
       await Swal.fire({
         icon: 'error',
         title: 'Lỗi',
-        text: 'Vui lòng chọn hoặc nhập tên nhóm',
+        text: 'Tên nhóm không được để trống',
+        draggable: true
       });
       return false;
     }
-
     
     // Map selectedItems (IDs) to userCodes
     const listUser = selectedItems.map(id => {
-      const user = listDisplay.find(item => String(item.id) === String(id)); 
+      const user = listAccount.find(item => String(item.id) === String(id)); 
       return user ? user.userCode : null;
     }).filter(code => code !== null); // Loại bỏ các giá trị null (nếu có)
-    
-    if (!listUser.length) {
-    await Swal.fire({
-      icon: 'error',
-      title: 'Lỗi',
-      text: 'Vui lòng chọn ít nhất một tài khoản',
-      draggable: true
-    });
-    return false;
-  }
 
-    // Debug: Log listUser to verify mapping result
-    console.log('Tạo nhóm:', groupName);
-    console.log('Danh sách ID:', selectedItems);
-    console.log('Danh sách userCode:', listUser);
+    if (!selectedItems || selectedItems.length === 0) {
+      await Swal.fire({
+        icon: 'error',
+        title: 'Lỗi',
+        text: 'Vui lòng chọn ít nhất một tài khoản',
+        draggable: true
+      });
+      setShowAddGroupForm(false);
+      return false;
+    }
 
     const payload = {
-      groupName: selectedGroup.label,
+      groupName,
       listUser,
     };
 
     setIsLoading(true);
-    /*try {
+    try {
       await ApiService.post('/groupUser/create-group-users', payload);
       await fetchData(); // Làm mới danh sách sau khi tạo nhóm
       await Swal.fire({
@@ -525,44 +483,6 @@ const AccountPage = () => {
         icon: 'error',
         title: 'Lỗi',
         text: error.message || 'Không thể tạo nhóm',
-      });
-    } finally {
-      setIsLoading(false);
-    }*/
-    try {
-      if (selectedGroup.__isNew__) {
-        // 👉 Nhóm mới: gọi API create-group-users
-        const payload = {
-          groupName: selectedGroup.label, // vì CreatableSelect tạo option mới có label
-          listUser,
-        };
-
-        await ApiService.post('/groupUser/create-group-users', payload);
-        await Swal.fire({
-          icon: 'success',
-          text: 'Tạo nhóm thành công',
-          draggable: true
-        });
-      } else {
-        // 👉 Nhóm đã có: gọi API add-users
-        const groupId = selectedGroup.value; // value của option có thể là groupId
-        await ApiService.post(
-          `/groupUser/add-users?groupId=${groupId}`,
-          listUser,
-          { headers: { "Content-Type": "application/json" } }
-        );
-        await Swal.fire({ icon: 'success', text: 'Thêm người dùng vào nhóm thành công', draggable: true });
-      }
-
-      await fetchData(); // refresh lại danh sách
-      setSelectedItems([]);
-      setShowAddGroupForm(false);
-    } catch (error) {
-      console.error("Lỗi khi xử lý nhóm:", error.response?.data || error);
-      await Swal.fire({
-        icon: 'error',
-        title: 'Lỗi',
-        text: error.message || 'Không thể xử lý nhóm'
       });
     } finally {
       setIsLoading(false);
@@ -609,6 +529,16 @@ const AccountPage = () => {
             <AddButton onClick={handleAddNew}>
               <i className="fas fa-plus me-2"></i> Thêm mới
             </AddButton>
+            {/* <button className="btn btn-primary add-btn-hover" style={{fontSize: "14px"}} onClick={handleAddNew}>
+              <i className="fas fa-plus me-2"></i>
+              Thêm mới
+            </button> */}
+            <button
+              className="change-password-btn btn-size align-items-center d-flex"
+              onClick={() => setShowPasswordForm(true)}
+            >
+              Đổi mật khẩu
+            </button>
             <AddButton onClick={() => setShowAddGroupForm(true)}>
               <i className="fas fa-plus me-2"></i> Thêm nhóm
             </AddButton>
@@ -649,19 +579,18 @@ const AccountPage = () => {
           </div>
         </div>
 
-        {/* Tabs để chọn loại tài khoản */}
         <ul className="nav nav-tabs ">
-          {Object.keys(listAccount).map((role) => (
-            <li className="nav-item" key={role}>
+          { roleTabs.map((role) => (
+            <li className="nav-item" key={role.value}>
               <a
-                className={`nav-link ${selectedRole === role ? "active" : ""}`}
+                className={`nav-link ${selectedRole === role.value ? "active" : ""}`}
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleRoleChange(role);
+                  setSelectedRole(role.value);
                 }}
               >
-                {role}
+                {role.label}
               </a>
             </li>
           ))}
@@ -676,7 +605,7 @@ const AccountPage = () => {
                     className="form-check-input"
                     type="checkbox"
                     onChange={handleSelectAll}
-                    checked={listDisplay.length > 0 && listDisplay.every((item) => selectedItems.includes(item.id))}                  />
+                    checked={listAccount.length > 0 && listAccount.every((item) => selectedItems.includes(item.id))}                  />
                 </th>
                 <th scope="col" className="title-row">Mã</th>
                 <th scope="col" className="title-row">Tài khoản</th>
@@ -699,7 +628,7 @@ const AccountPage = () => {
                   </td>
                 </tr>
               ) :
-              processData(listDisplay).map((item, index) => (
+              processData(listAccount).map((item, index) => (
                 <tr key={item.id} className="align-middle">
                   <td className=" text-center" style={{ width: "50px" }}>
                     <input
@@ -713,26 +642,13 @@ const AccountPage = () => {
                   <td>{item.username}</td>
                   <td>{item.lastName}</td>
                   <td>{item.firstName}</td>
-                  <td className="text-center">
-                    {item.dateOfBirth
-                      ? (() => {
-                          const [year, month, day] = item.dateOfBirth.split("-");
-                          return `${day.padStart(2, "0")}/${month.padStart(2, "0")}/${year}`;
-                        })()
-                      : ""}
-                  </td>
-                  <td className="text-center">
-                    {item.gender === "female"
-                      ? "Nữ"
-                      : item.gender === "male"
-                      ? "Nam"
-                      : ""}
-                  </td>
+                  <td className="text-center">{item.dateOfBirth}</td>
+                  <td className="text-center">{convertGender(item.gender)}</td>
                   {/* <td className="text-center">{item.groupName}</td> */}
                   <td className="text-center">
                     <div className="d-flex align-items-center justify-content-center">
-                      <span className={`badge ms-2 mt-1 ${item.accountStatus?.toLowerCase() === "active" ? "bg-primary" : "bg-secondary"}`}>
-                        {item.accountStatus?.toLowerCase() === "active" ? "Hoạt động" : "Không hoạt động"}
+                      <span className={`badge ms-2 mt-1 ${convertStatus(item.accountStatus).className}`}>
+                        {convertStatus(item.accountStatus).label}
                       </span>
                     </div>
                   </td>
@@ -777,7 +693,6 @@ const AccountPage = () => {
                       </ul>
                     </div>
                   </td>
-
                 </tr>
               ))}
             </tbody>
@@ -1059,6 +974,142 @@ const AccountPage = () => {
         </div>
       )}
 
+      {/* Form Đổi mật khẩu */}
+      {showPasswordForm && (
+        <div className="form-overlay">
+          <div
+            className="shadow form-fade bg-white bd-radius-8"
+            style={{ width: "800px", boxShadow: 3,}}
+            onSubmit={handlePasswordSubmit}
+          >
+            <div 
+              className="d-flex justify-content-between"
+              style={{
+                borderBottom: "1px solid #ccc",
+                marginBottom: "20px",
+              }}
+            >
+              <p className="fw-bold p-4 pb-0">
+                Đổi mật khẩu
+              </p>
+              <button
+                className="p-4"
+                type="button"
+                onClick={() => setShowPasswordForm(false)}
+                style={{
+                  border: 'none',
+                  background: 'none',
+                  fontSize: '20px',
+                  cursor: 'pointer',
+                }}
+              ><i className="fa-solid fa-xmark"></i></button>            
+            </div>
+            <Grid container spacing={2} sx={{p: 3, pt: 1}}>
+              {/* Mã và Họ Tên */}
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  select
+                  required
+                  label="Vai trò"
+                  value={passwordData.role}
+                  onChange={(e) =>
+                    setPasswordData({ ...passwordData, role: e.target.value })
+                  }
+                  sx={{
+                    "& .MuiInputBase-input": {
+                      fontSize: "14px",
+                      paddingBottom: "11px",
+                    },
+                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+                  }}
+                >
+                  <MenuItem value="candidate">Thí sinh</MenuItem>
+                  <MenuItem value="supervisor">Giám thị</MenuItem>
+                  <MenuItem value="teacher">Giảng viên</MenuItem>
+                  <MenuItem value="admin">Quản trị viên</MenuItem>
+                  <MenuItem value="staff">Cán bộ phụ trách kỳ thi</MenuItem>
+                </TextField>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Mật khẩu mới"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  inputRef={inputRef}
+                  value={formData.newPassword}
+                  onChange={(e) =>
+                    setPasswordData({ ...passwordData, newPassword: e.target.value })
+                  }
+                  sx={{
+                    "& .MuiInputBase-input": {
+                      fontSize: "14px",
+                      paddingBottom: "11px",
+                    },
+                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton onClick={handleTogglePassword} edge="end">
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Xác nhận mật khẩu"
+                  required
+                  inputRef={inputRef}
+                  type={showConfirmPassword  ? "text" : "password"}
+                  value={formData.confirmPassword}
+                  onChange={(e) =>
+                    setPasswordData({ ...passwordData, confirmPassword: e.target.value })
+                  }
+                  sx={{
+                    "& .MuiInputBase-input": {
+                      fontSize: "14px",
+                      paddingBottom: "11px",
+                    },
+                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          edge="end"
+                        >
+                          {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+              </Grid>
+
+            {/* Buttons */}
+            <Grid container spacing={2} sx={{justifyContent:"flex-end", p: 3, pt: 1 }}>
+              <Grid item xs={3}>
+                <CancelButton onClick={() => setShowPasswordForm(false)} style={{width: "100%"}}>
+                  Hủy
+                </CancelButton>
+              </Grid>
+              <Grid item xs={3}>
+                <AddButton style={{width: "100%"}}>
+                  {editingAccount ? "Cập nhật" : "Lưu"}
+                </AddButton>
+              </Grid>
+            </Grid>
+          </div>
+        </div>
+      )}
       {/* Form Chọn nhóm */}
       {showGroupForm && (
         <div className="form-overlay">
@@ -1124,17 +1175,12 @@ const AccountPage = () => {
             <div className="p-4 pt-0 pb-0">
               <div className="mb-3">
                 <label className="form-label fw-medium">Tên nhóm:</label>
-                <CreatableSelect
-                  isClearable
-                  options={listGroupName}
-                  value={selectedGroup || null} 
-                  onChange={(newValue) => setSelectedGroup(newValue)}
-                  menuPortalTarget={document.body}
-                  placeholder="Chọn nhóm người dùng"
-                  styles={{
-                    menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                    container: (provided) => ({ ...provided, flex: 1 })
-                  }}
+                <input
+                  type="text"
+                  className="form-control"
+                  value={groupName}
+                  onChange={(e) => setGroupName(e.target.value)}
+                  placeholder="Nhập tên nhóm..."
                   ref={inputRef}
                 />
               </div>
@@ -1143,8 +1189,8 @@ const AccountPage = () => {
                 <label className="form-label fw-medium">Danh sách tài khoản đã chọn:</label>
                 <div style={{ maxHeight: "320px", overflowY: "auto", paddingRight: "6px" }}>
                   <ul className="ps-0" style={{ listStyle: "none" }}>
-                    {listDisplay.filter(item => selectedItems.includes(item.id)).length > 0 ? (
-                      listDisplay
+                    {listAccount.filter(item => selectedItems.includes(item.id)).length > 0 ? (
+                      listAccount
                         .filter(item => selectedItems.includes(item.id))
                         .map(item => (
                           <li
@@ -1184,7 +1230,7 @@ const AccountPage = () => {
               <Grid item xs={3}>
                 <AddButton style={{width: "100%"}}
                   onClick={async () => {
-                    await handleCreateGroup(selectedGroup, selectedItems);
+                    await handleCreateGroup(groupName, selectedItems);
                   }}
                 >
                   {editingAccount ? "Cập nhật" : "Lưu"}
