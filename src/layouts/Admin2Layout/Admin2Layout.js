@@ -242,17 +242,27 @@ export default function Admin2Layout() {
             <i className="fa-solid fa-caret-down ms-2" aria-hidden="true" style={{ color: "black" }}></i>
             {isOpen && (
               <ul className="dropdown-menu show position-absolute end-0 mt-2 custom-dropdown">
-              <li>
-                <a
-                  className="dropdown-item d-flex justify-content-between align-items-center"
-                  onClick={handleLogout}
-                  style={{ gap: "8px" }}
-                >
-                  <span>Đăng xuất</span>
-                  <i className="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
-                </a>
-              </li>
-            </ul>            
+                <li>
+                  <a
+                    className="dropdown-item d-flex justify-content-between align-items-center"
+                    onClick={() => navigate("/staff/change-password")}
+                    style={{ gap: "8px" }}
+                  >
+                    <span>Đổi mật khẩu</span>
+                    <i className="fa-solid fa-key" aria-hidden="true"></i>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className="dropdown-item d-flex justify-content-between align-items-center"
+                    onClick={handleLogout}
+                    style={{ gap: "8px" }}
+                  >
+                    <span>Đăng xuất</span>
+                    <i className="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+                  </a>
+                </li>
+              </ul>            
             )}
           </div>
         </Toolbar>
