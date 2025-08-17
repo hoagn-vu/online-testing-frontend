@@ -24,7 +24,8 @@ const ExamManagementPage = () => {
 	const [subjectOptions, setSubjectOptions] = useState([]);
 	const [questionBankOptions, setQuestionBankOptions] = useState([]);
 	const [showFormCreateExam, setShowFormCreateExam] = useState(false);
-	
+	const [refreshFlag, setRefreshFlag] = useState(false);
+
 	const navigate = useNavigate();
 	const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
@@ -45,7 +46,7 @@ const ExamManagementPage = () => {
 
 	useEffect(() => {
 		fetchData();
-	}, [keyword, page, pageSize]);
+	}, [keyword, page, pageSize, refreshFlag]);
 
 	useEffect(() => {
 		const fetchSubjectOptions = async () => {
@@ -219,6 +220,7 @@ const ExamManagementPage = () => {
 
 			{showFormCreateExam ? (
 				<FormCreateExam
+					onCreated={() => setRefreshFlag(prev => !prev)}
 					onClose={handleCloseFormCreateExam}
 				/>
 			):(
