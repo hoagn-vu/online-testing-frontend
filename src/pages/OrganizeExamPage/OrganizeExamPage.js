@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useParams, useSearchParams, useNavigate, useLocation  } from "react-router-dom";
 import "./OrganizeExamPage.css";
-import {Chip, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Pagination, NumberInput, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
+import {InputAdornment, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Pagination, NumberInput, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
@@ -12,6 +12,8 @@ import ReactSelect  from 'react-select';
 import FormCreateOrganizeExam from "../../components/FormCreateOrganizeExam/FormCreateOrganizeExam";
 import AddButton from "../../components/AddButton/AddButton";
 import FormCreateOrganizeExamTest from "../../components/FormCreateOrganizeExamTest/FormCreateOrganizeExamTest";
+import CancelButton from "../../components/CancelButton/CancelButton";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const OrganizeExamPage = () => {
   const [listOrganizeExam, setListOrganizeExam] = useState([]);
@@ -26,7 +28,9 @@ const OrganizeExamPage = () => {
 	const [showFormCreate, setShowFormCreate] = useState(false);
 	const [listDisplay, setListDisplay] = useState([]);
 	const location = useLocation();
-
+	const [showPasswordForm, setShowPasswordForm] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	useEffect(() => {
 		if (location.state?.reload) {
 			fetchData(); 
@@ -259,6 +263,24 @@ const OrganizeExamPage = () => {
 		setShowForm(false);
 	};
 
+	const [passwordData, setPasswordData] = useState({
+		role: "candidate",
+		newPassword: "",
+		confirmPassword: "",
+	});
+	
+	const handlePasswordSubmit = (e) => {
+    e.preventDefault();
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      alert("Mật khẩu xác nhận không khớp!");
+      return;
+    }
+    console.log("Cập nhật mật khẩu cho vai trò:", passwordData);
+    setShowPasswordForm(false);
+  };
+
+	const handleTogglePassword = () => setShowPassword((prev) => !prev);
+
   return (
     <div className="p-4">
       {/* Breadcrumb */}
@@ -429,6 +451,11 @@ const OrganizeExamPage = () => {
 																	Xoá
 																</button>
 															</li>
+															<li className="tbl-action" onClick={() => setShowPasswordForm(true)}>
+																<button className="dropdown-item tbl-action" onClick={() => setShowPasswordForm(true)}>
+																	Mật khẩu thí sinh
+																</button>
+															</li>
 															<li className="tbl-action">
 																<Link
 																	to={`/staff/organize/report/${item.id}`}
@@ -473,6 +500,139 @@ const OrganizeExamPage = () => {
 						</div>
 					</div>
 				</>
+			)}
+			{/* Form Đổi mật khẩu */}
+			{showPasswordForm && (
+				<div className="form-overlay">
+					<div
+						className="shadow form-fade bg-white bd-radius-8"
+						style={{ width: "800px", boxShadow: 3,}}
+						onSubmit={handlePasswordSubmit}
+					>
+						<div 
+							className="d-flex justify-content-between"
+							style={{
+								borderBottom: "1px solid #ccc",
+								marginBottom: "20px",
+							}}
+						>
+							<p className="fw-bold p-4 pb-0">
+								Đổi mật khẩu
+							</p>
+							<button
+								className="p-4"
+								type="button"
+								onClick={() => setShowPasswordForm(false)}
+								style={{
+									border: 'none',
+									background: 'none',
+									fontSize: '20px',
+									cursor: 'pointer',
+								}}
+							><i className="fa-solid fa-xmark"></i></button>            
+						</div>
+						<Grid container spacing={2} sx={{p: 3, pt: 1}}>
+							{/* Mã và Họ Tên */}
+							<Grid item xs={12}>
+								<TextField
+									fullWidth
+									select
+									required
+									label="Vai trò"
+									value={passwordData.role}
+									onChange={(e) =>
+										setPasswordData({ ...passwordData, role: e.target.value })
+									}
+									sx={{
+										"& .MuiInputBase-input": {
+											fontSize: "14px",
+											paddingBottom: "11px",
+										},
+										"& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+									}}
+								>
+									<MenuItem value="candidate">Thí sinh</MenuItem>
+
+								</TextField>
+							</Grid>
+							<Grid item xs={12}>
+								<TextField
+									fullWidth
+									label="Mật khẩu mới"
+									type={showPassword ? "text" : "password"}
+									required
+									inputRef={inputRef}
+									value={formData.newPassword}
+									onChange={(e) =>
+										setPasswordData({ ...passwordData, newPassword: e.target.value })
+									}
+									sx={{
+										"& .MuiInputBase-input": {
+											fontSize: "14px",
+											paddingBottom: "11px",
+										},
+										"& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+									}}
+									InputProps={{
+										endAdornment: (
+											<InputAdornment position="end">
+												<IconButton onClick={handleTogglePassword} edge="end">
+													{showPassword ? <VisibilityOff /> : <Visibility />}
+												</IconButton>
+											</InputAdornment>
+										),
+									}}
+								/>
+							</Grid>
+							<Grid item xs={12}>
+								<TextField
+									fullWidth
+									label="Xác nhận mật khẩu"
+									required
+									inputRef={inputRef}
+									type={showConfirmPassword  ? "text" : "password"}
+									value={formData.confirmPassword}
+									onChange={(e) =>
+										setPasswordData({ ...passwordData, confirmPassword: e.target.value })
+									}
+									sx={{
+										"& .MuiInputBase-input": {
+											fontSize: "14px",
+											paddingBottom: "11px",
+										},
+										"& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+									}}
+									InputProps={{
+										endAdornment: (
+											<InputAdornment position="end">
+												<IconButton
+													onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+													edge="end"
+												>
+													{showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+												</IconButton>
+											</InputAdornment>
+										),
+									}}
+								/>
+							</Grid>
+							</Grid>
+
+						{/* Buttons */}
+						<Grid container spacing={2} sx={{justifyContent:"flex-end", p: 3, pt: 1 }}>
+							<Grid item xs={3}>
+								<CancelButton onClick={() => setShowPasswordForm(false)} style={{width: "100%"}}>
+									Hủy
+								</CancelButton>
+							</Grid>
+							<Grid item xs={3}>
+								<AddButton style={{width: "100%"}}>
+									Lưu
+								</AddButton>
+							</Grid>
+						</Grid>
+					</div>
+				</div>
 			)}
     </div>
   )
