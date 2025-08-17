@@ -47,7 +47,10 @@ const HeaderSupervisor = ({ username, avatarUrl, logoUrl }) => {
             <li>
               <a
                 className="dropdown-item d-flex justify-content-between align-items-center"
-                onClick={() => navigate("/supervisor/change-password")}
+                onClick={() => {
+                  setIsOpen(false); // đóng dropdown
+                  navigate("/supervisor/change-passwords");
+                }}
                 style={{ gap: "8px" }}
               >
                 <span>Đổi mật khẩu</span>
