@@ -116,7 +116,16 @@ const CandidateExamResult = () => {
 					{sessionName}
 				</Link></span>
 				<span className="ms-2 me-2"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
-				<span className="breadcrumb-current">Phòng {roomName}</span>
+				<span className="breadcrumb-between">
+          <Link 
+            to={`/staff/organize/${organizeId}/${sessionId}/${roomId}`} 
+            state={{ roomName: roomName }}
+            className="breadcrumb-between">
+            {roomName}
+          </Link>
+        </span>
+        <span className="ms-2 me-2"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+        <span className="breadcrumb-current">Bài thi</span>
 			</nav>
       <div className="candidate-exam-result">
         <div className="tbl-shadow">
