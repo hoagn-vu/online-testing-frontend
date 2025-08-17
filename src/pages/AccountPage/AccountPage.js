@@ -609,12 +609,12 @@ const AccountPage = () => {
               <i className="fas fa-plus me-2"></i>
               Thêm mới
             </button> */}
-            <button
+            {/* <button
               className="change-password-btn btn-size align-items-center d-flex"
               onClick={() => setShowPasswordForm(true)}
             >
               Đổi mật khẩu
-            </button>
+            </button> */}
             <AddButton onClick={() => setShowAddGroupForm(true)}>
               <i className="fas fa-plus me-2"></i> Thêm nhóm
             </AddButton>
