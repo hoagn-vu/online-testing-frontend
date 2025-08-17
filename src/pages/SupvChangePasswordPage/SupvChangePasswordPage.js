@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate  } from "react-router-dom";
-import "./SupvChangePasswordPage.css";
 import {InputAdornment , Box, Button, Grid, MenuItem, Pagination, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
@@ -19,15 +18,7 @@ const SupvChangePasswordPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="p-4">
-      {/* Breadcrumbs */}
-      <nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
-        <Link to="/" className="breadcrumb-link"><i className="fa fa-home pe-1" aria-hidden="true"></i> </Link> 
-        
-        <span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
-        <span className="breadcrumb-current">Cài đặt</span>
-      </nav>
-
+    <div className="home-candi-page">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 d-flex info-exam-content mt-0">
         <div className="bg-white shadow-md rounded-lg p-5 flex flex-col items-center w-full info-content">
           <div className="flex flex-col items-center">

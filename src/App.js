@@ -47,7 +47,7 @@ import LevelManagement from "./pages/LevelManagement/LevelManagement";
 import RoomTest from "./pages/RoomTest/RoomTest";
 import CandidateExamResult from "./pages/CandidateExamResult/CandidateExamResult";
 import ChangePasswordPage from "./pages/ChangePasswordPage/ChangePasswordPage";
-import SupvChangePasswordPage from "./pages/SupervisorHomePage/SupervisorHomePage";
+import SupvChangePasswordPage from "./pages/SupvChangePasswordPage/SupvChangePasswordPage";
 
 function App() {
   const accessToken = useSelector((state) => state.auth.accessToken) || localStorage.getItem("accessToken");
@@ -149,7 +149,7 @@ function App() {
         <Route path="/supervisor" element={<SupervisorLayout />}>
           <Route path="home" element={<SupervisorHomePage />} /> 
           <Route path="monitor" element={<MonitoringPage />} /> 
-          <Route path="change-password" element={<SupvChangePasswordPage />} />
+          <Route path="change-passwords" element={<SupvChangePasswordPage />} />
         </Route>
       </Routes>
     </Router>

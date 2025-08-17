@@ -169,7 +169,7 @@ const CandidateOrganizePage = () => {
 					{sessionName}
 				</Link></span>
 				<span className="ms-2 me-2"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
-				<span className="breadcrumb-current">Phòng {roomName}</span>
+				<span className="breadcrumb-current">{roomName}</span>
 			</nav>
 
 			<div className="tbl-shadow p-3">
@@ -206,7 +206,7 @@ const CandidateOrganizePage = () => {
 									<th>Tên</th>
 									<th className="text-center">Ngày sinh</th>
 									<th className="text-center">Giới tính</th>
-									<th scope="col" className="title-row">Thao tác</th>
+									<th scope="col" className="title-row text-center">Thao tác</th>
 								</tr>
 							</thead>
 							<tbody style={{fontSize: "14px"}}>
@@ -220,16 +220,53 @@ const CandidateOrganizePage = () => {
 								) : (
 								processData(listCandidate).map((item, index) => (
 									<tr key={item.candidateId} className="align-middle"
-										onClick={() => handleRowClick(item.candidateId)}
+										//onClick={() => handleRowClick(item.candidateId)}
 										style={{ cursor: "pointer" }}
 									>
 										<td className="text-center">{index + 1}</td>
 										<td>{item.userCode}</td>
 										<td>{item.lastName}</td>
 										<td>{item.firstName}</td>
-										<td className="text-center">{item.dateOfBirth}</td>
+										<td className="text-center">
+											{item.dob
+												? (() => {
+														const [year, month, day] = item.dob.split("-");
+														return `${day.padStart(2, "0")}/${month.padStart(2, "0")}/${year}`;
+													})()
+												: ""}
+										</td>
 										<td className="text-center">{item.gender == "male" ? "Nam" : "Nữ"}</td>
-										<td>
+										<td className="text-center align-middle">
+											<div className="dropdown d-inline-block">
+												<button
+													type="button"
+													data-bs-toggle="dropdown"
+													aria-expanded="false"
+													className="dropdown-toggle-icon"
+												>
+													<i className="fas fa-ellipsis-v"></i>
+												</button>
+												<ul className="dropdown-menu dropdown-menu-end dropdown-menu-custom"
+													style={{
+														right: "50%",
+														transform: 'translate3d(-10px, 10px, 0px)',
+														zIndex: 999999,
+													}}
+												>
+													<li className="tbl-action" onClick={() => handleDelete(item.id)}>
+														<button className="dropdown-item tbl-action" onClick={() => handleDelete(item.id)}>
+															Xoá
+														</button>
+													</li>
+													<li className="tbl-action">
+														<button className="dropdown-item tbl-action" onClick={() => handleRowClick(item.candidateId)}>
+															Bài thi
+														</button>
+													</li>
+												</ul>
+											</div>
+										</td>
+										{/* <td>
 											<button 
 												className="btn btn-danger btn-sm ms-2" 
 												style={{width: "35px", height: "35px"}}  
@@ -237,7 +274,7 @@ const CandidateOrganizePage = () => {
 											>
 												<i className="fas fa-trash-alt"></i>
 											</button>
-										</td>
+										</td> */}
 									</tr>
 								)))}
 							</tbody>

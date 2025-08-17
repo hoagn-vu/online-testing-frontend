@@ -42,16 +42,18 @@ const Dashboard = () => {
   const [pageSize, setPageSize] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const subjectOptions = [/*...*/];
+  //const subjectOptions = [/*...*/];
   const [totalCandidate, setTotalCandidate] = useState(0);
   const [totalOthers, setTotalOthers] = useState(0);
   const [organizeExamOptions, setOrganizeExamOptions] = useState([]);
   const [organizeExamChosen, setOrganizeExamChosen] = useState();
-  const [subjectName, setSubjectName] = useState();
+  const [subjectName, setSubjectName] = useState("");
   const [dataPoints, setDataPoints] = useState([])
   const [labels, setLabels] = useState([])
   const [organizeExamId, setOrganizeExamId] = useState(null);
   const [scoreDistributionArray, setScoreDistributionArray] = useState([]);
+  const [subjectOptions, setSubjectOptions] = useState([]);
+  const [subjectId, setSubjectId] = useState(null);
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -100,7 +102,7 @@ const Dashboard = () => {
     }
   };
 
-  useEffect(() => {
+  /*useEffect(() => {
     const fetchOrganizeExamOptions = async () => {
       try {
         const response = await ApiService.get("/organize-exams");
@@ -117,11 +119,60 @@ const Dashboard = () => {
         fetchChart(latestExam.value);
       }
       } catch (error) {
-        console.error("Failed to fetch subject options: ", error);
+        console.error("Failed to fetch organize options: ", error);
       }
     };
 
     fetchOrganizeExamOptions();
+  }, []);*/
+
+  useEffect(() => {
+    if (!subjectId) return;
+    const fetchOrganizeExamOptions = async () => {
+      try {
+        const response = await ApiService.get("/organize-exams/options", {
+          params: { subjectId: subjectId },
+        });
+        const options = response.data.map((item) => ({
+          value: item.id,
+          label: item.organizeExamName
+        }));
+        setOrganizeExamOptions(options);
+        if (options.length > 0) {
+          // ✅ Chọn kỳ thi đầu tiên khi đổi môn
+          const latestExam = options[0];
+          setOrganizeExamId(latestExam.value);
+          fetchChart(latestExam.value);
+        } else {
+          setOrganizeExamId(null); // Nếu môn đó chưa có kỳ thi
+        }
+      } catch (error) {
+        console.error("Failed to fetch organize options: ", error);
+      }
+    };
+
+    fetchOrganizeExamOptions();
+  }, [subjectId]);
+
+  useEffect(() => {
+    const fetchSubjectOptions = async () => {
+      try {
+        const response = await ApiService.get("/subjects/options");
+        const options = response.data.map((item) => ({
+          value: item.id,
+          label: item.subjectName
+        }));
+        setSubjectOptions(options);
+        if (options.length > 0) {
+          setSubjectId(options[0].value);
+          setSubjectName(options[0].label);
+        }
+      } catch (error) {
+        console.error("Failed to fetch subject options: ", error);
+      }
+    };
+
+    fetchSubjectOptions();
   }, []);
 
   useEffect(() => {
@@ -294,6 +345,46 @@ const Dashboard = () => {
                 /> */}
                 <Autocomplete
                   className="ms-2"
+                  options={subjectOptions} 
+                  getOptionLabel={(option) => option.label}
+                  value={
+                    subjectOptions.find((opt) => opt.value === subjectId) || null
+                  }
+                  onChange={(event, newValue) => {
+                    setSubjectId(newValue?.value || null);
+                    setSubjectName(newValue?.label || "");
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Chọn phân môn"
+                      size="small"
+                      sx={{
+                        backgroundColor: "white",
+                        minWidth: 220,
+                        "& .MuiInputBase-root": {
+                          height: "40px",
+                          width: "220px",
+                        },
+                        "& label": {
+                          fontSize: "14px",
+                        },
+                        "& input": {
+                          fontSize: "14px",
+                        },
+                      }}
+                    />
+                  )}
+                  slotProps={{
+                    paper: {
+                      sx: {
+                        fontSize: "14px", // ✅ Cỡ chữ dropdown
+                      },
+                    },
+                  }}
+                />
+                <Autocomplete
+                  className="ms-2"
                   options={organizeExamOptions} 
                   getOptionLabel={(option) => option.label}
                   value={
@@ -310,7 +401,7 @@ const Dashboard = () => {
                         minWidth: 220,
                         "& .MuiInputBase-root": {
                           height: "40px",
-                          width: "300px",
+                          width: "250px",
                         },
                         "& label": {
                           fontSize: "14px",

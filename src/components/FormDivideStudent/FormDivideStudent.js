@@ -12,11 +12,21 @@ import PropTypes from 'prop-types';
 import "./FormDivideStudent.css"
 import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
+import ApiService from "../../services/apiService";
 
 const FormDivideStudent = ({ onClose }) => {
 	const [editingOrganizeExam, setEditingOrganizeExam] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [listGroupName, setListGroupName] = useState([]);
+  const [listUser, setListUser] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [keyword, setKeyword] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(100);
+  const [listRoom, setListRoom] = useState([]);
+  const [selectedRole, setSelectedRole] = useState("supervisor");
+  const [listSupervisor, setListSupervisor] = useState([]);
 
 	const monList = [
     { label: "Toán" },
@@ -113,6 +123,65 @@ const FormDivideStudent = ({ onClose }) => {
       dieuKien: "Không"
     }
   ];
+  
+  const fetchGroupData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await ApiService.get('/groupUser', {
+        params: { page, pageSize, keyword },
+      });
+      setListGroupName(
+        response.data.groups.map(g => ({
+          label: `${g.groupName} - ${g.listUser.length} thí sinh`,
+          value: g.id,
+        }))
+      );
+      setListUser(response.data.groups.flatMap(g => g.listUser));
+    } catch (error) {
+      console.error("Failed to fetch data", error);
+    }
+  };
+
+  const fetchRoomData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await ApiService.get('/rooms/get-options', {
+      });
+      setListRoom(
+        response.data.map(g => ({
+          label: `${g.roomName} - ${g.roomCapacity} chỗ trống`,
+          value: g.roomId,
+        }))
+      );
+    } catch (error) {
+      console.error("Failed to fetch data", error);
+    }
+  };
+
+  const fetchSupvData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await ApiService.get("/users", {
+        params: { page, pageSize, keyword, role: selectedRole },
+      });
+
+      setListSupervisor(
+        response.data.users.map(g => ({
+          label: `${g.fullName} - ${g.userCode}`,
+          value: g.id,
+        }))
+      );
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchGroupData();
+    fetchRoomData();
+    fetchSupvData();
+  }, []);
 
   useEffect(() => {
     if (showForm && inputRef.current) {
@@ -241,16 +310,18 @@ const FormDivideStudent = ({ onClose }) => {
           	<Grid container spacing={2}>                  
               <Grid item xs={6}>
                 <Autocomplete
-                  options={nhomList || []}
+                  multiple
+                  id="tags-outlined"
+                  options={listGroupName || []}
                   renderInput={(params) => (
                     <TextField
                       {...params}
                       label="Chọn nhóm"
-                      size="small"
+                      size=""
                       sx={{
                         backgroundColor: '#ffff',
                         "& .MuiInputBase-root": {
-                          height: "40px",
+                          
                         },
                         "& label": {
                           fontSize: "14px",
@@ -271,16 +342,17 @@ const FormDivideStudent = ({ onClose }) => {
                 />
               </Grid>
               <AddButton
-                className='mt-3 ms-1'
+                className='ms-1'
                 onClick={handleCreateGroup}
                 style={{
                   background: "#1976d2",
                   border: "none",
                   color: "white",
                   borderRadius: "5px",
-                  width: "40px",
-                  height: "40px",
+                  width: "45px",
+                  height: "45px",
                   cursor: "pointer",
+                  marginTop: "20px"
                 }}
                 title="Tạo nhóm mới"
               >
@@ -414,7 +486,7 @@ const FormDivideStudent = ({ onClose }) => {
 							<Grid container spacing={2} alignItems="center">
 								<Grid item xs={4}>
                   <Autocomplete
-                    options={monList || []}
+                    options={listRoom || []}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -445,7 +517,7 @@ const FormDivideStudent = ({ onClose }) => {
                 </Grid>
                 <Grid item xs={4}>
 									<Autocomplete
-                    options={monList || []}
+                    options={listSupervisor || []}
                     renderInput={(params) => (
                       <TextField
                         {...params}

@@ -295,7 +295,11 @@ const handleSave = async () => {
       onClose();
     } else {
       const res = ApiService.post("/exams", payload);
-      
+      Swal.fire({
+        icon: "success",
+        text: "Tạo đề thi thành công",
+        draggable: true
+      });
       onClose();
     }
   } catch (error) {
