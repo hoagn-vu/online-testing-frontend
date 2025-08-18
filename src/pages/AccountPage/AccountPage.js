@@ -81,7 +81,6 @@ const AccountPage = () => {
   const updateUser = async (user) => {
     setIsLoading(true);
     try {
-      // const response = await ApiService.put(`/vuxs-test/echo`, user);
       const response = await ApiService.put(`/users/${user.id}`, user);
       if (response.status >= 200 && response.status < 300) {
         await fetchData();
@@ -159,7 +158,7 @@ const AccountPage = () => {
       case "active":
         return { label: "Hoạt động", className: "bg-primary" };
       case "disabled":
-        return { label: "Không hoạt động", className: "bg-secondary" };
+        return { label: "Vô hiệu hóa", className: "bg-secondary" };
     }
   };
 
@@ -393,7 +392,7 @@ const AccountPage = () => {
   const [showGroupForm, setShowGroupForm] = useState(false);
   const [selectedGroups, setSelectedGroups] = useState([]);
 
-  const handleToggleStatus = (id, currentStatus) => {
+  const handleToggleStatus = async (id, currentStatus) => {
     Swal.fire({
       title: "Bạn có chắc muốn thay đổi trạng thái?",
       text: "Trạng thái sẽ được cập nhật ngay sau khi xác nhận!",
@@ -403,26 +402,32 @@ const AccountPage = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Xác nhận",
       cancelButtonText: "Hủy",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
         const newStatus = currentStatus.toLowerCase() === "active" ? "disabled" : "active";
-        const statusLabel = newStatus === "active" ? "Hoạt động" : "Không hoạt động";
+        const statusLabel = newStatus === "active" ? "Hoạt động" : "Vô hiệu hoá";
 
-        // Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
-        setRows((prevRows) =>
-          prevRows.map((row) =>
-            row.id === id ? { ...row, accountStatus: newStatus } : row
-          )
-        );
-        console.log("userId được đổi status:", id)
-        Swal.fire({
-          title: "Cập nhật thành công!",
-          text: `Trạng thái đã chuyển sang "${statusLabel}".`,
-          icon: "success",
-        });
+        try {
+          const response = await ApiService.put(`/users/${id}`, { accountStatus: newStatus });
+
+          Swal.fire({
+            title: "Cập nhật thành công!",
+            text: `Trạng thái đã chuyển sang "${statusLabel}".`,
+            icon: "success",
+          });
+          await fetchData(); // Làm mới danh sách sau khi cập nhật
+        } catch (error) {
+          console.error("Failed to update status:", error);
+          Swal.fire({
+            title: "Lỗi",
+            text: "Không thể cập nhật trạng thái. Vui lòng thử lại.",
+            icon: "error",
+          });
+        }
       }
     });
   };
+
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
   // state quản lý hiện/ẩn
@@ -744,7 +749,7 @@ const AccountPage = () => {
                              Xoá
                           </button>
                         </li>
-                        <li className="tbl-action" onChange={() => handleToggleStatus(item.id, item.accountStatus)}>
+                        <li className="tbl-action" onClick={() => handleToggleStatus(item.id, item.accountStatus)}>
                           <button
                             className="dropdown-item tbl-action"
                             onClick={() =>
