@@ -37,6 +37,7 @@ const AccountPage = () => {
     { label: "Quản trị viên", value: "admin" },
     { label: "Cán bộ phụ trách kỳ thi", value: "staff" },
   ];
+
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [rows, setRows] = useState(Object.values(listAccount).flat()); 
   const [listDisplay, setListDisplay] = useState([]);
@@ -48,7 +49,7 @@ const AccountPage = () => {
 
   useEffect(() => {
     fetchData();
-  }, [page, pageSize, keyword]); // phụ thuộc để tự động gọi lại khi có thay đổi  
+  }, [page, pageSize, keyword]);
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -80,7 +81,8 @@ const AccountPage = () => {
   const updateUser = async (user) => {
     setIsLoading(true);
     try {
-      const response = await ApiService.put(`/users/update/${user.id}`, user);
+      // const response = await ApiService.put(`/vuxs-test/echo`, user);
+      const response = await ApiService.put(`/users/${user.id}`, user);
       if (response.status >= 200 && response.status < 300) {
         await fetchData();
         return true; // thành công
@@ -115,8 +117,6 @@ const AccountPage = () => {
     getGroupUser();
   }, []);
   
-  console.log("listGroupName raw:", listGroupName);
-
   useEffect(() => {
     fetchData();
   }, [page, pageSize, keyword, selectedRole]);
@@ -165,18 +165,19 @@ const AccountPage = () => {
 
   const [formData, setFormData] = useState({
     id: null,
-    userCode: null,
     userName: null,
+    password: null,
+    userCode: null,
     fullName: null,
-    dateOfBirth: null,
     role: null,
     gender: null,
-    password: "",
+    dateOfBirth: null,
     accountStatus: "active",
     groupName: [],
-    authenticate: []
+    authenticate: [],
   });
 
+  const [isEditing, setIsEditing] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [editingAccount, setEditingAccount] = useState(null);
@@ -203,18 +204,8 @@ const AccountPage = () => {
   ];
 
   const handleAddNew = () => {
-    setEditingAccount(null);
-    setFormData({
-      userCode: "",
-      fullName: "",
-      dateOfBirth: "",
-      gender: "male",
-      username: "",
-      password: "",
-      role: "candidate",
-      accountStatus: "active",
-      permissions: [],
-    });
+    setIsEditing(false);
+    resetFormData();
     setShowForm(true);
   };
 
@@ -226,36 +217,37 @@ const AccountPage = () => {
 
   const handlePermissionChange = (permission) => {
     setFormData((prevData) => {
-      const updatedPermissions = prevData.permissions.includes(permission)
-        ? prevData.permissions.filter((p) => p !== permission)
-        : [...prevData.permissions, permission];
+      const updatedPermissions = prevData.authenticate.includes(permission)
+        ? prevData.authenticate.filter((p) => p !== permission)
+        : [...prevData.authenticate, permission];
 
-      return { ...prevData, permissions: updatedPermissions };
+      return { ...prevData, authenticate: updatedPermissions };
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const finalData = {
-        ...formData,
-        username: formData.userCode.toLowerCase(),
-        password: formData.userCode.toLowerCase(),
-      };
+      // const finalData = {
+      //   ...formData,
+      //   username: formData.userCode.toLowerCase(),
+      //   password: formData.userCode.toLowerCase(),
+      // };
 
-      if (editingAccount) {
-        await updateUser({ ...editingAccount, ...finalData });
+      if (formData.id || formData.id == "") {
+        await updateUser(formData);
+        
         Swal.fire({
           icon: "success",
           text: "Cập nhật thông tin người dùng thành công",
           draggable: true
         });
-        console.log("Dữ liệu thêm mới:", finalData);
+        // console.log("Dữ liệu thêm mới:", finalData);
         setShowForm(false);
       } else {
         // Thêm mới dữ liệu
-        await createUser(finalData)
-        console.log("Dữ liệu thêm mới:", finalData);
+        console.log("Dữ liệu thêm mới:", formData);
+        await createUser(formData);
         Swal.fire({
           icon: "success",
           text: "Thêm người dùng thành công",
@@ -263,15 +255,16 @@ const AccountPage = () => {
         });
         setShowForm(false);
       }
-    }catch (error) {
+    } catch (error) {
       Swal.fire({
         icon: "error",
         title: "Có lỗi xảy ra",
         text: error?.message || "Không thể xử lý yêu cầu",
-      });;
+      });
     }
     
     setShowForm(false);
+    setIsEditing(false);
   };
 
   const handlePasswordSubmit = (e) => {
@@ -285,17 +278,21 @@ const AccountPage = () => {
   };
 
   const handleEdit = (account) => {
+    console.log("Cập nhật tài khoản:", account);
     setEditingAccount(account);
+    setIsEditing(true);
     setFormData({
-      userCode: account.userCode || "",
-      fullName: account.fullName || "",
-      dateOfBirth: account.dateOfBirth || "",
-      gender: account.gender || "Nam",
-      username: account.username || "",
-      password: "123456", // Để rỗng vì lý do bảo mật
-      role: account.role || selectedRole, // Ưu tiên role của account
-      status: account.accountStatus || "active",
-      permissions: account.permissions || [],
+      id: account.id || null,
+      userName: account.userName || null,
+      password: account.password || null,
+      userCode: account.userCode || null,
+      fullName: account.fullName || null,
+      role: account.role || null,
+      gender: account.gender || null,
+      dateOfBirth: account.dateOfBirth || null,
+      accountStatus: account.accountStatus || "active",
+      groupName: account.groupName || [],
+      authenticate: account.authenticate || [],
     });
     setShowForm(true);
   };
@@ -386,36 +383,6 @@ const AccountPage = () => {
 		setUploadProgress(0);
     setOpenModal(false);
   };
-
-  /*const handleUploadClick = async () => {
-  const { value: file } = await Swal.fire({
-    title: "Chọn file",
-    input: "file",
-    inputAttributes: {
-      accept: "image/*",
-      "aria-label": "Tải ảnh lên",
-    },
-    showCancelButton: true,
-    confirmButtonText: "Tải lên",
-    cancelButtonText: "Hủy",
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    reverseButtons: true,
-
-  });
-
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      Swal.fire({
-        title: "Tải lên thành công",
-        icon: "success",
-        confirmButtonText: "Đồng ý",
-      });
-    };
-    reader.readAsDataURL(file);
-  }
-};*/
 
   const colourOptions = [
     { value: "22IT1", label: "22IT1" },
@@ -577,6 +544,22 @@ const AccountPage = () => {
       };
     });
   };
+  
+  const resetFormData = () => {
+    setFormData({
+      id: null,
+      userName: null,
+      password: null,
+      userCode: null,
+      fullName: null,
+      role: null,
+      gender: null,
+      dateOfBirth: null,
+      accountStatus: "active",
+      groupName: [],
+      authenticate: [],
+    });
+  }
 
   return (
     <div className="p-4">
@@ -715,7 +698,7 @@ const AccountPage = () => {
                     />
                   </td>
                   <td>{item.userCode}</td>
-                  <td>{item.username}</td>
+                  <td>{item.userName}</td>
                   <td>{item.lastName}</td>
                   <td>{item.firstName}</td>
                   <td className="text-center">
@@ -833,9 +816,10 @@ const AccountPage = () => {
                   required
                   inputRef={inputRef}
                   value={formData.userCode}
-                  onChange={(e) =>
-                    setFormData({ ...formData, userCode: e.target.value })
-                  }
+                  onChange={(e) => {
+                    setFormData({ ...formData, userCode: e.target.value, userName: e.target.value.toLowerCase(), password: e.target.value.toLowerCase() });
+                    console.log("formData:", formData);
+                  }}
                   sx={{
                     "& .MuiInputBase-input": {
                       fontSize: "14px",
@@ -987,7 +971,7 @@ const AccountPage = () => {
                 >
                   <MenuItem value="candidate">Thí sinh</MenuItem>
                   <MenuItem value="supervisor">Giám thị</MenuItem>
-                  <MenuItem value="teacher">Giảng viên</MenuItem>
+                  <MenuItem value="lecturer">Giảng viên</MenuItem>
                   <MenuItem value="admin">Quản trị viên</MenuItem>
                   <MenuItem value="staff">
                     Cán bộ phụ trách kỳ thi
@@ -1010,18 +994,18 @@ const AccountPage = () => {
                           sx={{ mb: -3 }}
                           control={
                             <Checkbox
-                              checked={formData.permissions.includes(
+                              checked={formData.authenticate.includes(
                                 permission
                               )}
                               onChange={(e) => {
                                 const updatedPermissions = e.target.checked
-                                  ? [...formData.permissions, permission]
-                                  : formData.permissions.filter(
+                                  ? [...formData.authenticate, permission]
+                                  : formData.authenticate.filter(
                                       (p) => p !== permission
                                     );
                                 setFormData({
                                   ...formData,
-                                  permissions: updatedPermissions,
+                                  authenticate: updatedPermissions,
                                 });
                               }}
                               sx={{ "& .MuiCheckbox-root": { padding: "0px" } }} // Giảm padding checkbox
@@ -1109,7 +1093,7 @@ const AccountPage = () => {
                 >
                   <MenuItem value="candidate">Thí sinh</MenuItem>
                   <MenuItem value="supervisor">Giám thị</MenuItem>
-                  <MenuItem value="teacher">Giảng viên</MenuItem>
+                  <MenuItem value="lecturer">Giảng viên</MenuItem>
                   <MenuItem value="admin">Quản trị viên</MenuItem>
                   <MenuItem value="staff">Cán bộ phụ trách kỳ thi</MenuItem>
                 </TextField>
