@@ -202,7 +202,7 @@ const RoomTest = () => {
     });
   };
 
-  const handleToggleStatus = (id, currentStatus) => {
+  const handleToggleStatus = async (id, currentStatus) => {
     Swal.fire({
       title: "Bạn có chắc muốn thay đổi trạng thái?",
       text: "Trạng thái sẽ được cập nhật ngay sau khi xác nhận!",
@@ -212,27 +212,44 @@ const RoomTest = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Xác nhận",
       cancelButtonText: "Hủy",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
         const newStatus = currentStatus.toLowerCase() === "available" ? "unavailable" : "available";
-        const statusLabel = newStatus === "available" ? "Hoạt động" : "Không hoạt động";
+        const statusLabel = newStatus === "available" ? "Hoạt động" : "Đã đóng";
 
-        // Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
-        setRows((prevRows) =>
-          prevRows.map((row) =>
-            row.id === id ? { ...row, roomStatus: newStatus } : row
-          )
-        );
-        console.log("roomId được đổi status:", id)
-        Swal.fire({
-          title: "Cập nhật thành công!",
-          text: `Trạng thái đã chuyển sang "${statusLabel}".`,
-          icon: "success",
-        });
+        try {
+          const response = await ApiService.put(`/rooms/${id}`, { roomStatus: newStatus });
+  
+          Swal.fire({
+            title: "Cập nhật thành công!",
+            text: `Trạng thái đã chuyển sang "${statusLabel}".`,
+            icon: "success",
+          });
+
+          fetchData();
+        } catch (error) {
+          console.error("Failed to update room status:", error);
+
+          Swal.fire({
+            title: "Lỗi",
+            text: "Không thể cập nhật trạng thái phòng. Vui lòng thử lại.",
+            icon: "error",
+          });
+        }
       }
     });
   };
-const [date, setDate] = useState(new Date());
+
+  const convertStatus = (status) => {
+    switch (status) {
+      case "available":
+        return { label: "Hoạt động", className: "bg-primary" };
+      case "unavailable":
+        return { label: "Đã đóng", className: "bg-secondary" };
+    }
+  };
+
+  const [date, setDate] = useState(new Date());
 
   const events = [
     {
@@ -308,8 +325,8 @@ const [date, setDate] = useState(new Date());
                       <td className="text-center">{item.roomCapacity}</td>
                       <td>
                         <div className="d-flex align-items-center justify-content-center">
-                          <span className={`badge mt-1 ${item.roomStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
-                            {item.roomStatus === "Active" || "available" ? "Hoạt động" : "Không hoạt động"}
+                          <span className={`badge ms-2 mt-1 ${convertStatus(item.roomStatus).className}`}>
+                            {convertStatus(item.roomStatus).label}
                           </span>
                         </div>
                       </td>
