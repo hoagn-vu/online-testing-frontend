@@ -97,7 +97,7 @@ const RoomTest = () => {
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedItems(listRoom.map((item) => item.id));
+      setSelectedItems(listRoom.map((item) => item.roomId));
     } else {
       setSelectedItems([]);
     }
@@ -187,13 +187,13 @@ const RoomTest = () => {
     }).then(async(result) => {
       if (result.isConfirmed) {
         try {
-          await ApiService.delete(`/rooms/delete-room/${id}`);
-          fetchData();
+          await ApiService.put(`/rooms/${id}`, { roomStatus: "deleted" });
           Swal.fire({
             title: "Đã xóa!",
             text: "Phòng đã bị xóa thành công",
             icon: "success",
           });
+          fetchData();
         }
         catch (error) {
           console.error("Failed to delete room: ", error);
@@ -318,7 +318,7 @@ const RoomTest = () => {
                 </tr>
                 ) : (
                   listRoom.map((item, index) => (
-                    <tr key={item.id} className="align-middle">
+                    <tr key={item.roomId} className="align-middle">
                       <td className=" text-center" style={{ width: "50px" }}>{index + 1}</td>
                       <td>{item.roomName}</td>
                       {/* <td>{item.roomLocation}</td> */}
@@ -351,16 +351,16 @@ const RoomTest = () => {
                                 Chỉnh sửa
                               </button>
                             </li>
-                            <li className="tbl-action" onClick={() => handleDelete(item.id)}>
-                              <button className="dropdown-item tbl-action" onClick={() => handleDelete(item.id)}>
+                            <li className="tbl-action" onClick={() => handleDelete(item.roomId)}>
+                              <button className="dropdown-item tbl-action" onClick={() => handleDelete(item.roomId)}>
                                 Xoá
                               </button>
                             </li>
-                            <li className="tbl-action" onClick={() => handleToggleStatus(item.id, item.roomStatus)}>
+                            <li className="tbl-action" onClick={() => handleToggleStatus(item.roomId, item.roomStatus)}>
                               <button
                                 className="dropdown-item tbl-action"
                                 onClick={() =>
-                                  handleToggleStatus(item.id, item.roomStatus)
+                                  handleToggleStatus(item.roomId, item.roomStatus)
                                 }
                               >
                                 {item.roomStatus.toLowerCase() === "available"
