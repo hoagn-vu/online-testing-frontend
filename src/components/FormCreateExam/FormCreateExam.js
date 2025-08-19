@@ -179,7 +179,7 @@ const FormCreateExam = ({ onClose, initialData  }) => {
   const updateExam = async (examId, data) => {
     setIsLoading(true);
     try {
-      const response = await ApiService.post(`/exams/update/${examId}`, data);
+      const response = await ApiService.put(`/exams/${examId}`, data);
       if (response.status >= 200 && response.status < 300) {
         return true; // thành công
       } else {
@@ -454,7 +454,7 @@ const handleSave = async () => {
                                   padding: "8px",
                                 },
                               }}
-                              inputProps={{ step: "0.1", min: "0" }}
+                              inputProps={{ step: "0.5", min: "0" }}
                             />
                           </td>
                         </tr>

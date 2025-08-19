@@ -54,12 +54,12 @@ const QuestionBankPage = () => {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const response = await ApiService.get("/subjects/question-banks", {
-        params: { subId: subjectId, keyword, page, pageSize },
+      const response = await ApiService.get(`/subjects/${subjectId}/question-banks`, {
+        params: { keyword, page, pageSize },
       });
       setListQuestionBank(response.data.questionBanks);
       setSubjectName(response.data.subjectName);
-      setTotalCount(response.data.totalCount);
+      setTotalCount(response.data.questionBanks.length);
     } catch (error) {
       console.error("Lỗi lấy dữ liệu:", error);
     }
