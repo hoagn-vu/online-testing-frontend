@@ -380,7 +380,42 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 										}}
 									/>
 								</Grid>
-								
+								<Grid item xs={12}>
+									<Autocomplete
+										options={questionBankOptions} 
+										getOptionLabel={(option) => option.label || ""}
+										value={questionBankOptions.find((opt) => opt.value === examData.questionBankId) || null}
+										onChange={(e, newValue) => {
+											setExamData({ ...examData, questionBankId: newValue?.value || null });
+										}}
+										renderInput={(params) => (
+											<TextField
+												{...params}
+												label="Bộ câu hỏi"
+												placeholder="Bộ câu hỏi"
+												size="small"
+												sx={{
+													backgroundColor: "white",
+													"& .MuiInputBase-root": {
+														height: "40px",
+														fontSize: "14px",
+													},
+													"& label": {
+														fontSize: "14px",
+													},
+												}}
+											/>
+										)}
+										slotProps={{
+											paper: {
+												sx: {
+													fontSize: "14px",
+													zIndex: 9999,
+												},
+											},
+										}}
+									/>
+								</Grid>
 								<Grid item xs={12}>
 									<Autocomplete
 										options={typeOptions}
@@ -538,44 +573,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 									</Grid>
 								)}
 								{selectedType === "auto" && (
-									<>
-										<Grid item xs={12}>
-											<Autocomplete
-												options={questionBankOptions} 
-												getOptionLabel={(option) => option.label || ""}
-												value={questionBankOptions.find((opt) => opt.value === examData.questionBankId) || null}
-												onChange={(e, newValue) => {
-													setExamData({ ...examData, questionBankId: newValue?.value || null });
-												}}
-												renderInput={(params) => (
-													<TextField
-														{...params}
-														label="Bộ câu hỏi"
-														placeholder="Bộ câu hỏi"
-														size="small"
-														sx={{
-															backgroundColor: "white",
-															"& .MuiInputBase-root": {
-																height: "40px",
-																fontSize: "14px",
-															},
-															"& label": {
-																fontSize: "14px",
-															},
-														}}
-													/>
-												)}
-												slotProps={{
-													paper: {
-														sx: {
-															fontSize: "14px",
-															zIndex: 9999,
-														},
-													},
-												}}
-											/>
-										</Grid>
-										
+									<>									
 										<Grid item xs={12}>
 											<TextField
 												fullWidth
