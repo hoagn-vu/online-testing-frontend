@@ -163,7 +163,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 					duration: examData.duration,
 					maxScore: examData.maxScore,
 					subjectId: examData.subjectId,
-					exams: examData.examId ? [examData.examId] : [],
+					exams: examData.examIds || [],
 					examType: examData.examType,
 					sessions: examData.sessions,
 				};
@@ -444,7 +444,6 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 											setExamData((prev) => ({
 												...prev,
 												examType: selectedValue,
-												questionBankId: null
 											}));
 
 											// 👉 Chỉ fetch ma trận khi loại là matrix + subjectId đã chọ
@@ -719,7 +718,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 											<LocalizationProvider dateAdapter={AdapterDayjs}>
 												<DateTimePicker
 													label={`Thời gian bắt đầu ca ${index + 1}`}
-													value={session.activeAt ? dayjs(session.startAt) : null}
+													value={session.startAt ? dayjs(session.startAt) : null}
 													onChange={(newValue) => 
 														handleSessionChange(index, 'startAt', newValue ? newValue.toISOString() : '')
 													}
@@ -756,7 +755,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 											<LocalizationProvider dateAdapter={AdapterDayjs}>
 												<DateTimePicker
 													label={`Thời gian kết thúc ca ${index + 1}`}
-													value={session.activeAt ? dayjs(session.finishAt) : null}
+													value={session.finishAt ? dayjs(session.finishAt) : null}
 													onChange={(newValue) => 
 														handleSessionChange(index, 'finishAt', newValue ? newValue.toISOString() : '')
 													}
