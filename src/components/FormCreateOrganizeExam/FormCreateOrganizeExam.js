@@ -31,6 +31,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
     maxScore: 10,
     subjectId: null,
     examType: null,
+		examIds: [],
     questionBankId: null,
     totalQuestions: null,
 		sessions: [
@@ -53,11 +54,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 		fetchSubjectOptions();
 	}, []);
 
-	const fetchQuestionBankOptions = async (type, subjectId) => {
-		if (type !== "auto") {
-			setQuestionBankOptions([]);
-			return;
-		}
+	const fetchQuestionBankOptions = async (subjectId) => {
 		try {
 			const response = await ApiService.get("/subjects/question-bank-options", {
 				params: { subjectId: subjectId },
@@ -196,7 +193,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 		}
   };
 
-	const fetchExamOptions = async (subjectId) => {
+	const fetchExamOptions = async (subjectId, questionBankId) => {
 		try {
 			const response = await ApiService.get("/exams/options", {
 				params: { subjectId: subjectId },
@@ -348,8 +345,8 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 											setExamData((prev) => ({ ...prev, subjectId: newSubjectId }));
 
 											// Nếu đã chọn loại auto rồi => fetch luôn
-											if (selectedType === "auto" && newSubjectId) {
-												fetchQuestionBankOptions("auto", newSubjectId);
+											if (newSubjectId) {
+												fetchQuestionBankOptions(newSubjectId);
 											}
 										}}							
 										renderInput={(params) => (
@@ -431,10 +428,6 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 												questionBankId: null
 											}));
 
-											// 👉 Chỉ fetch khi loại là auto + subjectId đã chọn
-											if (selectedValue === "auto" && examData.subjectId) {
-												fetchQuestionBankOptions("auto", examData.subjectId);
-											}
 											// 👉 Chỉ fetch ma trận khi loại là matrix + subjectId đã chọ
 											if (selectedValue === "matrix" && examData.subjectId) {
 												fetchMatrixOptions(examData.subjectId);
