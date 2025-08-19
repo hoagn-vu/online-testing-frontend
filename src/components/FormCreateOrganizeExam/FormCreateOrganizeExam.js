@@ -480,23 +480,28 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 									<Grid item xs={12}>
 										<Autocomplete
 											fullWidth
+											multiple
+                  		limitTags={2}
+  										id="multiple-limit-tags"
 											options={examOptions}
 											getOptionLabel={(option) => option.label || ""}
-											value={examOptions.find((opt) => opt.value === examData.examId) || null}
+											value={
+												examOptions.filter((opt) => examData.examIds?.includes(opt.value)) || []
+											}
 											onChange={(e, newValue) => {
-												setExamData({ ...examData, examId: newValue?.value || null });
+												setExamData({
+													...examData,
+													examIds: newValue.map((val) => val.value),
+												});
 											}}
 											disabled={editingOrganizeExam}
 											renderInput={(params) => (
 												<TextField
 													{...params}
 													label="Chọn đề thi"
-													placeholder="Chọn đề thi"
-													size="small"
 													sx={{
 														backgroundColor: "white",
 														"& .MuiInputBase-root": {
-															height: "40px",
 															fontSize: "14px",
 														},
 														"& input": {
@@ -514,7 +519,6 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 													sx: {
 														fontSize: "14px",
 														zIndex: 9999,
-														maxHeight: "220px",
 														overflowY: "auto",
 													},
 												},
