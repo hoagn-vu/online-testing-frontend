@@ -196,7 +196,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 	const fetchExamOptions = async (subjectId, questionBankId) => {
 		try {
 			const response = await ApiService.get("/exams/options", {
-				params: { subjectId: subjectId },
+				params: { subjectId: subjectId, questionBankId: questionBankId },
 			});
 			const options = response.data.data.map((exam) => ({
 				value: exam.id,
@@ -347,6 +347,14 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 											// Nếu đã chọn loại auto rồi => fetch luôn
 											if (newSubjectId) {
 												fetchQuestionBankOptions(newSubjectId);
+
+												if (selectedType === "matrix") {
+													fetchMatrixOptions(newSubjectId);
+												}
+
+												if (selectedType === "exams") {
+													fetchExamOptions(newSubjectId, examData.questionBankId);
+												}
 											}
 										}}							
 										renderInput={(params) => (
@@ -384,6 +392,17 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 										value={questionBankOptions.find((opt) => opt.value === examData.questionBankId) || null}
 										onChange={(e, newValue) => {
 											setExamData({ ...examData, questionBankId: newValue?.value || null });
+
+											const questionBankId = newValue?.value || null;
+											if (examData.subjectId && questionBankId) {
+												if (selectedType === "exams") {
+													fetchExamOptions(examData.subjectId, questionBankId);
+												}
+
+												if (selectedType === "matrix") {
+													fetchMatrixOptions(examData.subjectId);
+												}
+											}
 										}}
 										renderInput={(params) => (
 											<TextField
