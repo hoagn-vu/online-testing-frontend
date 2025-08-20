@@ -27,18 +27,8 @@ const FormDivideStudent = ({ onClose }) => {
   const [listRoom, setListRoom] = useState([]);
   const [selectedRole, setSelectedRole] = useState("supervisor");
   const [listSupervisor, setListSupervisor] = useState([]);
-
-	const monList = [
-    { label: "Toán" },
-    { label: "Văn" },
-    { label: "Anh" },
-  ];
-
-  const nhomList = [
-    { label: "22IT1 - 100 thí sinh" },
-    { label: "22AI2 - 45 thí sinh" },
-    { label: "23IT1 - 50 thí sinh" },
-  ];
+  const [selectedRooms, setSelectedRooms] = useState({});
+  const [selectedSupervisors, setSelectedSupervisors] = useState({});
 
   const students = [
     {
@@ -281,6 +271,28 @@ const FormDivideStudent = ({ onClose }) => {
     navigate(`/staff/groupuser`);
   };
 
+  const handleRoomChange = (index, newValue) => {
+    const newSessions = [...sessions];
+    newSessions[index].room = newValue; // gán phòng cho ca thi
+    setSessions(newSessions);
+
+    setSelectedRooms(prev => ({
+      ...prev,
+      [index]: newValue?.value || null, // lưu id phòng theo index
+    }));
+  };
+
+  const handleSupervisorChange = (index, newValue) => {
+    const newSessions = [...sessions];
+    newSessions[index].supervisor = newValue; // gán giám thị cho ca thi
+    setSessions(newSessions);
+
+    setSelectedSupervisors(prev => ({
+      ...prev,
+      [index]: newValue?.value || null, // lưu id giám thị theo index
+    }));
+  };
+
   return (
     <div>
       <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: '#1976d2', marginTop: '20px'  }}>
@@ -486,7 +498,16 @@ const FormDivideStudent = ({ onClose }) => {
 							<Grid container spacing={2} alignItems="center">
 								<Grid item xs={4}>
                   <Autocomplete
-                    options={listRoom || []}
+                    options={
+                      listRoom.filter(
+                        (room) =>
+                          // chỉ hiển thị phòng chưa chọn hoặc là phòng đang chọn của ca hiện tại
+                          !Object.values(selectedRooms).includes(room.value) ||
+                          selectedRooms[index] === room.value
+                      )
+                    }
+                    value={listRoom.find((room) => room.value === selectedRooms[index]) || null}
+                    onChange={(e, newValue) => handleRoomChange(index, newValue)}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -517,7 +538,16 @@ const FormDivideStudent = ({ onClose }) => {
                 </Grid>
                 <Grid item xs={4}>
 									<Autocomplete
-                    options={listSupervisor || []}
+                    options={
+                      listSupervisor.filter(
+                        (sup) =>
+                          // chỉ hiển thị giám thị chưa chọn hoặc là giám thị đang chọn của ca hiện tại
+                          !Object.values(selectedSupervisors).includes(sup.value) ||
+                          selectedSupervisors[index] === sup.value
+                      )
+                    }
+                    value={listSupervisor.find((sup) => sup.value === selectedSupervisors[index]) || null}
+                    onChange={(e, newValue) => handleSupervisorChange(index, newValue)}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -694,9 +724,6 @@ const FormDivideStudent = ({ onClose }) => {
 
 FormDivideStudent.propTypes = {
 	onClose: PropTypes.func.isRequired,
-	typeOptions: PropTypes.array.isRequired,
-	questionBankOptions: PropTypes.func.isRequired,
-	subjectOptions: PropTypes.func.isRequired,
 };
 
 export default FormDivideStudent;
