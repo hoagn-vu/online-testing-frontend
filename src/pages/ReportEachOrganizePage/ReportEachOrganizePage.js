@@ -138,7 +138,7 @@ const ReportEachOrganizePage = () => {
           <>
             <div className="report-header" style={{fontSize: "14px"}}>
               <div>
-              <h6>TRƯỜNG ĐẠI HỌC CMC</h6>
+              <h6>TRƯỜNG ĐẠI HỌC ABC</h6>
               <p>PHÒNG ĐẢM BẢO CHẤT LƯỢNG</p>
               <hr className="underline-report container"></hr>
               </div>
