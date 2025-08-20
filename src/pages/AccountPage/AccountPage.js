@@ -96,25 +96,27 @@ const AccountPage = () => {
     }
   };
 
+ 
+  const getGroupUser = async () => {
+    try {
+      const response = await ApiService.get("/groupUser", {
+        params: { keyword, page, pageSize },
+      });
+      const options = response.data.groups.map((item) => ({
+        value: item.id,
+        label: item.groupName
+      }));
+      setListGroupName(options);
+    } catch (error) {
+      console.error("Failed to get group: ", error);
+    } finally {
+    setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const getGroupUser = async () => {
-      setIsLoading(true);
-      try {
-        const response = await ApiService.get("/groupUser", {
-          params: { keyword, page, pageSize },
-        });
-        const options = response.data.groups.map((item) => ({
-          value: item.id,
-          label: item.groupName
-        }));
-        setListGroupName(options);
-      } catch (error) {
-        console.error("Failed to get group: ", error);
-      }
-      setIsLoading(false);
-    };
     getGroupUser();
-  }, []);
+  }, [page, pageSize, keyword]);
   
   useEffect(() => {
     fetchData();
@@ -192,6 +194,9 @@ const AccountPage = () => {
     if (showAddGroupForm && inputRef.current) {
       inputRef.current.focus();
     }
+    if (!showAddGroupForm) {
+      setSelectedGroups(null);
+  }
   }, [showAddGroupForm]);
 
   const permissionOptions = [
@@ -511,6 +516,8 @@ const AccountPage = () => {
           text: 'Tạo nhóm thành công',
           draggable: true
         });
+        await getGroupUser();   
+        setSelectedGroup(null);
       } else {
         // 👉 Nhóm đã có: gọi API add-users
         const groupId = selectedGroup.value; // value của option có thể là groupId
@@ -520,6 +527,7 @@ const AccountPage = () => {
           { headers: { "Content-Type": "application/json" } }
         );
         await Swal.fire({ icon: 'success', text: 'Thêm người dùng vào nhóm thành công', draggable: true });
+        setSelectedGroup(null);
       }
 
       await fetchData(); // refresh lại danh sách
@@ -1182,28 +1190,6 @@ const AccountPage = () => {
           </div>
         </div>
       )}
-      {/* Form Chọn nhóm */}
-      {showGroupForm && (
-        <div className="form-overlay">
-          <div className="form-container p-4" style={{width: "500px"}}>
-            <h3 className="fw-bold">Chọn nhóm</h3>
-            <CreatableSelect
-              isMulti
-              options={colourOptions}
-              value={selectedGroups}
-              onChange={setSelectedGroups}
-            />
-
-            <div className="d-flex">
-              <button type="submit" style={{width: "100%"}}>Lưu</button>
-              <button type="button" style={{width: "100%"}} onClick={() => setShowGroupForm(false)}>
-                Hủy
-              </button>
-
-            </div>
-          </div>
-        </div>
-      )}
 
       {showAddGroupForm && (
         <div className="form-overlay d-flex align-items-center justify-content-center">
@@ -1227,7 +1213,11 @@ const AccountPage = () => {
               <button
                 className="mt-0 pe-4"
                 type="button"
-                onClick={() => setShowAddGroupForm(false)}
+                onClick={() => {
+                  setShowAddGroupForm(false);
+                  setSelectedGroup(null);  
+                  setSelectedItems([]);
+                }} 
                 style={{
                   border: 'none',
                   background: 'none',
@@ -1250,7 +1240,7 @@ const AccountPage = () => {
                 <CreatableSelect
                   isClearable
                   options={listGroupName}
-                  value={selectedGroup || null} 
+                  value={selectedGroup} 
                   onChange={(newValue) => setSelectedGroup(newValue)}
                   menuPortalTarget={document.body}
                   placeholder="Chọn nhóm người dùng"
@@ -1297,7 +1287,8 @@ const AccountPage = () => {
                 <CancelButton 
                   onClick={() => {
                     setShowAddGroupForm(false);
-                    setGroupName("");
+                    setSelectedGroup(null);  
+                    setSelectedItems([]);
                   }} 
                   style={{width: "100%"}}
                 >
