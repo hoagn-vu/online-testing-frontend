@@ -308,35 +308,6 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 								</Grid>
 								
 								<Grid item xs={12}>
-									<TextField
-										fullWidth
-										label="Điểm tối đa"
-										type="number"
-										required
-										value={examData.maxScore}
-										onChange={(e) => setExamData({...examData, maxScore: e.target.value})}
-										sx={{
-											"& .MuiInputBase-input": { 
-													fontSize: "14px", 
-													padding: "8px 12px", // Thêm padding để text không dính sát viền
-											},
-											"& .MuiInputLabel-root": {
-													fontSize: "14px",
-													width: "100%",
-													left: "0",
-													"&.Mui-focused": {
-															transform: "translate(13px, -3px) scale(0.75)", // Điều chỉnh khi focus
-													},
-											},
-											"& .MuiInputBase-root": {
-													height: "40px",
-													fontSize: "14px",
-											},
-										}}
-									/>
-								</Grid>
-								
-								<Grid item xs={12}>
 									<Autocomplete
 										options={subjectOptions}
 										getOptionLabel={(option) => option.label}
@@ -589,7 +560,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 								)}
 								{selectedType === "auto" && (
 									<>									
-										<Grid item xs={12}>
+										<Grid item xs={6}>
 											<TextField
 												fullWidth
 												label="Số lượng câu hỏi"
@@ -609,6 +580,34 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 															width: "100%",
 															left: "0",
 															top: "-5px", // Đã điều chỉnh từ 0px lên 10px
+															"&.Mui-focused": {
+																	transform: "translate(13px, -3px) scale(0.75)", // Điều chỉnh khi focus
+															},
+													},
+													"& .MuiInputBase-root": {
+															height: "40px",
+															fontSize: "14px",
+													},
+												}}
+											/>
+										</Grid>
+										<Grid item xs={6}>
+											<TextField
+												fullWidth
+												label="Điểm tối đa"
+												type="number"
+												required
+												value={examData.maxScore}
+												onChange={(e) => setExamData({...examData, maxScore: e.target.value})}
+												sx={{
+													"& .MuiInputBase-input": { 
+															fontSize: "14px", 
+															padding: "8px 12px", // Thêm padding để text không dính sát viền
+													},
+													"& .MuiInputLabel-root": {
+															fontSize: "14px",
+															width: "100%",
+															left: "0",
 															"&.Mui-focused": {
 																	transform: "translate(13px, -3px) scale(0.75)", // Điều chỉnh khi focus
 															},
@@ -714,7 +713,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 											/>
 										</Grid>
 										
-										<Grid item xs={6}>
+										<Grid item xs={12}>
 											<LocalizationProvider dateAdapter={AdapterDayjs}>
 												<DateTimePicker
 													label={`Thời gian bắt đầu ca ${index + 1}`}
@@ -751,7 +750,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 											</LocalizationProvider>
 										</Grid>
 
-										<Grid item xs={6}>
+										{/* <Grid item xs={6}>
 											<LocalizationProvider dateAdapter={AdapterDayjs}>
 												<DateTimePicker
 													label={`Thời gian kết thúc ca ${index + 1}`}
@@ -786,7 +785,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 													}}
 												/>
 											</LocalizationProvider>
-										</Grid>
+										</Grid> */}
 										
 										
 									</Grid>
