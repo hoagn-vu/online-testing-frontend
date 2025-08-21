@@ -233,7 +233,7 @@ const SessionPage = () => {
 				<span className="breadcrumb-current">Quản lý kỳ thi</span>
 			</nav> */}
 
-		<div>
+			<div>
 				<div style={{
 					background: "#fff",
 					padding: "15px 15px 0px 15px",
@@ -306,164 +306,166 @@ const SessionPage = () => {
         </div>
 
 				<div className="session-table-container mt-3">
-				<div className="table-responsive">
-					<table className="table sample-table tbl-organize-hover table-hover">
-						<thead style={{fontSize: "14px"}}>
-							<tr className="align-middle fw-medium">
-								<th scope="col" className="title-row text-center">STT</th> 
-								<th scope="col" className="title-row">Ca thi</th>
-								<th scope="col" className="title-row">Bắt đầu</th>
-								<th scope="col" className="title-row">Kết thúc</th>
-								<th scope="col" className="title-row">Phòng thi</th>
-								<th scope="col" className="title-row">Trạng thái</th>
-								<th scope="col" className="title-row text-center">Giám sát</th>
-								<th className="text-center">Thao tác</th>
-							</tr>
-						</thead>
-						<tbody style={{ fontSize: "14px" }}>
-							{listSession.length === 0 ? (
-								<tr>
-									<td colSpan="8" className="text-center fw-semibold text-muted"
-											style={{ height: "100px", verticalAlign: "middle" }}>
-										Không có dữ liệu
-									</td>
+					<div className="table-responsive" 
+						style={{minHeight: "230px"}}
+					>
+						<table className="table sample-table tbl-organize-hover table-hover">
+							<thead style={{fontSize: "14px"}}>
+								<tr className="align-middle fw-medium">
+									<th scope="col" className="title-row text-center">STT</th> 
+									<th scope="col" className="title-row">Ca thi</th>
+									<th scope="col" className="title-row">Bắt đầu</th>
+									<th scope="col" className="title-row">Kết thúc</th>
+									<th scope="col" className="title-row">Phòng thi</th>
+									<th scope="col" className="title-row">Trạng thái</th>
+									<th scope="col" className="title-row text-center">Giám sát</th>
+									<th className="text-center">Thao tác</th>
 								</tr>
-							) : (
-								listSession.map((session, sessionIndex) => (
-										<tr key={session.sessionId} className="align-middle">
-											<td className="text-center">{sessionIndex + 1}</td>
-											<td
-												onClick={() => {
-													localStorage.setItem("organizeExamName", organizeExamName);
-													navigate(`/staff/organize/${organizeId}/${session.sessionId}`, {
-														state: {
-															sessionName: session.sessionName,
-															organizeExamName: organizeExamName,
-														},
-													});
-												}}
-												style={{ cursor: "pointer", color: "black" }}
-											>
-												{session.sessionName}
-											</td>
-											<td
-												onClick={() => {
-													localStorage.setItem("organizeExamName", organizeExamName);
-													navigate(`/staff/organize/${organizeId}/${session.sessionId}`, {
-														state: {
-															sessionName: session.sessionName,
-															organizeExamName: organizeExamName,
-														},
-													});
-												}}
-												style={{ cursor: "pointer", color: "black" }}
-											>
-												{dayjs(session.activeAt).format("DD/MM/YYYY HH:mm")}
-											</td>
-											<td
-												onClick={() => {
-													localStorage.setItem("organizeExamName", organizeExamName);
-													navigate(`/staff/organize/${organizeId}/${session.sessionId}`, {
-														state: {
-															sessionName: session.sessionName,
-															organizeExamName: organizeExamName,
-														},
-													});
-												}}
-												style={{ cursor: "pointer", color: "black" }}
-											>
-												{dayjs(session.activeAt).format("DD/MM/YYYY HH:mm")}
-											</td>
-											<td
-												onClick={() => {
-													localStorage.setItem("organizeExamName", organizeExamName);
-													navigate(`/staff/organize/${organizeId}/${session.sessionId}`, {
-														state: {
-															sessionName: session.sessionName,
-															organizeExamName: organizeExamName,
-														},
-													});
-												}}
-												style={{ cursor: "pointer", color: "black" }}
-												className="text-hover-primary"
-											>
-												Danh sách phòng thi
-											</td>
-											<td className="text-center">
-												<div className="d-flex align-items-center justify-content-left">
-													<span className={`badge mt-1 ${session.sessionStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
-														{session.sessionStatus === "Active" || "available" ? "Kích hoạt" : "Đóng"}
-													</span>
-												</div>
-											</td>
-											<td className="text-center">
-												<Link className="text-hover-primary report-hover"
-														to={`/staff/organize/monitor/${organizeId}/${session.sessionId}`}
-														style={{ color: "blue", cursor: "pointer" }}>
-													Giám sát
-												</Link>
-											</td>
-											<td className="text-center align-middle">
-												<div className="dropdown d-inline-block">
-													<button
-														type="button"
-														data-bs-toggle="dropdown"
-														aria-expanded="false"
-														className="dropdown-toggle-icon"
-													>
-														<i className="fas fa-ellipsis-v"></i>
-													</button>
-													<ul className="dropdown-menu dropdown-menu-end dropdown-menu-custom "
-														style={{
-															right: "50%",
-															transform: 'translate3d(-10px, 10px, 0px)',
-														}}
-													>
-														<li className="tbl-action" onClick={() => preEdit(session)}> 
-															<button className="dropdown-item tbl-action" onClick={() => preEdit(session)}>
-																Chỉnh sửa
-															</button>
-														</li>
-														<li className="tbl-action" onClick={() => handleDelete(session.sessionId)}>
-															<button className="dropdown-item tbl-action" onClick={() => handleDelete(session.sessionId)}>
-																Xoá
-															</button>
-														</li>
-														<li className="tbl-action" onClick={() => handleToggleStatus(session.sessionId, session.sessionStatus)}>
-															<button
-																className="dropdown-item tbl-action"
-																onClick={() =>
-																	handleToggleStatus(session.sessionId, session.sessionStatus)
-																}
-															>
-																{session.sessionStatus.toLowerCase() === "active"
-																	? "Đóng"
-																	: "Kích hoạt"}
-															</button>
-														</li>
-													</ul>
-												</div>
-											</td>
-										</tr>
-									))
-							)}
-						</tbody>
+							</thead>
+							<tbody style={{ fontSize: "14px" }}>
+								{listSession.length === 0 ? (
+									<tr>
+										<td colSpan="8" className="text-center fw-semibold text-muted"
+												style={{ height: "100px", verticalAlign: "middle" }}>
+											Không có dữ liệu
+										</td>
+									</tr>
+								) : (
+									listSession.map((session, sessionIndex) => (
+											<tr key={session.sessionId} className="align-middle">
+												<td className="text-center">{sessionIndex + 1}</td>
+												<td
+													onClick={() => {
+														localStorage.setItem("organizeExamName", organizeExamName);
+														navigate(`/staff/organize/${organizeId}/${session.sessionId}`, {
+															state: {
+																sessionName: session.sessionName,
+																organizeExamName: organizeExamName,
+															},
+														});
+													}}
+													style={{ cursor: "pointer", color: "black" }}
+												>
+													{session.sessionName}
+												</td>
+												<td
+													onClick={() => {
+														localStorage.setItem("organizeExamName", organizeExamName);
+														navigate(`/staff/organize/${organizeId}/${session.sessionId}`, {
+															state: {
+																sessionName: session.sessionName,
+																organizeExamName: organizeExamName,
+															},
+														});
+													}}
+													style={{ cursor: "pointer", color: "black" }}
+												>
+													{dayjs(session.activeAt).format("DD/MM/YYYY HH:mm")}
+												</td>
+												<td
+													onClick={() => {
+														localStorage.setItem("organizeExamName", organizeExamName);
+														navigate(`/staff/organize/${organizeId}/${session.sessionId}`, {
+															state: {
+																sessionName: session.sessionName,
+																organizeExamName: organizeExamName,
+															},
+														});
+													}}
+													style={{ cursor: "pointer", color: "black" }}
+												>
+													{dayjs(session.activeAt).format("DD/MM/YYYY HH:mm")}
+												</td>
+												<td
+													onClick={() => {
+														localStorage.setItem("organizeExamName", organizeExamName);
+														navigate(`/staff/organize/${organizeId}/${session.sessionId}`, {
+															state: {
+																sessionName: session.sessionName,
+																organizeExamName: organizeExamName,
+															},
+														});
+													}}
+													style={{ cursor: "pointer", color: "black" }}
+													className="text-hover-primary"
+												>
+													Danh sách phòng thi
+												</td>
+												<td className="text-center">
+													<div className="d-flex align-items-center justify-content-left">
+														<span className={`badge mt-1 ${session.sessionStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
+															{session.sessionStatus === "Active" || "available" ? "Kích hoạt" : "Đóng"}
+														</span>
+													</div>
+												</td>
+												<td className="text-center">
+													<Link className="text-hover-primary report-hover"
+															to={`/staff/organize/monitor/${organizeId}/${session.sessionId}`}
+															style={{ color: "blue", cursor: "pointer" }}>
+														Giám sát
+													</Link>
+												</td>
+												<td className="text-center align-middle">
+													<div className="dropdown d-inline-block">
+														<button
+															type="button"
+															data-bs-toggle="dropdown"
+															aria-expanded="false"
+															className="dropdown-toggle-icon"
+														>
+															<i className="fas fa-ellipsis-v"></i>
+														</button>
+														<ul className="dropdown-menu dropdown-menu-end dropdown-menu-custom "
+															style={{
+																right: "50%",
+																transform: 'translate3d(-10px, 10px, 0px)',
+															}}
+														>
+															<li className="tbl-action" onClick={() => preEdit(session)}> 
+																<button className="dropdown-item tbl-action" onClick={() => preEdit(session)}>
+																	Chỉnh sửa
+																</button>
+															</li>
+															<li className="tbl-action" onClick={() => handleDelete(session.sessionId)}>
+																<button className="dropdown-item tbl-action" onClick={() => handleDelete(session.sessionId)}>
+																	Xoá
+																</button>
+															</li>
+															<li className="tbl-action" onClick={() => handleToggleStatus(session.sessionId, session.sessionStatus)}>
+																<button
+																	className="dropdown-item tbl-action"
+																	onClick={() =>
+																		handleToggleStatus(session.sessionId, session.sessionStatus)
+																	}
+																>
+																	{session.sessionStatus.toLowerCase() === "active"
+																		? "Đóng"
+																		: "Kích hoạt"}
+																</button>
+															</li>
+														</ul>
+													</div>
+												</td>
+											</tr>
+										))
+								)}
+							</tbody>
 
-					</table>
-				</div>
-				<div className="d-flex justify-content-end mb-2">
-					{ totalCount > 0 && (
-						<Pagination
-							count={Math.ceil(totalCount / pageSize)}
-							shape="rounded"
-							page={page}
-							onChange={(e, value) => setPage(value)}
-							color="primary"
-						/>
-					)}
-				</div>
-			</div>	
-		</div>
+						</table>
+					</div>
+					<div className="d-flex justify-content-end mb-2">
+						{ totalCount > 0 && (
+							<Pagination
+								count={Math.ceil(totalCount / pageSize)}
+								shape="rounded"
+								page={page}
+								onChange={(e, value) => setPage(value)}
+								color="primary"
+							/>
+						)}
+					</div>
+				</div>	
+			</div>
 			
 
 			{/* Form thêm tài khoản */}

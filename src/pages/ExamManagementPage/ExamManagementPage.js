@@ -160,7 +160,7 @@ const ExamManagementPage = () => {
     setShowForm(true);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
 		Swal.fire({
 			title: "Bạn có chắc chắn xóa?",
 			text: "Bạn sẽ không thể hoàn tác hành động này!",
@@ -170,16 +170,27 @@ const ExamManagementPage = () => {
 			cancelButtonColor: "#d33",
 			confirmButtonText: "Xóa",
 			cancelButtonText: "Hủy",
-		}).then((result) => {
+		}).then(async(result) => {
 			if (result.isConfirmed) {
 			console.log("Xóa tài khoản có ID:", id);
+			try {
+				await ApiService.put(`/exams/${id}`, { examStatus: "deleted" }); 
+				Swal.fire({
+					title: "Đã xóa!",
+					icon: "success",
+					text: "Xóa đề thi thành công",
+				});
 
-			Swal.fire({
-				title: "Đã xóa!",
-				text: "Tài khoản đã bị xóa.",
-				icon: "success",
-			});
-			setListExam((prev) => prev.filter((exam) => exam.id !== id));
+				// Sau khi xóa thì load lại danh sách
+				fetchData();
+			} catch (error) {
+				console.error("Xóa thất bại:", error);
+				Swal.fire({
+					icon: "error",
+					title: "Lỗi khi xóa đề thi",
+					text: error.message,
+				});
+			}
 			}
 		});
   };
@@ -247,7 +258,7 @@ const ExamManagementPage = () => {
           </div>
         </div>
 
-				<div className="table-responsive">
+				<div className="table-responsive" style={{minHeight: "230px"}}>
 					<table className="table sample-table table-hover tbl-organize-hover">
 						<thead>
 							<tr className="align-middle">
@@ -377,7 +388,7 @@ const ExamManagementPage = () => {
 							<button
 								className="p-4"
 								type="button"
-								onClick={() => setShowPasswordForm(false)}
+								onClick={() => setShowForm(false)}
 								style={{
 									border: 'none',
 									background: 'none',
@@ -390,12 +401,12 @@ const ExamManagementPage = () => {
 							<Grid item xs={12}>
 								<TextField
 									fullWidth
+									disabled
 									label="Mã đề thi"
-									required
 									value={formData.examCode}
 									inputRef={inputRef}
 									onChange={(e) =>
-										setFormData({ ...formData, studentId: e.target.value })
+										setFormData({ ...formData, examCode: e.target.value })
 									}
 									sx={{
 										"& .MuiInputBase-input": {
@@ -412,9 +423,10 @@ const ExamManagementPage = () => {
 									fullWidth
 									label="Tên đề thi"
 									required
+									inputRef={inputRef}
 									value={formData.examName}
 									onChange={(e) =>
-										setFormData({ ...formData, name: e.target.value })
+										setFormData({ ...formData, examName: e.target.value })
 									}
 									sx={{
 										"& .MuiInputBase-input": {

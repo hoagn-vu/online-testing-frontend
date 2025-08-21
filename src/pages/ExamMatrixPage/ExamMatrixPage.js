@@ -166,7 +166,7 @@ const handleDetailClick = async (matrix) => {
     navigate(`/staff/matrix-exam/matrix-detail?id=${matrix.id}`);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     Swal.fire({
       title: "Bạn có chắc chắn xóa?",
       text: "Bạn sẽ không thể hoàn tác hành động này!",
@@ -176,17 +176,26 @@ const handleDetailClick = async (matrix) => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Xóa",
       cancelButtonText: "Hủy",
-    }).then((result) => {
+    }).then(async(result) => {
       if (result.isConfirmed) {
       console.log("Xóa tài khoản có ID:", id);
-  
-      Swal.fire({
-        title: "Đã xóa!",
-        text: "Ma trận đề thi đã bị xóa.",
-        icon: "success",
-      });
-      setListExamMatrix(prev => prev.filter(matrix => matrix.id !== id));
-      }
+      try {
+				await ApiService.post(`/exam-matrices/${id}`, { matrixStatus: "deleted" }); 
+				Swal.fire({
+					title: "Đã xóa!",
+					icon: "success",
+					text: "Xóa ma trận đề thi thành công",
+				});
+
+				fetchData();
+			} catch (error) {
+				console.error("Xóa thất bại:", error);
+				Swal.fire({
+					icon: "error",
+					title: "Lỗi khi xóa ma trận đề thi",
+					text: error.message,
+				});
+			}}
     });
   };
 
@@ -236,7 +245,7 @@ const handleDetailClick = async (matrix) => {
           </div>
         </div>
 
-        <div className="table-responsive">
+        <div className="table-responsive" style={{minHeight: "230px"}}>
           <table className="table sample-table table-hover tbl-organize-hover">
             <thead>
               <tr className="align-middle">
@@ -278,8 +287,12 @@ const handleDetailClick = async (matrix) => {
                   <td className="text-center">{item.totalGeneratedExams}</td>
                   <td className="text-center">
                     <div className="d-flex align-items-center justify-content-center">
-                      <span className={`badge ms-2 mt-1 ${item.matrixStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
-                        {item.matrixStatus === "Active" || "available" ? "Được sử dụng" : "Chưa sử dụng"}
+                      <span
+                        className={`badge mt-1 ${
+                          item.examIds && item.examIds.length > 0 ? "bg-primary" : "bg-secondary"
+                        }`}
+                      >
+                        {item.examIds && item.examIds.length > 0 ? "Được sử dụng" : "Chưa sử dụng"}
                       </span>
                     </div>
                   </td>

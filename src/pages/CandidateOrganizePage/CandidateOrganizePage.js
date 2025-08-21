@@ -196,7 +196,7 @@ const CandidateOrganizePage = () => {
         </div>
 
 				<div className="session-table-container mt-3">
-					<div className="table-responsive">
+					<div className="table-responsive" style={{minHeight: "230px"}}>
 						<table className="table sample-table tbl-organize table-striped">
 							<thead style={{fontSize: "14px"}}>
 								<tr className="align-middle fw-medium">

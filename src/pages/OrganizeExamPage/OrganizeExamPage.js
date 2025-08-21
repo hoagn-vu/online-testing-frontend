@@ -33,6 +33,7 @@ const OrganizeExamPage = () => {
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [showDetailExamForm, setShowDetailExamForm] = useState(false);
 	const [selectedItem, setSelectedItem] = useState(null);
+	const [showForm, setShowForm] = useState(false);
 	useEffect(() => {
 		if (location.state?.reload) {
 			fetchData(); 
@@ -87,6 +88,10 @@ const OrganizeExamPage = () => {
     maxScore: 10,
 		totalQuestions: "",
     organizeExamStatus: "active",
+  });
+
+	const [formEditData, setFormEditData] = useState({
+    organizeExamName: "",
   });
 
 	const handleKeywordChange = (e) => {
@@ -145,7 +150,6 @@ const OrganizeExamPage = () => {
 		}
 	};
 
-  const [showForm, setShowForm] = useState(false);
   const [editingOrganizeExam, setEditingOrganizeExam] = useState(null);
   const inputRef = useRef(null);
 
@@ -153,7 +157,7 @@ const OrganizeExamPage = () => {
     if (showForm && inputRef.current) {
       inputRef.current.focus();
     }
-    }, [showForm]);
+	}, [showForm]);
 
   const handleToggleStatus = (id, currentStatus) => {
     Swal.fire({
@@ -197,7 +201,7 @@ const OrganizeExamPage = () => {
 			}
 		} else {
 			try {
-				await ApiService.post("/organize-exams", formData);
+				await ApiService.post("/organize-exams", formEditData);
 				fetchData();
 			} catch (error) {
 				console.error("Failed to add organize exam", error);
@@ -210,14 +214,6 @@ const OrganizeExamPage = () => {
   const preEdit = (organizeExam) => {
     setFormData({
       organizeExamName: organizeExam.organizeExamName,
-      subjectId: organizeExam.subjectId,
-      examType: organizeExam.examType,
-      examSet: organizeExam.examSet,
-      matrixId: organizeExam.matrixId,
-      duration: organizeExam.duration,
-      maxScore: organizeExam.maxScore,
-			totalQuestions: organizeExam.totalQuestions,
-      organizeExamStatus: organizeExam.organizeExamStatus,
     });
     setEditingOrganizeExam(organizeExam);
     setShowForm(true);
@@ -282,6 +278,9 @@ const OrganizeExamPage = () => {
   };
 
 	const handleTogglePassword = () => setShowPassword((prev) => !prev);
+	const handleReport = (exam) => {
+		navigate(`/staff/organize/report/${exam.id}`);
+	};
 
   return (
     <div className="p-4">
@@ -324,7 +323,7 @@ const OrganizeExamPage = () => {
 
 						{/* Hiển thị bảng theo vai trò đã chọn */}
 						<div className="organize-examtable-container mt-3">
-							<div className="table-responsive">
+							<div className="table-responsive" style={{minHeight: "230px"}}>
 								<table className="table organize-exam-table sample-table tbl-organize-hover table-hover" style={{fontSize: "14px"}}>
 									<thead>
 										<tr className="align-middle fw-medium">
@@ -471,20 +470,20 @@ const OrganizeExamPage = () => {
 																	Mật khẩu thí sinh
 																</button>
 															</li>
-															<li className="tbl-action">
-																<Link
-																	to={item.organizeExamStatus.toLowerCase() === "disabled" ? `/staff/organize/report/${item.id}` : "#"}
+															<li
+																className={`tbl-action ${item.organizeExamStatus.toLowerCase() !== "disabled" ? "disabled" : ""}`}
+																onClick={() => {
+																	if (item.organizeExamStatus.toLowerCase() === "disabled") {
+																		handleReport(item);
+																	}
+																}}
+															>
+																<button
 																	className="dropdown-item tbl-action"
-																	style={{
-																		color: item.organizeExamStatus.toLowerCase() === "disabled" ? "black" : "gray",
-																		textDecoration: "none",
-																		display: "block",
-																		pointerEvents: item.organizeExamStatus.toLowerCase() === "disabled" ? "auto" : "none", // không cho click khi đang hoạt động
-																		cursor: item.organizeExamStatus.toLowerCase() === "disabled" ? "pointer" : "not-allowed",
-																	}}
+																	disabled={item.organizeExamStatus.toLowerCase() !== "disabled"}
 																>
 																	Báo cáo
-																</Link>
+																</button>
 															</li>
 															<li className="tbl-action" onClick={() => handleToggleStatus(item.id, item.organizeExamStatus)}>
 																<button
@@ -522,6 +521,94 @@ const OrganizeExamPage = () => {
 					</div>
 				</>
 			)}
+
+			{/* Form thêm/sửa phân môn */}
+			{showForm && (
+				<div className="form-overlay">
+					<React.Fragment>
+						<form
+							className="shadow form-fade bg-white bd-radius-8"
+							style={{ width: "750px", boxShadow: 3}}
+							onSubmit={handleSubmit}
+						>
+							<div className="d-flex justify-content-between"
+								style={{
+									borderBottom: "1px solid #ccc",
+									marginBottom: "20px",
+								}}
+							>
+								<p className="fw-bold p-4 pb-0">
+									{editingOrganizeExam ? "Chỉnh sửa kỳ thi" : "Thêm mức độ"}
+								</p>
+								<button
+									className="p-4"
+									type="button"
+									onClick={() => setShowForm(false)}
+									style={{
+										border: 'none',
+										background: 'none',
+										fontSize: '20px',
+										cursor: 'pointer',
+									}}
+								><i className="fa-solid fa-xmark"></i></button>     
+							</div>
+							<Grid container sx={{p: 3, pt: 1}}>
+								<TextField
+									fullWidth
+									label="Tên kỳ thi"
+									required
+									value={formData.organizeExamName}
+									onChange={(e) =>
+										setFormData({ ...formData, organizeExamName: e.target.value })
+									}
+									inputRef={inputRef}
+									sx={{
+										"& .MuiDataGrid-cell": {
+												whiteSpace: "normal",
+												wordWrap: "break-word",
+												lineHeight: "1.2",
+												padding: "8px",
+										},
+										"& .MuiDataGrid-columnHeaders": {
+												borderBottom: "2px solid #ccc",
+										},
+										"& .MuiDataGrid-cell": {
+												borderRight: "1px solid #ddd",
+										},
+										"& .MuiDataGrid-row:last-child .MuiDataGrid-cell": {
+												borderBottom: "none",
+										},
+										"& .MuiTablePagination-displayedRows": {
+												textAlign: "center",        // Căn giữa chữ "1-1 of 1"
+												marginTop: "16px",
+												marginLeft: "0px"
+										},
+										"& .MuiTablePagination-selectLabel": {
+												marginTop: "13px",
+												marginLeft: "0px"
+										},
+										"& .MuiTablePagination-select": {
+												marginLeft: "0px",
+										} 
+									}}
+								/>
+							</Grid>
+
+							<Grid container spacing={2} sx={{justifyContent: "flex-end", p: 3, pt: 1 }}>
+								<Grid item xs={3}>
+									<CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>Hủy</CancelButton>
+								</Grid>
+								<Grid item xs={3}>
+									<AddButton style={{width: "100%"}}>
+										{editingOrganizeExam ? "Cập nhật" : "Lưu"}
+									</AddButton>
+								</Grid>
+							</Grid>
+						</form>
+					</React.Fragment>
+				</div>
+			)}
+
 			{/* Form Đổi mật khẩu */}
 			{showPasswordForm && (
 				<div className="form-overlay">
