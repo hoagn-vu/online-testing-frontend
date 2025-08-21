@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { Box, Grid, TextField, Button, Typography, IconButton, Autocomplete } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -13,6 +13,7 @@ import "./FormDivideStudent.css"
 import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
 import ApiService from "../../services/apiService";
+import Swal from "sweetalert2";
 
 const FormDivideStudent = ({ onClose }) => {
 	const [editingOrganizeExam, setEditingOrganizeExam] = useState(null);
@@ -29,7 +30,7 @@ const FormDivideStudent = ({ onClose }) => {
   const [listSupervisor, setListSupervisor] = useState([]);
   const [selectedRooms, setSelectedRooms] = useState({});
   const [selectedSupervisors, setSelectedSupervisors] = useState({});
-
+  const { organizeId, sessionId } = useParams();
   const students = [
     {
       id: "123456789",
@@ -167,6 +168,16 @@ const FormDivideStudent = ({ onClose }) => {
     setIsLoading(false);
   };
 
+  const divideStudent = async (payload) => {
+    setIsLoading(true);
+    try {
+      await ApiService.post(`/organize-exams/${organizeId}/sessions/${sessionId}/rooms`,payload);
+    } catch (error) {
+      console.error("Failed to divide: ", error);
+    }
+    setIsLoading(false);
+  };
+
   useEffect(() => {
     fetchGroupData();
     fetchRoomData();
@@ -191,20 +202,21 @@ const FormDivideStudent = ({ onClose }) => {
   };
 
   // State cho thông tin kỳ thi
-  const [examData, setExamData] = useState({
-    organizeExamName: '',
-    duration: '',
-    maxScore: '',
-    subjectId: null,
-    examType: null,
-    questionBankId: null,
-    totalQuestions: '',
+  const [divideData, setDivideData] = useState({
+    groupUserIds: [],
+    roomIds: [
+      {
+        roomId: "",
+        supervisorIds: [],
+        quantity: "",
+      }
+    ],
   });
   
-  // State cho các ca thi (mặc định 2 ca)
-  const [sessions, setSessions] = useState([
-    { sessionName: '', activeAt: '' },
-    { sessionName: '', activeAt: '' }
+  // State cho các phòng thi (mặc định 2 phòng)
+  const [rooms, setRooms] = useState([
+    { roomIds: '', supervisorIds: [], quantity: '' },
+    { roomIds: '', supervisorIds: [], quantity: '' },
   ]);
   
   const [selectedType, setSelectedType] = useState(null);
@@ -217,35 +229,109 @@ const FormDivideStudent = ({ onClose }) => {
   }, []);
 
   // Xử lý thêm ca thi mới
-  const addSession = () => {
-    setSessions([...sessions, { sessionName: '', activeAt: '' }]);
+  const addRoom = () => {
+    setRooms([...rooms, { roomIds: '', supervisorIds: [], quantity: '' }]);
   };
   
   // Xử lý xóa ca thi
-  const removeSession = (index) => {
-    if (sessions.length > 1) {
-      const newSessions = [...sessions];
-      newSessions.splice(index, 1);
-      setSessions(newSessions);
+  const removeRoom = (index) => {
+    if (rooms.length > 1) {
+      const newRoom = [...rooms];
+      newRoom.splice(index, 1);
+      setRooms(newRoom);
     }
   };
   
   // Xử lý thay đổi thông tin ca thi
   const handleSessionChange = (index, field, value) => {
-    const newSessions = [...sessions];
-    newSessions[index][field] = value;
-    setSessions(newSessions);
+    const newRoom = [...rooms];
+    newRoom[index][field] = value;
+    setRooms(newRoom);
   };
   
   // Xử lý submit form
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // ✅ Kiểm tra chọn nhóm
+    if (!divideData.groupUserIds || divideData.groupUserIds.length === 0) {
+      Swal.fire({
+        icon: "warning",
+        title: "Thiếu thông tin",
+        text: "Vui lòng chọn nhóm thí sinh!",
+        didClose: () => {
+          document.getElementById(`groupUserSelect`)?.focus();
+        }     
+      })
+      return;
+    }
+
+    // 2. Check phòng, giám thị, số lượng theo thứ tự trong từng phòng
+  for (let i = 0; i < rooms.length; i++) {
+    if (!selectedRooms[i]) {
+      return Swal.fire({
+        icon: "warning",
+        title: "Thiếu thông tin",
+        text: `Phòng ${i + 1} chưa chọn phòng thi!`,
+        didClose: () => {
+          document.getElementById("roomSelect")?.focus();
+        }
+      });
+    }
+
+    if (!selectedSupervisors[i]) {
+      return Swal.fire({
+        icon: "warning",
+        title: "Thiếu thông tin",
+        text: `Phòng ${i + 1} chưa có giám thị!`,
+        didClose: () => {
+          document.getElementById(`supervisorSelect-${i}-input`)?.focus();
+        }
+      });
+    }
+
+    if (!rooms[i].quantity || Number(rooms[i].quantity) <= 0) {
+      return Swal.fire({
+        icon: "warning",
+        title: "Thiếu thông tin",
+        text: `Phòng ${i + 1} chưa nhập số lượng thí sinh!`,
+        didClose: () => {
+          // focus trực tiếp vào input số lượng
+          document.querySelectorAll("input[type=number]")[i]?.focus();
+        }
+      });
+    }
+  }
+
+
     const payload = {
-      ...examData,
-      sessions: sessions.filter(session => session.sessionName && session.activeAt)
+      groupUserIds: divideData.groupUserIds,
+      roomIds: rooms.filter(room => room.roomIds && room.quantity).map(room => ({
+        roomId: room.roomIds,
+        supervisorIds: Array.isArray(room.supervisorIds) 
+          ? room.supervisorIds 
+          : [room.supervisorIds],
+        quantity: room.quantity,
+      })),
     };
-    console.log('Submitting:', payload);
+    console.log("Submitting:", payload);
     // Gọi API ở đây
+    try {
+    await divideStudent(payload);
+    Swal.fire({
+      icon: "success",
+      text: "Chia phòng thi thành công",
+      draggable: true,
+    });
+    setShowForm(false);
+    } catch (error) {
+      console.error("Lỗi khi chia phòng thi:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Thất bại",
+        text: error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại!",
+      });
+    }
   };
 
   const handleSelectItem = (e, id) => {
@@ -272,9 +358,9 @@ const FormDivideStudent = ({ onClose }) => {
   };
 
   const handleRoomChange = (index, newValue) => {
-    const newSessions = [...sessions];
-    newSessions[index].room = newValue; // gán phòng cho ca thi
-    setSessions(newSessions);
+    const newSessions = [...rooms];
+    newSessions[index].roomIds = newValue?.value || ''; // gán phòng cho ca thi
+    setRooms(newSessions);
 
     setSelectedRooms(prev => ({
       ...prev,
@@ -283,9 +369,9 @@ const FormDivideStudent = ({ onClose }) => {
   };
 
   const handleSupervisorChange = (index, newValue) => {
-    const newSessions = [...sessions];
-    newSessions[index].supervisor = newValue; // gán giám thị cho ca thi
-    setSessions(newSessions);
+    const newSessions = [...rooms];
+    newSessions[index].supervisorIds = [newValue?.value || ''];
+    setRooms(newSessions);
 
     setSelectedSupervisors(prev => ({
       ...prev,
@@ -323,13 +409,24 @@ const FormDivideStudent = ({ onClose }) => {
               <Grid item xs={6}>
                 <Autocomplete
                   multiple
-                  id="tags-outlined"
-                  options={listGroupName || []}
+                  required
+                  id="groupUserSelect"
+                  options={listGroupName}
+                  onChange={(e, newValue) =>
+                    setDivideData(prev => ({
+                      ...prev,
+                      groupUserIds: newValue.map(v => v.value),
+                    }))
+                  }
                   renderInput={(params) => (
                     <TextField
                       {...params}
                       label="Chọn nhóm"
                       size=""
+                      inputProps={{
+                        ...params.inputProps,
+                        id: `groupUserSelect`, // ✅ focus chính xác input
+                      }}
                       sx={{
                         backgroundColor: '#ffff',
                         "& .MuiInputBase-root": {
@@ -381,7 +478,7 @@ const FormDivideStudent = ({ onClose }) => {
                 Xếp ngẫu nhiên
               </label>
             </div>
-            {sessions.map((session, index) => (
+            {rooms.map((session, index) => (
 						<Box 
 							key={index} 
 							sx={{ 
@@ -403,13 +500,13 @@ const FormDivideStudent = ({ onClose }) => {
                   className='link-hover' 
                   style={{ margin: 0, color:'#0000FF' }}
                   data-bs-toggle="modal"
-                  data-bs-target="#roomDetailModal"
+                  data-bs-target={`#roomDetailModal-${index}`}
                 >
                   Chi tiết
                 </p>
               </div>
               {/* Modal Bootstrap */}  
-              <div className="modal fade " id="roomDetailModal" tabIndex="-1" aria-labelledby="roomDetailModalLabel" aria-hidden="true">
+              <div className="modal fade " id={`roomDetailModal-${index}`} tabIndex="-1" aria-labelledby="roomDetailModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-xl">
                   <div className="modal-content p-3">
                     <div className="modal-header">
@@ -498,6 +595,7 @@ const FormDivideStudent = ({ onClose }) => {
 							<Grid container spacing={2} alignItems="center">
 								<Grid item xs={4}>
                   <Autocomplete
+                    id="roomSelect"
                     options={
                       listRoom.filter(
                         (room) =>
@@ -513,6 +611,10 @@ const FormDivideStudent = ({ onClose }) => {
                         {...params}
                         label="Chọn phòng thi"
                         size="small"
+                        inputProps={{
+                          ...params.inputProps,
+                          id: `roomSelect`, // ✅ focus chính xác input
+                        }}
                         sx={{
                           backgroundColor: '#ffff',
                           "& .MuiInputBase-root": {
@@ -538,6 +640,7 @@ const FormDivideStudent = ({ onClose }) => {
                 </Grid>
                 <Grid item xs={4}>
 									<Autocomplete
+                    id={`supervisorSelect-${index}`}
                     options={
                       listSupervisor.filter(
                         (sup) =>
@@ -553,6 +656,10 @@ const FormDivideStudent = ({ onClose }) => {
                         {...params}
                         label="Giám thị"
                         size="small"
+                        inputProps={{
+                          ...params.inputProps,
+                          id: `supervisorSelect-${index}-input`, // ✅ focus chính xác input
+                        }}
                         sx={{
                           backgroundColor: '#ffff',
                           "& .MuiInputBase-root": {
@@ -581,10 +688,9 @@ const FormDivideStudent = ({ onClose }) => {
 									<TextField
 										fullWidth
 										label= "Số lượng thí sinh"
-										required
                     type='number'
-										value={session.sessionName}
-										onChange={(e) => handleSessionChange(index, 'sessionName', e.target.value)}
+										value={session.quantity}
+										onChange={(e) => handleSessionChange(index, 'quantity', e.target.value)}
 										sx={{
 											"& .MuiInputBase-input": { 
 												fontSize: "14px", 
@@ -609,9 +715,9 @@ const FormDivideStudent = ({ onClose }) => {
 								</Grid>
 								
 								<Grid item xs={0.5} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-									{sessions.length > 1 && (
+									{rooms.length > 1 && (
 										<IconButton
-											onClick={() => removeSession(index)}
+											onClick={() => removeRoom(index)}
 											sx={{ 
 												color: 'error.main',
 												padding: '0px',
@@ -630,7 +736,7 @@ const FormDivideStudent = ({ onClose }) => {
 							</Grid>
 						</Box>
 					))}
-          <CancelButton style={{padding: "10px"}} onClick={addSession}>
+          <CancelButton style={{padding: "10px"}} onClick={addRoom}>
             <i className="fas fa-plus me-2"></i>
             Thêm phòng thi
           </CancelButton>
