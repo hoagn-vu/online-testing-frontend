@@ -357,7 +357,7 @@ const RoomOrganizePage = () => {
 											})}
 											style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
 										>
-											40
+											{item.totalCandidates}
 										</td>
 										<td
 											onClick={() => navigate(`/staff/organize/${organizeId}/${sessionId}/${item.roomInSessionId}`, {
