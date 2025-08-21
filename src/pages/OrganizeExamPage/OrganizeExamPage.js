@@ -31,6 +31,8 @@ const OrganizeExamPage = () => {
 	const [showPasswordForm, setShowPasswordForm] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+	const [showDetailExamForm, setShowDetailExamForm] = useState(false);
+	const [selectedItem, setSelectedItem] = useState(null);
 	useEffect(() => {
 		if (location.state?.reload) {
 			fetchData(); 
@@ -330,7 +332,7 @@ const OrganizeExamPage = () => {
 											<th>Kỳ thi</th>
 											<th>Phân môn</th>
 											<th>Loại</th>
-											<th>Đề thi</th>
+											<th className="text-center">Đề thi</th>
 											<th>Ma trận</th>
 											<th className="text-center">Thời gian (M)</th>
 											<th className="text-center">Điểm</th>
@@ -383,21 +385,34 @@ const OrganizeExamPage = () => {
 												>
 													{typeMapping[item.examType] || item.examType}
 												</td>
+												{/* đề thi */}
 												<td
-													onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
-														state: { organizeExamName: item.organizeExamName },
-													})}
-													style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+													className="text-center"
+													onClick={() => {
+														setSelectedItem(item);  
+														setShowDetailExamForm(true);
+													}}
+													style={{
+														cursor: item.exams && item.exams.length > 0 ? "pointer" : "default",
+														textDecoration: "none",
+														color: item.exams && item.exams.length > 0 ? "black" : "gray",
+													}}
+													onMouseEnter={(e) => {
+														if (item.exams && item.exams.length > 0) e.target.style.color = "blue";
+													}}
+													onMouseLeave={(e) => {
+														if (item.exams && item.exams.length > 0) e.target.style.color = "black";
+													}}
 												>
-													{item.examType === "Ma trận" || item.examType === "Ngẫu nhiên" ? "-" : item.examSet?.join(", ") || "-"}										
+													{item.examType === "Ma trận" || item.examType === "Tự động" ? "-" : item.exams?.length || "-"}										
 												</td>
-												<td
+												<td	
 													onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
 														state: { organizeExamName: item.organizeExamName },
 													})}
 													style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
 												>
-													{item.examType === "Đề thi" || item.examType === "Ngẫu nhiên" ? "-" : item.matrixName || "-"}
+													{item.examType === "Đề thi sẵn có" || item.examType === "Tự động" ? "-" : item.matrixName || "-"}
 												</td>
 												<td
 													onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
@@ -458,9 +473,15 @@ const OrganizeExamPage = () => {
 															</li>
 															<li className="tbl-action">
 																<Link
-																	to={`/staff/organize/report/${item.id}`}
+																	to={item.organizeExamStatus.toLowerCase() === "disabled" ? `/staff/organize/report/${item.id}` : "#"}
 																	className="dropdown-item tbl-action"
-																	style={{ color: "black", textDecoration: "none", display: "block" }}
+																	style={{
+																		color: item.organizeExamStatus.toLowerCase() === "disabled" ? "black" : "gray",
+																		textDecoration: "none",
+																		display: "block",
+																		pointerEvents: item.organizeExamStatus.toLowerCase() === "disabled" ? "auto" : "none", // không cho click khi đang hoạt động
+																		cursor: item.organizeExamStatus.toLowerCase() === "disabled" ? "pointer" : "not-allowed",
+																	}}
 																>
 																	Báo cáo
 																</Link>
@@ -629,6 +650,70 @@ const OrganizeExamPage = () => {
 								<AddButton style={{width: "100%"}}>
 									Lưu
 								</AddButton>
+							</Grid>
+						</Grid>
+					</div>
+				</div>
+			)}
+
+			{/* Modal */}
+			{showDetailExamForm && selectedItem && (
+				<div className="form-overlay">
+					<div
+						className="shadow form-fade bg-white bd-radius-8"
+						style={{ width: "800px", boxShadow: 3 }}
+					>
+						{/* Header */}
+						<div
+							className="d-flex justify-content-between align-items-center p-4"
+							style={{
+								borderBottom: "1px solid #ccc",
+								marginBottom: "20px",
+								padding: "10px 20px",
+							}}
+						>
+							<h5 className="fw-bold" style={{ margin: 0 }}>Danh sách đề thi</h5>
+							<button
+								className="btn-close"
+								onClick={() => setShowDetailExamForm(false)}
+							/>
+						</div>
+
+						{/* Nội dung danh sách đề thi */}
+						<div style={{ maxHeight: "400px", overflowY: "auto", padding: "0 20px" }}>
+							{selectedItem.exams && selectedItem.exams.length > 0 ? (
+								<table className="table table-bordered table-hover">
+									<thead className="table-light">
+										<tr className="text-center">
+											<th>STT</th>
+											<th>Tên đề thi</th>
+											<th>Mã đề thi</th>
+										</tr>
+									</thead>
+									<tbody>
+										{selectedItem.exams.map((exam, idx) => (
+											<tr key={exam.id || idx}>
+												<td className="text-center">{idx + 1}</td>
+												<td>{exam.examName}</td>
+												<td className="text-center">{exam.examCode || "-"}</td>
+											</tr>
+										))}
+									</tbody>
+								</table>
+							) : (
+								<p>Không có đề thi nào</p>
+							)}
+						</div>
+
+						{/* Nút hủy */}
+						<Grid container spacing={2} sx={{ justifyContent: "flex-end", p: 3, pt: 1 }}>
+							<Grid item xs={3}>
+								<CancelButton
+									onClick={() => setShowDetailExamForm(false)}
+									style={{ width: "100%" }}
+								>
+									Hủy
+								</CancelButton>
 							</Grid>
 						</Grid>
 					</div>
