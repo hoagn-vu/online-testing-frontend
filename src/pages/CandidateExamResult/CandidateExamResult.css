@@ -87,5 +87,22 @@
 }
 
 .candidate-exam-result .btn-secondary:hover {
-  background-color: #616161;
+    background-color: #616161;
+  }
+
+.text-second {
+  color: #616161 !important;
+}
+
+.star-color {
+  color: rgb(255, 204, 0);
+  font-size: larger;
+}
+
+.question-box-bg {
+  background-color: #f5f5f5;
+}
+
+.text-second-nhat {
+  color: #7d7d7d !important;
 }

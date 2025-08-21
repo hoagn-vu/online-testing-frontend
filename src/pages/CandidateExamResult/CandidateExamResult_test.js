@@ -3,8 +3,11 @@ import "./CandidateExamResult.css";
 import AddButton from "../../components/AddButton/AddButton";
 import { Link, useNavigate , useParams } from "react-router-dom";
 import ApiService from "../../services/apiService";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
+import { Check, X, HelpCircle } from "lucide-react";
 
-const CandidateExamResult = () => {
+const CandidateExamResultTest = () => {
   //const { studentName, examCode, duration, score, questions } = sampleData;
   const { organizeId, sessionId, roomId, candidateId } = useParams();
   const [organizeExamName, setOrganizeExamName] = useState("");
@@ -48,7 +51,13 @@ const CandidateExamResult = () => {
   useEffect(() => {
     fetchData();
   }, []);
+  const value = 85;
 
+  // Đếm thống kê cho legend
+  const correctCount = listQuestions.filter(q => q.isUserChosenCorrect).length;
+  const incorrectCount = listQuestions.filter(q => !q.isUserChosenCorrect && q.answerChosen?.length > 0).length;
+  const skippedCount = listQuestions.filter(q => !q.answerChosen || q.answerChosen.length === 0).length;
+  
   return (
     <div className="p-4">
     {/* Breadcrumb */}
@@ -87,26 +96,118 @@ const CandidateExamResult = () => {
 			</nav>
       <div className="candidate-exam-result">
         <div className="tbl-shadow">
-          <div className="header p-2 mb-0">
-            <h5>Kết quả bài thi của: {candidateName}</h5>
+          <div className="header p-4 mb-0">
             <div className="row">
               <div className="col">
-                <p><strong>Phân môn:</strong> {subjectName}</p>
+                <h5 className="fw-bold mb-2">Kết quả bài thi: {candidateName}</h5>
+                <p className="mb-2"><strong>Phân môn:</strong> {subjectName}</p>
                 <p><strong>Phòng thi:</strong> {roomName}</p>
               </div>
-              <div className="col">
-                <p><strong>Thời gian làm bài:</strong> {duration} phút</p>
-                <p><strong>Điểm số:</strong> {totalScore}/10</p>
+              <div className="col d-flex justify-content-between text-center">
+                <div className="mx-3">
+                  <p className="text-second">Độ chính xác</p> 
+                  {/* <p>{duration} phút</p> */}
+                  <div style={{ width: 50, height: 25, marginLeft: "15px" }}>
+                    <CircularProgressbar
+                      value={(correctCount / listQuestions.length) * 100}
+                      text={`${Math.round((correctCount / listQuestions.length) * 100)}%`}
+                      circleRatio={0.5} // chỉ vẽ nửa vòng
+                      styles={buildStyles({
+                        rotation: 0.75, // bắt đầu từ góc trái -> làm thành nửa vòng trên
+                        strokeLinecap: "round",
+                        pathColor: "#00C49F",
+                        trailColor: "#eee",
+                        textColor: "#000",
+                        textSize: "20px"
+                      })}
+                    />
+                  </div>
+                </div>
+                <div className="mx-3">
+                  <p className="text-second">Điểm số</p>
+                  <p><i className="fa-solid fa-star me-1 star-color"></i>{totalScore}</p> 
+                </div>
+                <div className="mx-3">
+                  <p className="text-second">Câu trả lời đúng</p> 
+                  <p>{correctCount}/{listQuestions.length}</p>
+                </div>
               </div>
             </div>
           </div>
-          <ul className="question-list">
+          
+          <div className="d-flex flex-wrap gap-2 mt-0 p-4">
+            {listQuestions.map((q, index) => (
+              <div
+                key={q.questionId}
+                className="d-flex rounded question-box-bg "
+                style={{ height: "35px", width: "60px" }}
+              >
+                {/* số thứ tự câu hỏi */}
+                <span className="text-sm inset-0 flex items-center justify-center m-2 ms-4">
+                  {index + 1}
+                </span>
+
+                {/* icon check hoặc X */}
+                {q.isUserChosenCorrect ? (
+                  <Check
+                    size={15}
+                    className="text-green-600 ms-1"
+                    style={{backgroundColor: "#09dc68ff", color: "white"}}
+                  />
+                ) : (
+                  <X
+                    size={15}
+                    className="text-red-600 ms-1"
+                    style={{backgroundColor: "red", color: "white"}}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+          
+          {(() => {
+            const total = listQuestions.length;
+            const correctCount = listQuestions.filter(q => q.isUserChosenCorrect).length;
+            const incorrectCount = listQuestions.filter(
+              q => !q.isUserChosenCorrect && q.answerChosen?.length > 0
+            ).length;
+            const skippedCount = listQuestions.filter(
+              q => !q.answerChosen || q.answerChosen.length === 0
+            ).length;
+
+            const percent = (count) =>
+              total > 0 ? ((count / total) * 100).toFixed(1) + "%" : "0%";
+
+            return (
+              <div className="p-4 d-flex gap-3 pt-0 pb-1">
+                <p className="mb-1">
+                  <strong className="text-success">Correct:</strong> {correctCount} 
+                  <span className="text-second-nhat" style={{ position: "relative", top: "-4px" }}> . </span> 
+                  <span className="text-second-nhat">{percent(correctCount)}</span>
+                </p>
+                <p className="mb-1">
+                  <strong className="text-danger">Incorrect:</strong> {incorrectCount} 
+                  <span className="text-second-nhat" style={{ position: "relative", top: "-4px" }}> . </span> 
+                  <span className="text-second-nhat">{percent(incorrectCount)}</span>
+                </p>
+                <p className="mb-1">
+                  <strong className="text-secondary">Skipped:</strong> {skippedCount} 
+                  <span className="text-second-nhat" style={{ position: "relative", top: "-4px" }}> . </span> 
+                  <span className="text-second-nhat">{percent(skippedCount)}</span>
+                </p>
+              </div>
+            );
+          })()}
+
+          <hr className="mb-0 pb-0"></hr>
+
+          <ul className="question-list p-4">
             {listQuestions.map((q, index) => {
               const correctCount = listQuestions.filter(x => x.isUserChosenCorrect).length;
               const pointPerCorrect = correctCount > 0 ? totalScore / correctCount : 0;
 
               return (
-                <li key={q.questionId} className="question-item pt-2 pb-0">
+                <li key={q.questionId} className="question-item p-0 pt-3">
                   <h6>
                     <strong>
                       Câu {index + 1}: {q.questionText}
@@ -154,4 +255,4 @@ const CandidateExamResult = () => {
   );
 };
 
-export default CandidateExamResult;
+export default CandidateExamResultTest;

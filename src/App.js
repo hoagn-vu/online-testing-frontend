@@ -48,6 +48,7 @@ import RoomTest from "./pages/RoomTest/RoomTest";
 import CandidateExamResult from "./pages/CandidateExamResult/CandidateExamResult";
 import ChangePasswordPage from "./pages/ChangePasswordPage/ChangePasswordPage";
 import SupvChangePasswordPage from "./pages/SupvChangePasswordPage/SupvChangePasswordPage";
+import CandidateExamResultTest from "./pages/CandidateExamResult/CandidateExamResult_test";
 
 function App() {
   const accessToken = useSelector((state) => state.auth.accessToken) || localStorage.getItem("accessToken");
@@ -114,7 +115,7 @@ function App() {
           <Route path="organize/monitor/:organizeId/:sessionId" element={<MonitorOrganizePage />} />
           <Route path="organize/score/:organizeId/:sessionId/:roomId" element={<ScoreTableSessionPage />} />
           <Route path="organize/:organizeId/:sessionId/:roomId" element={<CandidateOrganizePage />} />
-          <Route path="organize/:organizeId/:sessionId/:roomId/:candidateId" element={<CandidateExamResult />} />
+          <Route path="organize/:organizeId/:sessionId/:roomId/:candidateId" element={<CandidateExamResultTest />} />
           <Route path="question" element={<SubjectPage />}/>
           <Route path="question/:subjectId" element={<QuestionBankPage />} />
           <Route path="question/:subjectId/:questionBankId" element={<ListQuestionPage />} />
