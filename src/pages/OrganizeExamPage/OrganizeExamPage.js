@@ -323,7 +323,7 @@ const OrganizeExamPage = () => {
 
 						{/* Hiển thị bảng theo vai trò đã chọn */}
 						<div className="organize-examtable-container mt-3">
-							<div className="table-responsive">
+							<div className="table-responsive" style={{minHeight: "230px"}}>
 								<table className="table organize-exam-table sample-table tbl-organize-hover table-hover" style={{fontSize: "14px"}}>
 									<thead>
 										<tr className="align-middle fw-medium">

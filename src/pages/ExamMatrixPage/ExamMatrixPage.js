@@ -245,7 +245,7 @@ const handleDetailClick = async (matrix) => {
           </div>
         </div>
 
-        <div className="table-responsive">
+        <div className="table-responsive" style={{minHeight: "230px"}}>
           <table className="table sample-table table-hover tbl-organize-hover">
             <thead>
               <tr className="align-middle">

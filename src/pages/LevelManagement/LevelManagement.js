@@ -199,7 +199,7 @@ const LevelManagement = () => {
           </div>
         </div>
 
-        <div className="table-responsive">
+        <div className="table-responsive" style={{minHeight: "230px"}}>
           <table className="table sample-table tbl-organize-hover table-hover" style={{fontSize: "14px"}}>
             <thead>
               <tr className="align-middle">
