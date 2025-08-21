@@ -35,7 +35,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
     questionBankId: null,
     totalQuestions: null,
 		sessions: [
-			{ sessionName: '', startAt: '', finishAt: '' },
+			{ sessionName: '', startAt: '', finishAt: null },
 		],
   });
 
@@ -98,7 +98,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
   const addSession = () => {
 		setExamData((prev) => ({
 			...prev,
-			sessions: [...prev.sessions, { sessionName: '', startAt: '', finishAt: '' }]
+			sessions: [...prev.sessions, { sessionName: '', startAt: '', finishAt: null }]
 		}));
     // setSessions([...sessions, { sessionName: '', activeAt: '' }]);
   };
