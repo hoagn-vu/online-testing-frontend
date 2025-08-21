@@ -268,15 +268,15 @@ const SessionPage = () => {
 							{organizeExam.examType === "auto" && (
 								<p><strong>Tổng số câu hỏi:</strong> {organizeExam.totalQuestions ?? "Chưa có dữ liệu"}</p>
 							)}
+							{organizeExam.examType === "matrix"  && (
+									<p><strong>Ma trận đề:</strong> {organizeExam.matrixName ?? "Chưa có dữ liệu"}</p>
+							)}
 						</div>
 
 						{/* Cột 3 - Hiển thị thông tin đặc biệt */}
 						<div style={{ flex: 1 }}>
 							{(organizeExam.examType === "matrix" || organizeExam.examType === "auto") && (
 								<p><strong>Điểm tối đa:</strong> {organizeExam.maxScore}</p>
-							)}
-							{organizeExam.examType === "matrix"  && (
-									<p><strong>Ma trận đề:</strong> {organizeExam.matrixName ?? "Chưa có dữ liệu"}</p>
 							)}
 						</div>
 					</div>
@@ -515,10 +515,10 @@ const SessionPage = () => {
 									}}
 								/>
 							</Grid>
-							<Grid item xs={6}>
+							<Grid item xs={12}>
 								<LocalizationProvider dateAdapter={AdapterDayjs}>
 									<DateTimePicker
-										label="Start at"
+										label="Thời gian bắt đầu"
 										value={formData.activeAt ? dayjs(formData.activeAt) : null}
 										onChange={(newValue) => 
 										setFormData({ ...formData, activeAt: newValue ? newValue.toISOString() : "" })
@@ -543,7 +543,7 @@ const SessionPage = () => {
 									/>
 								</LocalizationProvider>
 							</Grid>
-							<Grid item xs={6}>
+							{/* <Grid item xs={6}>
 								<LocalizationProvider dateAdapter={AdapterDayjs}>
 									<DateTimePicker
 										label="Finish at"
@@ -570,7 +570,7 @@ const SessionPage = () => {
 										}}
 									/>
 								</LocalizationProvider>
-							</Grid>
+							</Grid> */}
 						</Grid>		
 							{/* Buttons */}
 							<Grid container spacing={2} sx={{justifyContent: "flex-end", p: 3, pt: 1 }}>
