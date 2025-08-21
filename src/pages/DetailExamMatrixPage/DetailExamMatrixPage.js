@@ -67,9 +67,9 @@ const DetailExamMatrixPage = () => {
     if (!isEditMode && tagClassification.length > 0) {
       setData(
         tagClassification.map((item) => ({
-          chapter: finalType === "level" ? "N/A" : item.chapter,
+          chapter: finalType === "level" ? "" : item.chapter,
           levels: [{
-            level: finalType === "chapter" ? "N/A" : item.level || "Không xác định",
+            level: finalType === "chapter" ? "" : item.level || "Không xác định",
             total: item.total || 0,
             questionCount: 0,
             score: 0,
@@ -406,6 +406,7 @@ const DetailExamMatrixPage = () => {
 					score: level.score,
 				}))
 			),
+			matrixType: finalType,
 		};
 
 		try {
