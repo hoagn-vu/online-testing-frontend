@@ -433,9 +433,9 @@ const OrganizeExamPage = () => {
 													{item.maxScore}
 												</td>
 												<td className="text-center">
-													<div className="d-flex align-items-center justify-content-center" >
-														<span className={`badge mt-1 ${item.organizeExamStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
-															{item.organizeExamStatus === "Active" || "available" ? "Kích hoạt" : "Đóng"}
+													<div className="d-flex align-items-center justify-content-center">
+														<span className={`badge mt-1 ${item.organizeExamStatus.toLowerCase() === "active" ? "bg-primary" : "bg-secondary"}`}>
+															{item.organizeExamStatus.toLowerCase() === "active" ? "Kích hoạt" : "Đóng"}
 														</span>
 													</div>
 												</td>
