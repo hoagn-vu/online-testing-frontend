@@ -62,28 +62,78 @@ const DetailExamMatrixPage = () => {
 				? "level"
 				: "both";
 	}
-// Reset data when personName changes
-  useEffect(() => {
-    if (!isEditMode && tagClassification.length > 0) {
+
+  // Reset data when personName changes
+	useEffect(() => {
+  if (!isEditMode && tagClassification.length > 0) {
+    if (finalType === "level") {
+		// Gộp các mức độ trùng lặp ngay từ data
+			const groupedLevels = tagClassification.reduce((acc, item) => {
+				const level = item.level || "Không xác định";
+				const existing = acc.find((entry) => entry.level === level);
+				if (existing) {
+					existing.total += item.total || 0;
+					existing.questionCount += item.questionCount || 0;
+					existing.score += item.score || 0;
+				} else {
+					acc.push({
+						level,
+						total: item.total || 0,
+						questionCount: 0,
+						score: 0,
+					});
+				}
+				return acc;
+			}, []);
+			setData(groupedLevels);
+			console.log("data after reset for level:", groupedLevels);
+    } else if (finalType === "chapter") {
+      // Giữ cấu trúc có levels cho chapter
       setData(
         tagClassification.map((item) => ({
-          chapter: finalType === "level" ? "" : item.chapter,
+          chapter: item.chapter,
           levels: [{
-            level: finalType === "chapter" ? "" : item.level || "Không xác định",
+            level: "",
             total: item.total || 0,
             questionCount: 0,
             score: 0,
           }],
         }))
       );
-      setTotalScore(10); // Reset totalScore to default
+    } else {
+      const groupedData = tagClassification.reduce((acc, item) => {
+          const existing = acc.find((entry) => entry.chapter === item.chapter);
+          if (existing) {
+            existing.levels.push({
+              level: item.level || "Không xác định",
+              total: item.total || 0,
+              questionCount: 0,
+              score: 0,
+            });
+          } else {
+            acc.push({
+              chapter: item.chapter,
+              levels: [{
+                level: item.level || "Không xác định",
+                total: item.total || 0,
+                questionCount: 0,
+                score: 0,
+              }],
+            });
+          }
+          return acc;
+        }, []);
+        setData(groupedData);
+      }
+      setTotalScore(10);
     }
   }, [personName, tagClassification, finalType, isEditMode]);
 	
 	// Debug personName
   useEffect(() => {
     console.log("personName:", personName);
-  }, [personName]);
+		console.log("finalType:", finalType);
+  }, [personName, finalType]);
 	
 	useEffect(() => {
 		if (inputRef.current) {
@@ -187,14 +237,18 @@ const DetailExamMatrixPage = () => {
           params: { subjectId: matrix.subjectId, questionBankId: matrix.questionBankId, type: "level" },
         });
         const classification = tagRes.data;
-				setData(
-					classification.map((item) => ({
-						level: item.level || "Không xác định",
-						total: item.total || 0,
-						questionCount: 0,
-						score: 0,
-					}))
-				);
+				// Merge matrixTags vào classification cho edit mode
+        const mergedData = classification.map((item) => {
+          const matchingTag = matrixTags.find(tag => tag.level === item.level);
+          return {
+            level: item.level || "Không xác định",
+            total: item.total || 0,
+            questionCount: matchingTag ? matchingTag.questionCount : 0,
+            score: matchingTag ? matchingTag.score : 0,
+          };
+        });
+        setData(mergedData);
+        console.log("data in fetchMatrixDetail for level:", mergedData);
       } else { // detectedType === "chapter"
         const tagRes = await ApiService.get("/subjects/questions/tags-classification", {
           params: { subjectId: matrix.subjectId, questionBankId: matrix.questionBankId, type: "chapter" },
@@ -232,6 +286,10 @@ const DetailExamMatrixPage = () => {
 	};
 
 	useEffect(() => {
+		console.log("tagClassification after update:", tagClassification);
+	}, [tagClassification]);
+
+	useEffect(() => {
 		const fetchTagsClassification = async () => {
 			try {
 				let typeDefined = "both"; // Mặc định là both
@@ -247,18 +305,26 @@ const DetailExamMatrixPage = () => {
 				const response = await ApiService.get("/subjects/questions/tags-classification", {
 					params: { subjectId: subjectChosen, questionBankId: bankChosen, type: typeDefined },
 				});
-				setTagClassification(response.data.map((item) => ({ ...item, questionCount: 0 })));
-				// console.log("Tag classification: ", response.data.map((item) => ({ ...item, questionCount: 0 })));
-			} catch (error) {
-				console.error("Failed to fetch tag classification: ", error);
-			}
-		};
+				const classificationData = response.data;
+        setTagClassification(classificationData.map((item) => ({ ...item, questionCount: 0 })));
+        console.log("tagClassification:", classificationData);
+        if (typeDefined === "level" && (!classificationData || classificationData.length === 0)) {
+          Swal.fire({
+            icon: "warning",
+            title: "Không có dữ liệu mức độ!",
+            text: "Không tìm thấy mức độ nào cho môn học và bộ câu hỏi đã chọn.",
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch tag classification: ", error);
+        Swal.fire("Lỗi!", "Không thể tải danh sách mức độ", "error");
+      }
+    };
 
-		if (subjectChosen && bankChosen) {
-			fetchTagsClassification();
-		}
-	}, [subjectChosen, bankChosen, personName]);
-
+    if (subjectChosen && bankChosen) {
+      fetchTagsClassification();
+    }
+  }, [subjectChosen, bankChosen, personName]);
 
   const handleChange = (event) => {
     const value = event.target.value; 
@@ -267,57 +333,42 @@ const DetailExamMatrixPage = () => {
 		setPersonName([lastSelected]);
   };
 
-	useEffect(() => {
-		if (editMatrixId && data.length > 0) return; 
-		const groupedData = tagClassification.reduce((acc, item) => {
-			const existing = acc.find((entry) => entry.chapter === item.chapter);
-			if (existing) {
-				existing.levels.push({ level: item.level || "Không xác định", total: item.total });
-			} else {
-				acc.push({ chapter: item.chapter, levels: [{ level: item.level || "Không xác định", total: item.total }] });
-			}
-			return acc;
-		}, []);
-	
-		setData(
-			groupedData.map((item) => ({
-				...item,
-				levels: item.levels.map((level) => ({ ...level, questionCount: 0, score: 0 }))
-			}))
-		);
-	}, [tagClassification]);
-
 	const handleInputChange = (chapterIndex, levelIndex, field, value) => {
-    setData((prevData) => {
-      const newData = [...prevData];
-      if (matrixType === "level") {
-        // Trong chế độ level, data là mảng object cấp 1, không có levels
-        if (!newData[chapterIndex]) {
-          console.error("Invalid index:", chapterIndex);
-          return prevData;
-        }
-        newData[chapterIndex] = { ...newData[chapterIndex], [field]: value };
-      } else if (matrixType === "chapter") {
-        // Trong chế độ chapter, data là mảng object cấp 1, không có levels
-        if (!newData[chapterIndex]) {
-          console.error("Invalid index:", chapterIndex);
-          return prevData;
-        }
-        newData[chapterIndex] = { ...newData[chapterIndex], [field]: value };
-      } else {
-        // Chế độ both, xử lý với levels
-        if (!newData[chapterIndex] || !newData[chapterIndex].levels[levelIndex]) {
-          console.error("Invalid index:", chapterIndex, levelIndex);
-          return prevData;
-        }
-        newData[chapterIndex].levels[levelIndex] = {
-          ...newData[chapterIndex].levels[levelIndex],
-          [field]: value,
-        };
-      }
-      return newData;
-    });
-  };
+		console.log("handleInputChange received:", { chapterIndex, levelIndex, field, value });
+		setData((prevData) => {
+			const newData = [...prevData];
+			if (finalType === "level") {
+				// Cấu trúc phẳng cho level: { level, total, questionCount, score }
+				if (!newData[chapterIndex]) {
+					console.error("Invalid index:", chapterIndex);
+					return prevData;
+				}
+				newData[chapterIndex] = { ...newData[chapterIndex], [field]: value };
+			} else if (finalType === "chapter") {
+				// Cấu trúc cho chapter: { chapter, levels: [{ total, questionCount, score }] }
+				if (!newData[chapterIndex] || !newData[chapterIndex].levels[levelIndex]) {
+					console.error("Invalid index:", chapterIndex, levelIndex);
+					return prevData;
+				}
+				newData[chapterIndex].levels[levelIndex] = {
+					...newData[chapterIndex].levels[levelIndex],
+					[field]: value,
+				};
+			} else {
+				// Chế độ both: Cập nhật vào levels[levelIndex]
+				if (!newData[chapterIndex] || !newData[chapterIndex].levels[levelIndex]) {
+					console.error("Invalid index:", chapterIndex, levelIndex);
+					return prevData;
+				}
+				newData[chapterIndex].levels[levelIndex] = {
+					...newData[chapterIndex].levels[levelIndex],
+					[field]: value,
+				};
+			}
+			console.log("data after update:", newData);
+			return newData;
+		});
+	};
 	
 	const totalSelectedQuestions = Array.isArray(data)
   ? data.reduce((sum, item) => {
@@ -406,31 +457,37 @@ const DetailExamMatrixPage = () => {
 		
 	// Hàm build matrixTags theo finalType
 	const buildMatrixTags = (data, finalType) => {
-		let matrixTags = data.flatMap((item) =>
-			item.levels.map((level) => ({
-				chapter: item.chapter,
-				level: finalType === "chapter" ? "" : level.level,
-				questionCount: level.questionCount,
-				score: level.score,
-			}))
-		);
+    let matrixTags = data.flatMap((item) =>
+      item.levels
+        ? item.levels.map((level) => ({
+            chapter: item.chapter,
+            level: finalType === "chapter" ? "" : level.level,
+            questionCount: level.questionCount,
+            score: level.score,
+          }))
+        : [{
+            chapter: item.chapter || "",
+            level: finalType === "chapter" ? "" : item.level,
+            questionCount: item.questionCount,
+            score: item.score,
+          }]
+    );
 
-		// Nếu là chapter thì gộp theo chapter để tránh trùng
-		if (finalType === "chapter") {
-			const merged = {};
-			matrixTags.forEach((tag) => {
-				if (!merged[tag.chapter]) {
-					merged[tag.chapter] = { ...tag };
-				} else {
-					merged[tag.chapter].questionCount += tag.questionCount;
-					merged[tag.chapter].score += tag.score;
-				}
-			});
-			matrixTags = Object.values(merged);
-		}
+    if (finalType === "chapter") {
+      const merged = {};
+      matrixTags.forEach((tag) => {
+        if (!merged[tag.chapter]) {
+          merged[tag.chapter] = { ...tag };
+        } else {
+          merged[tag.chapter].questionCount += tag.questionCount;
+          merged[tag.chapter].score += tag.score;
+        }
+      });
+      matrixTags = Object.values(merged);
+    }
 
-		return matrixTags;
-	};
+    return matrixTags;
+  };
 
 	const handleCreateMatrix = async () => {
 		const examMatrixData = {
