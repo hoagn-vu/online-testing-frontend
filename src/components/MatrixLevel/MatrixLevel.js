@@ -8,36 +8,33 @@ const MatrixLevel = ({ data, handleInputChange, totalScore: propTotalScore, setT
 
   // khởi tạo từ data ban đầu
   useEffect(() => {
-    if (!data) return;
+    if (!data || !data.length) {
+      console.log("No data available for levelData");
+      setLevelData([]);
+      return;
+    }
 
+    // Tạo levelData từ data, giữ nguyên chỉ số gốc
     const levelSummary = data.map((item, index) => ({
       level: item.level || "Không xác định",
       totalSelected: item.questionCount ?? 0,
       totalQuestions: item.total ?? 0,
       score: item.score ?? 0,
-      originalIndex: index,
+      originalIndex: index, // Lưu chỉ số gốc từ data
     }));
 
     setLevelData(levelSummary);
+    console.log("levelData:", levelSummary);
   }, [data]);
 
   const effectiveTotalScore = propTotalScore !== undefined ? propTotalScore : 10;
 
-  const handleInputChangeLevel = (index, key, value) => {
-    setLevelData((prev) => {
-      const updated = [...prev];
-      updated[index] = { ...updated[index], [key]: value };
-
-      // truyền lên cha
-      handleInputChange(updated[index].originalIndex, 0, key, value);
-
-      return updated;
-    });
-
+  const handleInputChangeLevel = (originalIndex, key, value) => {
     // kiểm tra tổng điểm
     if (key === "score") {
+      const parsedValue = Number(value);
       const totalScore = levelData.reduce(
-        (sum, item, i) => (i === index ? sum : sum + (item.score || 0)),
+        (sum, item, i) => (i === originalIndex ? sum : sum + (item.score || 0)),
         0
       );
       if (totalScore + value > effectiveTotalScore) {
@@ -46,8 +43,15 @@ const MatrixLevel = ({ data, handleInputChange, totalScore: propTotalScore, setT
           title: "Tổng điểm vượt quá!",
           text: `Tổng điểm không được vượt quá ${effectiveTotalScore}.`,
         });
+        return;
       }
     }
+
+    // Chuyển totalSelected thành questionCount khi gọi handleInputChange
+    const field = key === "totalSelected" ? "questionCount" : key;
+    const parsedValue = key === "totalSelected" || key === "score" ? Number(value) : value;
+    console.log("Calling handleInputChange with:", { originalIndex, levelIndex: 0, field, value: parsedValue });
+    handleInputChange(originalIndex, 0, field, parsedValue);
   };
 
   return (
@@ -76,7 +80,7 @@ const MatrixLevel = ({ data, handleInputChange, totalScore: propTotalScore, setT
                     min="0"
                     max={item.totalQuestions || 999}
                     onChange={(e) =>
-                      handleInputChangeLevel(index, "totalSelected", Math.max(0, Number(e.target.value)))
+                      handleInputChangeLevel(item.originalIndex, "totalSelected", Math.max(0, Number(e.target.value)))
                     }
                     onKeyDown={(e) => {
                       if ([".", ",", "e"].includes(e.key)) e.preventDefault();
@@ -94,7 +98,7 @@ const MatrixLevel = ({ data, handleInputChange, totalScore: propTotalScore, setT
                     min="0"
                     step="0.1"
                     onChange={(e) =>
-                      handleInputChangeLevel(index, "score", Number(e.target.value))
+                      handleInputChangeLevel(item.originalIndex, "score", Number(e.target.value))
                     }
                     className="border p-1 text-center"
                     style={{ width: "60px" }}
