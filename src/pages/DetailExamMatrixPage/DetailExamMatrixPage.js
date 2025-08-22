@@ -152,7 +152,7 @@ const DetailExamMatrixPage = () => {
 			// ✅ Nếu BOTH → cần gọi thêm tags-classification để merge total
 			if (detectedType === "both") {
 				const tagRes = await ApiService.get("/subjects/questions/tags-classification", {
-					params: { subjectId: matrix.subjectId, questionBankId: matrix.questionBankId },
+					params: { subjectId: matrix.subjectId, questionBankId: matrix.questionBankId, type: "both" },
 				});
 				const classification = tagRes.data;
 
@@ -184,25 +184,20 @@ const DetailExamMatrixPage = () => {
         );
       } else if (detectedType === "level") {
         const tagRes = await ApiService.get("/subjects/questions/tags-classification", {
-          params: { subjectId: matrix.subjectId, questionBankId: matrix.questionBankId },
+          params: { subjectId: matrix.subjectId, questionBankId: matrix.questionBankId, type: "level" },
         });
         const classification = tagRes.data;
-        setData(
-          matrixTags.map(tag => {
-            // Tìm tất cả các total theo level, lấy tổng hoặc giá trị lớn nhất
-            const matches = classification.filter(c => c.level === tag.level);
-            const total = matches.length > 0 ? matches.reduce((sum, c) => sum + c.total, 0) : (tag.total || 0);
-            return {
-              level: tag.level || "Không xác định",
-              total: total,
-              questionCount: tag.questionCount || 0,
-              score: tag.score || 0,
-            };
-          })
-        );
+				setData(
+					classification.map((item) => ({
+						level: item.level || "Không xác định",
+						total: item.total || 0,
+						questionCount: 0,
+						score: 0,
+					}))
+				);
       } else { // detectedType === "chapter"
         const tagRes = await ApiService.get("/subjects/questions/tags-classification", {
-          params: { subjectId: matrix.subjectId, questionBankId: matrix.questionBankId },
+          params: { subjectId: matrix.subjectId, questionBankId: matrix.questionBankId, type: "chapter" },
         });
         const classification = tagRes.data;
         setData(
@@ -211,9 +206,15 @@ const DetailExamMatrixPage = () => {
             const total = matches.length > 0 ? matches.reduce((sum, c) => sum + c.total, 0) : (tag.total || 0);
             return {
               chapter: tag.chapter,
-              total: total,
-              questionCount: tag.questionCount || 0,
-              score: tag.score || 0,
+              // total: total,
+              // questionCount: tag.questionCount || 0,
+              // score: tag.score || 0,
+							levels: [{
+								level: "", // đảm bảo không bị lặp
+								total: total,
+								questionCount: tag.questionCount || 0,
+								score: tag.score || 0,
+							}]
             };
           })
         );
@@ -233,8 +234,18 @@ const DetailExamMatrixPage = () => {
 	useEffect(() => {
 		const fetchTagsClassification = async () => {
 			try {
+				let typeDefined = "both"; // Mặc định là both
+				// dựa vào personName để set type
+				if (personName.includes("Chuyên đề") && personName.includes("Mức độ")) {
+					typeDefined = "both";
+				} else if (personName.includes("Chuyên đề") && !personName.includes("Mức độ")) {
+					typeDefined = "chapter";
+				} else if (personName.includes("Mức độ") && !personName.includes("Chuyên đề")) {
+					typeDefined = "level";
+				}
+
 				const response = await ApiService.get("/subjects/questions/tags-classification", {
-					params: { subjectId: subjectChosen, questionBankId: bankChosen },
+					params: { subjectId: subjectChosen, questionBankId: bankChosen, type: typeDefined },
 				});
 				setTagClassification(response.data.map((item) => ({ ...item, questionCount: 0 })));
 				// console.log("Tag classification: ", response.data.map((item) => ({ ...item, questionCount: 0 })));
@@ -246,7 +257,7 @@ const DetailExamMatrixPage = () => {
 		if (subjectChosen && bankChosen) {
 			fetchTagsClassification();
 		}
-	}, [subjectChosen, bankChosen]);
+	}, [subjectChosen, bankChosen, personName]);
 
 
   const handleChange = (event) => {
@@ -393,19 +404,40 @@ const DetailExamMatrixPage = () => {
 		}
 	};
 		
+	// Hàm build matrixTags theo finalType
+	const buildMatrixTags = (data, finalType) => {
+		let matrixTags = data.flatMap((item) =>
+			item.levels.map((level) => ({
+				chapter: item.chapter,
+				level: finalType === "chapter" ? "" : level.level,
+				questionCount: level.questionCount,
+				score: level.score,
+			}))
+		);
+
+		// Nếu là chapter thì gộp theo chapter để tránh trùng
+		if (finalType === "chapter") {
+			const merged = {};
+			matrixTags.forEach((tag) => {
+				if (!merged[tag.chapter]) {
+					merged[tag.chapter] = { ...tag };
+				} else {
+					merged[tag.chapter].questionCount += tag.questionCount;
+					merged[tag.chapter].score += tag.score;
+				}
+			});
+			matrixTags = Object.values(merged);
+		}
+
+		return matrixTags;
+	};
+
 	const handleCreateMatrix = async () => {
 		const examMatrixData = {
-			matrixName: matrixName,
+			matrixName,
 			subjectId: subjectChosen,
 			questionBankId: bankChosen,
-			matrixTags: data.flatMap((item) =>
-				item.levels.map((level) => ({
-					chapter: item.chapter,
-					level: level.level,
-					questionCount: level.questionCount,
-					score: level.score,
-				}))
-			),
+			matrixTags: buildMatrixTags(data, finalType),
 			matrixType: finalType,
 		};
 
@@ -427,21 +459,18 @@ const DetailExamMatrixPage = () => {
 
 	const handleUpdateMatrix = async () => {
 		const examMatrixData = {
-			matrixName: matrixName,
+			matrixName,
 			subjectId: subjectChosen,
 			questionBankId: bankChosen,
-			matrixTags: data.flatMap((item) =>
-				item.levels.map((level) => ({
-					chapter: item.chapter,
-					level: level.level,
-					questionCount: level.questionCount,
-					score: level.score,
-				}))
-			),
+			matrixTags: buildMatrixTags(data, finalType),
+			matrixType: finalType, // nhớ gửi type để backend sync
 		};
 
 		try {
-			const response = await ApiService.put(`/exam-matrices/${editMatrixId}`, examMatrixData);
+			const response = await ApiService.put(
+				`/exam-matrices/${editMatrixId}`,
+				examMatrixData
+			);
 			console.log("✅ Cập nhật thành công: ", response.data);
 			Swal.fire({
 				icon: "success",

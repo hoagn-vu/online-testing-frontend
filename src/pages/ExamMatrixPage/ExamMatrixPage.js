@@ -44,7 +44,7 @@ const handleDetailClick = async (matrix) => {
 
       // Lấy dữ liệu classification để bổ sung total
       const tagRes = await ApiService.get("/subjects/questions/tags-classification", {
-        params: { subjectId: selectedMatrix.subjectId, questionBankId: selectedMatrix.questionBankId },
+        params: { subjectId: selectedMatrix.subjectId, questionBankId: selectedMatrix.questionBankId, type: matrix.matrixType },
       });
       const classification = tagRes.data || [];
 
