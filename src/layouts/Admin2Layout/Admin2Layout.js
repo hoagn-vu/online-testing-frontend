@@ -238,7 +238,7 @@ export default function Admin2Layout() {
 
           <div className="user-info position-relative d-flex align-items-center" onClick={() => setIsOpen(!isOpen)} style={{ cursor: "pointer" }}>
             <img src={avatar} alt="Avatar" className="avatar" />
-            <span className="username ms-2">{user?.username}</span>
+            <span className="username ms-2">{user?.userName}</span>
             <i className="fa-solid fa-caret-down ms-2" aria-hidden="true" style={{ color: "black" }}></i>
             {isOpen && (
               <ul className="dropdown-menu show position-absolute end-0 mt-2 custom-dropdown">
