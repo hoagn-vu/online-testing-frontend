@@ -187,26 +187,28 @@ const TakeExamPage = () => {
     });
   };
 
-
-
   return (
     <div>
       {isSubmitted ? (
-        <div className="result-content mt-5" style={{ marginTop: '180px' }}>
-          <h4 className="result-title text-center">
-            <i className="fas fa-award me-2 text-success"></i> Kết quả thi
-          </h4>
-          <div className="result-details">
-            <p><strong>Kỳ thi:</strong> {examResult.organizeExamName}</p>
-            <p><strong>Thí sinh:</strong> {examResult.candidateName} - {examResult.candidateCode}</p>
-            <p><strong>Thời gian hoàn thành:</strong> {examResult.completionTime}</p>
-            <p><strong>Số câu đúng:</strong> <span className="text-success fw-bold">{examResult.correctAnswers}</span>/{examResult.totalQuestions}</p>
-            <p><strong>Điểm thi:</strong> <span className="score-badge">{examResult.totalScore}</span></p>
-          </div>
-          <div className="text-center mt-5">
-            <a href="/candidate/home" className="btn-home">
-              <i className="fas fa-home me-2"></i> Về trang chủ
-            </a>
+        <div className="result-wrapper">
+          <div className="result-content">
+            <h4 className="result-title text-center">
+              <i className="fas fa-award me-2 text-success mb-2"></i> Kết quả thi
+            </h4>
+            <div className="result-details mb-3">
+              <p><strong>Kỳ thi:</strong> {examResult.organizeExamName}</p>
+              <p><strong>Môn thi:</strong> {examResult.organizeExamName}</p>
+              <p><strong>Thí sinh:</strong> {examResult.candidateName} - {examResult.candidateCode}</p>
+              <p><strong>Thời gian hoàn thành:</strong> {examResult.finishedAt}</p>
+              <p><strong>Số câu đúng:</strong> <span className="text-success fw-bold">{examResult.correctAnswers}</span>/{examResult.totalQuestions}</p>
+              <p><strong>Điểm thi:</strong> <span className="score-badge">{examResult.totalScore}</span></p>
+              <p><strong>Số lần rời khỏi màn hình:</strong> {examResult.violationCount}</p>
+            </div>
+            <div className="text-center mt-5">
+              <a href="/candidate/home" className="btn-home">
+                <i className="fas fa-home me-2"></i> Về trang chủ
+              </a>
+            </div>
           </div>
         </div>
       ) : (
