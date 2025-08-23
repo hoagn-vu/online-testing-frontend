@@ -298,10 +298,6 @@ const RoomOrganizePage = () => {
           <div className='right-header'>
 						<AddButton onClick={handleOpenForm}>
 							<i className="fas fa-plus me-2"></i>
-              Thêm mới mới
-						</AddButton>
-						<AddButton onClick={preAddNew}>
-							<i className="fas fa-plus me-2"></i>
               Thêm mới
 						</AddButton>
           </div>
@@ -390,11 +386,11 @@ const RoomOrganizePage = () => {
 														transform: 'translate3d(-10px, 10px, 0px)',
 													}}
 												>
-													<li className="tbl-action" onClick={() => preEdit(item)}> 
+													{/* <li className="tbl-action" onClick={() => preEdit(item)}> 
 														<button className="dropdown-item tbl-action" onClick={() => preEdit(item)}>
 															Chỉnh sửa
 														</button>
-													</li>
+													</li> */}
 													<li className="tbl-action" onClick={() => handleDelete(item.roomId)}>
 														<button className="dropdown-item tbl-action" onClick={() => handleDelete(item.roomId)}>
 															Xoá
