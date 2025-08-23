@@ -457,6 +457,20 @@ const DetailExamMatrixPage = () => {
 			return;
 		}
 		
+		// 👉 Thêm check tổng điểm trước khi lưu
+		const totalScoreFromDetails = data.reduce((sum, chapter) =>
+			sum + chapter.levels.reduce((levelSum, level) => levelSum + (level.score || 0), 0)
+		, 0);
+
+		if (parseFloat(totalScoreFromDetails.toFixed(2)) !== parseFloat(totalScore.toFixed(2))) {
+			Swal.fire({
+				icon: "error",
+				title: "Tổng điểm không khớp!",
+				text: `Tổng điểm chi tiết (${totalScoreFromDetails}) không bằng ${totalScore}.`,
+			});
+			return;
+		}
+
 		if (editMatrixId) {
 			handleUpdateMatrix();
 		} else {
