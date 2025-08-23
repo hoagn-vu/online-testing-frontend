@@ -153,6 +153,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 					maxScore: examData.maxScore,
 					subjectId: examData.subjectId,
 					matrixId: examData.matrixId,
+					questionBankId: examData.questionBankId,
 					examType: examData.examType,
 					sessions: examData.sessions,
 				};
@@ -163,6 +164,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 					duration: examData.duration,
 					maxScore: examData.maxScore,
 					subjectId: examData.subjectId,
+					questionBankId: examData.questionBankId,
 					exams: examData.examIds || [],
 					examType: examData.examType,
 					sessions: examData.sessions,
