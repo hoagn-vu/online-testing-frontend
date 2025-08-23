@@ -32,7 +32,7 @@ const ExamMatrixPage = () => {
     setOpenId(prev => prev === id ? null : id);
   };
 
-const handleDetailClick = async (matrix) => {
+  const handleDetailClick = async (matrix) => {
     setEditingMatrix(matrix);
     try {
       const response = await ApiService.get(`/exam-matrices/${matrix.id}`);
