@@ -1,33 +1,147 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLoginMutation } from '../../services/authApi';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setCredentials, setUser } from '../../redux/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { authApi } from '../../services/authApi';
 import "./ChangePasswordForm.css";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {InputAdornment, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Pagination, NumberInput, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
+import { useChangePasswordMutation } from "../../services/authApi"
+import Swal from "sweetalert2";
 
 const ChangePasswordForm = () => {
-  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [login, { isLoading }] = useLoginMutation();
+  const [showOldPassword, setShowOldPassword] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const inputRef = useRef(null);
-  
+  const oldPasswordRef = useRef(null);
+
+  const user = useSelector((state) => state.auth.user);
+
   const [passwordData, setPasswordData] = useState({
-    role: "candidate",
+    oldPassword: "",
     newPassword: "",
-    confirmPassword: "",
+    confirmNewPassword: "",
   });
-  
-  const handlePasswordSubmit = (e) => {
+
+  useEffect(() => {
+    if (oldPasswordRef.current) {
+      oldPasswordRef.current.focus();
+    }
+  }, []);
+
+  const [changePassword, { isLoading }] = useChangePasswordMutation();
+
+  const handleTogglePassword = () => setShowPassword((prev) => !prev);
+
+  const handlePasswordSubmit = async (e) => {
+    e.preventDefault();
+
+    // 1. Check rỗng
+    if (!passwordData.oldPassword) {
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi!",
+        text: "Vui lòng nhập mật khẩu cũ!",
+      });
+      return;
+    }
+    
+    if (!passwordData.newPassword) {
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi!",
+        text: "Vui lòng nhập mật khẩu mới!",
+      });
+      return;
+    }
+
+    if (!passwordData.confirmNewPassword) {
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi!",
+        text: "Vui lòng nhập lại mật khẩu xác nhận!",
+      });
+      return;
+    }
+
+    // 2. Check new != old
+    if (passwordData.newPassword === passwordData.oldPassword) {
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi!",
+        text: "Mật khẩu mới không được trùng mật khẩu cũ!",
+      });
+      return;
+    }
+
+    // 3. Check confirm
+    if (passwordData.newPassword !== passwordData.confirmNewPassword) {
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi!",
+        text: "Mật khẩu xác nhận không khớp!",
+      });
+      return;
+    }
+
+    try {
+      console.log("Gửi API với dữ liệu: ", {
+        userId: user.id,
+        oldPassword: passwordData.oldPassword,
+        newPassword: passwordData.newPassword,
+        confirmNewPassword: passwordData.confirmNewPassword,
+      });
+
+      const response = await changePassword({
+        userId: user.id,
+        oldPassword: passwordData.oldPassword,
+        newPassword: passwordData.newPassword,
+        confirmNewPassword: passwordData.confirmNewPassword,
+      }).unwrap();
+
+      // Nếu backend trả về message lỗi nhưng vẫn là 200
+      if (response.code === "op-incorrect") {
+        Swal.fire({
+          icon: "error",
+          title: "Lỗi!",
+          text: "Mật khẩu cũ không đúng!",
+        });
+        return;
+      }
+
+      Swal.fire({
+        icon: "success",
+        title: "Thành công!",
+        text: "Đổi mật khẩu thành công",
+      });
+    } catch (err) {
+      console.log("Lỗi đổi mật khẩu:", err);
+
+      let message = "Đổi mật khẩu thất bại!";
+      
+      if (err?.status === 404) {
+        message = "Mật khẩu cũ không đúng!";
+      } else if (err?.status === 400) {
+        message = err?.data?.message || "Yêu cầu không hợp lệ!";
+      } else if (err?.data?.message) {
+        message = err.data.message;
+      }
+
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi!",
+        text: message,
+      });
+    }
+
+  };
+
+  /*const handlePasswordSubmit = (e) => {
     e.preventDefault();
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       alert("Mật khẩu xác nhận không khớp!");
@@ -36,17 +150,18 @@ const ChangePasswordForm = () => {
     console.log("Cập nhật mật khẩu cho vai trò:", passwordData);
   };
 
-  const handleTogglePassword = () => setShowPassword((prev) => !prev);
+  const handleTogglePassword = () => setShowPassword((prev) => !prev);*/
+
   return (
     <div className="d-flex justify-content-center">
       <form
         className=" pb-5 ps-5 pe-5 bgr-color w-100"
-        //onSubmit={handleLogin}
+        onSubmit={handlePasswordSubmit}
       >
-        <p className="text-center mb-4 fw-bold text-blue-holo mt-4">Đổi mật khẩu</p>
+        {/* <p className="text-center mb-4 fw-bold text-blue-holo mt-4">Đổi mật khẩu</p>
         {errMsg && (
           <div className="alert alert-danger text-center p-2">{errMsg}</div>
-        )}
+        )} */}
 
         {/* <div className="mb-3 text-start position-relative">
           <label className="form-label fw-bold">Mật khẩu mới:</label>
@@ -85,14 +200,44 @@ const ChangePasswordForm = () => {
             <i className={`fa-regular ${showPasswordConfirm ? "fa-eye-slash" : "fa-eye"}`}></i>
           </button>
         </div> */}
-
+        <p className="text-center mb-4 fw-bold text-blue-holo mt-4">Đổi mật khẩu</p>
         <Grid item xs={12}>
+          <label className="form-label">Mật khẩu cũ:</label>
+          <TextField
+            fullWidth
+            type={showOldPassword ? "text" : "password"}
+            required
+            placeholder='Nhập mật khẩu cũ'
+            inputRef={oldPasswordRef}
+            value={passwordData.oldPassword}
+            onChange={(e) =>
+              setPasswordData({ ...passwordData, oldPassword: e.target.value })
+            }
+            sx={{
+              "& .MuiInputBase-input": {
+                fontSize: "14px",
+                paddingBottom: "11px",
+              },
+              "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+            }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={() => setShowOldPassword(!showOldPassword)} edge="end">
+                    {showOldPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Grid>
+        <Grid item xs={12} sx={{mt: 3}}>
           <label className="form-label">Mật khẩu mới:</label>
           <TextField
             fullWidth
             type={showPassword ? "text" : "password"}
             required
-            placeholder='Nhập mật khẩu'
+            placeholder='Nhập mật khẩu mới'
             inputRef={inputRef}
             value={passwordData.newPassword}
             onChange={(e) =>
@@ -124,9 +269,9 @@ const ChangePasswordForm = () => {
             placeholder='Nhập lại mật khẩu'
             inputRef={inputRef}
             type={showConfirmPassword  ? "text" : "password"}
-            value={passwordData.confirmPassword}
+            value={passwordData.confirmNewPassword}
             onChange={(e) =>
-              setPasswordData({ ...passwordData, confirmPassword: e.target.value })
+              setPasswordData({ ...passwordData, confirmNewPassword: e.target.value })
             }
             sx={{
               "& .MuiInputBase-input": {

@@ -3,49 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./HistoryCandidatePage.css";
 import { useSelector } from "react-redux";
 import ApiService from '../../services/apiService';
-
-// const examHistory = [
-//   {
-//     id: 1,
-//     exam: "Bài kiểm tra cuối kỳ I (22Toán)",
-//     subject: "Toán",
-//     score: 4,
-//     date: "09/04/2024 03:07",
-//     note: "",
-//   },
-//   {
-//     id: 2,
-//     exam: "Test",
-//     subject: "Toán",
-//     score: 2,
-//     date: "09/04/2024 02:00",
-//     note: "Hoàng Nguyên Vũ bảo dừng",
-//   },
-//   {
-//     id: 3,
-//     exam: "test 1",
-//     subject: "Toán",
-//     score: 2,
-//     date: "09/04/2024 02:07",
-//     note: "Vi phạm",
-//   },
-//   {
-//     id: 4,
-//     exam: "Test 3",
-//     subject: "Tiếng Anh",
-//     score: 0,
-//     date: "09/04/2024 03:17",
-//     note: "Vi phạm",
-//   },
-//   {
-//     id: 5,
-//     exam: "Test 4",
-//     subject: "Tiếng Anh",
-//     score: 2,
-//     date: "09/04/2024 03:36",
-//     note: "Thoát ra khỏi màn hình nhiều lần",
-//   },
-// ];
+import { FaHistory } from "react-icons/fa";
 
 const HistoryCandidatePage = () => {
   const userId = useSelector((state) => state.auth.user.id);
@@ -70,36 +28,60 @@ const HistoryCandidatePage = () => {
     return date.toLocaleString('vi-VN', options);
   };
 
+  const getScoreBadge = (score) => {
+    if (score >= 8) return "badge bg-success";
+    if (score >= 5) return "badge bg-warning text-dark";
+    return "badge bg-danger";
+  };
+
   return (
-    <div style={{backgroundColor:"#f4f6f9", minHeight:"100vh"}}>       
-      <div className="container container-history justify-content-center d-flex">
-          <div className="table-responsive tbl-history">
-              <h2 className="text-center mb-4">Lịch sử thi</h2>
-              <table className="exam-history-table table table-striped" >
-                  <thead className="bg-light">
-                    <tr>
-                      <th style={{ minWidth: "0px" }}>STT</th>
-                      <th style={{ minWidth: "150px" }}>Kỳ thi</th>
-                      <th style={{ minWidth: "90px", justifyContent: "left" }}>Môn thi</th>
-                      <th style={{ minWidth: "100px" }}>Điểm số</th>
-                      <th style={{ width: "180px" }}>Ngày thực hiện</th>
-                      <th style={{ minWidth: "300px" }}>Chú thích</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {examHistory.map((exam, index) => (
-                      <tr key={exam.id}>
-                        <td>{index + 1}</td>
-                        <td>{exam.organizeExamName}</td>
-                        <td className="text-center">{exam.subjectName}</td>
-                        <td className="text-center">{exam.totalScore}</td>
-                        <td className="text-center">{formatDate(exam.finishedAt)}</td>
-                        <td>{exam.note}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-              </table>
+    <div className="history-page">
+      <div className="container container-history">
+        <div className="history-card shadow-lg">
+          <h2 className="text-center mb-4 d-flex align-items-center justify-content-center">
+            <FaHistory className="me-2 text-primary" /> Lịch sử thi
+          </h2>
+
+          <div className="table-responsive">
+            <table className="exam-history-table table table-hover align-middle">
+              <thead>
+                <tr>
+                  <th>STT</th>
+                  <th>Kỳ thi</th>
+                  <th className="text-center">Môn thi</th>
+                  <th className="text-center">Điểm số</th>
+                  <th className="text-center">Ngày thực hiện</th>
+                  <th>Chú thích</th>
+                </tr>
+              </thead>
+              <tbody>
+                {examHistory.map((exam, index) => (
+                  <tr key={exam.id}>
+                    <td>{index + 1}</td>
+                    <td className="fw-semibold">{exam.organizeExamName}</td>
+                    <td className="text-center">{exam.subjectName}</td>
+                    <td className="text-center">
+                      <span className={getScoreBadge(exam.totalScore)}>
+                        {exam.totalScore.toFixed(2)}
+                      </span>
+                    </td>
+                    <td className="text-center">{formatDate(exam.finishedAt)}</td>
+                    <td className={exam.note ? "text-danger fw-semibold" : "text-muted"}>
+                      {exam.note || "—"}
+                    </td>
+                  </tr>
+                ))}
+                {examHistory.length === 0 && (
+                  <tr>
+                    <td colSpan="6" className="text-center text-muted py-4">
+                      Chưa có dữ liệu lịch sử thi
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
+        </div>
       </div>
     </div>
   );

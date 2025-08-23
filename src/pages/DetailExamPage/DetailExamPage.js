@@ -343,7 +343,7 @@ const DetailExamPage = () => {
                           }}
                         >
                           <div className="me-2">
-                            <p className="mb-1" style={{ fontSize: "14px" }}>
+                            <p className="mb-1" style={{ fontSize: "16px" }}>
                               {question.questionText}
                             </p>
                             {question.tags?.slice(1).map((tag, index) => (
@@ -398,7 +398,7 @@ const DetailExamPage = () => {
                             className={`flex-grow-1 ${
                               option.isCorrect ? "list-group-item-success" : "list-options"
                             }`}
-                            style={{ listStyle: "none" }}
+                            style={{ listStyle: "none", fontSize: "14px" }}
                           >
                             {option.optionText}
                           </li>

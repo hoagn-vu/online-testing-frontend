@@ -1,23 +1,45 @@
-.container-history {
-    padding-top: 90px;
+.history-page {
+  background: linear-gradient(135deg, #f8fafc, #eef2f7);
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 60px 20px;
+  padding-top: 100px;
 }
 
-.container-history .tbl-history {
-    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
-    padding: 15px;
-    border-radius: 10px;
+.history-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 30px;
+  width: 100%;
+  max-width: 1100px;
+  width: 90%;        /* gọn lại thay vì 100% */
+  margin: 0 auto;
+  
 }
 
-.container-history .table th {
-    text-align: center;
-    background-color: #bad2ec;
-    font-weight: bold;
+.exam-history-table thead {
+  background-color: #f1f5f9;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.container-history .table td {
-    text-align: center;
+.exam-history-table tbody tr:hover {
+  background-color: #f9fafb;
+  transition: 0.2s;
 }
 
-.container-history h2 {
-    font-weight: bold;
+.exam-history-table th,
+.exam-history-table td {
+  padding: 14px 18px;
+  vertical-align: middle;
+}
+
+.exam-history-table .badge {
+  font-size: 1rem;      /* chỉnh to ra (hoặc 14px tuỳ ý) */
+  font-weight: normal;  /* bỏ in đậm */
+  text-transform: none; /* bỏ viết hoa */
+  padding: 0.35em 0.65em;
 }

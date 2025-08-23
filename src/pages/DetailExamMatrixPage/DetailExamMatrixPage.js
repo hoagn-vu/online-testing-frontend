@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, use } from "react";
-import { Link, useNavigate, useSearchParams   } from "react-router-dom";
+import { Link, useNavigate, useSearchParams, useParams, useLocation} from "react-router-dom";
 import SelectRe from 'react-select';
 import './DetailExamMatrixPage.css'
 import {Select, Box, Button, Grid, IconButton, Input, TextField, MenuItem, Autocomplete } from "@mui/material";
@@ -49,6 +49,15 @@ const DetailExamMatrixPage = () => {
 	const isEditMode = Boolean(editMatrixId); // nếu có id -> đang chỉnh sửa
 	const [personName, setPersonName] = useState([]);
 	let finalType;
+	const location = useLocation();
+
+  // Lấy query params từ URL
+  const queryParams = new URLSearchParams(location.search);
+  const id = queryParams.get("id");
+
+  const isEdit = !!id; 
+  const currentText = isEdit ? "Chỉnh sửa" : "Thêm mới";
+
 
 	if (isEditMode && matrixType) {
 		finalType = matrixType; 
@@ -555,7 +564,7 @@ const DetailExamMatrixPage = () => {
 				<span className="breadcrumb-between">
 					<Link to="/staff/matrix-exam" className="breadcrumb-between">Quản lý ma trận đề</Link></span>
 					<span className="ms-2 me-3"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
-				<span className="breadcrumb-current">Thêm mới</span>
+				<span className="breadcrumb-current">{currentText}</span>
 			</nav>
 
 			<div className="d-flex mt-4">

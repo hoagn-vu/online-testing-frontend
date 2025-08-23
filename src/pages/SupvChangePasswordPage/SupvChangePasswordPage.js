@@ -12,13 +12,15 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
 import { FaFileAlt, FaUserCircle } from "react-icons/fa";
 import ChangePasswordForm from "../../components/ChangePasswordForm/ChangePasswordForm";
+import { useSelector, useDispatch } from "react-redux";
 
 const SupvChangePasswordPage = () => {
   const inputRef = useRef(null);
   const navigate = useNavigate();
+  const user = useSelector((state) => state.auth.user);
 
   return (
-    <div className="home-candi-page">
+    <div className="home-candi-page" style={{paddingTop: "120px"}}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 d-flex info-exam-content mt-0">
         <div className="bg-white shadow-md rounded-lg p-5 flex flex-col items-center w-full info-content">
           <div className="flex flex-col items-center">
@@ -31,11 +33,11 @@ const SupvChangePasswordPage = () => {
           <div className="mt-4 w-100">
             <p className="font-semibold mb-2">
               <span className="fw-bold">Họ tên: </span>
-              <span>Phan Thị Phương Linh</span>
+              <span>{user.fullName}</span>
             </p>
             <p className="text-gray-500">
               <span className="fw-bold">Mã người dùng: </span>
-              <span>BIT220089</span>
+              <span>{user.userCode}</span>
             </p>
           </div>
         </div>

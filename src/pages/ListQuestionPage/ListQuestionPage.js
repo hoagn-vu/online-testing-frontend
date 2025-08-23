@@ -693,7 +693,7 @@ const ListQuestionPage = () => {
 																		}}
 																	>
 																		<div className="me-2">
-																			<p className="mb-1" style={{ fontSize: "14px" }}>
+																			<p className="mb-1" style={{ fontSize: "16px" }}>
 																				{question.questionText}
 																			</p>
 																			{question.tags?.slice(1).map((tag, index) => (
@@ -739,7 +739,7 @@ const ListQuestionPage = () => {
 																	checked={question.isRandomOrder}
 																	readOnly
 																/>
-																<label className="form-check-label">Đảo thứ tự đáp án</label>
+																<label className="form-check-label" style={{fontSize: "14px"}}>Đảo thứ tự đáp án</label>
 															</div>
 															<div className="form-check form-switch m-0">
 																<input 
@@ -748,7 +748,7 @@ const ListQuestionPage = () => {
 																	checked={question.questionType === 'multiple-choice'}
 																	readOnly
 																/>
-																<label className="form-check-label">Multiple Choice</label>
+																<label className="form-check-label" style={{fontSize: "14px"}}>Multiple Choice</label>
 															</div>
 														</div>
 
@@ -768,7 +768,7 @@ const ListQuestionPage = () => {
 																			className={`flex-grow-1 ${
 																				option.isCorrect ? "list-group-item-success" : "list-options"
 																			}`}
-																			style={{ listStyle: "none" }}
+																			style={{ listStyle: "none", fontSize: "14px" }}
 																		>
 																			{option.optionText}
 																		</li>

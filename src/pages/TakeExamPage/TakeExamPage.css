@@ -134,3 +134,98 @@ button.finish {
     align-items: center !important;
     justify-content: center !important;
 }
+
+/* Kết quả thi OK */
+.result-content {
+  background: #fff !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1) !important;
+  padding: 40px !important;
+  min-width: 700px !important;
+  animation: fadeIn 0.3s ease-in-out !important;
+  margin-top: 100px !important;
+  width: fit-content;
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.result-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; 
+  background: linear-gradient(135deg, #f8fafc, #eef2f7);
+}
+
+.result-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #000000;
+  margin-bottom: 20px;
+}
+
+.result-details p {
+  font-size: 16px;
+  color: #000000;
+  margin-bottom: 10px;
+}
+
+.score-badge {
+  display: inline-block;
+  background: #4caf50;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+.text-success {
+  color: #4caf50;
+}
+
+.text-danger {
+  color: #e53935;
+}
+
+/* Kết quả Not OK */
+.result-ne-content {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  min-width: 700px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Nút về trang chủ */
+.btn-home {
+  background: #007bff;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  transition: 0.3s;
+  box-shadow: 0 4px 10px rgba(183, 183, 183, 0.3);
+}
+
+.btn-home:hover {
+  background: #0c74e3;
+  transform: translateY(-4px);
+}
+
+/* Hiệu ứng fade in */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

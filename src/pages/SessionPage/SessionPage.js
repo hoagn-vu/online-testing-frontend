@@ -69,21 +69,17 @@ const SessionPage = () => {
 	}, [organizeId, keyword, page, pageSize]);
 	
 	const [formData, setFormData] = useState({
-		sessionId: "",
 		sessionName: "",
-		activeAt: "",
-		roomList: "",
-		sessionStatus: "inactive",
+		startAt: "",
+		sessionStatus: "active",
 	});
 	
 	const preAddNew = () => {
 		setEditingAccount(null); 
 		setFormData({
-			sessionId: "",
 			sessionName: "",
-			activeAt: "",
-			roomList: "",
-			sessionStatus: "inactive",
+			startAt: "",
+			sessionStatus: "active",
 		});
 		setTimeout(() => setShowForm(true), 0); 
 	};
@@ -121,6 +117,10 @@ const SessionPage = () => {
 		if (editingAccount) {
 			try {
 				await ApiService.put(`/organize-exams/${organizeId}/sessions/${formData.sessionId}`, formData);
+				Swal.fire({
+					icon: "success",
+					text: "Chỉnh sửa ca thi thành công",
+				});
 				fetchData();
 			}
 			catch (error) {
@@ -129,6 +129,10 @@ const SessionPage = () => {
 		} else {
 			try {
 				await ApiService.post(`/organize-exams/${organizeId}/sessions`, formData);
+				Swal.fire({
+					icon: "success",
+					text: "Thêm ca thi thành công",
+				});
 				fetchData();
 			} catch (error) {
 				console.error("Failed to  add new session: ", error);
@@ -143,14 +147,14 @@ const SessionPage = () => {
 		setFormData({
 			sessionId: session.sessionId,
 			sessionName: session.sessionName,
-			activeAt: session.activeAt,
+			startAt: session.startAt,
 			sessionStatus: session.sessionStatus,
 		});
 		setEditingAccount(session);
 		setShowForm(true);
 	};
 	
-	const handleDelete = (id) => {
+	const handleDelete = async (id) => {
 		Swal.fire({
 			title: "Bạn có chắc chắn xóa?",
 			text: "Bạn sẽ không thể hoàn tác hành động này!",
@@ -160,16 +164,26 @@ const SessionPage = () => {
 			cancelButtonColor: "#d33",
 			confirmButtonText: "Xóa",
 			cancelButtonText: "Hủy",
-		}).then((result) => {
+		}).then(async(result) => {
 			if (result.isConfirmed) {
-			console.log("Xóa tài khoản có ID:", id);
+				try {
+					await ApiService.put(`/organize-exams/${organizeId}/sessions/${id}`, { sessionStatus: "deleted" });
+					Swal.fire({
+						title: "Đã xóa!",
+						icon: "success",
+						text: "Xóa ca thi thành công",
+					});
 
-			Swal.fire({
-				title: "Đã xóa!",
-				text: "Ca thi đã bị xóa.",
-				icon: "success",
-			});
-      setListSession(prev => prev.filter(session => session.sessionId !== id));
+					// Sau khi xóa thì load lại danh sách
+					fetchData();
+				} catch (error) {
+					console.error("Xóa thất bại:", error);
+					Swal.fire({
+						icon: "error",
+						title: "Lỗi khi xóa ca thi",
+						text: error.message,
+					});
+				}
 			}
 		});
 	};
@@ -209,9 +223,9 @@ const SessionPage = () => {
 		setFormData({
 			sessionId: "",
 			sessionName: "",
-			activeAt: "",
+			startAt: "",
 			roomList: "",
-			sessionStatus: "inactive",
+			sessionStatus: "active",
 		});
 		setEditingAccount(null);
 	}
@@ -360,7 +374,7 @@ const SessionPage = () => {
 													}}
 													style={{ cursor: "pointer", color: "black" }}
 												>
-													{dayjs(session.activeAt).format("DD/MM/YYYY HH:mm")}
+													{dayjs(session.startAt).format("DD/MM/YYYY HH:mm")}
 												</td>
 												<td
 													onClick={() => {
@@ -374,7 +388,7 @@ const SessionPage = () => {
 													}}
 													style={{ cursor: "pointer", color: "black" }}
 												>
-													{dayjs(session.activeAt).format("DD/MM/YYYY HH:mm")}
+													{dayjs(session.finishAt).format("DD/MM/YYYY HH:mm")}
 												</td>
 												<td
 													onClick={() => {
@@ -471,7 +485,7 @@ const SessionPage = () => {
 			{/* Form thêm tài khoản */}
 			{showForm && (
 				<div className="form-overlay">
-					<div
+					<form
 						className="shadow form-fade bg-white bd-radius-8"
 						style={{ width: "750px", boxShadow: 3, top: "-60px", position: "relative",}}
 						onSubmit={handleSubmit}
@@ -521,9 +535,9 @@ const SessionPage = () => {
 								<LocalizationProvider dateAdapter={AdapterDayjs}>
 									<DateTimePicker
 										label="Thời gian bắt đầu"
-										value={formData.activeAt ? dayjs(formData.activeAt) : null}
+										value={formData.startAt ? dayjs(formData.startAt) : null}
 										onChange={(newValue) => 
-										setFormData({ ...formData, activeAt: newValue ? newValue.toISOString() : "" })
+										setFormData({ ...formData, startAt: newValue ? newValue.toISOString() : "" })
 										}
 										sx={{
 											width: "100%", 
@@ -587,7 +601,7 @@ const SessionPage = () => {
 									</AddButton>
 								</Grid>
 							</Grid>
-					</div>
+					</form>
 				</div>
 			)}
 		</div>
