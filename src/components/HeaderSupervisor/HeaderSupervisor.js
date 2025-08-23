@@ -12,29 +12,26 @@ const HeaderSupervisor = ({ username, avatarUrl, logoUrl }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const user = useSelector((state) => state.auth.user);
+  
   const handleLogout = () => {
     dispatch(logout());
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
-    navigate("/");
+    setTimeout(() => navigate("/"), 0);
   };
   return (
     <div className="header-candidate-container">
-      <img src={logoUrl} alt="Logo" className="logo" />
-
+      <img src={logoUrl} alt="Logo" className="logo"/>
       <div className="user-info position-relative">
-      <nav className="flex space-x-6 history">
-          <Link
-            to="/supervisor/home"
+        <nav className="flex space-x-6 history">
+          <Link to="/supervisor/home"
             className="text-black hover:text-blue-500 his-under"
-          >
-            Trang chủ
-          </Link>
+          > Trang chủ </Link>
         </nav>
         
         <img src={avatarUrl} alt="Avatar" className="avatar" onClick={() => setIsOpen(!isOpen)} style={{ cursor: "pointer" }}/>
-        <span className="username" onClick={() => setIsOpen(!isOpen)} style={{ cursor: "pointer" }}>{username}</span>
+        <span className="username" onClick={() => setIsOpen(!isOpen)} style={{ cursor: "pointer" }}>{user?.fullName}</span>
 
         {/* Nút mở dropdown */}
         <button className="dropdown-btn" onClick={() => setIsOpen(!isOpen)}>
@@ -48,10 +45,10 @@ const HeaderSupervisor = ({ username, avatarUrl, logoUrl }) => {
               <a
                 className="dropdown-item d-flex justify-content-between align-items-center"
                 onClick={() => {
-                  setIsOpen(false); // đóng dropdown
+                  setIsOpen(false);
                   navigate("/supervisor/change-passwords");
                 }}
-                style={{ gap: "8px" }}
+                style={{ gap: "8px", cursor: "pointer" }}
               >
                 <span>Đổi mật khẩu</span>
                 <i className="fa-solid fa-key" aria-hidden="true"></i>
@@ -61,7 +58,7 @@ const HeaderSupervisor = ({ username, avatarUrl, logoUrl }) => {
               <a
                 className="dropdown-item d-flex justify-content-between align-items-center"
                 onClick={handleLogout}
-                style={{ gap: "8px" }}
+                style={{ gap: "8px", cursor: "pointer" }}
               >
                 <span>Đăng xuất</span>
                 <i className="fa-solid fa-right-from-bracket" aria-hidden="true"></i>

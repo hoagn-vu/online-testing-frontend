@@ -3,6 +3,7 @@ import { Modal, Button } from "react-bootstrap";
 import { FaFileAlt, FaUserCircle } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./SupervisorHomePage.css";
+import { useSelector, useDispatch } from "react-redux";
 
 const SupervisorHomePage = () => {
   // Thông tin thí sinh
@@ -21,7 +22,7 @@ const SupervisorHomePage = () => {
 
   const [selectedExam, setSelectedExam] = useState(null);
   const [showModal, setShowModal] = useState(false);
-
+  const user = useSelector((state) => state.auth.user);
   // Xử lý khi nhấn vào bài thi
   const handleExamClick = (exam) => {
     setSelectedExam(exam);
@@ -42,11 +43,11 @@ const SupervisorHomePage = () => {
             {/* Thông tin thí sinh */}
             <p className="mt-4 font-semibold">
               <span className="fw-bold">Họ tên: </span>
-              <span>{candidate.name}</span>
+              <span>{user?.fullName}</span>
             </p>
             <p className="text-gray-500">
-              <span className="fw-bold">Mã giảng viên: </span>
-              <span>{candidate.studentId}</span>
+              <span className="fw-bold">Mã giám thị: </span>
+              <span>{user?.userCode}</span>
             </p>
           </div>
 
@@ -63,7 +64,7 @@ const SupervisorHomePage = () => {
                     className="cursor-pointer baithi cursor-pointer"
                     onClick={() => handleExamClick(exam)}
                   >
-                    <FaFileAlt className="text-blue-400 icon me-2" style={{color: "#206ee3"}}/>
+                    <i className="fa-solid fa-door-open me-2" style={{color: "#206ee3"}}></i>
                     <span>{exam}</span>
                   </div>
                 </ol>

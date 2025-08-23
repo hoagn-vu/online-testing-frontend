@@ -13,10 +13,12 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
 import { FaFileAlt, FaUserCircle } from "react-icons/fa";
 import ChangePasswordForm from "../../components/ChangePasswordForm/ChangePasswordForm";
+import { useSelector, useDispatch } from "react-redux";
 
 const ChangePasswordPage = () => {
   const inputRef = useRef(null);
   const navigate = useNavigate();
+  const user = useSelector((state) => state.auth.user);
 
   return (
     <div className="p-4">
@@ -40,11 +42,11 @@ const ChangePasswordPage = () => {
           <div className="mt-4 w-100">
             <p className="font-semibold mb-2">
               <span className="fw-bold">Họ tên: </span>
-              <span>Phan Thị Phương Linh</span>
+              <span>{user.fullName}</span>
             </p>
             <p className="text-gray-500">
               <span className="fw-bold">Mã người dùng: </span>
-              <span>BIT220089</span>
+              <span>{user.userCode}</span>
             </p>
           </div>
         </div>

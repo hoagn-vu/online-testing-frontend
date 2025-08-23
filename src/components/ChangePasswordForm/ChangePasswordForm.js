@@ -97,12 +97,22 @@ const ChangePasswordForm = () => {
         confirmNewPassword: passwordData.confirmNewPassword,
       });
 
-      await changePassword({
+      const response = await changePassword({
         userId: user.id,
         oldPassword: passwordData.oldPassword,
         newPassword: passwordData.newPassword,
         confirmNewPassword: passwordData.confirmNewPassword,
       }).unwrap();
+
+      // Nếu backend trả về message lỗi nhưng vẫn là 200
+      if (response.code === "op-incorrect") {
+        Swal.fire({
+          icon: "error",
+          title: "Lỗi!",
+          text: "Mật khẩu cũ không đúng!",
+        });
+        return;
+      }
 
       Swal.fire({
         icon: "success",
@@ -190,7 +200,7 @@ const ChangePasswordForm = () => {
             <i className={`fa-regular ${showPasswordConfirm ? "fa-eye-slash" : "fa-eye"}`}></i>
           </button>
         </div> */}
-
+        <p className="text-center mb-4 fw-bold text-blue-holo mt-4">Đổi mật khẩu</p>
         <Grid item xs={12}>
           <label className="form-label">Mật khẩu cũ:</label>
           <TextField
