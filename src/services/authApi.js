@@ -26,10 +26,18 @@ export const authApi = createApi({
       query: () => '/profile',
       keepUnusedDataFor: 0,  // Không giữ cache
     }),
+
+    changePassword: builder.mutation({
+      query: ({ userId, oldPassword, newPassword, confirmNewPassword }) => ({
+        url: BASE_URL + `/users/${userId}/change-password`,
+        method: "POST",
+        body: { oldPassword, newPassword, confirmNewPassword },
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useGetProfileQuery } = authApi;
+export const { useLoginMutation, useGetProfileQuery, useChangePasswordMutation  } = authApi;
 
 
 // import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
