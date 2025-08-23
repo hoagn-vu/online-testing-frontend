@@ -195,6 +195,11 @@ const OrganizeExamPage = () => {
 		if (editingOrganizeExam) {
 			try {
 				await ApiService.put(`/organize-exams/${editingOrganizeExam.id}`, formData);
+				Swal.fire({
+					icon: "success",
+					text: "Cập nhật tên kỳ thi thành công",
+					draggable: true
+				});
 				fetchData();
 			} catch (error) {
 				console.error("Failed to update organize exam", error);
@@ -219,7 +224,7 @@ const OrganizeExamPage = () => {
     setShowForm(true);
   };
   
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     Swal.fire({
       title: "Bạn có chắc chắn xóa?",
       text: "Bạn sẽ không thể hoàn tác hành động này!",
@@ -229,17 +234,26 @@ const OrganizeExamPage = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Xóa",
       cancelButtonText: "Hủy",
-    }).then((result) => {
+    }).then(async(result) => {
       if (result.isConfirmed) {
-      console.log("Xóa tài khoản có ID:", id);
-			setListOrganizeExam(prev => prev.filter(item => item.id !== id));
-
-	  	setListDisplay(prev => prev.filter(item => item.id !== id));
-      Swal.fire({
-        title: "Đã xóa!",
-        text: "Kỳ thi đã bị xóa.",
-        icon: "success",
-      });
+				console.log("Xóa tài khoản có ID:", id);
+				try {
+          await ApiService.put(`/organize-exams/${id}`, { organizeExamStatus: "deleted" });
+          fetchData();
+          Swal.fire({
+            title: "Đã xóa!",
+            text: "Kỳ thi đã bị xóa thành công",
+            icon: "success",
+          });
+        }
+        catch (error) {
+          console.error("Xóa thất bại:", error);
+					Swal.fire({
+						icon: "error",
+						title: "Lỗi khi xóa kỳ thi",
+						text: error.message,
+					});
+        }
       }
     });
   };
