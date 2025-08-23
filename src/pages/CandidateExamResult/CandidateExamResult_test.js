@@ -23,6 +23,10 @@ const CandidateExamResultTest = () => {
   console.log("sessionId:", sessionId)
   console.log("roomId:", roomId)
   console.log("candidateId:", candidateId)
+  const [showAnswers, setShowAnswers] = useState(true);
+  const [show, setShow] = useState(true);
+  const [openIndex, setOpenIndex] = useState(null);
+  const [openAnswers, setOpenAnswers] = useState({});
 
   const fetchData = async () => {
 		try {
@@ -47,6 +51,22 @@ const CandidateExamResultTest = () => {
 			console.error("Failed to fetch data", error);
 		}
 	};
+
+  useEffect(() => {
+    // khi load trang, mở tất cả câu hỏi luôn
+    const initState = {};
+    listQuestions.forEach(q => {
+      initState[q.questionId] = true; // true = đang mở
+    });
+    setOpenAnswers(initState);
+  }, [listQuestions]);
+
+  const toggleAnswer = (id) => {
+    setOpenAnswers(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
 
   useEffect(() => {
     fetchData();
@@ -140,24 +160,29 @@ const CandidateExamResultTest = () => {
               <div
                 key={q.questionId}
                 className="d-flex rounded question-box-bg "
-                style={{ height: "35px", width: "60px" }}
+                style={{ height: "40px", width: "80px" }}
+                onClick={() => {
+                  document
+                    .getElementById(`question-${index + 1}`)
+                    ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
               >
                 {/* số thứ tự câu hỏi */}
-                <span className="text-sm inset-0 flex items-center justify-center m-2 ms-4">
-                  {index + 1}
-                </span>
+                <p className="text-sm inset-0 flex items-center justify-center m-2 pb-3 ps-3 ms-3">
+                  {(index + 1).toString().padStart(2, "0")}
+                </p>
 
                 {/* icon check hoặc X */}
                 {q.isUserChosenCorrect ? (
                   <Check
                     size={15}
-                    className="text-green-600 ms-1"
+                    className="text-green-600 ms-2"
                     style={{backgroundColor: "#09dc68ff", color: "white"}}
                   />
                 ) : (
                   <X
                     size={15}
-                    className="text-red-600 ms-1"
+                    className="text-red-600 ms-2"
                     style={{backgroundColor: "red", color: "white"}}
                   />
                 )}
@@ -181,17 +206,17 @@ const CandidateExamResultTest = () => {
             return (
               <div className="p-4 d-flex gap-3 pt-0 pb-1">
                 <p className="mb-1">
-                  <strong className="text-success">Correct:</strong> {correctCount} 
+                  <strong className="text-success">Đúng:</strong> {correctCount} 
                   <span className="text-second-nhat" style={{ position: "relative", top: "-4px" }}> . </span> 
                   <span className="text-second-nhat">{percent(correctCount)}</span>
                 </p>
                 <p className="mb-1">
-                  <strong className="text-danger">Incorrect:</strong> {incorrectCount} 
+                  <strong className="text-danger">Sai:</strong> {incorrectCount} 
                   <span className="text-second-nhat" style={{ position: "relative", top: "-4px" }}> . </span> 
                   <span className="text-second-nhat">{percent(incorrectCount)}</span>
                 </p>
                 <p className="mb-1">
-                  <strong className="text-secondary">Skipped:</strong> {skippedCount} 
+                  <strong className="text-secondary">Bỏ qua:</strong> {skippedCount} 
                   <span className="text-second-nhat" style={{ position: "relative", top: "-4px" }}> . </span> 
                   <span className="text-second-nhat">{percent(skippedCount)}</span>
                 </p>
@@ -200,25 +225,123 @@ const CandidateExamResultTest = () => {
           })()}
 
           <hr className="mb-0 pb-0"></hr>
+          
+          {/* <div className="border p-3 mt-4 rounded m-3">
+            <div className="d-flex justify-content-between">
+              <div className="d-flex">
+                <p style={{fontSize: "15px"}}><i className="fa-solid fa-question me-1"></i> Câu 1</p>
+                <span className="text-second-nhat ms-1 me-1" style={{ position: "relative", top: "-4px" }}> . </span>
+                <Check
+                  size={15}
+                  className="text-green-600 ms-1 me-1"
+                  style={{
+                    backgroundColor: "#09dc68ff",
+                    color: "white",
+                    borderRadius: "3px",
+                    padding: "1px",
+                    marginTop: "2px"
+                  }}
+                />
+                <p className="text-second-nhat mb-0">Correct</p>
+              </div>
+              <div className="d-flex mb-0">
+                <i className="fa-solid fa-star me-1 star-color"></i>
+                <p className="mb-0">1 điểm</p>
+                <i
+                  className={`fa-solid ${show ? "fa-chevron-down" : "fa-chevron-up"} ms-3 mt-1`}
+                  data-bs-toggle="collapse"
+                  data-bs-target="#answer1"
+                  aria-expanded={show}
+                  onClick={() => setShow(!show)}
+                ></i>
+              </div>
+            </div>
+            <h6 className="fw-bold">Hôm nay là thứ mấy?</h6>
+            <div className="collapse show" id="answer1">
+              <div className="pt-2">
+                <p className="mb-0 mt-3">Thứ 2</p>
+                <p className="mb-0 mt-3">Thứ 3</p>
+                <p className="mb-0 mt-3">Thứ 4</p>
+                <p className="mb-0 mt-3">Thứ 5</p>
+              </div>
+            </div>
+          </div> */}
+          {listQuestions.map((q, index) => {
+            const correctCount = listQuestions.filter(x => x.isUserChosenCorrect).length;
+            const pointPerCorrect = correctCount > 0 ? totalScore / correctCount : 0;
 
-          <ul className="question-list p-4">
-            {listQuestions.map((q, index) => {
-              const correctCount = listQuestions.filter(x => x.isUserChosenCorrect).length;
-              const pointPerCorrect = correctCount > 0 ? totalScore / correctCount : 0;
+            const isOpen = openAnswers[q.questionId];
 
-              return (
-                <li key={q.questionId} className="question-item p-0 pt-3">
-                  <h6>
-                    <strong>
-                      Câu {index + 1}: {q.questionText}
-                    </strong>
-                  </h6>
-                  <ul className="options-list">
+            return (
+              <div key={q.questionId} id={`question-${index + 2}`} className="border p-3 mt-4 rounded m-3">
+                {/* Header */}
+                <div className="d-flex justify-content-between">
+                  <div className="d-flex align-items-center">
+                    <p style={{ fontSize: "15px" }} className="mb-0">
+                      <i className="fa-solid fa-question me-1"></i> Câu {index + 1}
+                    </p>
+
+                    <span
+                      className="text-second-nhat ms-1 me-1"
+                      style={{ position: "relative", top: "-4px" }}
+                    >
+                      .
+                    </span>
+
+                    {q.isUserChosenCorrect ? (
+                      <>
+                        <Check
+                          size={15}
+                          className="text-green-600 ms-1 me-1"
+                          style={{
+                            backgroundColor: "#09dc68ff",
+                            color: "white",
+                            borderRadius: "3px",
+                            padding: "1px",
+                          }}
+                        />
+                        <p className="text-success mb-0">Đúng</p>
+                      </>
+                    ) : (
+                      <>
+                        <X
+                          size={15}
+                          className="text-red-600 ms-2"
+                          style={{backgroundColor: "red", color: "white", borderRadius: "3px",}}
+                        />
+                        <p className="text-danger mb-0 ms-1">Sai</p>
+                      </>
+                    )}
+                  </div>
+
+                  <div className="d-flex mb-0 align-items-center">
+                    <i className="fa-solid fa-star me-1 star-color"></i>
+                    <p className="mb-0">
+                      {q.isUserChosenCorrect ? pointPerCorrect : 0} điểm
+                    </p>
+
+                    {/* Chevron toggle */}
+                    <i
+                      className={`fa-solid ms-3 mt-1 ${
+                        isOpen ? "fa-chevron-down" : "fa-chevron-up"
+                      }`}
+                      style={{ cursor: "pointer", transition: "transform 0.3s" }}
+                      onClick={() => toggleAnswer(q.questionId)}
+                    ></i>
+                  </div>
+                </div>
+
+                {/* Question text */}
+                <h6 className="fw-bold mt-2">{q.questionText}</h6>
+
+                {/* Collapse đáp án */}
+                {isOpen && (
+                <div className={`collapse ${isOpen ? "show" : ""}`}>
+                  <div className="pt-2">
                     {q.options.map((option) => {
                       const isSelected = q.answerChosen.includes(option.optionId);
                       const isCorrect = option.isCorrect;
-                      let className = "option";
-
+                      let className = "option mb-1";
                       if (isSelected) {
                         className += isCorrect ? " correct" : " wrong";
                       } else if (isCorrect) {
@@ -226,21 +349,18 @@ const CandidateExamResultTest = () => {
                       }
 
                       return (
-                        <li key={option.optionId} className={className}>
-                          {option.optionText}
-                          {isSelected && " (Đáp án chọn)"}
-                        </li>
+                        <p key={option.optionId} className={className}>
+                          {option.optionText} {isSelected && "(Đáp án chọn)"}
+                        </p>
                       );
                     })}
-                  </ul>
-                  <p className="mt-2">
-                    <strong>Điểm:</strong>{" "}
-                    {q.isUserChosenCorrect ? pointPerCorrect : 0}
-                  </p>
-                </li>
-              );
-            })}
-          </ul>
+                  </div>
+                </div>
+                )}
+              </div>
+            );
+          })}
+
           <div className="footer">
             <button className="btn btn-secondary" onClick={() => window.history.back()}>
               Quay lại
