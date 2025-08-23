@@ -267,42 +267,41 @@ const FormDivideStudent = ({ onClose }) => {
     }
 
     // 2. Check phòng, giám thị, số lượng theo thứ tự trong từng phòng
-  for (let i = 0; i < rooms.length; i++) {
-    if (!selectedRooms[i]) {
-      return Swal.fire({
-        icon: "warning",
-        title: "Thiếu thông tin",
-        text: `Phòng ${i + 1} chưa chọn phòng thi!`,
-        didClose: () => {
-          document.getElementById("roomSelect")?.focus();
-        }
-      });
-    }
+    for (let i = 0; i < rooms.length; i++) {
+      if (!selectedRooms[i]) {
+        return Swal.fire({
+          icon: "warning",
+          title: "Thiếu thông tin",
+          text: `Phòng ${i + 1} chưa chọn phòng thi!`,
+          didClose: () => {
+            document.getElementById("roomSelect")?.focus();
+          }
+        });
+      }
 
-    if (!selectedSupervisors[i]) {
-      return Swal.fire({
-        icon: "warning",
-        title: "Thiếu thông tin",
-        text: `Phòng ${i + 1} chưa có giám thị!`,
-        didClose: () => {
-          document.getElementById(`supervisorSelect-${i}-input`)?.focus();
-        }
-      });
-    }
+      if (!selectedSupervisors[i]) {
+        return Swal.fire({
+          icon: "warning",
+          title: "Thiếu thông tin",
+          text: `Phòng ${i + 1} chưa có giám thị!`,
+          didClose: () => {
+            document.getElementById(`supervisorSelect-${i}-input`)?.focus();
+          }
+        });
+      }
 
-    if (!rooms[i].quantity || Number(rooms[i].quantity) <= 0) {
-      return Swal.fire({
-        icon: "warning",
-        title: "Thiếu thông tin",
-        text: `Phòng ${i + 1} chưa nhập số lượng thí sinh!`,
-        didClose: () => {
-          // focus trực tiếp vào input số lượng
-          document.querySelectorAll("input[type=number]")[i]?.focus();
-        }
-      });
+      if (!rooms[i].quantity || Number(rooms[i].quantity) <= 0) {
+        return Swal.fire({
+          icon: "warning",
+          title: "Thiếu thông tin",
+          text: `Phòng ${i + 1} chưa nhập số lượng thí sinh!`,
+          didClose: () => {
+            // focus trực tiếp vào input số lượng
+            document.querySelectorAll("input[type=number]")[i]?.focus();
+          }
+        });
+      }
     }
-  }
-
 
     const payload = {
       groupUserIds: divideData.groupUserIds,
@@ -321,9 +320,9 @@ const FormDivideStudent = ({ onClose }) => {
     Swal.fire({
       icon: "success",
       text: "Chia phòng thi thành công",
-      draggable: true,
+    }).then(() => {
+      navigate(`/staff/organize/${organizeId}/${sessionId}`);
     });
-    setShowForm(false);
     } catch (error) {
       console.error("Lỗi khi chia phòng thi:", error);
       Swal.fire({

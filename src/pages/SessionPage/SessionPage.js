@@ -230,6 +230,12 @@ const SessionPage = () => {
 		setEditingAccount(null);
 	}
 
+	const examTypeLabels = {
+		matrix: "Ma trận",
+		auto: "Tự động",
+		exams: "Đề thi có sẵn",
+	};
+
 	return (
 		<div className="p-4">
 			{/* Breadcrumb */}
@@ -267,7 +273,7 @@ const SessionPage = () => {
 						{/* Cột 1 */}
 						<div style={{ flex: 1 }}>
 								<p><strong>Môn thi:</strong> {organizeExam.subjectName ?? "Chưa có dữ liệu"}</p>
-								<p><strong>Loại đề thi:</strong> {organizeExam.examType}</p>
+								<p><strong>Loại đề thi:</strong> {examTypeLabels[organizeExam.examType] || organizeExam.examType}</p>
 						</div>
 
 						{/* Cột 2 */}

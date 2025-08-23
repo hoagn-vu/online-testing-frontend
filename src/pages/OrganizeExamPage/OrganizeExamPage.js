@@ -34,6 +34,15 @@ const OrganizeExamPage = () => {
 	const [showDetailExamForm, setShowDetailExamForm] = useState(false);
 	const [selectedItem, setSelectedItem] = useState(null);
 	const [showForm, setShowForm] = useState(false);
+	const [showDetailModal, setShowDetailModal] = useState(false);
+	const [detailData, setDetailData] = useState([]);
+	const [showChapter, setShowChapter] = useState(true);
+	const [showLevel, setShowLevel] = useState(true);
+	const [totalSelectedQuestions, setTotalSelectedQuestions] = useState(0);
+	const [totalScore, setTotalScore] = useState(0);
+	const [difficultyData, setDifficultyData] = useState([]); 
+	const dynamicColSpan = 1 + (showChapter ? 1 : 0) + (showLevel ? 1 : 0);
+
 	useEffect(() => {
 		if (location.state?.reload) {
 			fetchData(); 
@@ -296,6 +305,77 @@ const OrganizeExamPage = () => {
 		navigate(`/staff/organize/report/${exam.id}`);
 	};
 
+	const handleDetailClick = async (matrixId) => {
+		try {
+			const response = await ApiService.get(`/exam-matrices/${matrixId}`);
+			const selectedMatrix = response.data?.data;
+
+			if (!selectedMatrix) {
+				throw new Error("Không tìm thấy ma trận với ID: " + matrixId);
+			}
+
+			// Lấy dữ liệu classification để bổ sung total
+			const tagRes = await ApiService.get("/subjects/questions/tags-classification", {
+				params: { 
+					subjectId: selectedMatrix.subjectId, 
+					questionBankId: selectedMatrix.questionBankId, 
+					type: selectedMatrix.matrixType   // dùng selectedMatrix thay vì matrix
+				},
+			});
+			const classification = tagRes.data || [];
+
+			// Kết hợp matrixTags với classification để thêm total
+			const tags = (selectedMatrix.matrixTags || []).map(tag => {
+				if (tag.chapter && tag.chapter.trim() !== "") {
+					if (tag.level && tag.level.trim() !== "") {
+						const found = classification.find(c => c.chapter === tag.chapter && c.level === tag.level);
+						return { ...tag, total: found ? found.total : 0 };
+					} else {
+						const chapterTotals = classification
+							.filter(c => c.chapter === tag.chapter)
+							.reduce((sum, c) => sum + (c.total || 0), 0);
+						return { ...tag, total: chapterTotals };
+					}
+				} else {
+					const levelTotals = classification
+						.filter(c => c.level === tag.level)
+						.reduce((sum, c) => sum + (c.total || 0), 0);
+					return { ...tag, total: levelTotals };
+				}
+			});
+
+			setDetailData(tags);
+			const hasChapter = tags.some(tag => tag.chapter && tag.chapter.trim() !== "");
+			const hasLevel = tags.some(tag => tag.level && tag.level.trim() !== "");
+
+			setShowChapter(hasChapter);
+			setShowLevel(hasLevel);
+
+			setTotalSelectedQuestions(tags.reduce((sum, tag) => sum + (tag.questionCount || 0), 0));
+			setTotalScore(tags.reduce((sum, tag) => sum + (tag.score || 0), 0));
+
+			setDifficultyData(
+				Object.entries(
+					tags.reduce((acc, tag) => {
+						const key = hasLevel ? (tag.level || "Không xác định") : (tag.chapter || "Không xác định");
+						acc[key] = (acc[key] || 0) + (tag.questionCount || 0);
+						return acc;
+					}, {})
+				).map(([key, questionCount]) =>
+					hasLevel ? { level: key, questionCount } : { chapter: key, questionCount }
+				)
+			);
+
+			setShowDetailModal(true);
+			console.log("detailData:", tags);
+			console.log("classification:", classification);
+		} catch (error) {
+			console.error("Lỗi lấy chi tiết ma trận:", error);
+			Swal.fire("Lỗi!", "Không thể tải chi tiết ma trận. Vui lòng kiểm tra lại.", "error");
+		}
+	};
+
+
   return (
     <div className="p-4">
       {/* Breadcrumb */}
@@ -402,8 +482,10 @@ const OrganizeExamPage = () => {
 												<td
 													className="text-center"
 													onClick={() => {
-														setSelectedItem(item);  
-														setShowDetailExamForm(true);
+														if (item.examType === "exams" && item.exams && item.exams.length > 0) {
+															setSelectedItem(item);  
+															setShowDetailExamForm(true);
+														}
 													}}
 													style={{
 														cursor: item.exams && item.exams.length > 0 ? "pointer" : "default",
@@ -419,14 +501,31 @@ const OrganizeExamPage = () => {
 												>
 													{item.examType === "Ma trận" || item.examType === "Tự động" ? "-" : item.exams?.length || "-"}										
 												</td>
-												<td	
-													onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
-														state: { organizeExamName: item.organizeExamName },
-													})}
-													style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
+												<td
+													onClick={() => {
+														if (item.examType === "matrix" && item.matrixName && item.matrixName.length > 0) {
+															console.log("item clicked:", item);
+															console.log("matrixId:", item.matrixId);
+															handleDetailClick(item.matrixId);
+														}
+													}}
+													style={{
+														cursor: item.examType === "matrix" && item.matrixName ? "pointer" : "default",
+														textDecoration: "none",
+														color: item.examType === "matrix" && item.matrixName ? "black" : "gray",
+													}}
+													onMouseEnter={(e) => {
+														if (item.examType === "matrix" && item.matrixName) e.target.style.color = "blue";
+													}}
+													onMouseLeave={(e) => {
+														if (item.examType === "matrix" && item.matrixName) e.target.style.color = "black";
+													}}
 												>
-													{item.examType === "Đề thi sẵn có" || item.examType === "Tự động" ? "-" : item.matrixName || "-"}
+													{item.examType === "Đề thi sẵn có" || item.examType === "Tự động"
+														? "-"
+														: item.matrixName || "-"}
 												</td>
+
 												<td
 													onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
 														state: { organizeExamName: item.organizeExamName },
@@ -819,6 +918,166 @@ const OrganizeExamPage = () => {
 						</Grid>
 					</div>
 				</div>
+			)}
+
+			{/* Modal chi tiết */}
+			{showDetailModal && (
+			<div className="form-overlay">
+				<div style={{ backgroundColor: "#ffff",borderRadius: "8px"}}>
+					<div className="p-3"
+						style={{
+							borderBottom: '1px solid #ddd',
+							display: 'flex',
+							justifyContent: 'space-between',
+							alignItems: 'center',
+							backgroundColor: "#ffff",
+							borderRadius: "8px"
+						}}
+					>
+						<h5 className="modal-title fw-bold">Chi tiết ma trận: {listOrganizeExam.matrixName}</h5>
+						<button
+							type="button"
+							onClick={() => setShowDetailModal(false)}
+							style={{
+								border: 'none',
+								background: 'none',
+								fontSize: '20px',
+								cursor: 'pointer',
+							}}
+						><i className="fa-solid fa-xmark"></i></button>
+					</div>
+					<div className="p-4" style={{ overflowY: 'auto',}}>
+						<div className="d-flex gap-2 w-100" style={{ flexWrap: 'wrap' }}>
+							<div className="table-responsive tbl-shadow pb-0 mb-0" style={{ flex: '1', fontSize: '14px' }}>
+								<table className="table w-100 border border-gray-300">
+									<thead>
+										<tr className="bg-gray-200">
+											<th className="border p-2">STT</th>
+											{showChapter && <th className="border p-2">Chuyên đề kiến thức</th>}
+											{showLevel && <th className="border p-2">Mức độ</th>}
+											<th className="border p-2 text-center">Số lượng chọn / Tổng</th>
+											<th className="border p-2 text-center">Đơn vị</th>
+											<th className="border p-2 text-center">Tổng điểm</th>
+											<th className="border p-2 text-center">Điểm/Câu</th>
+										</tr>
+									</thead>
+									<tbody>
+										{/* Nếu có chapter thì vẫn group theo chapter */}
+										{showChapter ? (
+											Object.entries(
+												detailData.reduce((acc, tag) => {
+													const key = tag.chapter || "Khác";
+													if (!acc[key]) acc[key] = [];
+													acc[key].push(tag);
+													return acc;
+												}, {})
+											).map(([chapter, tags], chapterIndex) => (
+												<React.Fragment key={chapterIndex}>
+													{tags.map((tag, levelIndex) => (
+														<tr key={`${chapterIndex}-${levelIndex}`} className="border">
+															{levelIndex === 0 && (
+																<td className="border p-2 text-center" rowSpan={tags.length}>
+																	{chapterIndex + 1}
+																</td>
+															)}
+															{levelIndex === 0 && (
+																<td
+																	className="border p-2"
+																	rowSpan={tags.length}
+																	style={{ minWidth: "300px" }}
+																>
+																	{chapter}
+																</td>
+															)}
+															{showLevel && (
+																<td className="border p-2" style={{ minWidth: "150px" }}>
+																	{tag.level || "-"}
+																</td>
+															)}
+															<td className="border p-2 text-center">{tag.questionCount} / {(tag.total || 0).toString().padStart(2, '0')}</td>
+															<td className="border p-2 text-center">Câu</td>
+															<td className="border p-2 text-center">{(tag.score || 0).toFixed(1)}</td>
+															<td className="border p-2 text-center">
+																{tag.questionCount === 0 ? "-" : (tag.score / tag.questionCount).toFixed(2)}
+															</td>
+														</tr>
+													))}
+												</React.Fragment>
+											))
+										) : (
+											/* Nếu không có chapter thì không group, duyệt trực tiếp */
+											detailData.map((tag, index) => (
+												<tr key={index} className="border">
+													<td className="border p-2 text-center">{index + 1}</td>
+													{showLevel && (
+														<td className="border p-2" style={{ minWidth: "150px" }}>
+															{tag.level || "-"}
+														</td>
+													)}
+													<td className="border p-2 text-center">{tag.questionCount} / {(tag.total || 0).toString().padStart(2, '0')}</td>
+													<td className="border p-2 text-center">Câu</td>
+													<td className="border p-2 text-center">{(tag.score || 0).toFixed(1)}</td>
+													<td className="border p-2 text-center">
+														{tag.questionCount === 0 ? "-" : (tag.score / tag.questionCount).toFixed(2)}
+													</td>
+												</tr>
+												
+											))
+											
+										)}
+										<tr className="bg-gray-300 fw-bold">
+											<td className="border p-2 text-center" colSpan={dynamicColSpan}>Tổng số câu hỏi</td>
+											<td className="border p-2 text-center">{totalSelectedQuestions}</td>
+											<td className="border p-2 text-center">Câu</td>
+											<td className="border p-2 text-center">{totalScore.toFixed(1)}</td>
+											<td className="border p-2 text-center">-</td>
+										</tr>
+									</tbody>
+
+								</table>
+							</div>
+
+							<div className="p-2" style={{ minWidth: '250px', fontSize: '14px', boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)', borderRadius: '8px', }}>
+								<h5 className="text-center">Thống kê</h5>
+								<table className="table table-bordered">
+									<thead>
+										<tr>
+											<th style={{ border: '1px solid #ddd', textAlign: 'left', padding: '8px', minWidth: '130px' }}>
+												{showLevel ? "Mức độ" : "Chuyên đề"}
+											</th>
+											<th style={{ border: '1px solid #ddd', textAlign: 'center', padding: '8px' }}>Số lượng</th>
+										</tr>
+									</thead>
+									<tbody>
+										{difficultyData.map((row, index) => (
+											<tr key={index}>
+												<td style={{ border: '1px solid #ddd', padding: '8px' }}>
+													{showLevel ? (row.level || "Không xác định") : (row.chapter || "Không xác định")}
+												</td>
+												<td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{row.questionCount}</td>
+											</tr>
+										))}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div className="p-3" style={{borderTop: '1px solid #ddd', textAlign: 'right',}}>
+						<button onClick={() => setShowDetailModal(false)}
+							style={{
+								border: '1px solid #ccc',
+								backgroundColor: '#6c757d',
+								color: '#fff',
+								padding: '5px 15px',
+								borderRadius: '4px',
+								cursor: 'pointer',
+							}}
+						>
+							Đóng
+						</button>
+					</div>
+				</div>
+			</div>
 			)}
     </div>
   )

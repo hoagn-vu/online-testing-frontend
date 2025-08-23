@@ -343,7 +343,7 @@ const RoomOrganizePage = () => {
 										>
 											{item.supervisors.map((supervisor, idx) => (
 												<span key={supervisor.userId}>
-													{supervisor.userCode} - {supervisor.supervisorName}
+													{supervisor.supervisorName} - {supervisor.userCode}
 													{idx < item.supervisors.length - 1 ? ", " : ""}
 												</span>
 											))}

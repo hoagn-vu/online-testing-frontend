@@ -107,7 +107,7 @@ const FormCreateExam = ({ onClose, initialData  }) => {
     const fetchTagsClassification = async () => {
       try {
         const response = await ApiService.get("/subjects/questions/tags-classification", {
-          params: { subjectId: subjectChosen, questionBankId: bankChosen },
+          params: { subjectId: subjectChosen, questionBankId: bankChosen, type: "both" },
         });
         setTagClassification(response.data.map((item) => ({ ...item, questionCount: 0 })));
         // Lấy danh sách chapter duy nhất
