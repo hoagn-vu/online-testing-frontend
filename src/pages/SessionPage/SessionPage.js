@@ -71,7 +71,7 @@ const SessionPage = () => {
 	const [formData, setFormData] = useState({
 		sessionName: "",
 		startAt: "",
-		sessionStatus: "active",
+		sessionStatus: "closed",
 	});
 	
 	const preAddNew = () => {
@@ -79,7 +79,7 @@ const SessionPage = () => {
 		setFormData({
 			sessionName: "",
 			startAt: "",
-			sessionStatus: "active",
+			sessionStatus: "closed",
 		});
 		setTimeout(() => setShowForm(true), 0); 
 	};
@@ -225,7 +225,7 @@ const SessionPage = () => {
 			sessionName: "",
 			startAt: "",
 			roomList: "",
-			sessionStatus: "active",
+			sessionStatus: "closed",
 		});
 		setEditingAccount(null);
 	}
@@ -235,6 +235,19 @@ const SessionPage = () => {
 		auto: "Tự động",
 		exams: "Đề thi có sẵn",
 	};
+
+	const handleToggleSessionStatus = async (sessionId) => {
+		try {
+			const response = await ApiService.post("/process-take-exams/toggle-session-status", {
+				organizeExamId: organizeId,
+				sessionId: sessionId,
+			});
+
+			fetchData();
+		} catch (error) {
+			console.error("Failed to toggle session status: ", error);
+		}
+	}
 
 	return (
 		<div className="p-4">
@@ -413,8 +426,8 @@ const SessionPage = () => {
 												</td>
 												<td className="text-center">
 													<div className="d-flex align-items-center justify-content-left">
-														<span className={`badge mt-1 ${session.sessionStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
-															{session.sessionStatus === "Active" || "available" ? "Kích hoạt" : "Đóng"}
+														<span className={`badge mt-1 ${session.sessionStatus === "active" ? "bg-primary" : "bg-secondary"}`}>
+															{session.sessionStatus === "active" ? "Kích hoạt" : "Đóng"}
 														</span>
 													</div>
 												</td>
@@ -451,11 +464,13 @@ const SessionPage = () => {
 																	Xoá
 																</button>
 															</li>
-															<li className="tbl-action" onClick={() => handleToggleStatus(session.sessionId, session.sessionStatus)}>
+															<li className="tbl-action" onClick={() => handleToggleSessionStatus(session.sessionId)}>
+															{/* <li className="tbl-action" onClick={() => handleToggleStatus(session.sessionId, session.sessionStatus)}> */}
 																<button
 																	className="dropdown-item tbl-action"
 																	onClick={() =>
-																		handleToggleStatus(session.sessionId, session.sessionStatus)
+																		handleToggleSessionStatus(session.sessionId)
+																		// handleToggleStatus(session.sessionId, session.sessionStatus)
 																	}
 																>
 																	{session.sessionStatus.toLowerCase() === "active"

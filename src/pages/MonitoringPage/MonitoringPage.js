@@ -15,6 +15,8 @@ const MonitoringPage = () => {
 	const [sessionName, setSessionName] = useState("");
 	const [roomName, setRoomName] = useState("");
 
+	const [startTrack, setStartTrack] = useState(false);
+
   const [selectedExam, setSelectedExam] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
@@ -32,11 +34,13 @@ const MonitoringPage = () => {
 
 	useEffect(() => {
 		const interval = setInterval(() => {
-			fetchData();
+			if (startTrack) {
+				fetchData();
+			}
 		}, 3000);
 
 		return () => clearInterval(interval);
-	}, [organizeExamId, sessionId, roomId]);
+	}, [organizeExamId, sessionId, roomId, startTrack]);
 
 	const processData = (data) => {
 		return data.map((item) => {
@@ -68,6 +72,25 @@ const MonitoringPage = () => {
 		// const options = { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" };
 		const options = { hour: "2-digit", minute: "2-digit", second: "2-digit" };
 		return new Date(timeString).toLocaleTimeString("vi-VN", options);
+	};
+
+	const handleToggleRoomStatus = async () => {
+		try {
+			const response = await ApiService.post(`/process-take-exams/toggle-room-status`, {
+				organizeExamId: organizeExamId,
+				sessionId: sessionId,
+				roomId: roomId
+			});
+			if (response.data.newStatus === "closed") {
+				setStartTrack(false);
+				fetchData();
+			} else if (response.data.newStatus === "active") {
+				setStartTrack(true);
+				fetchData();
+			}
+		} catch (error) {
+			console.error("Failed to update room status:", error);
+		}
 	};
 
 	// Dừng thi
@@ -140,6 +163,11 @@ const MonitoringPage = () => {
 						<p><strong>Ca thi:</strong> <span className="text-primary">{sessionName}</span></p>
 						<p><strong>Phòng thi:</strong> <span>{roomName}</span></p>
 						<p><strong>Mật khẩu thí sinh:</strong> <span className="badge bg-warning text-dark">Chưa biết có thêm vào không</span></p>
+					</div>
+					<div className="text-center">
+						<button className="btn btn-primary" onClick={handleToggleRoomStatus}>
+							{startTrack ? "Đóng phòng thi" : "Kích hoạt phòng thi"}
+						</button>
 					</div>
 				</div>
 

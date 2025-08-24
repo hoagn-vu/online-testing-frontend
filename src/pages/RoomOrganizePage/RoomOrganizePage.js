@@ -365,8 +365,8 @@ const RoomOrganizePage = () => {
 										</td>
 										<td>
 											<div className="d-flex align-items-center justify-content-center">
-												<span className={`badge mt-1 ${item.roomStatus === "Active" || "available" ? "bg-primary" : "bg-secondary"}`}>
-													{item.roomStatus === "Active" || "available" ? "Kích hoạt" : "Đóng"}
+												<span className={`badge mt-1 ${item.roomStatus === "active" ? "bg-primary" : "bg-secondary"}`}>
+													{item.roomStatus === "active" ? "Kích hoạt" : "Đóng"}
 												</span>
 											</div>
 										</td>
