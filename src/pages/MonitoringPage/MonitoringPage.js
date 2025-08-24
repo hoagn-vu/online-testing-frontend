@@ -63,6 +63,8 @@ const MonitoringPage = () => {
 				return ["Đang thi", "bg-primary"];
 			case "not_started":
 				return ["Chưa thi", "bg-warning"];
+			case "done":
+				return ["Đã nộp", "bg-success"];
 			default:
 				return ["Khác", "bg-secondary"];
 		}
@@ -220,14 +222,16 @@ const MonitoringPage = () => {
 											// <span className="badge bg-warning">Đã dừng thi</span>
 											<button
 												className="btn btn-sm btn-outline-danger"
+												onClick={handleReopen}
 											>
 												<i className="fas fa-stop-circle me-1"></i> Mở lại
 											</button>
 										) : (
 											<button
 												className="btn btn-sm btn-outline-danger"
-												data-bs-toggle="modal"
-												data-bs-target="#violationModal"
+												// data-bs-toggle="modal"
+												// data-bs-target="#violationModal"
+												onClick={handleTerminate}
 											>
 												<i className="fas fa-stop-circle me-1"></i> Dừng thi
 											</button>
