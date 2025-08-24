@@ -37,7 +37,13 @@ const HomeCandidate = () => {
     // setShowModal(true);
     navigate("/candidate/take-exam/" + organizeExamId + "/" + sessionId + "/" + roomId + "/" + takeExamId);
   };
-
+  
+  // Hàm xử lý khi nhấp vào bài thi: chỉ hiển thị modal
+  const handleShowModal = (exam) => {
+    setSelectedExam(exam); // Lưu toàn bộ đối tượng exam
+    setShowModal(true);
+  };
+  
   return (
     <div className="home-candi-page">
       <div className="">
@@ -71,7 +77,7 @@ const HomeCandidate = () => {
                 >
                   <div
                     className="cursor-pointer baithi cursor-pointer d-flex align-items-center"
-                    onClick={() => handleExamClick(exam.id, exam.sessionId, exam.roomId, exam.userTakeExamId)}
+                    onClick={() => handleShowModal(exam)}
                   >
                     <FaFileAlt className="text-blue-400 icon me-2" />
                     <span>{exam.organizeExamName}</span>
@@ -92,7 +98,7 @@ const HomeCandidate = () => {
           <Modal.Body className="text-center">
             <h5 className="fw-bold pb-2">Xác nhận làm bài thi</h5>
             <p>
-              Bạn chuẩn bị thực hiện bài thi: <strong>{selectedExam}</strong>
+              Bạn chuẩn bị thực hiện bài thi: <strong>{selectedExam?.organizeExamName}</strong>
             </p>
             <p>Trình duyệt sẽ vào chế độ toàn màn hình</p>
             <p className="text-danger">
@@ -104,8 +110,15 @@ const HomeCandidate = () => {
               variant="primary"
               onClick={() => {
                 setShowModal(false);
-                console.log(`Bắt đầu bài thi: ${selectedExam}`);
-                // Điều hướng sang trang làm bài
+                if (selectedExam) {
+                  // Gọi handleExamClick với các tham số cần thiết
+                  handleExamClick(
+                    selectedExam.id,
+                    selectedExam.sessionId,
+                    selectedExam.roomId,
+                    selectedExam.userTakeExamId
+                  );
+                }
               }}
             >
               Bắt đầu
