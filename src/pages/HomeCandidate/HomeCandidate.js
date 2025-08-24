@@ -32,10 +32,10 @@ const HomeCandidate = () => {
   const [showModal, setShowModal] = useState(false);
 
   // Xử lý khi nhấn vào bài thi
-  const handleExamClick = (examId) => {
+  const handleExamClick = (organizeExamId, sessionId, roomId, takeExamId) => {
     // setSelectedExam(exam);
     // setShowModal(true);
-    navigate("/candidate/take-exam/" + examId);
+    navigate("/candidate/take-exam/" + organizeExamId + "/" + sessionId + "/" + roomId + "/" + takeExamId);
   };
 
   return (
@@ -71,7 +71,7 @@ const HomeCandidate = () => {
                 >
                   <div
                     className="cursor-pointer baithi cursor-pointer d-flex align-items-center"
-                    onClick={() => handleExamClick(exam.id)}
+                    onClick={() => handleExamClick(exam.id, exam.sessionId, exam.roomId, exam.userTakeExamId)}
                   >
                     <FaFileAlt className="text-blue-400 icon me-2" />
                     <span>{exam.organizeExamName}</span>

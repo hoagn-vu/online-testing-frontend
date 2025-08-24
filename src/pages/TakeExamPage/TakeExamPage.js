@@ -3,39 +3,75 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './TakeExamPage.css';
 import QuestionCard from '../../components/QuestionCard/QuestionCard';
 import Swal from 'sweetalert2';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import ApiService from '../../services/apiService';
 import { useSelector } from "react-redux";
 
 const TakeExamPage = () => {
-  const { organizeExamId } = useParams();
+  const { organizeExamId, sessionId, roomId, takeExamId } = useParams();
   const username = "Phương Linh";
   const studentID = "123456";
   const avatarUrl = ""; // Đường dẫn ảnh avatar
   
   const userId = useSelector((state) => state.auth.user.id);
 
+  const navigate = useNavigate();
+
+  const [organizeExamName, setOrganizeExamName] = useState("");
   const [questions, setQuestions] = useState([]);
   const [duration, setDuration] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await ApiService.get(`/organize-exams/questions/${organizeExamId}`);
-        setQuestions(response.data.questions);
-        setDuration(response.data.duration * 60);
-        // setDuration(10); 
+        const response = await ApiService.post("/generate-exam", {
+          userId: userId,
+          organizeExamId: organizeExamId,
+          sessionId: sessionId,
+          roomId: roomId
+        });
+
+        if (response.data.code !== "success") {
+          navigate("/candidate/home");
+          return;
+        }
+
+        setOrganizeExamName(response.data.data.organizeExamName);
+        setQuestions(response.data.data.questions);
+        setDuration(response.data.data.duration);
       } catch (error) {
         console.error('Failed to fetch questions: ', error);
       }
     };
+    
     fetchQuestions();
-  }, [organizeExamId]);
+  }, [organizeExamId, sessionId, roomId]);
+
+  const handleQuickSubmit = async () => {
+    setIsLoading(true);
+    try {
+      const response = await ApiService.post(
+        `/submit-answer/${userId}/${takeExamId}/submit`
+      );
+      if (response.data.status === "submitted") {
+        setIsLoading(false);
+        navigate(`/candidate/result/${takeExamId}`);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Lỗi",
+          text: response.data.message,
+        });
+      }
+    } catch (error) {
+      console.error("Failed to quick submit answers: ", error);
+    }
+  };
 
   useEffect(() => {
     if (duration <= 0) {
-      alert("Hết thời gian làm bài!");
-      return;
+      handleQuickSubmit();
     }
     
     const interval = setInterval(() => {
@@ -68,7 +104,10 @@ const TakeExamPage = () => {
 
     handleFullscreen();
 
-    const handleBlur = () => setLeaveCount((prev) => prev + 1);
+    const handleBlur = () => {
+      setLeaveCount((prev) => prev + 1);
+      handleLeaveExam();
+    };
     window.addEventListener("blur", handleBlur);
     return () => window.removeEventListener("blur", handleBlur);
   }, []);
@@ -129,8 +168,10 @@ const TakeExamPage = () => {
     // đồng thời gọi API để lưu câu trả lời
     try {
       await ApiService.post(
-        `/process-take-exams/submit-answers?type=save&takeExamId=${organizeExamId}&userId=${userId}`,
-        [{ questionId, optionIds: selectedOptionIds }]
+        // `/process-take-exams/submit-answers?type=save&takeExamId=${organizeExamId}&userId=${userId}`,
+        // [{ questionId, optionIds: selectedOptionIds }]
+        `/submit-answer/${userId}/${takeExamId}/save`,
+        { questionId: questionId, optionIds: selectedOptionIds }
       );
       console.log("Câu trả lời đã được lưu:", { questionId, optionIds: selectedOptionIds });
     } catch (error) {
@@ -160,24 +201,11 @@ const TakeExamPage = () => {
       if (result.isConfirmed) {
         try {
           const response = await ApiService.post(
-            `/process-take-exams/submit-answers?type=submit&takeExamId=${organizeExamId}&userId=${userId}`,
-            answers
+            `/submit-answer/${userId}/${takeExamId}/submit`
           );
-          console.log("Nộp bài thành công:", response.data);
-          if (response.data.message === "Nộp bài thành công.") {
-            const res = await ApiService.get(`/process-take-exams/exam-result?takeExamId=${organizeExamId}&userId=${userId}`);
-              setExamResult(res.data);
-              setIsSubmitted(true);
-            }
-          // console.log("Nộp bài thành công:", answers);
-          // Swal.fire({
-          //   title: "Nộp bài thành công!",
-          //   text: "Bài thi của bạn đã được gửi.",
-          //   icon: "success",
-          //   didOpen: () => {
-          //     document.querySelector(".swal2-confirm").classList.add("swal-button");
-          //   }
-          // });
+          if (response.data.status === "submitted") {
+            navigate(`/candidate/result/${takeExamId}`);
+          }
 
         } catch (error) {
           console.error("Nộp bài thất bại:", error);
@@ -186,6 +214,41 @@ const TakeExamPage = () => {
       }
     });
   };
+
+  const handleCheckCanContinue = async () => {
+    try {
+      const response = await ApiService.get(`/process-take-exams/check-can-continue?userId=${userId}&takeExamId=${takeExamId}`);
+
+      if (response.data && response.data.canContinue === false) {
+        navigate(`/candidate/result/${takeExamId}`);
+      }
+    } catch (error) {
+      console.error("Failed to check continue:", error);
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      handleCheckCanContinue();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [userId, takeExamId]);
+
+  // mỗi khi leave count tăng thì gọi API
+  const handleLeaveExam = async () => {
+    try {
+      await ApiService.post(`/process-take-exams/violation?userId=${userId}&takeExamId=${takeExamId}`);
+    } catch (error) {
+      console.error("Failed to leave exam:", error);
+    }
+  };
+
+  // useEffect(() => {
+  //   if (leaveCount > 0) {
+  //     handleLeaveExam();
+  //   }
+  // }, [leaveCount]);
 
   return (
     <div>
@@ -235,7 +298,7 @@ const TakeExamPage = () => {
                   <QuestionCard 
                     questionNumber={index + 1} 
                     questionId={q.questionId}
-                    question={q.questionName} 
+                    question={q.questionText} 
                     options={q.options} 
                     allowMultiple={q.allowMultiple}
                     onAnswerSelect={(questionId, selectedOptionIds, index) => {

@@ -141,15 +141,15 @@ function App() {
         >
           <Route path="home" element={<HomeCandidate />} />
           <Route path="history" element={<HistoryCandidatePage />} />
-          <Route path="result" element={<ResultCandidatePage />} />
-          <Route path="take-exam/:organizeExamId" element={<TakeExamPage />} />
+          <Route path="result/:takeExamId" element={<ResultCandidatePage />} />
+          <Route path="take-exam/:organizeExamId/:sessionId/:roomId/:takeExamId" element={<TakeExamPage />} />
         </Route>
       </Routes>
 
       <Routes>
         <Route path="/supervisor" element={<SupervisorLayout />}>
           <Route path="home" element={<SupervisorHomePage />} /> 
-          <Route path="monitor" element={<MonitoringPage />} /> 
+          <Route path="monitor/:organizeExamId/:sessionId/:roomId" element={<MonitoringPage />} /> 
           <Route path="change-passwords" element={<SupvChangePasswordPage />} />
         </Route>
       </Routes>
