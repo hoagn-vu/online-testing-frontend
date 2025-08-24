@@ -305,6 +305,10 @@ const OrganizeExamPage = () => {
 		navigate(`/staff/organize/report/${exam.id}`);
 	};
 
+	const handleStatisticAuto = (exam) => {
+		navigate(`/staff/organize/statistic-auto/${exam.id}`);
+	};
+
 	const handleDetailClick = async (matrixId) => {
 		try {
 			const response = await ApiService.get(`/exam-matrices/${matrixId}`);
@@ -596,6 +600,25 @@ const OrganizeExamPage = () => {
 																	disabled={item.organizeExamStatus.toLowerCase() !== "disabled"}
 																>
 																	Báo cáo
+																</button>
+															</li>
+															<li
+																className={`tbl-action ${item.organizeExamStatus.toLowerCase() !== "disabled" ? "disabled" : ""}`}
+																onClick={() => {
+																	if (item.organizeExamStatus.toLowerCase() === "disabled") {
+																		if (item.examType.toLowerCase() === "auto" || item.examType.toLowerCase() === "matrix") {
+																			handleStatisticAuto(item);
+																		} else if (item.examType.toLowerCase() === "exams") {
+																			handleStatisticAuto(item);
+																		}
+																	}
+																}}
+															>
+																<button
+																	className="dropdown-item tbl-action"
+																	disabled={item.organizeExamStatus.toLowerCase() !== "disabled"}
+																>
+																	Thống kê
 																</button>
 															</li>
 															<li className="tbl-action" onClick={() => handleToggleStatus(item.id, item.organizeExamStatus)}>
