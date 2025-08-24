@@ -172,18 +172,35 @@ const CandidateExamResultTest = () => {
                   {(index + 1).toString().padStart(2, "0")}
                 </p>
 
-                {/* icon check hoặc X */}
-                {q.isUserChosenCorrect ? (
+                {/* icon check, X, or HelpCircle */}
+                {!q.answerChosen || q.answerChosen.length === 0 ? (
+                  <span
+                    className="text-gray-600 ms-2"
+                    style={{
+                      backgroundColor: "#ccc",
+                      color: "black",
+                      width: "20px",
+                      height: "16px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "12px",
+                      borderRadius: "3px",
+                    }}
+                  >
+                    ?
+                  </span>
+                ) : q.isUserChosenCorrect ? (
                   <Check
                     size={15}
                     className="text-green-600 ms-2"
-                    style={{backgroundColor: "#09dc68ff", color: "white"}}
+                    style={{ backgroundColor: "#09dc68ff", color: "white", borderRadius: "3px" }}
                   />
                 ) : (
                   <X
                     size={15}
                     className="text-red-600 ms-2"
-                    style={{backgroundColor: "red", color: "white"}}
+                    style={{ backgroundColor: "red", color: "white", borderRadius: "3px" }}
                   />
                 )}
               </div>
@@ -288,7 +305,27 @@ const CandidateExamResultTest = () => {
                       .
                     </span>
 
-                    {q.isUserChosenCorrect ? (
+                    {!q.answerChosen || q.answerChosen.length === 0 ? (
+                      <>
+                        <span
+                          className="text-gray-600 ms-2"
+                          style={{
+                            backgroundColor: "#ccc",
+                            color: "black",
+                            width: "16px",
+                            height: "16px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: "12px",
+                            borderRadius: "3px",
+                          }}
+                        >
+                          ?
+                        </span>
+                        <p className="text-secondary mb-0 ms-1">Bỏ qua</p>
+                      </>
+                    ) : q.isUserChosenCorrect ? (
                       <>
                         <Check
                           size={15}
@@ -307,7 +344,11 @@ const CandidateExamResultTest = () => {
                         <X
                           size={15}
                           className="text-red-600 ms-2"
-                          style={{backgroundColor: "red", color: "white", borderRadius: "3px",}}
+                          style={{
+                            backgroundColor: "red",
+                            color: "white",
+                            borderRadius: "3px",
+                          }}
                         />
                         <p className="text-danger mb-0 ms-1">Sai</p>
                       </>
