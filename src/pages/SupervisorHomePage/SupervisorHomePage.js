@@ -4,29 +4,35 @@ import { FaFileAlt, FaUserCircle } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./SupervisorHomePage.css";
 import { useSelector, useDispatch } from "react-redux";
+import ApiService from "../../services/apiService";
+import { useNavigate } from "react-router-dom";
 
 const SupervisorHomePage = () => {
-  // Thông tin thí sinh
-  const candidate = {
-    name: "Phan Thị Phương Linh",
-    studentId: "2112203",
-  };
+  const user = useSelector((state) => state.auth.user);
+  const navigate = useNavigate();
 
-  // Danh sách bài thi
-  const exams = [
-    "Test 4",
-    "Test 2",
-    "Bài kiểm tra giữa kỳ II (22 toán)",
-    "Bài kiểm tra giữa kỳ I (22 toán)",
-  ];
+  const [exams, setExams] = useState([]);
+
+  useEffect(() => {
+    const fetchExams = async () => {
+      try {
+        const response = await ApiService.get(`/trackexam/all-track-exams?userId=${user.id}`);
+        setExams(response.data.trackExams);
+      } catch (error) {
+        console.error("Failed to fetch exams:", error);
+      }
+    };
+
+    fetchExams();
+  }, [user.id]);
 
   const [selectedExam, setSelectedExam] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const user = useSelector((state) => state.auth.user);
-  // Xử lý khi nhấn vào bài thi
+
   const handleExamClick = (exam) => {
-    setSelectedExam(exam);
-    setShowModal(true);
+    // setSelectedExam(exam);
+    // setShowModal(true);
+    navigate(`/supervisor/monitor/${exam.organizeExamId}/${exam.sessionId}/${exam.roomId}`);
   };
 
   return (
@@ -65,7 +71,7 @@ const SupervisorHomePage = () => {
                     onClick={() => handleExamClick(exam)}
                   >
                     <i className="fa-solid fa-door-open me-2" style={{color: "#206ee3"}}></i>
-                    <span>{exam}</span>
+                    <span>{exam.organizeExamName} - {exam.sessionId} - {exam.roomId}</span>
                   </div>
                 </ol>
               ))}
