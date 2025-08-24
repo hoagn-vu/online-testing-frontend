@@ -278,7 +278,7 @@ const SessionPage = () => {
 
 						{/* Cột 2 */}
 						<div style={{ flex: 1 }}>
-							<p><strong>Thời gian làm bài:</strong> {organizeExam.duration} phút</p>
+							<p><strong>Thời gian làm bài:</strong> {Math.floor(organizeExam.duration / 60)} phút</p>
 							{/* Chỉ hiển thị examSet khi loại đề là "exam" */}
 							{organizeExam.examType === "exam" && (
 								<p><strong>Bộ đề thi:</strong> {organizeExam.exams?.length > 0 ? organizeExam.examSet.join(", ") : "Chưa có dữ liệu"}</p>

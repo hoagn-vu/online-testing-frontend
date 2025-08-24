@@ -533,7 +533,7 @@ const OrganizeExamPage = () => {
 													style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
 													className="text-center"
 												>
-													{item.duration}
+													{Math.floor(item.duration / 60)}
 												</td>
 												<td
 													onClick={() => navigate(`/staff/organize/${encodeURIComponent(item.id)}`, {
