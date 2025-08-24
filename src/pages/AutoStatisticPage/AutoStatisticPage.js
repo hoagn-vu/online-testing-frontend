@@ -28,6 +28,7 @@ const AutoStatisticPage = () => {
   const [scoreDistributionArray, setScoreDistributionArray] = useState([]);
   const [totalCandidates, setTotalCandidates] = useState("");
   const [totalCandidateTerminated, setTotalCandidateTerminated] = useState("");
+  const [totalCandidateNotParticipated, setTotalCandidateNotParticipated] = useState("");
   //const [organizeExamId, setOrganizeExamId] = useState(null);
   const [organizeExamOptions, setOrganizeExamOptions] = useState([]);
 
@@ -167,6 +168,7 @@ const AutoStatisticPage = () => {
       });      
       setTotalCandidates(response.data.totalCandidates);
       setTotalCandidateTerminated(response.data.totalCandidateTerminated);
+      setTotalCandidateNotParticipated(response.data.totalCandidateNotParticipated);
     } catch (error) {
       console.error("Lỗi lấy dữ liệu:", error);
     }
@@ -179,31 +181,6 @@ const AutoStatisticPage = () => {
       fetchPieChart(organizeExamId);
     }
   }, [organizeExamId]);
-
-  useEffect(() => {
-    const fetchOrganizeExamOptions = async () => {
-      try {
-        const response = await ApiService.get("/organize-exams/options");
-        const options = response.data.map((item) => ({
-          value: item.id,
-          label: item.organizeExamName
-        }));
-        setOrganizeExamOptions(options);
-        if (options.length > 0) {
-          // ✅ Chọn kỳ thi đầu tiên khi đổi môn
-          const latestExam = options[0];
-          setOrganizeExamId(latestExam.value);
-          fetchChart(latestExam.value);
-        } else {
-          setOrganizeExamId(null); // Nếu môn đó chưa có kỳ thi
-        }
-      } catch (error) {
-        console.error("Failed to fetch organize options: ", error);
-      }
-    };
-
-    fetchOrganizeExamOptions();
-  }, []);
 
   return (
     <div className="p-4">
@@ -267,7 +244,7 @@ const AutoStatisticPage = () => {
         <PieChart
           title="Thống kê thí sinh"
           labels={["Thí sinh nộp bài thành công", "Thí sinh bị dừng thi", "Không thi"]}
-          dataPoints={[totalCandidates-totalCandidateTerminated, totalCandidateTerminated, 2]}
+          dataPoints={[totalCandidates-totalCandidateTerminated- totalCandidateNotParticipated, totalCandidateTerminated, totalCandidateNotParticipated]}
           width="50%px"
           height="350px"
           isShowLegend={true}
