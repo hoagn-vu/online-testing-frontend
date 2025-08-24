@@ -150,7 +150,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 				payload = {
 					organizeExamName: examData.organizeExamName,
 					duration: examData.duration,
-					maxScore: examData.maxScore,
+					// maxScore: examData.maxScore,
 					subjectId: examData.subjectId,
 					matrixId: examData.matrixId,
 					questionBankId: examData.questionBankId,
@@ -162,7 +162,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 				payload = {
 					organizeExamName: examData.organizeExamName,
 					duration: examData.duration,
-					maxScore: examData.maxScore,
+					// maxScore: examData.maxScore,
 					subjectId: examData.subjectId,
 					questionBankId: examData.questionBankId,
 					exams: examData.examIds || [],
