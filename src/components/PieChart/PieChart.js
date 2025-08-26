@@ -46,8 +46,8 @@ const PieChart = ({
       {
         label: title,
         data: dataPoints, // Ví dụ: [120, 30]
-        backgroundColor: ["#65cdb3ff", "#f98d8dff", "#bcbcbcff"], // Màu xanh cho thành công, đỏ cho dừng thi
-        borderColor: ["#4A88D9", "#FF6B6B", "#9b9b9bff"],
+        backgroundColor: ["#8edca7ff", "#f29393ff", "#f2f27eff"], // Màu xanh cho thành công, đỏ cho dừng thi
+        borderColor: ["#8edca7ff", "#f29393ff", "#f2f27eff"],
         borderWidth: 1,
       },
     ],

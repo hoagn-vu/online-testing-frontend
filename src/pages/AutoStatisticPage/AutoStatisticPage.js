@@ -40,14 +40,14 @@ const AutoStatisticPage = () => {
         },
       });
       
-      setOrganizeExamName(response.data.organizeExamName || "Kỳ thi mẫu");
-      setSessionName(response.data.sessionName || "Ca thi mẫu");
-      setRoomName(response.data.roomName || "Phòng thi mẫu");
-      setCandidateName(response.data.fullName || "Thí sinh mẫu");
-      setSubjectName(response.data.subjectName || "Môn thi mẫu");
-      setDuration(response.data.duration || "60 phút");
-      setTotalScore(response.data.totalScore || 10);
-      setListQuestions(response.data.questions || []);
+      setOrganizeExamName(response.data.data.organizeExamName || "Kỳ thi mẫu");
+      setSessionName(response.data.data.sessionName || "Ca thi mẫu");
+      setRoomName(response.data.data.roomName || "Phòng thi mẫu");
+      setCandidateName(response.data.data.fullName || "Thí sinh mẫu");
+      setSubjectName(response.data.data.subjectName || "Môn thi mẫu");
+      setDuration(response.data.data.duration || "60 phút");
+      setTotalScore(response.data.data.totalScore || 10);
+      setListQuestions(response.data.data.questions || []);
     } catch (error) {
       console.error("Failed to fetch data", error);
     }
@@ -145,12 +145,12 @@ const AutoStatisticPage = () => {
   const fetchChart = async () => {
     setIsLoading(true);
     try {
-      const response = await ApiService.get("/statistics/organize-exam-by-id", {
+      const response = await ApiService.get("/statistics/get-update-organize-exam-grade-stats", {
         params: { organizeExamId: organizeExamId },
       });
-      setSubjectName(response.data.subjecName);
+      setSubjectName(response.data.data.subjectName);
       
-      const { array, ranges, counts } = convertBinsToArray(response.data.scoreDistribution);
+      const { array, ranges, counts } = convertBinsToArray(response.data.data.scoreDistribution);
       setScoreDistributionArray(array);
       setLabels(ranges);
       setDataPoints(counts);
@@ -163,12 +163,12 @@ const AutoStatisticPage = () => {
   const fetchPieChart = async () => {
     setIsLoading(true);
     try {
-      const response = await ApiService.get("/statistics/participation-violation-by-id", {
+      const response = await ApiService.get("/statistics/get-participation-violation-by-id", {
         params: { organizeExamId: organizeExamId },
       });      
-      setTotalCandidates(response.data.totalCandidates);
-      setTotalCandidateTerminated(response.data.totalCandidateTerminated);
-      setTotalCandidateNotParticipated(response.data.totalCandidateNotParticipated);
+      setTotalCandidates(response.data.data.totalCandidates);
+      setTotalCandidateTerminated(response.data.data.totalCandidateTerminated);
+      setTotalCandidateNotParticipated(response.data.data.totalCandidateNotParticipated);
     } catch (error) {
       console.error("Lỗi lấy dữ liệu:", error);
     }

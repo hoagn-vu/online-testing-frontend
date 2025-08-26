@@ -210,12 +210,12 @@ const Dashboard = () => {
   const fetchChart = async (id) => {
     setIsLoading(true);
     try {
-      const response = await ApiService.get("/statistics/organize-exam-by-id", {
+      const response = await ApiService.get("/statistics/get-update-organize-exam-grade-stats", {
         params: { organizeExamId: id },
       });
-      setSubjectName(response.data.subjecName);
+      setSubjectName(response.data.data.subjecName);
       
-      const { array, ranges, counts } = convertBinsToArray(response.data.scoreDistribution);
+      const { array, ranges, counts } = convertBinsToArray(response.data.data.scoreDistribution);
       setScoreDistributionArray(array);
       setLabels(ranges);
       setDataPoints(counts);

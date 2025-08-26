@@ -180,7 +180,7 @@ const OrganizeExamPage = () => {
       cancelButtonText: "Hủy",
     }).then((result) => {
       if (result.isConfirmed) {
-        const newStatus = currentStatus.toLowerCase() === "active" ? "disabled" : "active";
+        const newStatus = currentStatus.toLowerCase() === "active" ? "closed" : "active";
         const statusLabel = newStatus === "active" ? "Kích hoạt" : "Đóng";
 
         // Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
@@ -588,24 +588,24 @@ const OrganizeExamPage = () => {
 																</button>
 															</li>
 															<li
-																className={`tbl-action ${item.organizeExamStatus.toLowerCase() !== "disabled" ? "disabled" : ""}`}
+																className={`tbl-action ${item.organizeExamStatus.toLowerCase() !== "closed" ? "closed" : ""}`}
 																onClick={() => {
-																	if (item.organizeExamStatus.toLowerCase() === "disabled") {
+																	if (item.organizeExamStatus.toLowerCase() === "closed") {
 																		handleReport(item);
 																	}
 																}}
 															>
 																<button
 																	className="dropdown-item tbl-action"
-																	disabled={item.organizeExamStatus.toLowerCase() !== "disabled"}
+																	disabled={item.organizeExamStatus.toLowerCase() !== "closed"}
 																>
 																	Báo cáo
 																</button>
 															</li>
 															<li
-																className={`tbl-action ${item.organizeExamStatus.toLowerCase() !== "disabled" ? "disabled" : ""}`}
+																className={`tbl-action ${item.organizeExamStatus.toLowerCase() !== "closed" ? "closed" : ""}`}
 																onClick={() => {
-																	if (item.organizeExamStatus.toLowerCase() === "disabled") {
+																	if (item.organizeExamStatus.toLowerCase() === "closed") {
 																		if (item.examType.toLowerCase() === "auto" || item.examType.toLowerCase() === "matrix") {
 																			handleStatisticAuto(item);
 																		} else if (item.examType.toLowerCase() === "exams") {
@@ -616,7 +616,7 @@ const OrganizeExamPage = () => {
 															>
 																<button
 																	className="dropdown-item tbl-action"
-																	disabled={item.organizeExamStatus.toLowerCase() !== "disabled"}
+																	disabled={item.organizeExamStatus.toLowerCase() !== "closed"}
 																>
 																	Thống kê
 																</button>
