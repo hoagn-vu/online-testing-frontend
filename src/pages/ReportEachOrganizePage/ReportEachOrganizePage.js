@@ -118,9 +118,15 @@ const ReportEachOrganizePage = () => {
         <span className="breadcrumb-current"> Báo cáo</span>
       </nav>
 
-      <div className="mb-3 d-flex ms-auto justify-content-end">
-        <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={handlePrint}>
-          <i className="fas fa-print me-2 mt-1 "></i>  
+      <div 
+        className="print-button-fixed"
+      >
+        <button 
+          className="btn btn-primary" 
+          style={{ fontSize: "14px" }} 
+          onClick={handlePrint}
+        >
+          <i className="fas fa-print me-2 mt-1"></i>
           In báo cáo
         </button>
       </div>

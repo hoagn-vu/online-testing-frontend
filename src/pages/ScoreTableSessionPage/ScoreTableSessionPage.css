@@ -48,6 +48,13 @@
     box-sizing: border-box !important;
 }
 
+.print-button-fixed {
+  position: fixed;
+  top: 80px;      /* khoảng cách từ mép trên */
+  right: 20px;    /* khoảng cách từ mép phải */
+  z-index: 1100;  /* đảm bảo nổi trên các phần tử khác */
+}
+
 @page {
     size: A4;
     margin: 2cm;
