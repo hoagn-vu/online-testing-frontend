@@ -274,7 +274,7 @@ const FormDivideStudent = ({ onClose }) => {
           title: "Thiếu thông tin",
           text: `Phòng ${i + 1} chưa chọn phòng thi!`,
           didClose: () => {
-            document.getElementById("roomSelect")?.focus();
+            document.getElementById(`roomSelect-${i}-input`)?.focus();
           }
         });
       }
@@ -321,7 +321,7 @@ const FormDivideStudent = ({ onClose }) => {
       icon: "success",
       text: "Chia phòng thi thành công",
     }).then(() => {
-      navigate(`/staff/organize/${organizeId}/${sessionId}`);
+      navigate(`/staff/organize/${organizeId}/${sessionId}`, { state: { refresh: true } });
     });
     } catch (error) {
       console.error("Lỗi khi chia phòng thi:", error);
@@ -612,7 +612,7 @@ const FormDivideStudent = ({ onClose }) => {
                         size="small"
                         inputProps={{
                           ...params.inputProps,
-                          id: `roomSelect`, // ✅ focus chính xác input
+                          id: `roomSelect-${index}-input`, // ✅ focus chính xác input
                         }}
                         sx={{
                           backgroundColor: '#ffff',
@@ -735,7 +735,7 @@ const FormDivideStudent = ({ onClose }) => {
 							</Grid>
 						</Box>
 					))}
-          <CancelButton style={{padding: "10px"}} onClick={addRoom}>
+          <CancelButton type="button" style={{padding: "10px"}} onClick={addRoom}>
             <i className="fas fa-plus me-2"></i>
             Thêm phòng thi
           </CancelButton>

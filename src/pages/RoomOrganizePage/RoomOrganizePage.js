@@ -127,6 +127,12 @@ const RoomOrganizePage = () => {
 	};
 
 	useEffect(() => {
+		if (location.state?.refresh) {
+			fetchData();
+		}
+	}, [location.state]);
+
+	useEffect(() => {
 		fetchData();
 	}, [organizeId, sessionId, keyword, page, pageSize]);
 		
@@ -314,6 +320,7 @@ const RoomOrganizePage = () => {
 									<th className="text-center">Số lượng thí sinh</th>
 									<th className="text-center">Thí sinh</th>
 									<th className="title-row text-center">Trạng thái</th>
+									<th className="title-row text-center">Bảng điểm</th>
 									<th className="text-center">Thao tác</th>
 								</tr>
 							</thead>
@@ -369,6 +376,24 @@ const RoomOrganizePage = () => {
 													{item.roomStatus === "active" ? "Kích hoạt" : "Đóng"}
 												</span>
 											</div>
+										</td>
+										<td>
+											{item.roomStatus !== "active" ? (
+												<Link
+													to={`/staff/organize/score/${organizeId}/${sessionId}/${item.roomInSessionId}`}
+													className="d-flex text-hover-primary align-items-center justify-content-center"
+													style={{ cursor: "pointer", textDecoration: "underline", color: "blue" }}
+												>
+													In bảng điểm
+												</Link>
+											) : (
+												<div
+													className="d-flex align-items-center justify-content-center"
+													style={{ cursor: "not-allowed", color: "gray" }}
+												>
+													In bảng điểm
+												</div>
+											)}
 										</td>
 										<td className="text-center align-middle">
 											<div className="dropdown d-inline-block">

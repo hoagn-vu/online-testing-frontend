@@ -6,19 +6,19 @@ import "./MonitoringPage.css";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ApiService from "../../services/apiService";
+import Swal from "sweetalert2";
 
 const MonitoringPage = () => {
 	const { organizeExamId, sessionId, roomId } = useParams();
-
   const [listCandidate, setListCandidate] = useState([]);
 	const [organizeExamName, setOrganizeExamName] = useState("");
 	const [sessionName, setSessionName] = useState("");
 	const [roomName, setRoomName] = useState("");
-
 	const [startTrack, setStartTrack] = useState(false);
-
   const [selectedExam, setSelectedExam] = useState(null);
   const [showModal, setShowModal] = useState(false);
+	const [selectedUser, setSelectedUser] = useState(null);
+	const [terminateReason, setTerminateReason] = useState("");
 
   const fetchData = async () => {
     try {
@@ -65,6 +65,8 @@ const MonitoringPage = () => {
 				return ["Chưa thi", "bg-warning"];
 			case "done":
 				return ["Đã nộp", "bg-success"];
+			case "re_open":
+				return ["Đã mở lại", "bg-primary"];
 			default:
 				return ["Khác", "bg-secondary"];
 		}
@@ -108,6 +110,13 @@ const MonitoringPage = () => {
 			});
 			
 			fetchData();
+			Swal.fire({
+				icon: "success",
+				title: "Dừng thi thành công!",
+				text: "Thí sinh đã bị dừng thi và hệ thống đã cập nhật kết quả.",
+				showConfirmButton: true,
+			});
+
 		} catch (error) {
 			console.error("Failed to terminate exam:", error);
 		}
@@ -122,10 +131,16 @@ const MonitoringPage = () => {
 				sessionId: sessionId,
 				roomId: roomId,
 				type: "reopen",
-				status: "in_exam"
+				status: "re_open"
 			});
 
 			fetchData();
+			Swal.fire({
+				icon: "success",
+				title: "Mở lại bài thi thành công!",
+  			text: "Bài thi của thí sinh đã được khôi phục và thí sinh có thể tiếp tục làm bài",
+				showConfirmButton: true,
+			});
 		} catch (error) {
 			console.error("Failed to reopen exam:", error);
 		}
@@ -180,12 +195,12 @@ const MonitoringPage = () => {
 							<tr>
 								<th>#</th>
 								<th>Mã SV</th>
-								<th>Họ và tên đệm</th>
-								<th>Tên</th>
+								<th className="text-start">Họ và tên đệm</th>
+								<th className="text-start">Tên</th>
 								<th>Trạng thái</th>
-								<th>Bắt đầu (thời gian)</th>
+								<th>Bắt đầu</th>
 								<th>Tiến độ</th>
-								<th>Nộp bài (thời gian)</th>
+								<th>Nộp bài</th>
 								<th>Điểm</th>
 								<th>Cảnh cáo (số lần)</th>
 								<th>Thao tác</th>
@@ -196,8 +211,8 @@ const MonitoringPage = () => {
 								<tr key={row.userCode}>
 									<td>{index + 1}</td>
 									<td className="fw-bold">{row.userCode}</td>
-									<td>{row.lastName}</td>
-									<td>{row.firstName}</td>
+									<td className="text-start">{row.lastName}</td>
+									<td className="text-start">{row.firstName}</td>
 									<td>
 										<span className={`badge ${convertStatus(row.status)[1]}`}>
 											{convertStatus(row.status)[0] || "Chờ"}
@@ -217,7 +232,48 @@ const MonitoringPage = () => {
 									<td>
 										<span>{row.violationCount}</span>
 									</td>
-									<td>
+									<td className="text-center align-middle">
+                    <div className="dropdown d-inline-block">
+                      <button
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        className="dropdown-toggle-icon"
+                      >
+                        <i className="fas fa-ellipsis-v"></i>
+                      </button>
+                      <ul className="dropdown-menu dropdown-menu-end dropdown-menu-custom shadow-lg border-0 rounded-3"
+                        style={{
+                          right: "50%",
+                          transform: 'translate3d(-10px, 10px, 0px)',
+                        }}
+                      >
+                        <li className="px-2 py-1"> 
+													<button
+														className={`btn btn-sm w-100 d-flex align-items-center justify-content-center 
+															${row.status === "done" || row.status === "terminate" 
+																? "btn-secondary disabled" 
+																: "btn-outline-danger"}`}
+														data-bs-toggle={row.status === "done" || row.status === "terminate" ? "" : "modal"}
+														data-bs-target={row.status === "done" || row.status === "terminate" ? "" : "#violationModal"}
+														disabled={row.status === "done" || row.status === "terminate"}
+														onClick={() => setSelectedUser(row)}
+													>
+														<i className="fas fa-stop-circle me-1"></i> Dừng thi
+													</button>
+												</li>
+                        <li className="px-2 py-1">
+                          <button 
+														className="btn btn-sm w-100 btn-outline-success d-flex align-items-center justify-content-center"
+														onClick={() => handleReopen(row.userId)}	
+													>
+                            <i className="fas fa-play-circle me-2"></i> Mở lại bài thi
+                          </button>
+                        </li>                        
+                      </ul>
+                    </div>
+                  </td>
+									{/* <td>
 										{row.status === "terminate" ? (
 											// <span className="badge bg-warning">Đã dừng thi</span>
 											<button
@@ -236,7 +292,7 @@ const MonitoringPage = () => {
 												<i className="fas fa-stop-circle me-1"></i> Dừng thi
 											</button>
 										)}
-									</td>
+									</td> */}
 								</tr>
 							))}
 						</tbody>
@@ -253,13 +309,32 @@ const MonitoringPage = () => {
               <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div className="modal-body">
-              <h4>Thí sinh: </h4>
+              <h5>Thí sinh: {selectedUser?.lastName} {selectedUser?.firstName} - {selectedUser?.userCode}</h5>
               <p>Lý do:</p>
-              <textarea className="form-control" rows="3" placeholder="Nhập lý do..."></textarea>
+              <textarea 
+								className="form-control" 
+								rows="3" 
+								placeholder="Nhập lý do..."
+								value={terminateReason}
+          			onChange={(e) => setTerminateReason(e.target.value)}
+							></textarea>
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-              <button type="button" className="btn btn-primary">Xác nhận</button>
+              <button
+								type="button"
+								className="btn btn-primary"
+								data-bs-dismiss="modal"
+								onClick={() => {
+									if (selectedUser && terminateReason.trim() !== "") {
+										handleTerminate(selectedUser.userId, terminateReason);
+										setTerminateReason("");
+										setSelectedUser(null);
+									}
+								}}
+							>
+								Xác nhận
+							</button>
             </div>
           </div>
         </div>

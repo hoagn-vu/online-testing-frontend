@@ -5,8 +5,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFlag } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from "prop-types";
 
-const QuestionCard = ({ question, options, questionId, questionNumber, allowMultiple, onAnswerSelect, flagged, onToggleFlag, questionIndex }) => {
-  const [selectedOptionIds, setSelectedOptionIds] = useState([]);
+const QuestionCard = ({ 
+  question, 
+  options, 
+  questionId, 
+  questionNumber, 
+  allowMultiple, 
+  onAnswerSelect, 
+  flagged, 
+  onToggleFlag, 
+  questionIndex,
+  defaultSelectedOptions = []
+}) => {
+  const [selectedOptionIds, setSelectedOptionIds] = useState(defaultSelectedOptions);
   
   const handleOptionChange = (optionId) => {
     let updatedSelection;
@@ -80,6 +91,7 @@ QuestionCard.propTypes = {
   flagged: PropTypes.bool,
   onToggleFlag: PropTypes.func,
   questionIndex: PropTypes.number.isRequired,
+  defaultSelectedOptions: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default QuestionCard;

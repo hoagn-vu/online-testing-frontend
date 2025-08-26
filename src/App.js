@@ -49,6 +49,7 @@ import CandidateExamResult from "./pages/CandidateExamResult/CandidateExamResult
 import ChangePasswordPage from "./pages/ChangePasswordPage/ChangePasswordPage";
 import SupvChangePasswordPage from "./pages/SupvChangePasswordPage/SupvChangePasswordPage";
 import CandidateExamResultTest from "./pages/CandidateExamResult/CandidateExamResult_test";
+import AutoStatisticPage from "./pages/AutoStatisticPage/AutoStatisticPage";
 
 function App() {
   const accessToken = useSelector((state) => state.auth.accessToken) || localStorage.getItem("accessToken");
@@ -109,6 +110,7 @@ function App() {
           <Route path="groupuser/:groupuserId" element={<ListUserInGroup />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="organize" element={<OrganizeExamPage />} />
+          <Route path="organize/statistic-auto/:organizeExamId" element={<AutoStatisticPage />} />
           <Route path="organize/report/:organizeExamId" element={<ReportEachOrganizePage />} />
           <Route path="organize/:organizeId" element={<SessionPage />} />
           <Route path="organize/:organizeId/:sessionId" element={<RoomOrganizePage />} />
@@ -127,6 +129,7 @@ function App() {
           <Route path="level" element={<LevelManagement />} />
           <Route path="log" element={<LogPage />} />
           <Route path="change-password" element={<ChangePasswordPage />} />
+          <Route path="statistic-auto" element={<AutoStatisticPage />} />
         </Route>
       </Routes>
 

@@ -27,21 +27,21 @@ const ReportEachOrganizePage = () => {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const response = await ApiService.get("/statistics/organize-exam-by-id", {
+      const response = await ApiService.get("/statistics/get-update-organize-exam-grade-stats", {
         params: { organizeExamId: organizeExamId },
       });
-      setOrganizeExamName(response.data.organizeExamName);
-      setSubjecName(response.data.subjecName);
-      setTotalCandidate(response.data.totalCandidates);
-      setMaxScore(response.data.maxScore);
-      setMinScore(response.data.minScore);
-      setAverageScore(response.data.averageScore);
+      setOrganizeExamName(response.data.data.organizeExamName);
+      setSubjecName(response.data.data.subjectName);
+      setTotalCandidate(response.data.data.totalCandidates);
+      setMaxScore(response.data.data.maxScore);
+      setMinScore(response.data.data.minScore);
+      setAverageScore(response.data.data.averageScore);
 
-      const count = getBelowFiveCount(response.data.scoreDistribution);
+      const count = getBelowFiveCount(response.data.data.scoreDistribution);
       setBelowFiveCount(count);
-      setBelowFivePercent(((count / response.data.totalCandidates) * 100).toFixed(2) + "%");
+      setBelowFivePercent(((count / response.data.data.totalCandidates) * 100).toFixed(2) + "%");
       
-      const { array, ranges, counts } = convertBinsToArray(response.data.scoreDistribution);
+      const { array, ranges, counts } = convertBinsToArray(response.data.data.scoreDistribution);
       setScoreDistributionArray(array);
       setLabels(ranges);
       setDataPoints(counts);
@@ -118,9 +118,15 @@ const ReportEachOrganizePage = () => {
         <span className="breadcrumb-current"> Báo cáo</span>
       </nav>
 
-      <div className="mb-3 d-flex ms-auto justify-content-end">
-        <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={handlePrint}>
-          <i className="fas fa-print me-2 mt-1 "></i>  
+      <div 
+        className="print-button-fixed"
+      >
+        <button 
+          className="btn btn-primary" 
+          style={{ fontSize: "14px" }} 
+          onClick={handlePrint}
+        >
+          <i className="fas fa-print me-2 mt-1"></i>
           In báo cáo
         </button>
       </div>

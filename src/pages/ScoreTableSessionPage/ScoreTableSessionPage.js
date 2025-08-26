@@ -9,8 +9,9 @@ const ScoreTableSessionPage = () => {
   const { organizeId, sessionId } = useParams();
   const { roomId } = useParams();
   const location = useLocation();
-  const { sessionNameFromLocate} = location.state || {};
+  const sessionNameFromLocate = location.state?.sessionName || localStorage.getItem("sessionName");
   const organizeExamNameFromLocate = location.state?.organizeExamName || localStorage.getItem("organizeExamName");
+  const [sessionName, setSessionName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [listCandidateWithResult, setListCandidateWithResult] = useState([]);
   const [subjectName, setSubjectName] = useState([]);
@@ -29,6 +30,7 @@ const ScoreTableSessionPage = () => {
       setListCandidateWithResult(response.data.candidates);
       setSubjectName(response.data.subjectName);
       setOrganizeName(response.data.organizeName);
+      setSessionName(response.data.sessionName);
       setRoomName(response.data.roomName);
     } catch (error) {
       console.error("Lỗi lấy dữ liệu:", error);
@@ -75,20 +77,35 @@ const ScoreTableSessionPage = () => {
 				<span className="breadcrumb-between">
 				<Link 
 					to={`/staff/organize/${organizeId}`} 
-					state={{ organizeExamName: organizeExamNameFromLocate }} 
+					state={{ organizeExamName: organizeName }} 
 					className="breadcrumb-between">
-					{organizeExamNameFromLocate}
+					{organizeName}
 				</Link></span>
 				<span className="ms-2 me-2"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
+        <span className="breadcrumb-between">
+          <Link 
+            to={`/staff/organize/${organizeId}/${sessionId}`} 
+            state={{ sessionName: sessionName }}
+            className="breadcrumb-between">
+            {sessionName}
+          </Link>
+        </span>
+        <span className="ms-2 me-2"><i className="fa fa-chevron-right fa-sm" aria-hidden="true"></i></span>
 				<span className="breadcrumb-current">In bảng điểm</span>
 			</nav>
 
       {/* Nút in bảng điểm */}
-      <div className="mt-2 mb-3 d-flex ms-auto justify-content-end">
-        {/* <Print onClick={handlePrint}></Print> */}
-        <button className="btn btn-primary" style={{fontSize: "14px"}} onClick={handlePrint}>
-          <i className="fas fa-print me-2 mt-1 "></i> 
-          In bảng điểm</button>
+      <div 
+        className="print-button-fixed"
+      >
+        <button 
+          className="btn btn-primary" 
+          style={{ fontSize: "14px" }} 
+          onClick={handlePrint}
+        >
+          <i className="fas fa-print me-2 mt-1"></i>
+          In bảng điểm
+        </button>
       </div>
 
       {/* Bảng điểm hiển thị luôn trên trang */}
