@@ -127,6 +127,12 @@ const RoomOrganizePage = () => {
 	};
 
 	useEffect(() => {
+		if (location.state?.refresh) {
+			fetchData();
+		}
+	}, [location.state]);
+
+	useEffect(() => {
 		fetchData();
 	}, [organizeId, sessionId, keyword, page, pageSize]);
 		

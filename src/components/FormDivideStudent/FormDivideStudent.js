@@ -321,7 +321,7 @@ const FormDivideStudent = ({ onClose }) => {
       icon: "success",
       text: "Chia phòng thi thành công",
     }).then(() => {
-      navigate(`/staff/organize/${organizeId}/${sessionId}`);
+      navigate(`/staff/organize/${organizeId}/${sessionId}`, { state: { refresh: true } });
     });
     } catch (error) {
       console.error("Lỗi khi chia phòng thi:", error);
