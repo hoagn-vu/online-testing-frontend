@@ -12,8 +12,8 @@ const HistoryCandidatePage = () => {
   useEffect(() => {
     const fetchExamHistory = async () => {
       try {
-        const response = await ApiService.get(`/process-take-exams/${userId}/exam-results`);
-        setExamHistory(response.data);
+        const response = await ApiService.get(`/process-take-exams/${userId}/take-exam-history`);
+        setExamHistory(response.data.items);
       } catch (error) {
         console.error("Lỗi khi lấy lịch sử thi:", error);
       }
