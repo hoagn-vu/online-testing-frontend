@@ -323,6 +323,7 @@ const TakeExamPage = () => {
                     flagged={flaggedQuestions[index]} 
                     onToggleFlag={toggleFlag}
                     questionIndex={index}
+                    imgLinks={q.imgLinks}
                   />
                 </div>
                 {index < questions.length - 1 && (
@@ -338,13 +339,13 @@ const TakeExamPage = () => {
                   <p className="time-count-take-exam mb-2">{formatTime(duration)}</p>
               </div>
               <div className="progress-take-exam">
-                  <h5>Câu hỏi</h5>
-                  <div className="progress-detail-take-exam">
-                      <p className="ques-progress-take-exam">{answeredCount}/{questions.length}</p>
-                      <div className="progress-container-take-exam">
-                      <p className="progress-bar-take-exam" style={{ width: `${progressPercentage}%` }}></p>
-                      </div>
-                  </div>
+                <h5>Câu hỏi</h5>
+                <div className="progress-detail-take-exam">
+                    <p className="ques-progress-take-exam">{answeredCount}/{questions.length}</p>
+                    <div className="progress-container-take-exam">
+                    <p className="progress-bar-take-exam" style={{ width: `${progressPercentage}%` }}></p>
+                    </div>
+                </div>
               </div>
               <div className="questions-nav-take-exam">
                 {questions.map((_, index) => (
