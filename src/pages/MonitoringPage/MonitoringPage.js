@@ -171,7 +171,14 @@ const MonitoringPage = () => {
 				</Link>
 
 				{/* Khối thông tin kỳ thi */}
-				<div className="exam-info-card">
+				<div className="exam-info-card position-relative p-3">
+					<button 
+						className="btn btn-primary position-absolute top-0 end-0 m-2" 
+						onClick={handleToggleRoomStatus}
+					>
+						{startTrack ? "Đóng phòng thi" : "Kích hoạt phòng thi"}
+					</button>
+
 					<h4 className="text-center fw-bold mb-3">
 						<i className="fas fa-chalkboard-teacher me-2 text-primary"></i>
 						Giám sát kỳ thi: <span className="text-dark">{organizeExamName}</span>
@@ -179,14 +186,13 @@ const MonitoringPage = () => {
 					<div className="exam-info-details">
 						<p><strong>Ca thi:</strong> <span className="text-primary">{sessionName}</span></p>
 						<p><strong>Phòng thi:</strong> <span>{roomName}</span></p>
-						<p><strong>Mật khẩu thí sinh:</strong> <span className="badge bg-warning text-dark">Chưa biết có thêm vào không</span></p>
-					</div>
-					<div className="text-center">
-						<button className="btn btn-primary" onClick={handleToggleRoomStatus}>
-							{startTrack ? "Đóng phòng thi" : "Kích hoạt phòng thi"}
-						</button>
+						<p>
+							<strong>Mật khẩu thí sinh:</strong> 
+							<span className="badge bg-warning text-dark">Chưa biết có thêm vào không</span>
+						</p>
 					</div>
 				</div>
+
 
     		{/* Bảng giám sát thí sinh */}
 				<div className="monitor-table mt-4">
@@ -220,14 +226,25 @@ const MonitoringPage = () => {
 									</td>
 									<td>{formatTime(row.startAt) || "-"}</td>
 									<td>
-										<div className="progress progress-sm">
-											<div className="progress-bar" style={{ width: `${(row.progress / row.totalQuestions) * 100}%` }}></div>
-										</div>
-										<small>{row.progress + "/" + row.totalQuestions}</small>
+										{row.status === "not_started" ? (
+											<span>-</span>
+										) : (
+											<>
+												<div className="progress progress-sm">
+													<div
+														className="progress-bar"
+														style={{ width: `${(row.progress / row.totalQuestions) * 100}%` }}
+													></div>
+												</div>
+												<small>{row.progress + "/" + row.totalQuestions}</small>
+											</>
+										)}
 									</td>
 									<td>{row.status === "done" && row.finishAt ? formatTime(row.finishAt) : "-"}</td>
 									<td>
-										<span>{row.totalScore && row.status === "done" ? row.totalScore : "-"}</span>
+										<span>
+											{row.status === "done" ? (row.totalScore ?? 0) : "-"}
+										</span>
 									</td>
 									<td>
 										<span>{row.violationCount}</span>

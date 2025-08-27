@@ -171,11 +171,20 @@ const FormDivideStudent = ({ onClose }) => {
   const divideStudent = async (payload) => {
     setIsLoading(true);
     try {
-      await ApiService.post(`/organize-exams/${organizeId}/sessions/${sessionId}/rooms`,payload);
+      const response = await ApiService.post(
+        `/organize-exams/${organizeId}/sessions/${sessionId}/rooms`,
+        payload
+      );
+      return response.data; // trả dữ liệu về cho handleSubmit
     } catch (error) {
-      console.error("Failed to divide: ", error);
+      //Bắt lỗi từ server (409, 400,...)
+      if (error.response && error.response.data) {
+        return error.response.data; //trả nguyên data lỗi cho handleSubmit
+      }
+      throw error; // các lỗi khác (mạng, 500,...)
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -316,13 +325,25 @@ const FormDivideStudent = ({ onClose }) => {
     console.log("Submitting:", payload);
     // Gọi API ở đây
     try {
-    await divideStudent(payload);
-    Swal.fire({
-      icon: "success",
-      text: "Chia phòng thi thành công",
-    }).then(() => {
-      navigate(`/staff/organize/${organizeId}/${sessionId}`, { state: { refresh: true } });
-    });
+      const result = await divideStudent(payload);
+      console.log("API result:", result);
+      if (result.status && result.status.toLowerCase() === "success") {
+        // ✅ Thành công
+        Swal.fire({
+          icon: "success",
+          text: "Chia phòng thi thành công",
+        }).then(() => {
+          navigate(`/staff/organize/${organizeId}/${sessionId}`, {
+            state: { refresh: true },
+          });
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Thất bại",
+          text: result.message || "Có lỗi xảy ra, vui lòng thử lại!",
+        });
+      }
     } catch (error) {
       console.error("Lỗi khi chia phòng thi:", error);
       Swal.fire({

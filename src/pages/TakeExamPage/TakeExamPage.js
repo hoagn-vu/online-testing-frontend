@@ -6,21 +6,36 @@ import Swal from 'sweetalert2';
 import { useParams, useNavigate } from 'react-router-dom';
 import ApiService from '../../services/apiService';
 import { useSelector } from "react-redux";
+import avatar from "../../assets/images/avar.jpg";
 
 const TakeExamPage = () => {
   const { organizeExamId, sessionId, roomId, takeExamId } = useParams();
-  const username = "Phương Linh";
-  const studentID = "123456";
   const avatarUrl = ""; // Đường dẫn ảnh avatar
-  
   const userId = useSelector((state) => state.auth.user.id);
-
   const navigate = useNavigate();
-
   const [organizeExamName, setOrganizeExamName] = useState("");
   const [questions, setQuestions] = useState([]);
   const [duration, setDuration] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [fullName, setFullName] = useState("");
+  const [userCode, setUserCode] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await ApiService.get(`/users/${userId}`, );
+
+        setFullName(response.data.fullName);
+        setUserCode(response.data.userCode);
+        
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+      setIsLoading(false);
+    };
+    fetchData();
+  }, [organizeExamId, sessionId, roomId]);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -279,13 +294,12 @@ const TakeExamPage = () => {
           <div className="header-candidate-takexam-container d-flex align-items-center">
             <div className="user-info position-relative align-items-center d-flex justify-content-between w-100">
               <div className='d-flex align-items-center '>
-                <img src={avatarUrl} alt="Avatar" className="avatar" />
+                <img src={avatar} alt="Avatar" className="avatar" />
                 <div className='ms-3'>
-                  <p className="username m-0 p-0">{username}</p>
-                  <p className="studentID m-0 p-0">{studentID}</p>
+                  <p className="username m-0 p-0">{fullName}</p>
+                  <p className="studentID m-0 p-0">{userCode}</p>
                 </div>
               </div>
-              <h5 className='d-flex align-items-center justify-content-between m-0 fw-bold'>Kỳ thi hết học phần môn</h5>
               <button className='btn btn-primary btn-sm btn-submit' onClick={handleSubmitExam}>Nộp bài</button>
             </div>
           </div>
@@ -309,6 +323,7 @@ const TakeExamPage = () => {
                     flagged={flaggedQuestions[index]} 
                     onToggleFlag={toggleFlag}
                     questionIndex={index}
+                    imgLinks={q.imgLinks}
                   />
                 </div>
                 {index < questions.length - 1 && (
@@ -324,13 +339,13 @@ const TakeExamPage = () => {
                   <p className="time-count-take-exam mb-2">{formatTime(duration)}</p>
               </div>
               <div className="progress-take-exam">
-                  <h5>Câu hỏi</h5>
-                  <div className="progress-detail-take-exam">
-                      <p className="ques-progress-take-exam">{answeredCount}/{questions.length}</p>
-                      <div className="progress-container-take-exam">
-                      <p className="progress-bar-take-exam" style={{ width: `${progressPercentage}%` }}></p>
-                      </div>
-                  </div>
+                <h5>Câu hỏi</h5>
+                <div className="progress-detail-take-exam">
+                    <p className="ques-progress-take-exam">{answeredCount}/{questions.length}</p>
+                    <div className="progress-container-take-exam">
+                    <p className="progress-bar-take-exam" style={{ width: `${progressPercentage}%` }}></p>
+                    </div>
+                </div>
               </div>
               <div className="questions-nav-take-exam">
                 {questions.map((_, index) => (

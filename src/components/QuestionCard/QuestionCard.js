@@ -15,7 +15,8 @@ const QuestionCard = ({
   flagged, 
   onToggleFlag, 
   questionIndex,
-  defaultSelectedOptions = []
+  defaultSelectedOptions = [],
+  imgLinks = []
 }) => {
   const [selectedOptionIds, setSelectedOptionIds] = useState(defaultSelectedOptions);
   
@@ -40,7 +41,7 @@ const QuestionCard = ({
   }, [selectedOptionIds]);
 
   return (
-    <div className="question-card">
+    <div className="">
       <div className="question-take-exam">
         <div className="header-question-take-exam align-items-center d-flex">
           <p className='mb-0 fw-bold'>Câu {questionNumber}: {question}</p>
@@ -52,6 +53,19 @@ const QuestionCard = ({
           </button>
 
         </div>
+        {imgLinks && imgLinks.length > 0 && (
+          <div className="question-images my-2">
+            {imgLinks.map((link, idx) => (
+              <img 
+                key={idx} 
+                src={link} 
+                alt={`Question ${questionNumber} - ${idx+1}`} 
+                className="img-fluid rounded mb-2"
+                style={{ maxWidth: "320px", display: "block" }}
+              />
+            ))}
+          </div>
+        )}
         <ul className="options-take-exam">
           {options.map((option, index) => (
             <li key={option.optionId} className={`option ${selectedOptionIds.includes(option.optionId) ? 'selected' : ''}`}>
@@ -92,6 +106,7 @@ QuestionCard.propTypes = {
   onToggleFlag: PropTypes.func,
   questionIndex: PropTypes.number.isRequired,
   defaultSelectedOptions: PropTypes.arrayOf(PropTypes.string),
+  imgLinks: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default QuestionCard;

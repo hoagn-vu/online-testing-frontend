@@ -1,26 +1,32 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./HistoryCandidatePage.css";
 import { useSelector } from "react-redux";
 import ApiService from '../../services/apiService';
 import { FaHistory } from "react-icons/fa";
+import { Pagination} from "@mui/material";
 
 const HistoryCandidatePage = () => {
   const userId = useSelector((state) => state.auth.user.id);
   const [examHistory, setExamHistory] = React.useState([]);
-
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
   useEffect(() => {
     const fetchExamHistory = async () => {
       try {
-        const response = await ApiService.get(`/process-take-exams/${userId}/take-exam-history`);
+        const response = await ApiService.get(`/process-take-exams/${userId}/take-exam-history`, {
+          params: {page, pageSize },
+        });
         setExamHistory(response.data.items);
+        setTotalCount(response.data.totalItems);
       } catch (error) {
         console.error("Lỗi khi lấy lịch sử thi:", error);
       }
     };
 
     fetchExamHistory();
-  }, [userId]);
+  }, [userId,page, pageSize]);
 
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
@@ -62,12 +68,12 @@ const HistoryCandidatePage = () => {
                     <td className="text-center">{exam.subjectName}</td>
                     <td className="text-center">
                       <span className={getScoreBadge(exam.totalScore)}>
-                        {exam.totalScore.toFixed(2)}
+                        {exam.status === "terminate" ? "Hủy thi" : exam.totalScore.toFixed(2)}
                       </span>
                     </td>
                     <td className="text-center">{formatDate(exam.finishedAt)}</td>
                     <td className={exam.note ? "text-danger fw-semibold" : "text-muted"}>
-                      {exam.note || "—"}
+                      {exam.unrecognizedReason || "—"}
                     </td>
                   </tr>
                 ))}
@@ -80,6 +86,17 @@ const HistoryCandidatePage = () => {
                 )}
               </tbody>
             </table>
+          </div>
+          <div className="sample-pagination d-flex justify-content-end align-items-center ">
+            { totalCount > 0 && (
+              <Pagination
+                count={Math.ceil(totalCount / pageSize)}
+                shape="rounded"
+                page={page}
+                onChange={(e, value) => setPage(value)}
+                color="primary"
+              />
+            )}
           </div>
         </div>
       </div>

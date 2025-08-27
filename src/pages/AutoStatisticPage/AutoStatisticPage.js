@@ -202,54 +202,41 @@ const AutoStatisticPage = () => {
         <span className="breadcrumb-current">Thống kê kỳ thi: {organizeExamName}</span>
       </nav>
 
-      {/* <div className="d-flex mb-3">
-        <Autocomplete
-          options={ organizeExamOptions}
-          getOptionLabel={(option) => option.label}
-          value={
-            organizeExamOptions.find((opt) => opt.value === organizeExamId) || null
-          }
-          onChange={(event, newValue) => {
-            setOrganizeExamId(newValue?.value || null);
-            setOrganizeExamName(newValue?.label || "");
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Chọn kỳ thi"
-              size="small"
-              sx={{
-                backgroundColor: "white",
-                minWidth: 300,
-                "& .MuiInputBase-root": { height: "40px", width: "300px" },
-                "& label": { fontSize: "14px" },
-                "& input": { fontSize: "14px" },
-              }}
-            />
-          )}
-          slotProps={{ paper: { sx: { fontSize: "14px" } } }}
-        />
-      </div> */}
-
       <p className="text-center mb-2 fw-bold text-blue-holo mt-2" style={{fontSize: "24px"}}>THỐNG KÊ</p>
 
-      <div className="d-flex mb-3" style={{gap: "15px"}}>
-        <BarChart
-          title="Số lượng thí sinh"
-          labels={labels}
-          dataPoints={dataPoints}
-          width="75%"
-          height="350px"
-        />
-        <PieChart
-          title="Thống kê thí sinh"
-          labels={["Thí sinh nộp bài thành công", "Thí sinh bị dừng thi", "Không thi"]}
-          dataPoints={[totalCandidates-totalCandidateTerminated- totalCandidateNotParticipated, totalCandidateTerminated, totalCandidateNotParticipated]}
-          width="50%px"
-          height="350px"
-          isShowLegend={true}
-          convertToImage={false}
-        />
+      <div className="row mb-3">
+        <div className="col-8">
+          <div className="bg-white p-3 rounded shadow-sm h-100">
+            <p className="text-center mb-1 fw-bold">Biểu đồ phân bố điểm</p>
+            <BarChart
+              labels={labels}
+              dataPoints={dataPoints}
+              width="100%"
+              height="350px"
+            />
+          </div>
+        </div>
+        <div className="col-4 ps-0">
+          <div className="bg-white p-3 rounded shadow-sm h-100">
+            <p className="text-center mb-1 fw-bold">Tỷ lệ thí sinh tham gia kỳ thi</p>
+            <PieChart
+              labels={[
+                "Thí sinh nộp bài thành công",
+                "Thí sinh bị dừng thi",
+                "Không thi",
+              ]}
+              dataPoints={[
+                totalCandidates - totalCandidateTerminated - totalCandidateNotParticipated,
+                totalCandidateTerminated,
+                totalCandidateNotParticipated,
+              ]}
+              width="100%"
+              height="350px"
+              isShowLegend={true}
+              convertToImage={false}
+            />
+          </div>
+        </div>
       </div>
       <div className="candidate-exam-result">
         <div className="tbl-shadow">

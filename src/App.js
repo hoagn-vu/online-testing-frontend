@@ -50,6 +50,7 @@ import ChangePasswordPage from "./pages/ChangePasswordPage/ChangePasswordPage";
 import SupvChangePasswordPage from "./pages/SupvChangePasswordPage/SupvChangePasswordPage";
 import CandidateExamResultTest from "./pages/CandidateExamResult/CandidateExamResult_test";
 import AutoStatisticPage from "./pages/AutoStatisticPage/AutoStatisticPage";
+import GenerateExamFromMatrixPage from "./pages/GenerateExamFromMatrixPage/GenerateExamFromMatrixPage";
 
 function App() {
   const accessToken = useSelector((state) => state.auth.accessToken) || localStorage.getItem("accessToken");
@@ -122,6 +123,7 @@ function App() {
           <Route path="question/:subjectId" element={<QuestionBankPage />} />
           <Route path="question/:subjectId/:questionBankId" element={<ListQuestionPage />} />
           <Route path="matrix-exam" element={<ExamMatrixPage />} />
+          <Route path="exam/generate-exam-matrix" element={<GenerateExamFromMatrixPage />} />
           <Route path="matrix-exam/matrix-detail" element={<DetailExamMatrixPage />} />
           <Route path="exam" element={<ExamManagementPage />} />
           <Route path="exam/:examId" element={<DetailExamPage />} />
