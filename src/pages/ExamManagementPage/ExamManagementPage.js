@@ -32,6 +32,12 @@ const ExamManagementPage = () => {
     setPage(1);
   };
 
+	useEffect(() => {
+		if (location.state?.refresh) {
+			fetchData();
+		}
+	}, [location.state]);
+
 	const fetchData = async () => {
 		try {
 			const response = await ApiService.get("/exams", {
@@ -219,6 +225,10 @@ const ExamManagementPage = () => {
 		setShowFormCreateExam(params.get("showFormCreateExam") === "true");
 	}, [location.search]);
 
+	const handleGenerateExam = () => {
+    navigate(`/staff/exam/generate-exam-matrix`);
+  };
+
 	return (
 		<div className="p-4">
 			{/* Breadcrumb */}
@@ -251,6 +261,10 @@ const ExamManagementPage = () => {
           </div>
 
           <div className='right-header'>
+						<AddButton onClick={handleGenerateExam} className="me-2">
+							<i className="fas fa-random me-2"></i>
+              Sinh đề thi
+						</AddButton>
 						<AddButton onClick={handleOpenFormCreateExam}>
 							<i className="fas fa-plus me-2"></i>
               Thêm mới

@@ -1,0 +1,10 @@
+.option.correct {
+  background-color: #E8F5E9;
+  color: #4CAF50;
+}
+
+.option {
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
