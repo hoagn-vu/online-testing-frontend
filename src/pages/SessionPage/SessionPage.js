@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useParams, useSearchParams, useNavigate  } from "react-router-dom";
 import "./SessionPage.css";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import {Pagination, Box, Button, Grid, MenuItem, Select, IconButton, TextField, Checkbox, FormControl, FormGroup, FormControlLabel, Typography, duration } from "@mui/material";
+import {Pagination, InputAdornment, Grid, MenuItem, IconButton, TextField } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
@@ -15,17 +13,19 @@ import dayjs from "dayjs";
 import ApiService from "../../services/apiService";
 import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const SessionPage = () => {
 	const { organizeId } = useParams();
-
 	const [showForm, setShowForm] = useState(false);
 	const [editingAccount, setEditingAccount] = useState(null);
 	const inputRef = useRef(null);
 	const [organizeExamName, setOrganizeExamName] = useState("");
 	const navigate = useNavigate();
-	
+	const [showPasswordForm, setShowPasswordForm] = useState(false);
 	const [organizeExam, setOrganizeExam] = useState([]);
+	const [showPassword, setShowPassword] = useState(false);
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -236,18 +236,73 @@ const SessionPage = () => {
 		exams: "Đề thi có sẵn",
 	};
 
-	const handleToggleSessionStatus = async (sessionId) => {
-		try {
-			const response = await ApiService.post("/process-take-exams/toggle-session-status", {
-				organizeExamId: organizeId,
-				sessionId: sessionId,
-			});
+	const handleToggleSessionStatus = async (sessionId, currentStatus) => {
+		Swal.fire({
+			title: "Bạn có chắc muốn thay đổi trạng thái?",
+			text: "Trạng thái sẽ được cập nhật ngay sau khi xác nhận!",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "Xác nhận",
+			cancelButtonText: "Hủy",
+		}).then(async (result) => {
+			if (result.isConfirmed) {
+				try {
+					const response = await ApiService.post(
+						"/process-take-exams/toggle-session-status",
+						{
+							organizeExamId: organizeId,
+							sessionId: sessionId,
+						}
+					);
 
-			fetchData();
-		} catch (error) {
-			console.error("Failed to toggle session status: ", error);
-		}
+					// Sau khi gọi API thành công thì fetch lại dữ liệu
+					await fetchData();
+
+					// Xác định trạng thái mới dựa vào trạng thái hiện tại
+					let successMessage = "";
+					if (currentStatus === "active") {
+						successMessage = "Đóng ca thi thành công";
+					} else {
+						successMessage = "Kích hoạt ca thi thành công";
+					}
+
+
+					Swal.fire({
+						title: "Thành công!",
+						text: successMessage,
+						icon: "success",
+					});
+				} catch (error) {
+					console.error("Failed to toggle session status: ", error);
+					Swal.fire({
+						icon: "error",
+						title: "Lỗi",
+						text: error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại!",
+					});
+				}
+			}
+		});
 	}
+
+	// Đổi mật khẩu thí sinh
+	const [passwordData, setPasswordData] = useState({
+		role: "candidate",
+		newPassword: "",
+		confirmPassword: "",
+	});
+
+	const handlePasswordSubmit = (e) => {
+    e.preventDefault();
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      alert("Mật khẩu xác nhận không khớp!");
+      return;
+    }
+    console.log("Cập nhật mật khẩu cho vai trò:", passwordData);
+    setShowPasswordForm(false);
+  };
+	const handleTogglePassword = () => setShowPassword((prev) => !prev);
 
 	return (
 		<div className="p-4">
@@ -454,6 +509,11 @@ const SessionPage = () => {
 																transform: 'translate3d(-10px, 10px, 0px)',
 															}}
 														>
+															<li className="tbl-action" onClick={() => setShowPasswordForm(true)}>
+																<button className="dropdown-item tbl-action" onClick={() => setShowPasswordForm(true)}>
+																	Mật khẩu thí sinh
+																</button>
+															</li>
 															<li className="tbl-action" onClick={() => preEdit(session)}> 
 																<button className="dropdown-item tbl-action" onClick={() => preEdit(session)}>
 																	Chỉnh sửa
@@ -464,12 +524,12 @@ const SessionPage = () => {
 																	Xoá
 																</button>
 															</li>
-															<li className="tbl-action" onClick={() => handleToggleSessionStatus(session.sessionId)}>
+															<li className="tbl-action" onClick={() => handleToggleSessionStatus(session.sessionId, session.sessionStatus)}>
 															{/* <li className="tbl-action" onClick={() => handleToggleStatus(session.sessionId, session.sessionStatus)}> */}
 																<button
 																	className="dropdown-item tbl-action"
 																	onClick={() =>
-																		handleToggleSessionStatus(session.sessionId)
+																		handleToggleSessionStatus(session.sessionId, session.sessionStatus)
 																		// handleToggleStatus(session.sessionId, session.sessionStatus)
 																	}
 																>
@@ -623,6 +683,140 @@ const SessionPage = () => {
 								</Grid>
 							</Grid>
 					</form>
+				</div>
+			)}
+
+			{/* Form Đổi mật khẩu */}
+			{showPasswordForm && (
+				<div className="form-overlay">
+					<div
+						className="shadow form-fade bg-white bd-radius-8"
+						style={{ width: "800px", boxShadow: 3,}}
+						onSubmit={handlePasswordSubmit}
+					>
+						<div 
+							className="d-flex justify-content-between"
+							style={{
+								borderBottom: "1px solid #ccc",
+								marginBottom: "20px",
+							}}
+						>
+							<p className="fw-bold p-4 pb-0">
+								Đổi mật khẩu
+							</p>
+							<button
+								className="p-4"
+								type="button"
+								onClick={() => setShowPasswordForm(false)}
+								style={{
+									border: 'none',
+									background: 'none',
+									fontSize: '20px',
+									cursor: 'pointer',
+								}}
+							><i className="fa-solid fa-xmark"></i></button>            
+						</div>
+						<Grid container spacing={2} sx={{p: 3, pt: 1}}>
+							{/* Mã và Họ Tên */}
+							<Grid item xs={12}>
+								<TextField
+									fullWidth
+									select
+									required
+									label="Vai trò"
+									value={passwordData.role}
+									onChange={(e) =>
+										setPasswordData({ ...passwordData, role: e.target.value })
+									}
+									sx={{
+										"& .MuiInputBase-input": {
+											fontSize: "14px",
+											paddingBottom: "11px",
+										},
+										"& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+									}}
+								>
+									<MenuItem value="candidate">Thí sinh</MenuItem>
+
+								</TextField>
+							</Grid>
+							<Grid item xs={12}>
+								<TextField
+									fullWidth
+									label="Mật khẩu mới"
+									type={showPassword ? "text" : "password"}
+									required
+									inputRef={inputRef}
+									value={formData.newPassword}
+									onChange={(e) =>
+										setPasswordData({ ...passwordData, newPassword: e.target.value })
+									}
+									sx={{
+										"& .MuiInputBase-input": {
+											fontSize: "14px",
+											paddingBottom: "11px",
+										},
+										"& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+									}}
+									InputProps={{
+										endAdornment: (
+											<InputAdornment position="end">
+												<IconButton onClick={handleTogglePassword} edge="end">
+													{showPassword ? <VisibilityOff /> : <Visibility />}
+												</IconButton>
+											</InputAdornment>
+										),
+									}}
+								/>
+							</Grid>
+							<Grid item xs={12}>
+								<TextField
+									fullWidth
+									label="Xác nhận mật khẩu"
+									required
+									inputRef={inputRef}
+									type={showConfirmPassword  ? "text" : "password"}
+									value={formData.confirmPassword}
+									onChange={(e) =>
+										setPasswordData({ ...passwordData, confirmPassword: e.target.value })
+									}
+									sx={{
+										"& .MuiInputBase-input": {
+											fontSize: "14px",
+											paddingBottom: "11px",
+										},
+										"& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
+									}}
+									InputProps={{
+										endAdornment: (
+											<InputAdornment position="end">
+												<IconButton
+													onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+													edge="end"
+												>
+													{showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+												</IconButton>
+											</InputAdornment>
+										),
+									}}
+								/>
+							</Grid>
+							</Grid>
+
+						{/* Buttons */}
+						<Grid container spacing={2} sx={{justifyContent:"flex-end", p: 3, pt: 1 }}>
+							<Grid item xs={3}>
+								<CancelButton onClick={() => setShowPasswordForm(false)} style={{width: "100%"}}>
+									Hủy
+								</CancelButton>
+							</Grid>
+							<Grid item xs={3}>
+								<AddButton style={{width: "100%"}}>
+									Lưu
+								</AddButton>
+							</Grid>
+						</Grid>
+					</div>
 				</div>
 			)}
 		</div>
