@@ -2,7 +2,7 @@ name: SCA scan
 
 on:
   push:
-    branches: [ main, nam01 ]
+    branches: [ main ]
   workflow_dispatch: 
 
 jobs:
