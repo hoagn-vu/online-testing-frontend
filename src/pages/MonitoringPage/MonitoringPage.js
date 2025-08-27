@@ -226,10 +226,19 @@ const MonitoringPage = () => {
 									</td>
 									<td>{formatTime(row.startAt) || "-"}</td>
 									<td>
-										<div className="progress progress-sm">
-											<div className="progress-bar" style={{ width: `${(row.progress / row.totalQuestions) * 100}%` }}></div>
-										</div>
-										<small>{row.progress + "/" + row.totalQuestions}</small>
+										{row.status === "not_started" ? (
+											<span>-</span>
+										) : (
+											<>
+												<div className="progress progress-sm">
+													<div
+														className="progress-bar"
+														style={{ width: `${(row.progress / row.totalQuestions) * 100}%` }}
+													></div>
+												</div>
+												<small>{row.progress + "/" + row.totalQuestions}</small>
+											</>
+										)}
 									</td>
 									<td>{row.status === "done" && row.finishAt ? formatTime(row.finishAt) : "-"}</td>
 									<td>
