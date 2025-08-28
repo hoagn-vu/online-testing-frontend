@@ -10,6 +10,7 @@ import SearchBox from "../../components/SearchBox/SearchBox";
 import ApiService from "../../services/apiService";
 import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
+import { Api } from "@mui/icons-material";
 
 const SubjectPage = () => {
   const [listSubject, setListSubject] = useState([]);
@@ -53,24 +54,6 @@ const SubjectPage = () => {
     setIsLoading(false);
   };
 
-  const updateSubject = async (subject) => {
-    setIsLoading(true);
-    try {
-      const response = await ApiService.put(`/subjects/update/${subject.id}`, subject);
-      if (response.status >= 200 && response.status < 300) {
-        await fetchData();
-        return true; // thành công
-      } else {
-        throw new Error("Cập nhật thất bại");
-      }
-    } catch (error) {
-      console.error("Failed to update subject: ", error);
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
     fetchData();
   }, [keyword, page, pageSize]);
@@ -97,12 +80,22 @@ const SubjectPage = () => {
     e.preventDefault();
     try {
       if (editingSubject) {
-        await updateSubject({ ...editingSubject, ...formData });
-        Swal.fire({
-          icon: "success",
-          text: "Cập nhật phân môn thành công",
-          draggable: true
-        });
+        const response = await ApiService.put(`/subjects/${editingSubject.id}`, formData);
+        if (response.data.status == "success") {
+          Swal.fire({
+            icon: "success",
+            text: "Cập nhật phân môn thành công",
+            draggable: true
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Có lỗi xảy ra",
+            text: response.data.message || "Không thể xử lý yêu cầu",
+          });
+        }
+
+        await fetchData();
         setShowForm(false);
       } else {
         // Thêm mới dữ liệu

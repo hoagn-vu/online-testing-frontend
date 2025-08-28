@@ -21,7 +21,7 @@ const QuestionBankPage = () => {
 
   const [keyword, setKeyword] = useState("");
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(100);
   const [isLoading, setIsLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const navigate = useNavigate();
@@ -87,7 +87,7 @@ const QuestionBankPage = () => {
   const updateQuestionBank = async (questionBankId, questionBankName) => {
     setIsLoading(true);
     try {
-      await ApiService.put(`/subjects/update-question-bank`, {
+      await ApiService.put(`/subjects/question-bank`, {
         subjectId: subjectId,
         questionBankId: questionBankId,
         questionBankName: questionBankName,
