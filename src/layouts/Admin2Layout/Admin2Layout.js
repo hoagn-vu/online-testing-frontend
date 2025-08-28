@@ -32,11 +32,20 @@ import ChapterSidebar from '../../components/ChapterSidebar/ChapterSidebar';
 const drawerWidth = 250;
 
 const menuItems = [
-  { title: "Trang chủ", icon: <i className="fa-solid fa-chart-column icon-color" aria-hidden="true"></i>, path: "/staff/dashboard", role: ["admin"] },
+  { title: "Trang chủ", icon: <i className="fa-solid fa-chart-column icon-color" aria-hidden="true"></i>, path: "/staff/dashboard", role: ["staff"] },
   { 
     title: "Quản lý người dùng", 
     icon: <i className="fa-solid fa-user-gear icon-color"></i>, 
     role: ["admin"],
+    children: [
+      { title: "Danh sách người dùng", path: "/admin/accountmanage" },
+      { title: "Nhóm người dùng", path: "/admin/groupuser" },
+    ],
+  },
+  { 
+    title: "Quản lý người dùng", 
+    icon: <i className="fa-solid fa-user-gear icon-color"></i>, 
+    role: ["staff"],
     children: [
       { title: "Danh sách người dùng", path: "/staff/accountmanage" },
       { title: "Nhóm người dùng", path: "/staff/groupuser" },
@@ -45,7 +54,7 @@ const menuItems = [
   { 
     title: "Tổ chức kỳ thi", 
     icon: <i className="fa-solid fa-calendar-check icon-color"></i>, 
-    role: ["admin"],
+    role: ["staff"],
     children: [
       { title: "Quản lý kỳ thi", path: "/staff/organize" },
       { title: "Quản lý phòng thi", path: "/staff/room" },
@@ -54,7 +63,7 @@ const menuItems = [
   { 
     title: "Quản lý nội dung thi", 
     icon: <i className="fa-solid fa-database icon-color"></i>, 
-    role: ["admin"],
+    role: ["staff"],
     children: [
       { title: "Ngân hàng câu hỏi", path: "/staff/question" },
       { title: "Quản lý ma trận đề", path: "/staff/matrix-exam" },
@@ -62,9 +71,20 @@ const menuItems = [
       { title: "Quản lý mức độ", path: "/staff/level" },
     ],
   },
+  { 
+    title: "Quản lý nội dung thi", 
+    icon: <i className="fa-solid fa-database icon-color"></i>, 
+    role: ["lecturer"],
+    children: [
+      { title: "Ngân hàng câu hỏi", path: "/lecturer/question" },
+      { title: "Quản lý ma trận đề", path: "/lecturer/matrix-exam" },
+      { title: "Quản lý đề thi", path: "/lecturer/exam" },
+      { title: "Quản lý mức độ", path: "/lecturer/level" },
+    ],
+  },
   // { title: "Quản lý ma trận đề", icon: <i className="fa-solid fa-table icon-color"></i>, path: "/staff/matrix-exam", role: ["admin"] },
   // { title: "Quản lý đề thi", icon: <i className="fa-solid fa-file-lines icon-color"></i>, path: "/staff/exam", role: ["admin"] },
-  { title: "Nhật ký sử dụng", icon: <i className="fa-solid fa-book icon-color"></i>, path: "/staff/log", role: ["admin"] },
+  { title: "Nhật ký sử dụng", icon: <i className="fa-solid fa-book icon-color"></i>, path: "/admin/log", role: ["admin"] },
 ];
 
 const openedMixin = (theme) => ({
@@ -218,6 +238,16 @@ export default function Admin2Layout() {
 
   const isListQuestionPage = isBaseListQuestionPage && !isAiFormOpen && !isAddQuestionFormOpen;
 
+  const handleNavigateToChangePassword = () => {
+    if (user.role === "lecturer") {
+      navigate("/lecturer/change-password");
+    } else if (user.role === "staff") {
+      navigate("/staff/change-password");
+    } else if (user.role === "admin") {
+      navigate("/admin/change-password");
+    }
+  };
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -245,7 +275,7 @@ export default function Admin2Layout() {
                 <li>
                   <a
                     className="dropdown-item d-flex justify-content-between align-items-center"
-                    onClick={() => navigate("/staff/change-password")}
+                    onClick={() => handleNavigateToChangePassword()}
                     style={{ gap: "8px" }}
                   >
                     <span>Đổi mật khẩu</span>
