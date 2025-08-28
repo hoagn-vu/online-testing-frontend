@@ -19,6 +19,7 @@ const TakeExamPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [fullName, setFullName] = useState("");
   const [userCode, setUserCode] = useState("");
+  const [isWarning, setIsWarning] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -104,22 +105,47 @@ const TakeExamPage = () => {
 
   const [leaveCount, setLeaveCount] = useState(0);
 
+  const handleFullscreen = () => {
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen();
+    } else if (document.documentElement.mozRequestFullScreen) {
+      document.documentElement.mozRequestFullScreen();
+    } else if (document.documentElement.webkitRequestFullscreen) {
+      document.documentElement.webkitRequestFullscreen();
+    } else if (document.documentElement.msRequestFullscreen) {
+      document.documentElement.msRequestFullscreen();
+    }
+  };
+
   useEffect(() => {
-    const handleFullscreen = () => {
-      if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen();
-      } else if (document.documentElement.mozRequestFullScreen) {
-        document.documentElement.mozRequestFullScreen();
-      } else if (document.documentElement.webkitRequestFullscreen) {
-        document.documentElement.webkitRequestFullscreen();
-      } else if (document.documentElement.msRequestFullscreen) {
-        document.documentElement.msRequestFullscreen();
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement &&
+          !document.mozFullScreenElement &&
+          !document.webkitFullscreenElement &&
+          !document.msFullscreenElement) {
+        
+        setIsWarning(true);
+        handleLeaveExam();
       }
     };
 
-    handleFullscreen();
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+    document.addEventListener("mozfullscreenchange", handleFullscreenChange);
+    document.addEventListener("MSFullscreenChange", handleFullscreenChange);
 
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      document.removeEventListener("webkitfullscreenchange", handleFullscreenChange);
+      document.removeEventListener("mozfullscreenchange", handleFullscreenChange);
+      document.removeEventListener("MSFullscreenChange", handleFullscreenChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    // handleFullscreen();
     const handleBlur = () => {
+      setIsWarning(true);
       setLeaveCount((prev) => prev + 1);
       handleLeaveExam();
     };
@@ -194,10 +220,6 @@ const TakeExamPage = () => {
     }
   };
 
-  const [preSubmit, setPreSubmit] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [examResult, setExamResult] = useState({});
-
   const handleSubmitExam = () => {
     Swal.fire({
       title: "Bạn có chắc chắn muốn nộp bài?",
@@ -250,13 +272,17 @@ const TakeExamPage = () => {
     return () => clearInterval(interval);
   }, [userId, takeExamId]);
 
-  // mỗi khi leave count tăng thì gọi API
   const handleLeaveExam = async () => {
     try {
       await ApiService.post(`/process-take-exams/violation?userId=${userId}&takeExamId=${takeExamId}`);
     } catch (error) {
       console.error("Failed to leave exam:", error);
     }
+  };
+
+  const returnExamAfterLeave = () => {
+    setIsWarning(false);
+    handleFullscreen();
   };
 
   // useEffect(() => {
@@ -266,30 +292,7 @@ const TakeExamPage = () => {
   // }, [leaveCount]);
 
   return (
-    <div>
-      {isSubmitted ? (
-        <div className="result-wrapper">
-          <div className="result-content">
-            <h4 className="result-title text-center">
-              <i className="fas fa-award me-2 text-success mb-2"></i> Kết quả thi
-            </h4>
-            <div className="result-details mb-3">
-              <p><strong>Kỳ thi:</strong> {examResult.organizeExamName}</p>
-              <p><strong>Môn thi:</strong> {examResult.organizeExamName}</p>
-              <p><strong>Thí sinh:</strong> {examResult.candidateName} - {examResult.candidateCode}</p>
-              <p><strong>Thời gian hoàn thành:</strong> {examResult.finishedAt}</p>
-              <p><strong>Số câu đúng:</strong> <span className="text-success fw-bold">{examResult.correctAnswers}</span>/{examResult.totalQuestions}</p>
-              <p><strong>Điểm thi:</strong> <span className="score-badge">{examResult.totalScore}</span></p>
-              <p><strong>Số lần rời khỏi màn hình:</strong> {examResult.violationCount}</p>
-            </div>
-            <div className="text-center mt-5">
-              <a href="/candidate/home" className="btn-home">
-                <i className="fas fa-home me-2"></i> Về trang chủ
-              </a>
-            </div>
-          </div>
-        </div>
-      ) : (
+    <div> 
         <div>
           <div className="header-candidate-takexam-container d-flex align-items-center">
             <div className="user-info position-relative align-items-center d-flex justify-content-between w-100">
@@ -305,69 +308,81 @@ const TakeExamPage = () => {
           </div>
 
           <div className="container container-take-exam d-flex justify-content-between">
-            <div className="content-take-exam w-100">
-            {questions.map((q, index) => (
-              <React.Fragment key={index}>
-                <div ref={(el) => (questionRefs.current[index] = el)}>
-                  <QuestionCard 
-                    questionNumber={index + 1} 
-                    questionId={q.questionId}
-                    question={q.questionText} 
-                    options={q.options} 
-                    allowMultiple={q.allowMultiple}
-                    defaultSelectedOptions={q.options.filter(o => o.isChosen).map(o => o.optionId)} 
-                    onAnswerSelect={(questionId, selectedOptionIds, index) => {
-                      handleAnswerChange(questionId, selectedOptionIds);
-                      handleAnswerSelect(index);
-                    }}
-                    flagged={flaggedQuestions[index]} 
-                    onToggleFlag={toggleFlag}
-                    questionIndex={index}
-                    imgLinks={q.imgLinks}
-                  />
-                </div>
-                {index < questions.length - 1 && (
-                  <hr className='m-0 mt-1 mb-3 mx-auto' style={{ width: '95%' }} />
-                )}
-              </React.Fragment>
-            ))}  
-            </div>
-
-            <div className="sidebar-take-exams">
-              <div className="timer-take-exam">
-                  <p className="time-title-take-exam pt-2">Thời gian còn lại</p>
-                  <p className="time-count-take-exam mb-2">{formatTime(duration)}</p>
-              </div>
-              <div className="progress-take-exam">
-                <h5>Câu hỏi</h5>
-                <div className="progress-detail-take-exam">
-                    <p className="ques-progress-take-exam">{answeredCount}/{questions.length}</p>
-                    <div className="progress-container-take-exam">
-                    <p className="progress-bar-take-exam" style={{ width: `${progressPercentage}%` }}></p>
+            { !isWarning ? (
+              <>
+                <div className="content-take-exam w-100">
+                {questions.map((q, index) => (
+                  <React.Fragment key={index}>
+                    <div ref={(el) => (questionRefs.current[index] = el)}>
+                      <QuestionCard 
+                        questionNumber={index + 1} 
+                        questionId={q.questionId}
+                        question={q.questionText} 
+                        options={q.options} 
+                        allowMultiple={q.allowMultiple}
+                        defaultSelectedOptions={q.options.filter(o => o.isChosen).map(o => o.optionId)} 
+                        onAnswerSelect={(questionId, selectedOptionIds, index) => {
+                          handleAnswerChange(questionId, selectedOptionIds);
+                          handleAnswerSelect(index);
+                        }}
+                        flagged={flaggedQuestions[index]} 
+                        onToggleFlag={toggleFlag}
+                        questionIndex={index}
+                        imgLinks={q.imgLinks}
+                      />
                     </div>
+                    {index < questions.length - 1 && (
+                      <hr className='m-0 mt-1 mb-3 mx-auto' style={{ width: '95%' }} />
+                    )}
+                  </React.Fragment>
+                ))}  
                 </div>
-              </div>
-              <div className="questions-nav-take-exam">
-                {questions.map((_, index) => (
-                  <button 
-                  key={index} 
-                  className={`btn btn-sm m-1 
-                    ${currentQuestion === index ? "" : ""}
-                    ${answeredQuestions[index] ? "finish" : ""} // Chuyển xanh khi đã trả lời
-                    ${flaggedQuestions[index] ? "flagged" : ""}`}
-                    onClick={() => handleScrollToQuestion(index)}
-                >
-                  {index + 1}
+
+                <div className="sidebar-take-exams">
+                  <div className="timer-take-exam">
+                      <p className="time-title-take-exam pt-2">Thời gian còn lại</p>
+                      <p className="time-count-take-exam mb-2">{formatTime(duration)}</p>
+                  </div>
+                  <div className="progress-take-exam">
+                    <h5>Câu hỏi</h5>
+                    <div className="progress-detail-take-exam">
+                        <p className="ques-progress-take-exam">{answeredCount}/{questions.length}</p>
+                        <div className="progress-container-take-exam">
+                        <p className="progress-bar-take-exam" style={{ width: `${progressPercentage}%` }}></p>
+                        </div>
+                    </div>
+                  </div>
+                  <div className="questions-nav-take-exam">
+                    {questions.map((_, index) => (
+                      <button 
+                      key={index} 
+                      className={`btn btn-sm m-1 
+                        ${currentQuestion === index ? "" : ""}
+                        ${answeredQuestions[index] ? "finish" : ""} // Chuyển xanh khi đã trả lời
+                        ${flaggedQuestions[index] ? "flagged" : ""}`}
+                        onClick={() => handleScrollToQuestion(index)}
+                    >
+                      {index + 1}
+                    </button>
+                    ))}
+                  </div>
+                  <div className="leave-count-take-exam d-flex justify-content-center">
+                    <p>Số lần rời khỏi trang: {leaveCount}</p>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="warning-message mt-5">
+                <p>Cảnh báo: Bạn đã rời khỏi trang {leaveCount} lần.</p>
+                <p>Đã thông báo cho giám thị.</p>
+                <p>Nếu bạn tiếp tục rời khỏi trang, bài thi của bạn có thể bị hủy.</p>
+                <button className="btn btn-warning" onClick={returnExamAfterLeave}>
+                  Quay lại làm bài
                 </button>
-                ))}
               </div>
-              <div className="leave-count-take-exam d-flex justify-content-center">
-                <p>Số lần rời khỏi trang: {leaveCount}</p>
-              </div>
-            </div>
+            ) }
           </div>
         </div>
-      )}
     </div>
   );
 };

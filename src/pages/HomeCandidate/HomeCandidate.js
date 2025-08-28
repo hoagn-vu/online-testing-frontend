@@ -31,10 +31,23 @@ const HomeCandidate = () => {
   const [selectedExam, setSelectedExam] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
+  const handleFullscreen = () => {
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen();
+    } else if (document.documentElement.mozRequestFullScreen) {
+      document.documentElement.mozRequestFullScreen();
+    } else if (document.documentElement.webkitRequestFullscreen) {
+      document.documentElement.webkitRequestFullscreen();
+    } else if (document.documentElement.msRequestFullscreen) {
+      document.documentElement.msRequestFullscreen();
+    }
+  };
+
   // Xử lý khi nhấn vào bài thi
   const handleExamClick = (organizeExamId, sessionId, roomId, takeExamId) => {
     // setSelectedExam(exam);
     // setShowModal(true);
+    handleFullscreen();
     navigate("/candidate/take-exam/" + organizeExamId + "/" + sessionId + "/" + roomId + "/" + takeExamId);
   };
   
