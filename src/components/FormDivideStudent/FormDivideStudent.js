@@ -136,7 +136,7 @@ const FormDivideStudent = ({ onClose }) => {
   const fetchRoomData = async () => {
     setIsLoading(true);
     try {
-      const response = await ApiService.get('/rooms/get-options', {
+      const response = await ApiService.get(`/rooms/options?organizeExamId=${organizeId}&sessionId=${sessionId}`, {
       });
       setListRoom(
         response.data.map(g => ({
