@@ -289,18 +289,46 @@ const SessionPage = () => {
 	// Đổi mật khẩu thí sinh
 	const [passwordData, setPasswordData] = useState({
 		role: "candidate",
+		organizeExamId: "",
+		sessionId: "",
 		newPassword: "",
 		confirmPassword: "",
 	});
 
-	const handlePasswordSubmit = (e) => {
+	const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      alert("Mật khẩu xác nhận không khớp!");
-      return;
-    }
-    console.log("Cập nhật mật khẩu cho vai trò:", passwordData);
-    setShowPasswordForm(false);
+			Swal.fire({
+				icon: "warning",
+				title: "Mật khẩu xác nhận không khớp",
+				text: "Vui lòng nhập lại mật khẩu xác nhận.",
+			});
+			return;
+		}
+
+		try {
+			const response = await ApiService.put("/users/update-session-password",
+				{
+					organizeExamId: organizeId,
+					sessionId: passwordData.sessionId,
+					newPassword: passwordData.newPassword,
+				}
+			);
+			Swal.fire({
+				icon: "success",
+				title: "Thành công!",
+				text: "Mật khẩu thí sinh đã được cập nhật.",
+			});
+
+			setShowPasswordForm(false);
+		} catch (error) {
+			console.error("Lỗi đổi mật khẩu:", error);
+			Swal.fire({
+				icon: "error",
+				title: "Thất bại",
+				text: "Không thể cập nhật mật khẩu, vui lòng thử lại.",
+			});
+		}
   };
 	const handleTogglePassword = () => setShowPassword((prev) => !prev);
 
@@ -395,7 +423,7 @@ const SessionPage = () => {
 
 				<div className="session-table-container mt-3">
 					<div className="table-responsive" 
-						style={{minHeight: "230px"}}
+						style={{minHeight: "300px"}}
 					>
 						<table className="table sample-table tbl-organize-hover table-hover">
 							<thead style={{fontSize: "14px"}}>
@@ -510,7 +538,17 @@ const SessionPage = () => {
 															}}
 														>
 															<li className="tbl-action" onClick={() => setShowPasswordForm(true)}>
-																<button className="dropdown-item tbl-action" onClick={() => setShowPasswordForm(true)}>
+																<button 
+																	className="dropdown-item tbl-action" 
+																	onClick={() => {
+																		setPasswordData({
+																			...passwordData,
+																			sessionId: session.sessionId,
+																			newPassword: "",
+																			confirmPassword: ""
+																		});
+																		setShowPasswordForm(true);
+																	}}>
 																	Mật khẩu thí sinh
 																</button>
 															</li>
@@ -689,7 +727,7 @@ const SessionPage = () => {
 			{/* Form Đổi mật khẩu */}
 			{showPasswordForm && (
 				<div className="form-overlay">
-					<div
+					<form
 						className="shadow form-fade bg-white bd-radius-8"
 						style={{ width: "800px", boxShadow: 3,}}
 						onSubmit={handlePasswordSubmit}
@@ -811,12 +849,12 @@ const SessionPage = () => {
 								</CancelButton>
 							</Grid>
 							<Grid item xs={3}>
-								<AddButton style={{width: "100%"}}>
+								<AddButton type="submit" style={{width: "100%"}}>
 									Lưu
 								</AddButton>
 							</Grid>
 						</Grid>
-					</div>
+					</form>
 				</div>
 			)}
 		</div>
