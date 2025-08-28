@@ -71,7 +71,7 @@ const SupervisorHomePage = () => {
                     onClick={() => handleExamClick(exam)}
                   >
                     <i className="fa-solid fa-door-open me-2" style={{color: "#206ee3"}}></i>
-                    <span>{exam.organizeExamName} - {exam.sessionId} - {exam.roomId}</span>
+                    <span>{exam.organizeExamName} - {exam.sessionName} - {exam.roomName}</span>
                   </div>
                 </ol>
               ))}

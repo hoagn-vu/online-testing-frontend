@@ -15,6 +15,7 @@ const MonitoringPage = () => {
 	const [sessionName, setSessionName] = useState("");
 	const [roomName, setRoomName] = useState("");
 	const [startTrack, setStartTrack] = useState(false);
+	const [sessionPassword, setSessionPassword] = useState("");
   const [selectedExam, setSelectedExam] = useState(null);
   const [showModal, setShowModal] = useState(false);
 	const [selectedUser, setSelectedUser] = useState(null);
@@ -27,10 +28,16 @@ const MonitoringPage = () => {
 			setOrganizeExamName(response.data.organizeExamName);
 			setSessionName(response.data.sessionName);
 			setRoomName(response.data.roomName);
+			setStartTrack(response.data.roomStatus === "active" ? true : false);
+			setSessionPassword(response.data.sessionPassword ? response.data.sessionPassword : "Không");
     } catch (error) {
       console.error("Failed to fetch candidate data:", error);
     }
   };
+
+	useEffect(() => {
+		fetchData();
+	}, [organizeExamId, sessionId, roomId]);
 
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -188,7 +195,7 @@ const MonitoringPage = () => {
 						<p><strong>Phòng thi:</strong> <span>{roomName}</span></p>
 						<p>
 							<strong>Mật khẩu thí sinh:</strong> 
-							<span className="badge bg-warning text-dark">Chưa biết có thêm vào không</span>
+							<span className="badge bg-warning text-dark">{sessionPassword}</span>
 						</p>
 					</div>
 				</div>

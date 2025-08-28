@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaChevronDown } from "react-icons/fa";
 import "./HeaderCandidate.css";
+import { Link, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../redux/authSlice";
-import { Link, useNavigate } from "react-router-dom";
 import { authApi } from "../../services/authApi";
 
 const HeaderCandidate = ({ avatarUrl, logoUrl }) => {

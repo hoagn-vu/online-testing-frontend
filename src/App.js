@@ -141,7 +141,7 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["candidate"]}>
               <DefaultLayout />
-              </ProtectedRoute>
+            </ProtectedRoute>
           }
         >
           <Route path="home" element={<HomeCandidate />} />
@@ -152,9 +152,13 @@ function App() {
       </Routes>
 
       <Routes>
-        <Route path="/supervisor" element={<SupervisorLayout />}>
-          <Route path="home" element={<SupervisorHomePage />} /> 
-          <Route path="monitor/:organizeExamId/:sessionId/:roomId" element={<MonitoringPage />} /> 
+        <Route path="/supervisor" element={
+          <ProtectedRoute allowedRoles={["supervisor"]}>
+            <SupervisorLayout />
+          </ProtectedRoute>
+        }>
+          <Route path="home" element={<SupervisorHomePage />} />
+          <Route path="monitor/:organizeExamId/:sessionId/:roomId" element={<MonitoringPage />} />
           <Route path="change-passwords" element={<SupvChangePasswordPage />} />
         </Route>
       </Routes>
