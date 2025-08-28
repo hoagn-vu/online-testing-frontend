@@ -349,8 +349,6 @@ const FormDivideStudent = ({ onClose }) => {
       const response = await ApiService.post('/groupUser/get-users-from-groups', { groupUserIds: groupIds });
       if (response.status === 200) {
         setStudents(response.data);
-        setPreList(response.data);
-        console.log("Fetched users:", response.data);
       } else {
         console.error("Failed to fetch users:", response.message);
       }
@@ -780,14 +778,16 @@ const FormDivideStudent = ({ onClose }) => {
 											sx={{ 
 												color: 'error.main',
 												padding: '0px',
+                        width: 38,
+                        height: 38,
 												'&:hover': {
 													backgroundColor: 'rgba(244, 67, 54, 0.08)'
-												}
+												},
 											}}
 										>
-											<button className="btn btn-danger btn-sm " style={{ width: "38px", height: "38px" }}>
+											{/* <button className="btn btn-danger btn-sm " style={{ width: "38px", height: "38px" }}> */}
 												<i className="fas fa-trash-alt"></i>
-											</button>
+											{/* </button> */}
 											{/* <DeleteIcon fontSize="small" /> */}
 										</IconButton>
 									)}
