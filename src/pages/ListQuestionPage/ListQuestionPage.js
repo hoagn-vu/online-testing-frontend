@@ -120,7 +120,7 @@ const ListQuestionPage = () => {
 			const response = await ApiService.get("/subjects/questions", {
 				params: { subId: subjectId, qbId: questionBankId, keyword: keyword, page: page, pageSize: pageSize },
 			});
-			setQuestions(response.data.questions);
+			setQuestions([...response.data.questions]);
 			setSubjectName(response.data.subjectName);
 			setQuestionBankName(response.data.questionBankName);
 			setTotalCount(response.data.totalCount);
@@ -131,7 +131,7 @@ const ListQuestionPage = () => {
 		}
 		setIsLoading(false);
 	};
-
+	
 	useEffect(() => {
 		fetchData();
 	}, [subjectId, questionBankId, keyword, page, pageSize]);
@@ -478,7 +478,13 @@ const ListQuestionPage = () => {
 								<i className="fas fa-plus me-2"></i>Thêm câu hỏi
 							</AddButton>
 							{showAddQuestionForm && (
-									<AddQuestion onClose={() => setShowAddQuestionForm(false)} />
+									<AddQuestion 
+										onSuccess={async () => {
+											await fetchData();              // reload trước
+											setShowAddQuestionForm(false);  // rồi mới đóng modal
+										}}
+										onClose={() => setShowAddQuestionForm(false)} // fallback nếu bấm "Hủy"
+									/>
 								)}
 						</>
 						<AddButton className="upload-btn-hover" style={{backgroundColor: "#28A745", marginLeft: "10px"}} onClick={handleUploadClick}>

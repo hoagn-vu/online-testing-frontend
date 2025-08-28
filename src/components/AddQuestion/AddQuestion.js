@@ -12,8 +12,10 @@ import { CircularProgress, Typography, Box } from "@mui/material";
 import CreatableSelect from "react-select/creatable";
 import image from "../../../src/assets/images/img-def.png"
 import DragDropModal from "../../components/DragDrop/DragDrop";
+import ApiService from "../../services/apiService";
+import Swal from "sweetalert2";
 
-const AddQuestion = ({ onClose  }) => {
+const AddQuestion = ({ onClose, onSuccess  }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [generatedQuestions, setGeneratedQuestions] = useState([]); 
   const [editingIndex, setEditingIndex] = useState(null);
@@ -26,6 +28,79 @@ const AddQuestion = ({ onClose  }) => {
   const [openAddImageModal, setOpenAddImageModal] = useState(false);
   const [selectedQIndex, setSelectedQIndex] = useState(null); // câu hỏi đang sửa ảnh
   const [isMultipleChoice, setIsMultipleChoice] = useState(false);
+  const navigate = useNavigate();
+  const [allChapters, setAllChapters] = useState([]);
+  const [allLevels, setAllLevels] = useState([]);
+
+  const stripHtml = (html) => {
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    return div.textContent || div.innerText || "";
+  };
+
+  useEffect(() => {
+    const fetchTagsClassification = async () => {
+      try {
+        const response = await ApiService.get(
+          `/subjects/questions/tags-classification?subjectId=${subjectId}&questionBankId=${questionBankId}&type=both`
+        );
+
+        const data = response.data;
+
+        // Lấy các chapter khác rỗng và loại bỏ trùng lặp
+        const chapters = Array.from(new Set(data.map(item => item.chapter).filter(ch => ch && ch.trim() !== "")))
+          .map(ch => ({ value: ch, label: ch }));
+
+        // Lấy các level khác rỗng và loại bỏ trùng lặp
+        const levels = Array.from(new Set(data.map(item => item.level).filter(lv => lv && lv.trim() !== "")))
+          .map(lv => ({ value: lv, label: lv }));
+
+        setAllChapters(chapters);
+        setAllLevels(levels);
+      } catch (error) {
+        console.error("Lỗi khi lấy chapter/level:", error);
+      }
+    };
+
+    fetchTagsClassification();
+  }, [subjectId, questionBankId]);
+
+  const handleSaveQuestions = async () => {
+    try {
+      const payload = addedQuestions.map(q => ({
+        questionType: q.questionType,
+        questionText: stripHtml(q.questionText),
+        questionStatus: q.questionStatus,
+        options: q.options.map(opt => ({
+          optionText: opt.optionText,
+          isCorrect: opt.isCorrect
+        })),
+        isRandomOrder: q.isRandomOrder,
+        tags: newQuestion.tags.filter(t => t && t.trim() !== ""),
+        imgLinks: imageList[q.id] ? [imageList[q.id]] : [] // nếu bạn lưu link ảnh
+      }));
+
+      console.log("Payload gửi đi:", payload);
+
+      const response = await ApiService.post(
+       `/subjects/questions?subjectId=${subjectId}&questionBankId=${questionBankId}`,
+       payload
+      );
+      console.log("Thêm câu hỏi thành công:", response.data);
+      await Swal.fire({
+        text: "Thêm câu hỏi thành công!",
+        icon: "success",
+      });
+      if (onSuccess) {
+        await onSuccess(); // nếu fetchData là async
+      }
+      onClose();
+      window.location.reload(); 
+    } catch (error) {
+      console.error("Lỗi khi thêm câu hỏi:", error);
+      alert("Có lỗi xảy ra khi thêm câu hỏi ❌");
+    }
+  };
 
   const handleQuestionTextChange = (index, newContent) => {
     const updated = [...addedQuestions];
@@ -122,8 +197,6 @@ const AddQuestion = ({ onClose  }) => {
     };
     setAddedQuestions(prev => [...prev, newQ]);
   };
-  const [allChapters, setAllChapters] = useState([]);
-  const [allLevels, setAllLevels] = useState([]);
 
   const handleAddImage = () => {
     setOpenAddImageModal(true);
@@ -152,6 +225,16 @@ const AddQuestion = ({ onClose  }) => {
     });
   };
 
+  const handleTagChange = (index, newValue) => {
+    setNewQuestion((prev) => {
+      const updatedTags = [...prev.tags]; // clone
+      updatedTags[index] = newValue ? newValue.value : "";
+      console.log("Tags mới:", updatedTags);
+      return { ...prev, tags: updatedTags }; // tạo object mới
+    });
+  };
+
+
   return (
     <div className="">
       {/* <h5 className="mb-3 fw-bold" style={{color: '#1976d2', fontSize: "20px"}}>Thêm câu hỏi</h5> */}
@@ -163,11 +246,12 @@ const AddQuestion = ({ onClose  }) => {
             options={allChapters}
             value={newQuestion.tags[0] ? { value: newQuestion.tags[0], label: newQuestion.tags[0] } : null}
             onChange={(newValue) => handleTagChange(0, newValue)}
+            onCreateOption={(inputValue) => handleTagChange(0, { value: inputValue, label: inputValue })}
             menuPortalTarget={document.body}
             placeholder="Chọn chuyên đề kiến thức"
             styles={{
               menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-              container: (provided) => ({ ...provided, flex: 1 })
+              container: (provided) => ({ ...provided, flex: 1 }),
             }}
           />
         </div>
@@ -274,8 +358,12 @@ const AddQuestion = ({ onClose  }) => {
                 <input 
                   className="form-check-input" 
                   type="checkbox" 
-                  checked={isMultipleChoice}
-                  onChange={(e) => setIsMultipleChoice(e.target.checked)}
+                  checked={q.isRandomOrder}
+                  onChange={(e) => {
+                    const updated = [...addedQuestions];
+                    updated[qIndex].isRandomOrder = e.target.checked;
+                    setAddedQuestions(updated);
+                  }}
                 />
                 <label className="form-check-label">Multiple Choice</label>
               </div>
@@ -331,7 +419,7 @@ const AddQuestion = ({ onClose  }) => {
         <CancelButton onClick={onClose} type="button">
           Hủy
         </CancelButton>
-        <AddButton >
+        <AddButton onClick={handleSaveQuestions}>
           <i className="fas fa-plus me-2"></i> Lưu câu hỏi
         </AddButton>
       </Box>
@@ -340,8 +428,8 @@ const AddQuestion = ({ onClose  }) => {
 };
 
 AddQuestion.propTypes = {
-    onClose: PropTypes.func.isRequired,
-
+  onClose: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func,
 };
 
 export default AddQuestion;
