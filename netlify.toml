@@ -1,0 +1,6 @@
+[[headers]]
+  for = "/*"  # Match all paths
+  [headers.values]
+    Access-Control-Allow-Origin = "*"  # or specify your allowed domains here
+    Access-Control-Allow-Headers = "Origin, X-Requested-With, Content-Type, Accept"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
