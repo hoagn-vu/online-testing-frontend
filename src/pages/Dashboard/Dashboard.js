@@ -131,7 +131,7 @@ const Dashboard = () => {
     const fetchOrganizeExamOptions = async () => {
       try {
         const response = await ApiService.get("/organize-exams/options", {
-          params: { subjectId: subjectId },
+          params: { subjectId: subjectId, status: "done" },
         });
         const options = response.data.map((item) => ({
           value: item.id,

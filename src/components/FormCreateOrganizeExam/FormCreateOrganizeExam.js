@@ -179,14 +179,16 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
     // Gọi API ở đây
 		try {
 			const response = await ApiService.post("/organize-exams", payload);
+			const organizeId = response.data.data.id;
+			console.log("id của kỳ thi được tạo:",organizeId )
 			Swal.fire({
 				text: "Kỳ thi đã được tạo thành công",
 				icon: "success",
 				draggable: true
 			}).then((result) => {
 				if (result.isConfirmed) {
-					navigate("/staff/organize", { state: { reload: true } });
-					onClose(); // ✅ Chỉ đóng sau khi người dùng bấm OK
+					navigate(`/staff/organize/${organizeId}`, { state: { reload: true } });
+					onClose(); 
 				}
 			});
 			console.log("Kỳ thi đã được tạo thành công:", response.data);
@@ -202,7 +204,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 			});
 			const options = response.data.data.map((exam) => ({
 				value: exam.id,
-				label: `${exam.examName} - ${exam.examCode}`,
+				label: `${exam.examName} - ${exam.examCode} - ${exam.totalQuestions} câu`,
 			}));
 			setExamOptions(options);
 		}
@@ -473,11 +475,34 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 												examOptions.filter((opt) => examData.examIds?.includes(opt.value)) || []
 											}
 											onChange={(e, newValue) => {
+												if (newValue.length > 0) {
+													// Lấy số câu hỏi của đề đầu tiên
+													const firstExamQuestions = newValue[0].label.match(/(\d+)\s*câu/);
+													const firstExamCount = firstExamQuestions ? parseInt(firstExamQuestions[1], 10) : null;
+
+													// Kiểm tra các đề khác có khớp số lượng câu không
+													const isValid = newValue.every((exam) => {
+														const match = exam.label.match(/(\d+)\s*câu/);
+														const count = match ? parseInt(match[1], 10) : null;
+														return count === firstExamCount;
+													});
+
+													if (!isValid) {
+														Swal.fire({
+															icon: "warning",
+															title: "Số lượng câu hỏi không khớp!",
+															text: "Vui lòng chọn các đề thi có cùng số lượng câu hỏi.",
+														});
+														return; // Không update state
+													}
+												}
+
 												setExamData({
 													...examData,
 													examIds: newValue.map((val) => val.value),
 												});
 											}}
+
 											disabled={editingOrganizeExam}
 											renderInput={(params) => (
 												<TextField
