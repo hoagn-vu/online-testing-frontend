@@ -185,11 +185,8 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 				text: "Kỳ thi đã được tạo thành công",
 				icon: "success",
 				draggable: true
-			}).then((result) => {
-				if (result.isConfirmed) {
-					navigate(`/staff/organize/${organizeId}`, { state: { reload: true } });
-					onClose(); 
-				}
+			}).then(() => {
+				navigate(`/staff/organize/${organizeId}`, { state: { reload: true } });
 			});
 			console.log("Kỳ thi đã được tạo thành công:", response.data);
 		} catch (error) {
