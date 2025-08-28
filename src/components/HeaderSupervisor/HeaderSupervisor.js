@@ -1,25 +1,28 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaChevronDown } from "react-icons/fa";
-// Import icon
 import "./HeaderSupervisor.css";
 import { Link, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../redux/authSlice";
+import { authApi } from "../../services/authApi";
 
 const HeaderSupervisor = ({ username, avatarUrl, logoUrl }) => {
   const [isOpen, setIsOpen] = useState(false);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  
   const user = useSelector((state) => state.auth.user);
   
   const handleLogout = () => {
+    dispatch(authApi.util.resetApiState());
     dispatch(logout());
     localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    setTimeout(() => navigate("/"), 0);
+    navigate("/");
   };
+
   return (
     <div className="header-candidate-container">
       <img src={logoUrl} alt="Logo" className="logo"/>
@@ -31,7 +34,7 @@ const HeaderSupervisor = ({ username, avatarUrl, logoUrl }) => {
         </nav>
         
         <img src={avatarUrl} alt="Avatar" className="avatar" onClick={() => setIsOpen(!isOpen)} style={{ cursor: "pointer" }}/>
-        <span className="username" onClick={() => setIsOpen(!isOpen)} style={{ cursor: "pointer" }}>{user?.fullName}</span>
+        <span className="username" onClick={() => setIsOpen(!isOpen)} style={{ cursor: "pointer" }}>{user.fullname}</span>
 
         {/* Nút mở dropdown */}
         <button className="dropdown-btn" onClick={() => setIsOpen(!isOpen)}>
