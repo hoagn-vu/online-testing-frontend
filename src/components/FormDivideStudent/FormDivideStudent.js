@@ -26,95 +26,17 @@ const FormDivideStudent = ({ onClose }) => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(100);
   const [listRoom, setListRoom] = useState([]);
+  const [rawListRoom, setRawListRoom] = useState([]);
   const [selectedRole, setSelectedRole] = useState("supervisor");
   const [listSupervisor, setListSupervisor] = useState([]);
   const [selectedRooms, setSelectedRooms] = useState({});
   const [selectedSupervisors, setSelectedSupervisors] = useState({});
   const { organizeId, sessionId } = useParams();
-  const students = [
-    {
-      id: "123456789",
-      mssv: "BIT220172",
-      ho: "Phạm Thị Phương",
-      ten: "Linh",
-      ngaySinh: "08/01/2004",
-      gioiTinh: "Nữ",
-      dieuKien: "Đủ"
-    },
-    {
-      id: "1234567890",
-      mssv: "BIT220173",
-      ho: "Hoàng Nguyên",
-      ten: "Vũ",
-      ngaySinh: "10/05/2004",
-      gioiTinh: "Nữ",
-      dieuKien: "Đủ"
-    },
-    {
-      id: "1234567891",
-      mssv: "BIT220174",
-      ho: "Ngô Đức",
-      ten: "Thuận",
-      ngaySinh: "12/12/2003",
-      gioiTinh: "Nam",
-      dieuKien: "Không"
-    },
-    {
-      id: "1234567892",
-      mssv: "BIT220174",
-      ho: "Ngô Đức",
-      ten: "Thuận",
-      ngaySinh: "12/12/2003",
-      gioiTinh: "Nam",
-      dieuKien: "Không"
-    },
-    {
-      id: "1234567893",
-      mssv: "BIT220174",
-      ho: "Ngô Đức",
-      ten: "Thuận",
-      ngaySinh: "12/12/2003",
-      gioiTinh: "Nam",
-      dieuKien: "Không"
-    },
-    {
-      id: "1234567894",
-      mssv: "BIT220174",
-      ho: "Ngô Đức",
-      ten: "Thuận",
-      ngaySinh: "12/12/2003",
-      gioiTinh: "Nam",
-      dieuKien: "Không"
-    },
-    {
-      id: "1234567895",
-      mssv: "BIT220174",
-      ho: "Ngô Đức",
-      ten: "Thuận",
-      ngaySinh: "12/12/2003",
-      gioiTinh: "Nam",
-      dieuKien: "Không"
-    },
-    {
-      id: "1234567896",
-      mssv: "BIT220174",
-      ho: "Ngô Đức",
-      ten: "Thuận",
-      ngaySinh: "12/12/2003",
-      gioiTinh: "Nam",
-      dieuKien: "Không"
-    },
-    {
-      id: "1234567897",
-      mssv: "BIT220174",
-      ho: "Ngô Đức",
-      ten: "Thuận",
-      ngaySinh: "12/12/2003",
-      gioiTinh: "Nam",
-      dieuKien: "Không"
-    }
-  ];
-  
+  const [students, setStudents] = useState([]);
+  const [previewInfo, setPreviewInfo] = useState({});
+  const [previewList, setPreviewList] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+
   const fetchGroupData = async () => {
     setIsLoading(true);
     try {
@@ -143,6 +65,7 @@ const FormDivideStudent = ({ onClose }) => {
           sessionId: sessionId,
         }
       });
+      setRawListRoom(response.data);
       setListRoom(
         response.data.map(g => ({
           label: `${g.roomName} - ${g.roomCapacity} chỗ trống`,
@@ -404,6 +327,94 @@ const FormDivideStudent = ({ onClose }) => {
     }));
   };
 
+  const convertDate = (dateString) => {
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    const date = new Date(dateString);
+    return date.toLocaleDateString(undefined, options);
+  };
+
+  const convertGender = (gender) => {
+    switch (gender) {
+      case 'male':
+        return 'Nam';
+      case 'female':
+        return 'Nữ';
+      default:
+        return 'Khác';
+    }
+  };
+
+  const fetchUsersFromGroups = async (groupIds) => {
+    try {
+      const response = await ApiService.post('/groupUser/get-users-from-groups', { groupUserIds: groupIds });
+      if (response.status === 200) {
+        setStudents(response.data);
+        setPreList(response.data);
+        console.log("Fetched users:", response.data);
+      } else {
+        console.error("Failed to fetch users:", response.message);
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  const handlePreview = (index) => {
+    if (!rooms[index]) return;
+
+    // chuyển quantity sang số nguyên
+    const quantity = parseInt(rooms[index].quantity, 10);
+
+    // tính tổng quantity trước index
+    const start = rooms
+      .slice(0, index)
+      .reduce((acc, r) => acc + parseInt(r.quantity || 0, 10), 0);
+
+    // vị trí kết thúc
+    const end = start + quantity;
+
+    // cắt từ students
+    const selected = students.slice(start, end);
+
+    // set preview list
+    setPreviewList(selected);
+  };
+
+  const handlePreviewInfo = (roomId) => {
+    // tìm room tương ứng trong rawListRoom
+    const room = rawListRoom.find(r => r.roomId === roomId);
+    if (room) {
+      setPreviewInfo({
+        id: room.roomId,
+        name: room.roomName,
+        location: room.roomLocation,
+        capacity: room.roomCapacity,
+      });
+    } else {
+      setPreviewInfo({});
+    }
+  };
+
+  const handleClickPreview = (session, index) => {
+    if (session.roomIds !== "" && session.quantity !== "" && Number(session.quantity) > 0) {
+      handlePreview(index);
+      handlePreviewInfo(session.roomIds);
+
+      const modalElement = document.getElementById(`roomDetailModal-${index}`);
+      const modal = new window.bootstrap.Modal(modalElement);
+      modal.show();
+    } else {
+      Swal.fire({
+        icon: "warning",
+        title: "Thiếu thông tin",
+        text: `Vui lòng nhập đầy đủ thông tin để xem trước`,
+      });
+
+      setPreviewInfo({});
+      setPreviewList([]);
+    }
+  };
+
   return (
     <div>
       <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: '#1976d2', marginTop: '20px'  }}>
@@ -446,6 +457,8 @@ const FormDivideStudent = ({ onClose }) => {
                       groupUserIds: selectedIds,
                       totalStudents: total,  // ✅ lưu tổng số thí sinh
                     }));
+
+                    fetchUsersFromGroups(selectedIds);
                   }}
                   renderInput={(params) => (
                     <TextField
@@ -528,19 +541,21 @@ const FormDivideStudent = ({ onClose }) => {
                 <p 
                   className='link-hover' 
                   style={{ margin: 0, color:'#0000FF' }}
-                  data-bs-toggle="modal"
-                  data-bs-target={`#roomDetailModal-${index}`}
+                  // data-bs-toggle="modal"
+                  // data-bs-target={`#roomDetailModal-${index}`}
+                  onClick={() => handleClickPreview(session, index)}
                 >
-                  Chi tiết
+                  Xem trước
                 </p>
               </div>
-              {/* Modal Bootstrap */}  
+              {/* Modal Bootstrap */}
+
               <div className="modal fade " id={`roomDetailModal-${index}`} tabIndex="-1" aria-labelledby="roomDetailModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-xl">
                   <div className="modal-content p-3">
                     <div className="modal-header">
                       <h5 className="modal-title" id="roomDetailModalLabel">
-                        Phòng 101 - CS01 - 30 thí sinh
+                        Phòng {previewInfo.name || ''} - {previewInfo.location || ''} - {previewInfo.capacity || ''} chỗ ngồi
                       </h5>
                       <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -586,11 +601,10 @@ const FormDivideStudent = ({ onClose }) => {
                               <th scope="col">Tên</th>
                               <th scope="col">Ngày sinh</th>
                               <th scope="col">Giới tính</th>
-                              <th scope="col">Điều kiện</th>
                             </tr>
                           </thead>
                           <tbody>
-                            {students.map((student, index) => (
+                            {previewList.map((student, index) => (
                               <tr key={index}>
                                 <td className=" text-center align-middle" style={{ width: "50px" }}>
                                   <input
@@ -601,12 +615,11 @@ const FormDivideStudent = ({ onClose }) => {
                                   />
                                 </td>
                                 <td className="align-middle">{index + 1}</td>
-                                <td className="align-middle">{student.mssv}</td>
-                                <td className="align-middle">{student.ho}</td>
-                                <td className="align-middle">{student.ten}</td>
-                                <td className="align-middle">{student.ngaySinh}</td>
-                                <td className="align-middle">{student.gioiTinh}</td>
-                                <td className="align-middle">{student.dieuKien}</td>
+                                <td className="align-middle">{student.userCode}</td>
+                                <td className="align-middle">{student.lastName}</td>
+                                <td className="align-middle">{student.firstName}</td>
+                                <td className="align-middle">{convertDate(student.dateOfBirth)}</td>
+                                <td className="align-middle">{convertGender(student.gender)}</td>
                               </tr>
                             ))}
                           </tbody>
@@ -621,6 +634,7 @@ const FormDivideStudent = ({ onClose }) => {
                   </div>
                 </div>
               </div>
+
 							<Grid container spacing={2} alignItems="center">
 								<Grid item xs={4}>
                   <Autocomplete
