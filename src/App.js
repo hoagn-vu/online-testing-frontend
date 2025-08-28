@@ -110,10 +110,12 @@ function App() {
           <Route path="groupuser" element={<GroupUserPage />} />
           <Route path="groupuser/:groupuserId" element={<ListUserInGroup />} />
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="organize" element={<OrganizeExamPage />} />
+          <Route path="organize">
+  <Route index element={<OrganizeExamPage />} />
+  <Route path=":organizeId" element={<SessionPage />} />
+</Route>
           <Route path="organize/statistic-auto/:organizeExamId" element={<AutoStatisticPage />} />
           <Route path="organize/report/:organizeExamId" element={<ReportEachOrganizePage />} />
-          <Route path="organize/:organizeId" element={<SessionPage />} />
           <Route path="organize/:organizeId/:sessionId" element={<RoomOrganizePage />} />
           <Route path="organize/monitor/:organizeId/:sessionId" element={<MonitorOrganizePage />} />
           <Route path="organize/score/:organizeId/:sessionId/:roomId" element={<ScoreTableSessionPage />} />

@@ -32,6 +32,9 @@ const RoomTest = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [accountToDelete, setAccountToDelete] = useState(null);
   const inputRef = useRef(null);
+  const [roomName, setRoomName] = useState("");
+  const [schedules, setSchedules] = useState([]);
+  const [selectedRoomId, setSelectedRoomId] = useState(null);
 
   const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
@@ -44,13 +47,50 @@ const RoomTest = () => {
       const response = await ApiService.get("/rooms", {
         params: { keyword, page, pageSize },
       });
-      setListRoom(response.data.rooms);
+
+      const rooms = response.data.rooms;
+      setListRoom(rooms);
       setTotalCount(response.data.total);
+       // nếu có phòng -> lấy roomId của phòng mới nhất
+
+      if (rooms && rooms.length > 0) {
+        const newestRoom  = rooms[0]; // giả sử API trả về field roomId
+        setSelectedRoomId(newestRoom.roomId);
+        fetchSchedule(newestRoom.roomId);
+      }
+
     } catch (error) {
       console.error("Failed to fetch data: ", error);
     }
     setIsLoading(false);
   };
+
+  const fetchSchedule = async (roomId) => {
+    setIsLoading(true);
+    try {
+      const response = await ApiService.get(`/rooms/${roomId}/schedules`);
+      setSchedules(response.data.schedules || []);
+      setRoomName(response.data.roomName);
+    } catch (error) {
+      console.error("Failed to fetch data: ", error);
+    }
+    setIsLoading(false);
+  };
+
+  const handleSelectRoom = (roomId) => {
+    setSelectedRoomId(roomId);
+    fetchSchedule(roomId);
+  };
+
+  useEffect(() => {
+    fetchSchedule();
+  }, []);
+
+  const events = schedules.map(s => ({
+    title: `${s.organizeExamName} - ${s.sessionName}`,
+    start: s.startAt,
+    end: s.finishAt
+  }));
 
   const createRoom = async (room) => {
     setIsLoading(true);
@@ -251,18 +291,6 @@ const RoomTest = () => {
 
   const [date, setDate] = useState(new Date());
 
-  const events = [
-    {
-      title: "Kết thúc học phần - Giải tích - VPC2-204",
-      start: "2025-07-21T09:45:00",
-      end: "2025-07-21T12:25:00",
-    },
-    {
-      title: "Kết thúc học phần - Giải tích - VPC2-204",
-      start: "2025-07-26T09:45:00",
-      end: "2025-07-26T11:00:00",
-    },
-  ];
   return (
     <div className="p-4">
       <nav className="breadcrumb-container mb-3" style={{fontSize: "14px"}}>
@@ -318,7 +346,11 @@ const RoomTest = () => {
                 </tr>
                 ) : (
                   listRoom.map((item, index) => (
-                    <tr key={item.roomId} className="align-middle">
+                    <tr 
+                      key={item.roomId} 
+                      className={`align-middle ${item.roomId === selectedRoomId ? "table-active" : ""}`}
+                      onClick={() => handleSelectRoom(item.roomId)}
+                    >
                       <td className=" text-center" style={{ width: "50px" }}>{index + 1}</td>
                       <td>{item.roomName}</td>
                       {/* <td>{item.roomLocation}</td> */}
@@ -337,6 +369,7 @@ const RoomTest = () => {
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
                             className="dropdown-toggle-icon"
+                            onClick={(e) => e.stopPropagation()}
                           >
                             <i className="fas fa-ellipsis-v"></i>
                           </button>

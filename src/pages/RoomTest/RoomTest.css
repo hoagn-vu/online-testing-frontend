@@ -27,3 +27,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.fc .fc-event-title {
+  font-size: 11px !important;
+}

@@ -125,6 +125,7 @@ const FormDivideStudent = ({ onClose }) => {
         response.data.groups.map(g => ({
           label: `${g.groupName} - ${g.listUser.length} thí sinh`,
           value: g.id,
+          count: g.listUser.length,
         }))
       );
       setListUser(response.data.groups.flatMap(g => g.listUser));
@@ -136,7 +137,11 @@ const FormDivideStudent = ({ onClose }) => {
   const fetchRoomData = async () => {
     setIsLoading(true);
     try {
-      const response = await ApiService.get(`/rooms/options?organizeExamId=${organizeId}&sessionId=${sessionId}`, {
+      const response = await ApiService.get('/rooms/options', {
+        params: {
+          organizeExamId: organizeId,
+          sessionId: sessionId,
+        }
       });
       setListRoom(
         response.data.map(g => ({
@@ -432,12 +437,16 @@ const FormDivideStudent = ({ onClose }) => {
                   required
                   id="groupUserSelect"
                   options={listGroupName}
-                  onChange={(e, newValue) =>
+                  onChange={(e, newValue) => {
+                    const selectedIds = newValue.map(v => v.value);
+                    const total = newValue.reduce((sum, g) => sum + (g.count || 0), 0);
+
                     setDivideData(prev => ({
                       ...prev,
-                      groupUserIds: newValue.map(v => v.value),
-                    }))
-                  }
+                      groupUserIds: selectedIds,
+                      totalStudents: total,  // ✅ lưu tổng số thí sinh
+                    }));
+                  }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -707,10 +716,26 @@ const FormDivideStudent = ({ onClose }) => {
 								<Grid item xs={3.5}>
 									<TextField
 										fullWidth
+                    disabled={divideData.totalStudents === 0}
 										label= "Số lượng thí sinh"
                     type='number'
 										value={session.quantity}
-										onChange={(e) => handleSessionChange(index, 'quantity', e.target.value)}
+										onChange={(e) => {
+                      const value = Number(e.target.value);
+
+                      // check vượt quá
+                      if (value > (divideData.totalStudents || 0)) {
+                        Swal.fire({
+                          icon: "error",
+                          title: "Lỗi",
+                          text: `Số lượng không được vượt quá ${divideData.totalStudents} thí sinh`,
+                          confirmButtonText: "OK",
+                        });
+                        return; // ❌ không update state khi nhập sai
+                      }
+
+                      handleSessionChange(index, "quantity", value);
+                    }}
 										sx={{
 											"& .MuiInputBase-input": { 
 												fontSize: "14px", 

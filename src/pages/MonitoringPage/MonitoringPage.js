@@ -20,6 +20,7 @@ const MonitoringPage = () => {
   const [showModal, setShowModal] = useState(false);
 	const [selectedUser, setSelectedUser] = useState(null);
 	const [terminateReason, setTerminateReason] = useState("");
+	const [showPassword, setShowPassword] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -194,8 +195,18 @@ const MonitoringPage = () => {
 						<p><strong>Ca thi:</strong> <span className="text-primary">{sessionName}</span></p>
 						<p><strong>Phòng thi:</strong> <span>{roomName}</span></p>
 						<p>
-							<strong>Mật khẩu thí sinh:</strong> 
-							<span className="badge bg-warning text-dark">{sessionPassword}</span>
+							<strong>Mật khẩu thí sinh:</strong>
+							<span
+								className="bg-warning text-dark rounded p-1 ps-2 pe-2 ms-1 d-inline-flex align-items-center"
+								style={{ fontSize: "14px" }}
+							>
+								{showPassword ? sessionPassword : "••••••"}
+							</span>
+								<i
+									className={`ms-2 fas ${showPassword ? "fa-eye-slash" : "fa-eye"}`}
+									style={{ cursor: "pointer" }}
+									onClick={() => setShowPassword(!showPassword)}
+								></i>
 						</p>
 					</div>
 				</div>
