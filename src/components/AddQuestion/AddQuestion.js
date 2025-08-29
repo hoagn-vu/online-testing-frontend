@@ -59,7 +59,7 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
           .map(lv => ({ value: lv, label: lv }));
 
         setAllChapters(chapters);
-        //setAllLevels(levels);
+        setAllLevels(levels);
       } catch (error) {
         console.error("Lỗi khi lấy chapter/level:", error);
       }
@@ -68,58 +68,83 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
     fetchTagsClassification();
   }, [subjectId, questionBankId]);
 
-  const fetchData = async () => {
-    setIsLoading(true);
-    try {
-      const response = await ApiService.get("/level", {
-        params: { keyword, page, pageSize },
-      });
-      setAllLevels(response.data.levels.map((item) => ({ value: item.levelName, label: item.levelName })));
-    } catch (error) {
-      console.error("Failed to fetch data: ", error);
-    }
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    fetchData();
-  },[])
-
   const handleSaveQuestions = async () => {
     try {
-      const payload = addedQuestions.map(q => ({
-        questionType: q.questionType,
-        questionText: stripHtml(q.questionText),
-        questionStatus: q.questionStatus,
-        options: q.options.map(opt => ({
-          optionText: opt.optionText,
-          isCorrect: opt.isCorrect
-        })),
-        isRandomOrder: q.isRandomOrder,
-        tags: newQuestion.tags.filter(t => t && t.trim() !== ""),
-        imgLinks: imageList[q.id] ? [imageList[q.id]] : [] // nếu bạn lưu link ảnh
-      }));
+      const formData = new FormData();
 
-      console.log("Payload gửi đi:", payload);
+      addedQuestions.forEach((q, qIndex) => {
+        formData.append(`questions[${qIndex}].questionText`, stripHtml(q.questionText));
+        formData.append(`questions[${qIndex}].questionType`, q.questionType);
+        formData.append(`questions[${qIndex}].questionStatus`, q.questionStatus);
+        formData.append(`questions[${qIndex}].isRandomOrder`, q.isRandomOrder);
+
+        q.tags.forEach((tag, tIndex) => {
+          formData.append(`questions[${qIndex}].tags[${tIndex}]`, tag);
+        });
+
+        q.options.forEach((opt, oIndex) => {
+          formData.append(`questions[${qIndex}].options[${oIndex}].optionText`, opt.optionText);
+          formData.append(`questions[${qIndex}].options[${oIndex}].isCorrect`, opt.isCorrect);
+        });
+
+        // ✅ Nếu có ảnh thì append file
+        if (imageList[qIndex]?.file) {
+          formData.append(`questions[${qIndex}].images`, imageList[qIndex].file);
+        }
+      });
 
       const response = await ApiService.post(
-       `/subjects/questions?subjectId=${subjectId}&questionBankId=${questionBankId}`,
-       payload
+        `/subjects/${subjectId}/question-banks/${questionBankId}/questions-with-images`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
+
       console.log("Thêm câu hỏi thành công:", response.data);
       await Swal.fire({
         text: "Thêm câu hỏi thành công!",
         icon: "success",
       });
-      if (onSuccess) {
-        await onSuccess(); // nếu fetchData là async
-      }
+      if (onSuccess) await onSuccess();
       onClose();
-      window.location.reload(); 
+      window.location.reload();
     } catch (error) {
       console.error("Lỗi khi thêm câu hỏi:", error);
       alert("Có lỗi xảy ra khi thêm câu hỏi ❌");
     }
+    // try {
+    //   const payload = addedQuestions.map(q => ({
+    //     questionType: q.questionType,
+    //     questionText: stripHtml(q.questionText),
+    //     questionStatus: q.questionStatus,
+    //     options: q.options.map(opt => ({
+    //       optionText: opt.optionText,
+    //       isCorrect: opt.isCorrect
+    //     })),
+    //     isRandomOrder: q.isRandomOrder,
+    //     tags: newQuestion.tags.filter(t => t && t.trim() !== ""),
+    //     imgLinks: imageList[q.id] ? [imageList[q.id]] : [] // nếu bạn lưu link ảnh
+    //   }));
+
+    //   console.log("Payload gửi đi:", payload);
+
+    //   const response = await ApiService.post(
+    //    `/subjects/questions?subjectId=${subjectId}&questionBankId=${questionBankId}`,
+    //    payload
+    //   );
+    //   console.log("Thêm câu hỏi thành công:", response.data);
+    //   await Swal.fire({
+    //     text: "Thêm câu hỏi thành công!",
+    //     icon: "success",
+    //   });
+    //   if (onSuccess) {
+    //     await onSuccess(); // nếu fetchData là async
+    //   }
+    //   onClose();
+    //   window.location.reload(); 
+    // } catch (error) {
+    //   console.error("Lỗi khi thêm câu hỏi:", error);
+    //   alert("Có lỗi xảy ra khi thêm câu hỏi ❌");
+    // }
   };
 
   const handleQuestionTextChange = (index, newContent) => {
@@ -180,7 +205,8 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
     options: [{ optionText: "", isCorrect: false }, { optionText: "", isCorrect: false }],
     isRandomOrder: false,
     tags: ["", ""],
-    imageLinks: [],
+    // imageLinks: [],
+    images: []
   });
 
   const handleAddOption = () => {
@@ -223,17 +249,31 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
   };
 
   const handleFilesDropped = (files) => {
-    if (files.length > 0 && selectedQIndex !== null) {
-      const newImageUrl = URL.createObjectURL(files[0]);
+    // if (files.length > 0 && selectedQIndex !== null) {
+    //   const newImageUrl = URL.createObjectURL(files[0]);
 
-      setImageList(prev => {
+    //   setImageList(prev => {
+    //     const updated = [...prev];
+    //     updated[selectedQIndex] = newImageUrl;
+    //     return updated;
+    //   });
+
+    //   setOpenAddImageModal(false); // đóng modal
+    //   setSelectedQIndex(null);     // reset
+    // }
+    if (files.length > 0 && selectedQIndex !== null) {
+      const file = files[0]; // chỉ 1 ảnh (hoặc bạn cho multiple)
+      setImageList((prev) => {
         const updated = [...prev];
-        updated[selectedQIndex] = newImageUrl;
+        updated[selectedQIndex] = {
+          file,                                   // file gốc để gửi API
+          preview: URL.createObjectURL(file)      // link để hiển thị
+        };
         return updated;
       });
 
-      setOpenAddImageModal(false); // đóng modal
-      setSelectedQIndex(null);     // reset
+      setOpenAddImageModal(false);
+      setSelectedQIndex(null);
     }
   };
 
@@ -313,7 +353,7 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
               <div className="col-4">
                 <div style={{ width: "100%", height: "100%", position: "relative", paddingTop: "56.25%" }}>
                   <img
-                    src={imageList[qIndex] || image}
+                    src={imageList[qIndex]?.preview || image}
                     alt="Ảnh câu hỏi"
                     style={{
                       position: "absolute",
@@ -371,10 +411,6 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
 
             <div className="d-flex justify-content-between align-items-center mb-3 mt-3">
               <div className="form-check form-switch m-0">
-                <input className="form-check-input" type="checkbox" />
-                <label className="form-check-label">Đảo thứ tự đáp án</label>
-              </div>
-              <div className="form-check form-switch m-0">
                 <input 
                   className="form-check-input" 
                   type="checkbox" 
@@ -385,6 +421,10 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
                     setAddedQuestions(updated);
                   }}
                 />
+                <label className="form-check-label">Đảo thứ tự đáp án</label>
+              </div>
+              <div className="form-check form-switch m-0">
+                <input className="form-check-input" type="checkbox" />
                 <label className="form-check-label">Multiple Choice</label>
               </div>
             </div>
