@@ -156,7 +156,7 @@ const ScoreTableSessionPage = () => {
                 <td>{student.userCode}</td>
                 <td>{student.lastName}</td>
                 <td>{student.firstName}</td>
-                <td className="text-center">{student.totalScore}</td>
+                <td className="text-center">{student.totalScore.toFixed(2)}</td>
                 <td>{student.signature}</td>
                 <td>{student.note}</td>
               </tr>

@@ -64,7 +64,7 @@ const ResultCandidatePage = () => {
             <p><strong>Thí sinh:</strong> {examResult?.candidateName} - {examResult?.candidateCode}</p>
             <p><strong>Thời gian hoàn thành:</strong> {examResult?.finishedAt}</p>
             <p><strong>Số câu đúng:</strong> <span className="text-success fw-bold">{examResult?.correctAnswers}</span>/{examResult?.totalQuestions}</p>
-            <p><strong>Điểm thi:</strong> <span className="score-badge">{examResult?.totalScore}</span></p>
+            <p><strong>Điểm thi:</strong> <span className="score-badge">{examResult?.totalScore.toFixed(2)}</span></p>
             <p><strong>Số lần rời khỏi màn hình:</strong> <span className="text-danger">{examResult?.violationCount}</span></p>
           </div>
           <div className="text-center mt-5">

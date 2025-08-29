@@ -261,7 +261,7 @@ const MonitoringPage = () => {
 									<td>{row.status === "done" && row.finishAt ? formatTime(row.finishAt) : "-"}</td>
 									<td>
 										<span>
-											{row.status === "done" ? (row.totalScore ?? 0) : "-"}
+											{row.status === "done" ? (row.totalScore.toFixed(2) ?? 0) : "-"}
 										</span>
 									</td>
 									<td>
