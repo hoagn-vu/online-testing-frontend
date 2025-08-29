@@ -59,7 +59,7 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
           .map(lv => ({ value: lv, label: lv }));
 
         setAllChapters(chapters);
-        setAllLevels(levels);
+        //setAllLevels(levels);
       } catch (error) {
         console.error("Lỗi khi lấy chapter/level:", error);
       }
@@ -67,6 +67,23 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
 
     fetchTagsClassification();
   }, [subjectId, questionBankId]);
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await ApiService.get("/level", {
+        params: { keyword, page, pageSize },
+      });
+      setAllLevels(response.data.levels.map((item) => ({ value: item.levelName, label: item.levelName })));
+    } catch (error) {
+      console.error("Failed to fetch data: ", error);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  },[])
 
   const handleSaveQuestions = async () => {
     try {
