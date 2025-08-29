@@ -210,9 +210,7 @@ const Dashboard = () => {
   const fetchChart = async (id) => {
     setIsLoading(true);
     try {
-      const response = await ApiService.get("/statistics/get-update-organize-exam-grade-stats", {
-        params: { organizeExamId: id },
-      });
+      const response = await ApiService.get(`/statistics/get-update-organize-exam-grade-stats?organizeExamId=${id}`);
       setSubjectName(response.data.data.subjecName);
       
       const { array, ranges, counts } = convertBinsToArray(response.data.data.scoreDistribution);
