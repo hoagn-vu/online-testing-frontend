@@ -29,7 +29,7 @@ const Header = ({ username, avatarUrl, logoUrl }) => {
 
       <div className="user-info position-relative">
         <img src={avatarUrl} alt="Avatar" className="avatar" />
-        <span className="username">{user?.username}</span>
+        <span className="username">{user?.fullName}</span>
 
         <button className="dropdown-btn" onClick={() => setIsOpen(!isOpen)}>
           <FaChevronDown />
