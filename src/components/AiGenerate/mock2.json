@@ -1,0 +1,55 @@
+{
+  "mcqs": {
+    "1": {
+      "câu hỏi": "Theo nội dung, tốc độ quay phổ biến hiện nay của đĩa cứng là bao nhiêu vòng/phút?",
+      "lựa chọn": {
+        "a": "5400 vòng/phút",
+        "b": "7200 vòng/phút",
+        "c": "10.000 vòng/phút",
+        "d": "15.000 vòng/phút"
+      },
+      "đáp án": "7200 vòng/phút"
+    },
+    "2": {
+      "câu hỏi": "Đĩa mềm 3.5 inch thông dụng nhất hiện nay có dung lượng bao nhiêu?",
+      "lựa chọn": {
+        "a": "1.44 MB",
+        "b": "720 KB",
+        "c": "2.88 MB",
+        "d": "4.0 MB"
+      },
+      "đáp án": "1.44 MB"
+    },
+    "3": {
+      "câu hỏi": "Theo đoạn văn, bộ nhớ trong (BNT) có đặc điểm nào sau đây?",
+      "lựa chọn": {
+        "a": "Có thời gian truy cập lớn và được dùng để lưu trữ lâu dài.",
+        "b": "Có thời gian truy cập nhỏ và được dùng để ghi chương trình và dữ liệu trong thời gian xử lý.",
+        "c": "Sử dụng công nghệ flash, có thể gắn qua cổng USB và thường thay thế đĩa mềm.",
+        "d": "Là loại bộ nhớ lưu trữ trên đĩa cứng, đĩa mềm hoặc đĩa quang."
+      },
+      "đáp án": "Có thời gian truy cập nhỏ và được dùng để ghi chương trình và dữ liệu trong thời gian xử lý."
+    },
+    "4": {
+      "câu hỏi": "Theo mô tả trong nội dung, chức năng chính của lớp bảo vệ hình vuông trên đĩa mềm là gì?",
+      "lựa chọn": {
+        "a": "Tăng dung lượng lưu trữ của đĩa",
+        "b": "Bảo vệ đĩa khỏi bụi",
+        "c": "Cho phép ghi dữ liệu nhanh hơn",
+        "d": "Đảm bảo tính tương thích với các máy tính khác"
+      },
+      "đáp án": "Bảo vệ đĩa khỏi bụi"
+    },
+    "5": {
+      "câu hỏi": "Loại bộ nhớ nào chỉ cho phép người sử dụng đọc dữ liệu mà không cho phép ghi vào?",
+      "lựa chọn": {
+        "a": "RAM",
+        "b": "ROM",
+        "c": "Bộ nhớ ngoài (BNN)",
+        "d": "Đĩa mềm"
+      },
+      "đáp án": "ROM"
+    }
+  },
+  "validation": null
+}

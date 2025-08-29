@@ -10,6 +10,10 @@ import PropTypes from 'prop-types';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import CreatableSelect from 'react-select/creatable';
 import Swal from "sweetalert2";
+import axios from "axios";
+import ApiService from "../../services/apiService";
+import mock_data from "./generate-response.json"
+import mock_data2 from "./mock2.json"
 
 const AiGenerate = ({ onClose  }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -28,67 +32,91 @@ const AiGenerate = ({ onClose  }) => {
   });
   const [editQuestionId, setEditQuestionId] = useState(null);
 
-  const handleGenerateQuestions = () => {
+  const [file, setFile] = useState(null);
+  const [nQuestions, setNQuestions] = useState(5);
+
+  const convertDataForDisplay = (data) => {
+    return Object.values(data).map(item => ({
+      question: item["câu hỏi"],
+      correctAnswer: item["đáp án"],
+      allAnswers: Object.values(item["lựa chọn"])
+    }));
+  }
+
+  const convertDataForRequest = (data) => {
+    return Object.values(data).map(item => {
+      const correctAnswer = item["đáp án"];
+      const options = Object.values(item["lựa chọn"]).map(opt => ({
+        optionText: opt,
+        isCorrect: opt === correctAnswer
+      }));
+
+      return {
+        questionType: "single-choice",
+        questionText: item["câu hỏi"],
+        options,
+        isRandomOrder: false,
+        tags: ["", ""],
+        imgLinks: []
+      };
+    }); 
+  }
+
+  const handleGenerateQuestions = async () => {
+    if (!file) {
+      alert("Vui lòng chọn file PDF");
+      return;
+    }
+
     setIsLoading(true);
 
     // Giả lập gọi API tạo câu hỏi
     setTimeout(() => {
-      // Sau khi "gọi" xong, cập nhật danh sách câu hỏi
-      const mockQuestions = [
-        {
-          question: "1 + 1 = ?",
-          correctAnswer: "2",
-          allAnswers: ["1", "2", "3", "4"]
-        },
-        {
-          question: "Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy ?",
-          correctAnswer: "Thứ tư",
-          allAnswers: ["Thứ ba Thứ ba Thứ ba Thứ ba Thứ ba Thứ ba ba ba ba ba ba ba ba ba ba ba ba ba baaaaaaaaaaa baa ba ba ba ba ba ab ab ab abab b a", "Thứ tư", "Chủ nhật", "Thứ bảy"]
-        },
-        {
-          question: "Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy ?",
-          correctAnswer: "Thứ bảy",
-          allAnswers: ["Thứ ba Thứ ba Thứ ba Thứ ba Thứ ba Thứ ba ba ba ba ba ba ba ba ba ba ba ba ba baaaaaaaaaaa baa ba ba ba ba ba ab ab ab abab b a", "Thứ tư", "Chủ nhật", "Thứ bảy"]
-        },
-        {
-          question: "Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy ?",
-          correctAnswer: "Thứ hai",
-          allAnswers: ["Thứ ba Thứ ba Thứ ba Thứ ba Thứ ba Thứ ba ba ba ba ba ba ba ba ba ba ba ba ba baaaaaaaaaaa baa ba ba ba ba ba ab ab ab abab b a", "Thứ tư", "Chủ nhật", "Thứ bảy"]
-        },
-        {
-          question: "Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy ?",
-          correctAnswer: "Thứ hai",
-          allAnswers: ["Thứ ba Thứ ba Thứ ba Thứ ba Thứ ba Thứ ba ba ba ba ba ba ba ba ba ba ba ba ba baaaaaaaaaaa baa ba ba ba ba ba ab ab ab abab b a", "Thứ tư", "Chủ nhật", "Thứ bảy"]
-        },
-        {
-          question: "Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy ?",
-          correctAnswer: "Thứ hai",
-          allAnswers: ["Thứ ba Thứ ba Thứ ba Thứ ba Thứ ba Thứ ba ba ba ba ba ba ba ba ba ba ba ba ba baaaaaaaaaaa baa ba ba ba ba ba ab ab ab abab b a", "Thứ tư", "Chủ nhật", "Thứ bảy"]
-        },
-        {
-          question: "Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy ?",
-          correctAnswer: "Thứ hai",
-          allAnswers: ["Thứ ba Thứ ba Thứ ba Thứ ba Thứ ba Thứ ba ba ba ba ba ba ba ba ba ba ba ba ba baaaaaaaaaaa baa ba ba ba ba ba ab ab ab abab b a", "Thứ tư", "Chủ nhật", "Thứ bảy"]
-        },
-        {
-          question: "Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy ?",
-          correctAnswer: "Thứ hai",
-          allAnswers: ["Thứ ba Thứ ba Thứ ba Thứ ba Thứ ba Thứ ba ba ba ba ba ba ba ba ba ba ba ba ba baaaaaaaaaaa baa ba ba ba ba ba ab ab ab abab b a", "Thứ tư", "Chủ nhật", "Thứ bảy"]
-        },
-        {
-          question: "Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy ?",
-          correctAnswer: "Thứ hai",
-          allAnswers: ["Thứ ba Thứ ba Thứ ba Thứ ba Thứ ba Thứ ba ba ba ba ba ba ba ba ba ba ba ba ba baaaaaaaaaaa baa ba ba ba ba ba ab ab ab abab b a", "Thứ tư", "Chủ nhật", "Thứ bảy"]
-        },
-        {
-          question: "Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy Hôm nay là thứ mấy ?",
-          correctAnswer: "Thứ hai",
-          allAnswers: ["Thứ ba Thứ ba Thứ ba Thứ ba Thứ ba Thứ ba ba ba ba ba ba ba ba ba ba ba ba ba baaaaaaaaaaa baa ba ba ba ba ba ab ab ab abab b a", "Thứ tư", "Chủ nhật", "Thứ bảy"]
-        }
-      ];
-      setGeneratedQuestions(mockQuestions); 
+      // setGeneratedQuestions(convertDataForDisplay(mock_data.mcqs));
+      // console.log("Generated Questions:", convertDataForRequest(mock_data.mcqs));
+      setGeneratedQuestions(convertDataForDisplay(mock_data2.mcqs));
       setIsLoading(false);
+      // handleSaveQuestions(mock_data2.mcqs); // Lưu câu hỏi luôn 
+      // onClose(); // Nếu lưu luôn thì quay lại danh sách câu hỏi luôn
     }, 2000);
+
+    // // Gọi API
+    // try {
+    //   const formData = new FormData();
+    //   formData.append("file", file);
+    //   formData.append("n_questions", nQuestions);
+
+    //   const response = await axios.post(
+    //     "https://namberino-mcq-generator.hf.space/generate",
+    //     formData,
+    //     {
+    //       headers: {
+    //         "Content-Type": "multipart/form-data",
+    //         Accept: "application/json",
+    //       },
+    //     }
+    //   );
+
+    //   console.log("Kết quả:", response.data);
+    //   // return response.data;
+    //   setGeneratedQuestions(convertDataForDisplay(response.data.mcqs));
+    //   handleSaveQuestions(response.data.mcqs);
+    // } catch (error) {
+    //   console.error("Lỗi gọi API:", error);
+    // } finally {
+    //   setIsLoading(false);
+    //   onClose();
+    // }
+  };
+
+  const handleSaveQuestions = async (data) => {
+    try {
+      const response = await ApiService.post(`/subjects/${subjectId}/question-banks/${questionBankId}/questions`, convertDataForRequest(data));
+
+      console.log("Lưu câu hỏi thành công:", response.data);
+    } catch (error) {
+      console.error("Lỗi lưu câu hỏi:", error);
+    }
   };
 
   const handleEdit = (index) => {
@@ -100,7 +128,7 @@ const AiGenerate = ({ onClose  }) => {
         optionText: ans,
         isCorrect: ans === question.correctAnswer,
       })),
-      tags: ["Dễ", ""],
+      tags: ["", ""],
       isRandomOrder: false,
     });
 
@@ -213,6 +241,7 @@ const AiGenerate = ({ onClose  }) => {
     { value: "Trung bình", label: "Trung bình" },
     { value: "Khó", label: "Khó" },
   ];
+
   return (
     <div className="">
       <h5 className="mb-3 fw-bold" style={{color: '#1976d2', fontSize: "20px"}}>Sinh câu hỏi bằng AI</h5>
@@ -220,12 +249,12 @@ const AiGenerate = ({ onClose  }) => {
       <div className="row g-3 mb-1">
         <div className="col-md-6">
           <label className="form-label">Tải tài liệu đầu vào:</label>
-          <input type="file" className="form-control " />
+          <input type="file" className="form-control" onChange={(e) => setFile(e.target.files[0])} />
         </div>
         
         <div className="col-md-3">
           <label className="form-label">Số lượng câu hỏi:</label>
-          <input type="number" className="form-control" placeholder="Ví dụ: 10" />
+          <input type="number" className="form-control" placeholder="Ví dụ: 10" value={nQuestions} onChange={(e) => setNQuestions(e.target.value)} />
         </div>
 
         <div className="col-md-3 d-flex align-items-end">

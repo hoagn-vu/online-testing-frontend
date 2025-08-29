@@ -1,0 +1,505 @@
+{
+  "mcqs": {
+    "1": {
+      "câu hỏi": "Loại bộ nhớ nào không cần nguồn điện để duy trì dữ liệu được lưu trữ?",
+      "lựa chọn": {
+        "a": "RAM",
+        "b": "ROM",
+        "c": "Cache",
+        "d": "Register"
+      },
+      "đáp án": "ROM"
+    },
+    "2": {
+      "câu hỏi": "Theo nội dung, thiết bị nào sau đây được mô tả là chuyển dữ liệu từ môi trường bên ngoài vào bộ nhớ trong của máy tính?",
+      "lựa chọn": {
+        "a": "Bàn phím",
+        "b": "Màn hình",
+        "c": "Loa",
+        "d": "Đĩa cứng"
+      },
+      "đáp án": "Bàn phím"
+    },
+    "3": {
+      "câu hỏi": "Trong ngữ cảnh của bộ nhớ máy tính, đơn vị dữ liệu dài nhất mà CPU có thể xử lý trong một lệnh cơ bản được gọi là gì?",
+      "lựa chọn": {
+        "a": "byte",
+        "b": "từ máy (memory word)",
+        "c": "địa chỉ",
+        "d": "đăng ký"
+      },
+      "đáp án": "từ máy (memory word)"
+    },
+    "4": {
+      "câu hỏi": "Theo nội dung trên, bộ nhớ RAM có đặc điểm nào sau đây?",
+      "lựa chọn": {
+        "a": "Dữ liệu được lưu trữ vĩnh viễn và không cần nguồn điện.",
+        "b": "Dữ liệu có thể đọc và ghi, và cần nguồn điện để duy trì.",
+        "c": "Chỉ cho phép đọc dữ liệu, không cho phép ghi.",
+        "d": "Dữ liệu được ghi trong quá trình chế tạo và không thể thay đổi."
+      },
+      "đáp án": "Dữ liệu có thể đọc và ghi, và cần nguồn điện để duy trì."
+    },
+    "5": {
+      "câu hỏi": "Trong các loại bản mạch mở rộng được nêu trong nội dung, loại nào không được liệt kê?",
+      "lựa chọn": {
+        "a": "Bản mạch âm thanh (sound card)",
+        "b": "Bản mạch giao tiếp mạng (Network Interface Card)",
+        "c": "Bản mạch modem‑fax",
+        "d": "Bản mạch máy in (printer card)"
+      },
+      "đáp án": "Bản mạch máy in (printer card)"
+    },
+    "6": {
+      "câu hỏi": "Theo nội dung trên, công nghệ DLP (Digital Light Processing) có đặc điểm nào sau đây là đúng?",
+      "lựa chọn": {
+        "a": "DLP projectors use liquid crystal panels and were first introduced in the early 2000s.",
+        "b": "DLP (Digital Light Processing) uses micromirrors, was invented by Larry Hombeck in 1987, and became feasible in the late 1990s due to nanotechnology.",
+        "c": "DLP technology relies on high-intensity backlights similar to LCD projectors and was developed by Sony.",
+        "d": "DLP projectors are based on magnetic memory rings and were popular in the 1960s."
+      },
+      "đáp án": "DLP (Digital Light Processing) uses micromirrors, was invented by Larry Hombeck in 1987, and became feasible in the late 1990s due to nanotechnology."
+    },
+    "7": {
+      "câu hỏi": "Nguyên lý hoạt động của máy in laser là gì?",
+      "lựa chọn": {
+        "a": "Máy in laser sử dụng chùm laser chiếu lên trống tĩnh điện để tạo hình ảnh, sau đó mực toner được hút vào các vùng có điện áp -100 V và chuyển sang giấy.",
+        "b": "Máy in laser phun ra các giọt mực siêu nhỏ qua các ống phun được làm nóng để tạo hình ảnh trên giấy.",
+        "c": "Máy in laser dùng một bộ kim để đập băng mực lên giấy, tạo thành các điểm ảnh theo ma trận.",
+        "d": "Máy in laser chiếu ánh sáng qua một màn LCD để hiển thị hình ảnh trên màn hình lớn."
+      },
+      "đáp án": "Máy in laser sử dụng chùm laser chiếu lên trống tĩnh điện để tạo hình ảnh, sau đó mực toner được hút vào các vùng có điện áp -100 V và chuyển sang giấy."
+    },
+    "8": {
+      "câu hỏi": "Theo nội dung, 'Thời gian truy cập' được định nghĩa là gì?",
+      "lựa chọn": {
+        "a": "Khoảng thời gian cần thiết kể từ khi phát tín hiệu điều khiển đọc/ghi đến khi việc đọc/ghi hoàn thành.",
+        "b": "Khối lượng dữ liệu mà bộ nhớ có thể lưu trữ đồng thời.",
+        "c": "Khoảng thời gian trung bình giữa hai lần lỗi.",
+        "d": "Tốc độ xử lý của CPU."
+      },
+      "đáp án": "Khoảng thời gian cần thiết kể từ khi phát tín hiệu điều khiển đọc/ghi đến khi việc đọc/ghi hoàn thành."
+    },
+    "9": {
+      "câu hỏi": "Trong kiến trúc tổng quát của máy tính, bộ nào chịu trách nhiệm thực hiện các phép tính số học và logic?",
+      "lựa chọn": {
+        "a": "Bộ nhớ trong",
+        "b": "Bộ số học và logic (Arithmetic Logic Unit - ALU)",
+        "c": "Bộ điều khiển",
+        "d": "Thiết bị ngoại vi"
+      },
+      "đáp án": "Bộ số học và logic (Arithmetic Logic Unit - ALU)"
+    },
+    "10": {
+      "câu hỏi": "Theo đoạn mô tả, chất lượng của máy in kim được đánh giá dựa trên hai tiêu chí nào?",
+      "lựa chọn": {
+        "a": "Tốc độ in và mật độ điểm máy in",
+        "b": "Độ phân giải và màu sắc",
+        "c": "Kích thước giấy và độ bền",
+        "d": "Giá thành và kích thước"
+      },
+      "đáp án": "Tốc độ in và mật độ điểm máy in"
+    },
+    "11": {
+      "câu hỏi": "Máy in kim còn được gọi là gì?",
+      "lựa chọn": {
+        "a": "máy in dạng ma trận",
+        "b": "máy in laser",
+        "c": "máy in nhiệt",
+        "d": "máy in phun"
+      },
+      "đáp án": "máy in dạng ma trận"
+    },
+    "12": {
+      "câu hỏi": "Theo nội dung trên, thiết bị nào được mô tả là thiết bị vào (input device)?",
+      "lựa chọn": {
+        "a": "Bàn phím",
+        "b": "Màn hình",
+        "c": "Máy quét ảnh",
+        "d": "Thiết bị ra"
+      },
+      "đáp án": "Bàn phím"
+    },
+    "13": {
+      "câu hỏi": "Trong các loại bộ nhớ được mô tả, loại nào không cần nguồn điện để duy trì dữ liệu sau khi mất nguồn?",
+      "lựa chọn": {
+        "a": "RAM",
+        "b": "ROM",
+        "c": "EPROM",
+        "d": "Flash memory"
+      },
+      "đáp án": "ROM"
+    },
+    "14": {
+      "câu hỏi": "Theo nội dung đã cho, địa chỉ của một ô nhớ trong bộ nhớ trong (BNT) được mô tả là gì?",
+      "lựa chọn": {
+        "a": "Giá trị bằng số, chỉ thứ tự của vị trí ô nhớ trong BNT",
+        "b": "Giá trị nhị phân lưu trữ trong ô nhớ",
+        "c": "Địa chỉ vật lý cố định của bộ nhớ ngoài",
+        "d": "Không có địa chỉ, chỉ dựa vào nội dung để truy cập"
+      },
+      "đáp án": "Giá trị bằng số, chỉ thứ tự của vị trí ô nhớ trong BNT"
+    },
+    "15": {
+      "câu hỏi": "Chức năng của lẫy bảo vệ đĩa (write‑protect tab) là gì?",
+      "lựa chọn": {
+        "a": "Ngăn không cho ghi dữ liệu lên đĩa",
+        "b": "Tăng tốc độ đọc dữ liệu",
+        "c": "Tự động sao lưu dữ liệu",
+        "d": "Giảm tiếng ồn khi quay đĩa"
+      },
+      "đáp án": "Ngăn không cho ghi dữ liệu lên đĩa"
+    },
+    "16": {
+      "câu hỏi": "Theo nội dung trên, loại màn hình nào được mô tả là phổ biến nhất cho máy tính để bàn (desktop)?",
+      "lựa chọn": {
+        "a": "Màn hình đèn tia âm cực (CRT)",
+        "b": "Màn hình tinh thể lỏng (LCD)",
+        "c": "Màn hình plasma",
+        "d": "Màn hình LED"
+      },
+      "đáp án": "Màn hình đèn tia âm cực (CRT)"
+    },
+    "17": {
+      "câu hỏi": "Theo nội dung, độ phân giải tối đa thường được hỗ trợ bởi màn hình Super VGA là bao nhiêu?",
+      "lựa chọn": {
+        "a": "768 x 1024 điểm ảnh",
+        "b": "640 x 480 điểm ảnh",
+        "c": "800 x 600 điểm ảnh",
+        "d": "1024 x 768 điểm ảnh"
+      },
+      "đáp án": "768 x 1024 điểm ảnh"
+    },
+    "18": {
+      "câu hỏi": "Theo nội dung trên, bộ nhớ nào có tốc độ làm việc chậm hơn nhưng có thể lưu trữ lâu dài mà không cần nguồn nuôi?",
+      "lựa chọn": {
+        "a": "Bộ nhớ trong",
+        "b": "Bộ nhớ ngoài",
+        "c": "Bộ số học và logic",
+        "d": "Bộ điều khiển"
+      },
+      "đáp án": "Bộ nhớ ngoài"
+    },
+    "19": {
+      "câu hỏi": "Theo nội dung, thiết bị nào được gọi là thiết bị ra, cho phép chuyển thông tin từ bộ nhớ trong ra một giá mang tin khác?",
+      "lựa chọn": {
+        "a": "Bàn phím",
+        "b": "Máy quét ảnh (scanner)",
+        "c": "Màn hình (display hoặc monitor)",
+        "d": "Máy ảnh số"
+      },
+      "đáp án": "Màn hình (display hoặc monitor)"
+    },
+    "20": {
+      "câu hỏi": "Trong các thập kỷ 60 và 70, người ta thường dùng loại bộ nhớ nào để ghi nhớ các bit bằng chiều của từ thông?",
+      "lựa chọn": {
+        "a": "Bộ nhớ từ tính như xuyến ferrite (ferrite ring) hoặc màng mỏng từ",
+        "b": "Bộ nhớ bán dẫn là các mạch bán dẫn điều khiển được có hai trạng thái đóng/mở",
+        "c": "Bộ nhớ quang sử dụng laser để ghi và đọc",
+        "d": "Bộ nhớ từ tính dạng đĩa cứng"
+      },
+      "đáp án": "Bộ nhớ từ tính như xuyến ferrite (ferrite ring) hoặc màng mỏng từ"
+    },
+    "21": {
+      "câu hỏi": "Theo nội dung trên, thiết bị ngoại vi (Peripheral Device) được định nghĩa là gì?",
+      "lựa chọn": {
+        "a": "Thiết bị ngoại vi (Peripheral Device) là các thiết bị giúp máy tính giao tiếp với môi trường bên ngoài kể cả với người sử dụng.",
+        "b": "Thiết bị ngoại vi là các thiết bị lưu trữ dữ liệu trong bộ nhớ nội bộ.",
+        "c": "Thiết bị ngoại vi là các thiết bị điều khiển trung tâm xử lý CPU.",
+        "d": "Thiết bị ngoại vi là các thiết bị chỉ dùng để nhập dữ liệu vào máy tính."
+      },
+      "đáp án": "Thiết bị ngoại vi (Peripheral Device) là các thiết bị giúp máy tính giao tiếp với môi trường bên ngoài kể cả với người sử dụng."
+    },
+    "22": {
+      "câu hỏi": "Trong ngữ cảnh máy tính, dãy các bit nhớ dài nhất mà CPU có thể xử lý trong một lệnh cơ bản được gọi là gì?",
+      "lựa chọn": {
+        "a": "byte",
+        "b": "từ máy (memory word)",
+        "c": "bit",
+        "d": "sector"
+      },
+      "đáp án": "từ máy (memory word)"
+    },
+    "23": {
+      "câu hỏi": "Theo nội dung, độ phân giải tối đa thường thấy của màn hình Super VGA là bao nhiêu?",
+      "lựa chọn": {
+        "a": "640 x 480 điểm ảnh",
+        "b": "800 x 600 điểm ảnh",
+        "c": "768 x 1024 điểm ảnh",
+        "d": "1024 x 768 điểm ảnh"
+      },
+      "đáp án": "768 x 1024 điểm ảnh"
+    },
+    "24": {
+      "câu hỏi": "Theo nội dung trên, phần lớn các máy tính ngày nay dùng ô nhớ có độ dài bao nhiêu bit?",
+      "lựa chọn": {
+        "a": "8 bit",
+        "b": "16 bit",
+        "c": "32 bit",
+        "d": "64 bit"
+      },
+      "đáp án": "8 bit"
+    },
+    "25": {
+      "câu hỏi": "Theo nội dung trên, thiết bị nào sau đây được liệt kê là thiết bị vào (input device)?",
+      "lựa chọn": {
+        "a": "Màn hình",
+        "b": "Máy quét ảnh (scanner)",
+        "c": "Loa",
+        "d": "Bộ nhớ trong"
+      },
+      "đáp án": "Máy quét ảnh (scanner)"
+    },
+    "26": {
+      "câu hỏi": "Bộ nhớ đệm (cache) trong các đĩa cứng hiện đại có chức năng gì?",
+      "lựa chọn": {
+        "a": "Tăng dung lượng lưu trữ của đĩa",
+        "b": "Cho phép nạp trước dữ liệu để giảm thời gian chờ đọc từ đĩa cứng",
+        "c": "Bảo vệ bề mặt đĩa khỏi bụi và va chạm",
+        "d": "Cải thiện độ tin cậy bằng cách giảm số lần lỗi"
+      },
+      "đáp án": "Cho phép nạp trước dữ liệu để giảm thời gian chờ đọc từ đĩa cứng"
+    },
+    "27": {
+      "câu hỏi": "Trong kiến trúc tổng quát của máy tính, khối chức năng nào được gọi là CPU?",
+      "lựa chọn": {
+        "a": "Bộ nhớ trong (Internal Memory)",
+        "b": "Bộ số học và logic (Arithmetic Logic Unit - ALU)",
+        "c": "Bộ xử lí trung tâm (Central Processing Unit - CPU)",
+        "d": "Thiết bị ngoại vi (Peripheral Device)"
+      },
+      "đáp án": "Bộ xử lí trung tâm (Central Processing Unit - CPU)"
+    },
+    "28": {
+      "câu hỏi": "Vi gương (DMD) trong công nghệ DLP có thể thay đổi trạng thái tối đa bao nhiêu lần mỗi giây?",
+      "lựa chọn": {
+        "a": "5000 lần/giây",
+        "b": "2000 lần/giây",
+        "c": "10000 lần/giây",
+        "d": "2500 lần/giây"
+      },
+      "đáp án": "5000 lần/giây"
+    },
+    "29": {
+      "câu hỏi": "Đĩa mềm thông dụng nhất hiện nay có đường kính và dung lượng bao nhiêu?",
+      "lựa chọn": {
+        "a": "3.5 inch, 1.44 MB",
+        "b": "5.25 inch, 1.2 MB",
+        "c": "3.5 inch, 2.88 MB",
+        "d": "5.25 inch, 1.44 MB"
+      },
+      "đáp án": "3.5 inch, 1.44 MB"
+    },
+    "30": {
+      "câu hỏi": "Trong các loại bộ nhớ bán dẫn, loại nào không cần nguồn điện để duy trì dữ liệu?",
+      "lựa chọn": {
+        "a": "RAM (Random Access Memory) – cần nguồn điện để duy trì dữ liệu.",
+        "b": "ROM (Read Only Memory) – không cần nguồn điện để duy trì dữ liệu.",
+        "c": "EPROM (Erasable Programmable ROM) – có thể xóa và ghi lại dữ liệu.",
+        "d": "Register – là vùng nhớ phụ dùng để tạm thời lưu trữ dữ liệu."
+      },
+      "đáp án": "ROM (Read Only Memory) – không cần nguồn điện để duy trì dữ liệu."
+    },
+    "31": {
+      "câu hỏi": "Theo nội dung trên, bộ nhớ đệm (cache) được xây dựng nhằm mục đích gì?",
+      "lựa chọn": {
+        "a": "Tăng dung lượng lưu trữ tổng thể của máy tính",
+        "b": "Giảm thời gian chờ đọc dữ liệu từ đĩa cứng",
+        "c": "Thay thế hoàn toàn bộ nhớ trong (BNT)",
+        "d": "Đọc dữ liệu trực tiếp từ đĩa CD bằng laser"
+      },
+      "đáp án": "Giảm thời gian chờ đọc dữ liệu từ đĩa cứng"
+    },
+    "32": {
+      "câu hỏi": "Bộ nhớ nào có thời gian truy cập nhỏ và được dùng để ghi chương trình và dữ liệu trong thời gian xử lý?",
+      "lựa chọn": {
+        "a": "Bộ nhớ trong (BNT)",
+        "b": "Bộ nhớ ngoài (USB flash)",
+        "c": "Bộ nhớ băng từ",
+        "d": "Bộ nhớ đĩa cứng"
+      },
+      "đáp án": "Bộ nhớ trong (BNT)"
+    },
+    "33": {
+      "câu hỏi": "Trong các thiết bị mở rộng (expansion card) được nêu trong nội dung, thiết bị nào sau đây không được liệt kê là một loại card mở rộng?",
+      "lựa chọn": {
+        "a": "Sound card (bản mạch âm thanh)",
+        "b": "Network Interface Card (bản mạch giao tiếp mạng)",
+        "c": "Hard disk drive",
+        "d": "Modem-fax card"
+      },
+      "đáp án": "Hard disk drive"
+    },
+    "34": {
+      "câu hỏi": "Theo nội dung trên, máy in nào được gọi là máy in ma trận (matrix printer)?",
+      "lựa chọn": {
+        "a": "Máy in laser",
+        "b": "Máy in kim (dot printer)",
+        "c": "Máy in phun",
+        "d": "Máy chiếu DLP"
+      },
+      "đáp án": "Máy in kim (dot printer)"
+    },
+    "35": {
+      "câu hỏi": "Bộ điều khiển (Control Unit) trong máy tính có chức năng gì?",
+      "lựa chọn": {
+        "a": "Lưu trữ dữ liệu lâu dài",
+        "b": "Đảm bảo thực hiện đúng chương trình và đồng bộ hoá các thiết bị",
+        "c": "Xử lý các phép tính số học",
+        "d": "Quản lý nguồn điện"
+      },
+      "đáp án": "Đảm bảo thực hiện đúng chương trình và đồng bộ hoá các thiết bị"
+    },
+    "36": {
+      "câu hỏi": "Theo nội dung, loại màn hình nào được cho là phổ biến nhất?",
+      "lựa chọn": {
+        "a": "đèn tia âm cực (đèn CRT)",
+        "b": "màn hình tinh thể lỏng",
+        "c": "màn hình plasma",
+        "d": "màn hình LCD"
+      },
+      "đáp án": "đèn tia âm cực (đèn CRT)"
+    },
+    "37": {
+      "câu hỏi": "Bộ nhớ đệm (cache) trong máy tính được sử dụng để thực hiện chức năng nào sau đây?",
+      "lựa chọn": {
+        "a": "Tăng dung lượng lưu trữ của ổ đĩa cứng.",
+        "b": "Giảm thời gian chờ khi đọc dữ liệu từ đĩa cứng bằng cách nạp trước dữ liệu vào bộ nhớ đệm.",
+        "c": "Bảo vệ dữ liệu khỏi mất mát khi có lỗi nguồn.",
+        "d": "Tăng tốc độ quay của đĩa cứng."
+      },
+      "đáp án": "Giảm thời gian chờ khi đọc dữ liệu từ đĩa cứng bằng cách nạp trước dữ liệu vào bộ nhớ đệm."
+    },
+    "38": {
+      "câu hỏi": "Theo nội dung, độ dài từ máy (memory word) của bộ xử lý Intel Pentium là bao nhiêu bit?",
+      "lựa chọn": {
+        "a": "8 bit",
+        "b": "16 bit",
+        "c": "32 bit",
+        "d": "64 bit"
+      },
+      "đáp án": "32 bit"
+    },
+    "39": {
+      "câu hỏi": "Bản mạch nào được dùng để nối máy tính với đường dây điện thoại nhằm truyền, nhận dữ liệu hoặc fax?",
+      "lựa chọn": {
+        "a": "Bản mạch âm thanh (sound card)",
+        "b": "Bản mạch giao tiếp mạng (Network Interface Card)",
+        "c": "Bản mạch modem-fax",
+        "d": "Bản mạch video"
+      },
+      "đáp án": "Bản mạch modem-fax"
+    },
+    "40": {
+      "câu hỏi": "Trong các nhóm phím của bàn phím máy tính, nhóm nào chịu trách nhiệm điều khiển con trỏ và thực hiện các thao tác soạn thảo?",
+      "lựa chọn": {
+        "a": "Nhóm phím chức năng",
+        "b": "Nhóm phím chữ",
+        "c": "Nhóm phím điều khiển con trỏ và soạn thảo",
+        "d": "Nhóm phím điều khiển"
+      },
+      "đáp án": "Nhóm phím điều khiển con trỏ và soạn thảo"
+    },
+    "41": {
+      "câu hỏi": "Theo nội dung, loại màn hình nào được mô tả là 'đèn tia âm cực' và thường dùng cho máy tính để bàn?",
+      "lựa chọn": {
+        "a": "Màn hình CRT",
+        "b": "Màn hình LCD",
+        "c": "Màn hình plasma",
+        "d": "Màn hình LED"
+      },
+      "đáp án": "Màn hình CRT"
+    },
+    "42": {
+      "câu hỏi": "Theo nội dung trên, nhóm phím nào trên bàn phím được sử dụng chủ yếu cho việc soạn thảo văn bản?",
+      "lựa chọn": {
+        "a": "Nhóm phím chữ",
+        "b": "Nhóm phím chức năng",
+        "c": "Nhóm phím điều khiển",
+        "d": "Nhóm phím điều khiển con trỏ và soạn thảo"
+      },
+      "đáp án": "Nhóm phím điều khiển con trỏ và soạn thảo"
+    },
+    "43": {
+      "câu hỏi": "Bản mạch âm thanh (sound card) cho phép máy tính thực hiện chức năng gì?",
+      "lựa chọn": {
+        "a": "Nối máy tính với loa và microphone",
+        "b": "Kết nối máy tính vào mạng",
+        "c": "Xem các chương trình truyền hình trên máy tính",
+        "d": "Tăng tốc độ xử lý của CPU"
+      },
+      "đáp án": "Nối máy tính với loa và microphone"
+    },
+    "44": {
+      "câu hỏi": "Theo nội dung trên, chức năng của lẫy bảo vệ trên đĩa mềm là gì?",
+      "lựa chọn": {
+        "a": "Tăng tốc độ quay của đĩa.",
+        "b": "Ngăn không cho việc ghi dữ liệu lên đĩa khi lẫy được bật.",
+        "c": "Tăng dung lượng lưu trữ của đĩa.",
+        "d": "Giúp định vị vị trí các sector trên đĩa."
+      },
+      "đáp án": "Ngăn không cho việc ghi dữ liệu lên đĩa khi lẫy được bật."
+    },
+    "45": {
+      "câu hỏi": "Trong ngữ cảnh máy tính, dãy các bit nhớ dài nhất mà CPU có thể xử lý trong một lệnh cơ bản được gọi là gì?",
+      "lựa chọn": {
+        "a": "địa chỉ bộ nhớ",
+        "b": "từ máy (memory word)",
+        "c": "byte",
+        "d": "bộ xử lý trung tâm (CPU)"
+      },
+      "đáp án": "từ máy (memory word)"
+    },
+    "46": {
+      "câu hỏi": "Theo nội dung, đơn vị dữ liệu dài nhất mà CPU có thể xử lý trong một lệnh cơ bản được gọi là gì?",
+      "lựa chọn": {
+        "a": "byte",
+        "b": "memory word",
+        "c": "cache",
+        "d": "peripheral device"
+      },
+      "đáp án": "memory word"
+    },
+    "47": {
+      "câu hỏi": "Theo nội dung, một gương trong công nghệ DLP có thể thay đổi trạng thái tối đa bao nhiêu lần mỗi giây?",
+      "lựa chọn": {
+        "a": "1000 lần/giây",
+        "b": "5000 lần/giây",
+        "c": "10000 lần/giây",
+        "d": "2000 lần/giây"
+      },
+      "đáp án": "5000 lần/giây"
+    },
+    "48": {
+      "câu hỏi": "Nguyên lý hoạt động của máy in laser là gì?",
+      "lựa chọn": {
+        "a": "Laser chiếu lên trống tĩnh điện, làm giảm điện áp tại các vị trí chiếu, toner được hút vào các vùng này và sau đó chuyển sang giấy, rồi được nung nóng để cố định.",
+        "b": "Máy in sử dụng kim để đập băng mực lên giấy, tạo ra các chấm tạo thành ký tự.",
+        "c": "Máy chiếu DLP dùng vi gương để phản chiếu ánh sáng, tạo hình ảnh trên màn hình.",
+        "d": "Máy in phun dùng tinh thể áp điện để bơm mực qua các ống phun siêu nhỏ."
+      },
+      "đáp án": "Laser chiếu lên trống tĩnh điện, làm giảm điện áp tại các vị trí chiếu, toner được hút vào các vùng này và sau đó chuyển sang giấy, rồi được nung nóng để cố định."
+    },
+    "49": {
+      "câu hỏi": "Theo nguyên tắc hoạt động của đĩa quang, khi đầu đọc chiếu tia laser công suất thấp lên bề mặt đĩa, tín hiệu phản hồi sẽ như thế nào khi gặp các điểm lõm (pits)?",
+      "lựa chọn": {
+        "a": "Tín hiệu phản hồi bị tán xạ",
+        "b": "Tín hiệu phản hồi bị phản xạ",
+        "c": "Tín hiệu không thay đổi",
+        "d": "Tín hiệu tăng cường"
+      },
+      "đáp án": "Tín hiệu phản hồi bị tán xạ"
+    },
+    "50": {
+      "câu hỏi": "Khi CPU muốn đọc dữ liệu từ bộ nhớ, bước đầu tiên CPU thực hiện là gì?",
+      "lựa chọn": {
+        "a": "Gửi địa chỉ của vùng nhớ tới bộ giải mã địa chỉ",
+        "b": "Gửi tín hiệu điều khiển tới mạch lưu trạng thái",
+        "c": "Sao chép nội dung từ vùng nhớ phụ vào ô nhớ",
+        "d": "Xóa nội dung ô nhớ trước khi đọc"
+      },
+      "đáp án": "Gửi địa chỉ của vùng nhớ tới bộ giải mã địa chỉ"
+    }
+  },
+  "validation": null
+}
