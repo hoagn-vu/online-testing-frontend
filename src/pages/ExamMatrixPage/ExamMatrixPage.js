@@ -251,6 +251,7 @@ const ExamMatrixPage = () => {
               <tr className="align-middle">
                 <th className="text-center" style={{ width: "50px"}}>STT</th>
                 <th>Ma trận</th>
+                <th>Loại</th>
                 <th>Phân môn</th>
                 <th>Bộ câu hỏi</th>
                 <th className="text-center">Đề tạo sinh</th>
@@ -282,6 +283,15 @@ const ExamMatrixPage = () => {
                         {item.matrixName}
                       </span>
                     </td>
+                  <td>
+                    {item.matrixType === "chapter"
+                      ? "Chuyên đề"
+                      : item.matrixType === "level"
+                      ? "Mức độ"
+                      : item.matrixType === "both"
+                      ? "Tổng hợp"
+                      : item.matrixType}
+                  </td>
                   <td>{item.subjectName}</td>
                   <td>{item.questionBankName}</td>
                   <td className="text-center">{item.totalGeneratedExams}</td>
