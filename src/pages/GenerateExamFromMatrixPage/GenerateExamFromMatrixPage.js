@@ -7,6 +7,7 @@ import ApiService from "../../services/apiService";
 import Swal from "sweetalert2";
 import CancelButton from "../../components/CancelButton/CancelButton";
 import AddButton from "../../components/AddButton/AddButton";
+import Nodata from "../../assets/images/no-data1.png"
 
 const GenerateExamFromMatrixPage = () => {
   const names = ['Chuyên đề', 'Mức độ'];
@@ -371,8 +372,23 @@ const GenerateExamFromMatrixPage = () => {
     const generateExam = {
       examMatrixId: matrixChosen,
       numberGenerate: matrixCount,
+      examStatus: "available",
     };
+    try {
     await createExamFromMatrix(generateExam);
+    Swal.fire({
+      icon: "success",
+      title: "Tạo đề thi thành công!",
+      text: "Các đề thi đã được lưu vào hệ thống.",
+    })
+    }catch (error) {
+      console.error("Failed to save exam:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi khi tạo đề thi!",
+        text: "Không thể lưu đề thi, vui lòng thử lại.",
+      });
+    }
   };
 
   // Hàm Lưu đề thi
@@ -619,18 +635,20 @@ const GenerateExamFromMatrixPage = () => {
         <div className="d-flex ms-auto">
           <CancelButton onClick={() => navigate("/staff/exam")}>Hủy</CancelButton>
          <AddButton 
-            onClick={isGenerated ? handleStoreExam : handleSaveMatrix} 
+            onClick={handleSaveMatrix} 
             className="ms-2"
           >
-            <i className={`fas ${isGenerated ? "fa-save" : "fa-plus"} me-2`}></i>
-            {isGenerated ? "Lưu đề thi" : "Sinh đề thi"}
+            <i className="fas fa-plus me-2"></i>
+              Sinh đề thi
           </AddButton>
         </div>
       </div>
-
-      {/* Hiển thị chi tiết ma trận */}
-      {detailData.length > 0 && !showExamModal && (
-        <div className="mt-4">
+      
+      {!showExamModal && (
+        <>
+          {detailData.length > 0 ? (
+            // Có dữ liệu thì hiển thị ma trận
+            <div className="mt-4">
           <h6 className="fw-bold" style={{ color: "#1976d2" }}>Chi tiết ma trận: {matrixOptions.find(opt => opt.value === matrixChosen)?.label}</h6>
           <div className="d-flex gap-2 w-100" style={{ flexWrap: 'wrap' }}>
             <div className="table-responsive tbl-shadow pb-0 mb-0" style={{ flex: '1', fontSize: '14px' }}>
@@ -740,6 +758,20 @@ const GenerateExamFromMatrixPage = () => {
             </div>
           </div>
         </div>
+          ) : (
+            // Không có dữ liệu thì hiển thị "No data"
+            <div className="text-center text-muted">
+              <img
+                src={Nodata}
+                alt="No questions"
+                style={{ maxWidth: "500px" }}
+              />
+              <p className="m-0">
+                Chưa có đề thi nào được tạo.
+              </p>
+            </div>
+          )}
+        </>
       )}
 
       {/* Khung hiển thị danh sách đề thi và câu hỏi */}
@@ -854,9 +886,12 @@ const GenerateExamFromMatrixPage = () => {
               >
               {/* Hiển thị tên đề thi */}
               {selectedExam && (
-                <h6 className="text-center mb-3 mt-2">
-                  Đề thi: {selectedExam.examName}
-                </h6>
+                <>
+                  <p className="text-center mb-2 mt-2 fw-bold" style={{color: "#2e57d0ff", fontSize: "16px"}}>
+                    Đề thi: {selectedExam.examName}
+                  </p>
+                  <p className="text-center">Mã đề thi: {selectedExam.examCode}</p>
+                </>
               )}
               {examDetailData.map((q, index) => {
               const isOpen = openAnswers[q.questionId];
