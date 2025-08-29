@@ -16,6 +16,7 @@ import AddQuestion from "../../components/AddQuestion/AddQuestion";
 import DragDropModal from "../../components/DragDrop/DragDrop";
 import Modal from "react-bootstrap/Modal";
 import image from "../../../src/assets/images/img-def.png"
+import questionFile from "../../assets/file/upload_question.docx"
 
 const ListQuestionPage = () => {
 	const user = useSelector((state) => state.auth.user);
@@ -986,6 +987,7 @@ const ListQuestionPage = () => {
 				}}
 				onFilesDropped={handleImageFilesDropped}
 				title="Kéo Thả Ảnh Vào Đây"
+				sampleFile={{ url: questionFile, name: "upload_question.xlsx" }}
 			/>
 			{/* Modal hiển thị ảnh lớn */}
       <Modal show={!!modalImage} onHide={handleClose} centered size="lg">

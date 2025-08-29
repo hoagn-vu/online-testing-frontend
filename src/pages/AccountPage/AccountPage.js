@@ -15,6 +15,7 @@ import CancelButton from "../../components/CancelButton/CancelButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import DragDropModal from "../../components/DragDrop/DragDrop";
 import { CircularProgress } from "@mui/material";
+import userFile from "../../assets/file/upload_user.xlsx"
 
 const AccountPage = () => {
   const inputRef = useRef(null);
@@ -1313,6 +1314,7 @@ const AccountPage = () => {
         open={openModal}
         onClose={() => setOpenModal(false)}
         onFilesDropped={handleFilesDropped}
+        sampleFile={{ url: userFile, name: "upload_user.xlsx" }}
       />
     </div>
   );

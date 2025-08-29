@@ -2,8 +2,9 @@ import React, { useState, useRef } from "react";
 import PropTypes from "prop-types";
 import { Modal, Box, Typography, Button, Link, List, ListItem } from "@mui/material";
 import FolderIcon from "@mui/icons-material/Folder";
+import uploadFile from "../../assets/file/upload_user.xlsx"
 
-const DragDropModal = ({ open, onClose, onFilesDropped, title = "Kéo Thả Tệp Tài Liệu Vào Đây" }) => {
+const DragDropModal = ({ open, onClose, onFilesDropped, title = "Kéo Thả Tệp Tài Liệu Vào Đây", sampleFile }) => {
   const [dragActive, setDragActive] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]); // ✅ Lưu danh sách file
   const fileInputRef = useRef(null);
@@ -123,6 +124,19 @@ const DragDropModal = ({ open, onClose, onFilesDropped, title = "Kéo Thả Tệ
                   Chọn file
                 </span>
               </p>
+              
+              {sampleFile && (
+                <p style={{ marginTop: "8px", fontSize: "14px", color: "#555" }}>
+                  Bạn có thể tải file mẫu tại đây:{" "}
+                  <a 
+                    href={sampleFile.url} 
+                    download 
+                    style={{ color: "#3f8efc", textDecoration: "underline" }}
+                  >
+                    {sampleFile.name}
+                  </a>
+                </p>
+              )}
 
               {/* Hidden input */}
               <input
@@ -187,6 +201,7 @@ DragDropModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   onFilesDropped: PropTypes.func.isRequired,
   title: PropTypes.string,
+  sampleFile: PropTypes.string,
 };
 
 export default DragDropModal;
