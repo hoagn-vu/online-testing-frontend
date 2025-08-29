@@ -48,11 +48,13 @@ const LoginPage2 = () => {
 
       // Điều hướng dựa trên role
       if (profileResult.role === 'admin') {
+        navigate('/admin/accountmanage');
+      } else if (profileResult.role === 'lecturer') {
+        navigate('/lecturer/question');
+      } else if (profileResult.role === 'staff') {
         navigate('/staff/dashboard');
       } else if (profileResult.role === 'candidate') {
         navigate('/candidate/home');
-      } else if (profileResult.role === 'staff') {
-        navigate('/staff/dashboard');
       } else if (profileResult.role === 'supervisor') {
         navigate('/supervisor/home');
       } else {
