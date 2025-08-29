@@ -7,6 +7,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import ApiService from '../../services/apiService';
 import { useSelector } from "react-redux";
 import avatar from "../../assets/images/avar.jpg";
+import { Modal, Button } from "react-bootstrap";
 
 const TakeExamPage = () => {
   const { organizeExamId, sessionId, roomId, takeExamId } = useParams();
@@ -125,6 +126,7 @@ const TakeExamPage = () => {
           !document.msFullscreenElement) {
         
         setIsWarning(true);
+        setLeaveCount((prev) => prev + 1);
         handleLeaveExam();
       }
     };
@@ -275,6 +277,7 @@ const TakeExamPage = () => {
   const handleLeaveExam = async () => {
     try {
       await ApiService.post(`/process-take-exams/violation?userId=${userId}&takeExamId=${takeExamId}`);
+
     } catch (error) {
       console.error("Failed to leave exam:", error);
     }
@@ -308,70 +311,85 @@ const TakeExamPage = () => {
           </div>
 
           <div className="container container-take-exam d-flex justify-content-between">
-            { !isWarning ? (
-              <>
-                <div className="content-take-exam w-100">
-                {questions.map((q, index) => (
-                  <React.Fragment key={index}>
-                    <div ref={(el) => (questionRefs.current[index] = el)}>
-                      <QuestionCard 
-                        questionNumber={index + 1} 
-                        questionId={q.questionId}
-                        question={q.questionText} 
-                        options={q.options} 
-                        allowMultiple={q.allowMultiple}
-                        defaultSelectedOptions={q.options.filter(o => o.isChosen).map(o => o.optionId)} 
-                        onAnswerSelect={(questionId, selectedOptionIds, index) => {
-                          handleAnswerChange(questionId, selectedOptionIds);
-                          handleAnswerSelect(index);
-                        }}
-                        flagged={flaggedQuestions[index]} 
-                        onToggleFlag={toggleFlag}
-                        questionIndex={index}
-                        imgLinks={q.imgLinks}
-                      />
-                    </div>
-                    {index < questions.length - 1 && (
-                      <hr className='m-0 mt-1 mb-3 mx-auto' style={{ width: '95%' }} />
-                    )}
-                  </React.Fragment>
-                ))}  
+            <div className="content-take-exam w-100">
+            {questions.map((q, index) => (
+              <React.Fragment key={index}>
+                <div ref={(el) => (questionRefs.current[index] = el)}>
+                  <QuestionCard 
+                    questionNumber={index + 1} 
+                    questionId={q.questionId}
+                    question={q.questionText} 
+                    options={q.options} 
+                    allowMultiple={q.allowMultiple}
+                    defaultSelectedOptions={q.options.filter(o => o.isChosen).map(o => o.optionId)} 
+                    onAnswerSelect={(questionId, selectedOptionIds, index) => {
+                      handleAnswerChange(questionId, selectedOptionIds);
+                      handleAnswerSelect(index);
+                    }}
+                    flagged={flaggedQuestions[index]} 
+                    onToggleFlag={toggleFlag}
+                    questionIndex={index}
+                    imgLinks={q.imgLinks}
+                  />
                 </div>
+                {index < questions.length - 1 && (
+                  <hr className='m-0 mt-1 mb-3 mx-auto' style={{ width: '95%' }} />
+                )}
+              </React.Fragment>
+            ))}  
+            </div>
 
-                <div className="sidebar-take-exams">
-                  <div className="timer-take-exam">
-                      <p className="time-title-take-exam pt-2">Thời gian còn lại</p>
-                      <p className="time-count-take-exam mb-2">{formatTime(duration)}</p>
-                  </div>
-                  <div className="progress-take-exam">
-                    <h5>Câu hỏi</h5>
-                    <div className="progress-detail-take-exam">
-                        <p className="ques-progress-take-exam">{answeredCount}/{questions.length}</p>
-                        <div className="progress-container-take-exam">
-                        <p className="progress-bar-take-exam" style={{ width: `${progressPercentage}%` }}></p>
-                        </div>
+            <div className="sidebar-take-exams">
+              <div className="timer-take-exam">
+                  <p className="time-title-take-exam pt-2">Thời gian còn lại</p>
+                  <p className="time-count-take-exam mb-2">{formatTime(duration)}</p>
+              </div>
+              <div className="progress-take-exam">
+                <h5>Câu hỏi</h5>
+                <div className="progress-detail-take-exam">
+                    <p className="ques-progress-take-exam">{answeredCount}/{questions.length}</p>
+                    <div className="progress-container-take-exam">
+                    <p className="progress-bar-take-exam" style={{ width: `${progressPercentage}%` }}></p>
                     </div>
-                  </div>
-                  <div className="questions-nav-take-exam">
-                    {questions.map((_, index) => (
-                      <button 
-                      key={index} 
-                      className={`btn btn-sm m-1 
-                        ${currentQuestion === index ? "" : ""}
-                        ${answeredQuestions[index] ? "finish" : ""} // Chuyển xanh khi đã trả lời
-                        ${flaggedQuestions[index] ? "flagged" : ""}`}
-                        onClick={() => handleScrollToQuestion(index)}
-                    >
-                      {index + 1}
-                    </button>
-                    ))}
-                  </div>
-                  <div className="leave-count-take-exam d-flex justify-content-center">
-                    <p>Số lần rời khỏi trang: {leaveCount}</p>
-                  </div>
                 </div>
-              </>
-            ) : (
+              </div>
+              <div className="questions-nav-take-exam">
+                {questions.map((_, index) => (
+                  <button 
+                  key={index} 
+                  className={`btn btn-sm m-1 
+                    ${currentQuestion === index ? "" : ""}
+                    ${answeredQuestions[index] ? "finish" : ""} // Chuyển xanh khi đã trả lời
+                    ${flaggedQuestions[index] ? "flagged" : ""}`}
+                    onClick={() => handleScrollToQuestion(index)}
+                >
+                  {index + 1}
+                </button>
+                ))}
+              </div>
+              <div className="leave-count-take-exam d-flex justify-content-center">
+                <p>Số lần rời khỏi trang: {leaveCount}</p>
+              </div>
+            </div>
+
+              <Modal show={isWarning} onHide={() => setIsWarning(false)} centered backdrop="static" keyboard={false}>
+                <Modal.Header className="bg-light">
+                  <Modal.Title className="text-center w-100">Cảnh báo</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="text-center">
+                  <h5 className="fw-bold pb-2">Cảnh báo vi phạm</h5>
+                  <p>Bạn đã rời khỏi trang {leaveCount} lần</p>
+                  <p>Đã thông báo cho giám thị</p>
+                  <p>Nếu bạn tiếp tục rời khỏi trang, bài thi của bạn có thể bị hủy</p>
+                </Modal.Body>
+                <Modal.Footer className="d-flex justify-content-center">
+                  <Button variant="warning" onClick={returnExamAfterLeave}>
+                    Quay lại làm bài
+                  </Button>
+                </Modal.Footer>
+              </Modal>
+              
+            {/* ) : (
               <div className="warning-message mt-5">
                 <p>Cảnh báo: Bạn đã rời khỏi trang {leaveCount} lần.</p>
                 <p>Đã thông báo cho giám thị.</p>
@@ -380,7 +398,7 @@ const TakeExamPage = () => {
                   Quay lại làm bài
                 </button>
               </div>
-            ) }
+            ) } */}
           </div>
         </div>
     </div>
