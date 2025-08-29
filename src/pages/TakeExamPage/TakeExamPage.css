@@ -230,3 +230,13 @@ button.finish {
   }
 }
 
+.warning-message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  align-items: center;
+  text-align: center;
+
+  width: 100%;       /* chiếm ngang */
+  min-height: 80vh;  /* đủ cao để căn giữa */
+}

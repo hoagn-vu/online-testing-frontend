@@ -433,8 +433,8 @@ const SessionPage = () => {
 									<th scope="col" className="title-row">Bắt đầu</th>
 									<th scope="col" className="title-row">Kết thúc</th>
 									<th scope="col" className="title-row">Phòng thi</th>
-									<th scope="col" className="title-row">Trạng thái</th>
-									<th scope="col" className="title-row text-center">Giám sát</th>
+									<th scope="col" className="title-row text-center">Trạng thái</th>
+									{/* <th scope="col" className="title-row text-center">Giám sát</th> */}
 									<th className="text-center">Thao tác</th>
 								</tr>
 							</thead>
@@ -508,19 +508,17 @@ const SessionPage = () => {
 													Danh sách phòng thi
 												</td>
 												<td className="text-center">
-													<div className="d-flex align-items-center justify-content-left">
-														<span className={`badge mt-1 ${session.sessionStatus === "active" ? "bg-primary" : "bg-secondary"}`}>
-															{session.sessionStatus === "active" ? "Kích hoạt" : "Đóng"}
-														</span>
-													</div>
+													<span className={`badge mt-1 ${session.sessionStatus === "active" ? "bg-primary" : "bg-secondary"}`}>
+														{session.sessionStatus === "active" ? "Kích hoạt" : "Đóng"}
+													</span>
 												</td>
-												<td className="text-center">
+												{/* <td className="text-center">
 													<Link className="text-hover-primary report-hover"
 															to={`/staff/organize/monitor/${organizeId}/${session.sessionId}`}
 															style={{ color: "blue", cursor: "pointer" }}>
 														Giám sát
 													</Link>
-												</td>
+												</td> */}
 												<td className="text-center align-middle">
 													<div className="dropdown d-inline-block">
 														<button

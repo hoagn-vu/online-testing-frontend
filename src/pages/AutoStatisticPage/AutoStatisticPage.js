@@ -101,10 +101,16 @@ const AutoStatisticPage = () => {
       datalabels: {
         anchor: "end", // Đặt nhãn ở cuối cột
         align: "end", // Căn giữa với cạnh cuối
+        clip: false,
         clamp: true, // Giữ nhãn trong vùng vẽ
         color: "#000", // Màu chữ
         font: { size: 12 }, // Cỡ chữ
         formatter: (value) => `${value.toFixed(1)}%`, // Hiển thị phần trăm với 1 chữ số thập phân
+      },
+    },
+    layout: {
+      padding: {
+        right: 40, // ✨ chừa khoảng trống để không bị mất chữ
       },
     },
     scales: {
@@ -112,7 +118,7 @@ const AutoStatisticPage = () => {
       y: {
         display: true,
         grid: { display: false }, // Bỏ lưới
-        ticks: { font: { size: 14 } }, // Điều chỉnh cỡ chữ nhãn nếu cần
+        ticks: { font: { size: 12 } }, // Điều chỉnh cỡ chữ nhãn nếu cần
       },
     },
     maintainAspectRatio: false,
@@ -209,6 +215,7 @@ const AutoStatisticPage = () => {
           <div className="bg-white p-3 rounded shadow-sm h-100">
             <p className="text-center mb-1 fw-bold">Biểu đồ phân bố điểm</p>
             <BarChart
+              title="Số lượng thí sinh"
               labels={labels}
               dataPoints={dataPoints}
               width="100%"
@@ -284,7 +291,7 @@ const AutoStatisticPage = () => {
                         })}
                       </div>
                       {/* Biểu đồ */}
-                      <div className="col-5" style={{ height: "160px", width: "320px", marginTop: "-15px"}}>
+                      <div className="col-5" style={{ height: "160px", width: "300px", marginTop: "-15px"}}>
                         <Bar
                           data={getChartData(q.options, q.totalSelections)}
                           options={chartOptions}

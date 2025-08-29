@@ -212,7 +212,11 @@ const ReportEachOrganizePage = () => {
               <tbody>
                 <tr className="text-center"><td>Tổng số sinh viên dự thi</td><td>{totalCandidate}</td><td>100%</td></tr>
                 <tr className="text-center"><td>Điểm trung bình</td><td>{averageScore}</td><td>-</td></tr>
-                <tr className="text-center"><td>Điểm cao nhất</td><td>{maxScore}</td><td>-</td></tr>
+                <tr className="text-center">
+                  <td>Điểm cao nhất</td>
+                  <td>{Number(maxScore).toFixed(2)}</td>
+                  <td>-</td>
+                </tr>
                 <tr className="text-center"><td>Điểm thấp nhất</td><td>{minScore}</td><td>-</td></tr>
                 {/* <tr className="text-center"><td>Điểm số nhiều thí sinh đạt nhất</td><td>{sampleReportData.mostCommonScore}</td><td>-</td></tr> */}
                 <tr className="text-center"><td>Số sinh viên đạt &lt;5</td><td>{belowFiveCount}</td><td>{belowFivePercent}</td></tr>

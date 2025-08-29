@@ -165,7 +165,7 @@ const OrganizeExamPage = () => {
     }
 	}, [showForm]);
 
-  const handleToggleStatus = (id, currentStatus) => {
+  const handleToggleStatus = async (id, currentStatus) => {
     Swal.fire({
       title: "Bạn có chắc muốn thay đổi trạng thái?",
       text: "Trạng thái sẽ được cập nhật ngay sau khi xác nhận!",
@@ -175,23 +175,51 @@ const OrganizeExamPage = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Xác nhận",
       cancelButtonText: "Hủy",
-    }).then((result) => {
+    }).then(async(result) => {
       if (result.isConfirmed) {
-        const newStatus = currentStatus.toLowerCase() === "active" ? "closed" : "active";
-        const statusLabel = newStatus === "active" ? "Kích hoạt" : "Đóng";
+				try {
+					// Xác định trạng thái mới
+        	const newStatus = currentStatus.toLowerCase() === "active" ? "done" : "active";
+					const response = await ApiService.put(
+						`/organize-exams/${id}/update-status?newStatus=${newStatus}`,
+					);
+					await ApiService.post(
+						`/statistics/update-organize-exam-grade-stats?organizeExamId=${id}`, 
+					);
 
-        // Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
-        setRows((prevRows) =>
-          prevRows.map((row) =>
-            row.id === id ? { ...row, organizeExamStatus: newStatus } : row
-          )
-        );
-        console.log("organizeExamId được đổi status:", id)
-        Swal.fire({
-          title: "Cập nhật thành công!",
-          text: `Trạng thái đã chuyển sang "${statusLabel}".`,
-          icon: "success",
-        });
+					await ApiService.post(
+						`/statistics/update-participation-violation-by-id?organizeExamId=${id}`
+						
+					);
+
+					await ApiService.post(
+						`/statistics/organize-exam/ramdom-exam-status?organizeExamId=${id}`
+					);
+					// Sau khi gọi API thành công thì fetch lại dữ liệu
+					await fetchData();
+
+					// Xác định trạng thái mới dựa vào trạng thái hiện tại
+					let successMessage = "";
+					if (currentStatus === "active") {
+						successMessage = "Đóng kỳ thi thành công";
+					} else {
+						successMessage = "Kích hoạt kỳ thi thành công";
+					}
+
+
+					Swal.fire({
+						title: "Thành công!",
+						text: successMessage,
+						icon: "success",
+					});
+				} catch (error) {
+					console.error("Failed to toggle session status: ", error);
+					Swal.fire({
+						icon: "error",
+						title: "Lỗi",
+						text: error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại!",
+					});
+				}        
       }
     });
   };
@@ -401,7 +429,7 @@ const OrganizeExamPage = () => {
 
 						{/* Hiển thị bảng theo vai trò đã chọn */}
 						<div className="organize-examtable-container mt-3">
-							<div className="table-responsive" style={{minHeight: "230px"}}>
+							<div className="table-responsive" style={{minHeight: "250px"}}>
 								<table className="table organize-exam-table sample-table tbl-organize-hover table-hover" style={{fontSize: "14px"}}>
 									<thead>
 										<tr className="align-middle fw-medium">
@@ -526,12 +554,12 @@ const OrganizeExamPage = () => {
 													style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
 													className="text-center"
 												>
-													{item.maxScore}
+													{item.maxScore.toFixed(2)}
 												</td>
 												<td className="text-center">
 													<div className="d-flex align-items-center justify-content-center">
 														<span className={`badge mt-1 ${item.organizeExamStatus.toLowerCase() === "active" ? "bg-primary" : "bg-secondary"}`}>
-															{item.organizeExamStatus.toLowerCase() === "active" ? "Kích hoạt" : "Đóng"}
+															{item.organizeExamStatus.toLowerCase() === "active" ? "Khả dụng" : "Hoàn thành"}
 														</span>
 													</div>
 												</td>
@@ -562,30 +590,25 @@ const OrganizeExamPage = () => {
 																	Xoá
 																</button>
 															</li>
-															<li className="tbl-action" onClick={() => setShowPasswordForm(true)}>
-																<button className="dropdown-item tbl-action" onClick={() => setShowPasswordForm(true)}>
-																	Mật khẩu thí sinh
-																</button>
-															</li>
 															<li
-																className={`tbl-action ${item.organizeExamStatus.toLowerCase() !== "closed" ? "closed" : ""}`}
+																className={`tbl-action ${item.organizeExamStatus.toLowerCase() !== "done" ? "done" : ""}`}
 																onClick={() => {
-																	if (item.organizeExamStatus.toLowerCase() === "closed") {
+																	if (item.organizeExamStatus.toLowerCase() === "done") {
 																		handleReport(item);
 																	}
 																}}
 															>
 																<button
 																	className="dropdown-item tbl-action"
-																	disabled={item.organizeExamStatus.toLowerCase() !== "closed"}
+																	disabled={item.organizeExamStatus.toLowerCase() !== "done"}
 																>
 																	Báo cáo
 																</button>
 															</li>
 															<li
-																className={`tbl-action ${item.organizeExamStatus.toLowerCase() !== "closed" ? "closed" : ""}`}
+																className={`tbl-action ${item.organizeExamStatus.toLowerCase() !== "done" ? "done" : ""}`}
 																onClick={() => {
-																	if (item.organizeExamStatus.toLowerCase() === "closed") {
+																	if (item.organizeExamStatus.toLowerCase() === "done") {
 																		if (item.examType.toLowerCase() === "auto" || item.examType.toLowerCase() === "matrix") {
 																			handleStatisticAuto(item);
 																		} else if (item.examType.toLowerCase() === "exams") {
@@ -596,7 +619,7 @@ const OrganizeExamPage = () => {
 															>
 																<button
 																	className="dropdown-item tbl-action"
-																	disabled={item.organizeExamStatus.toLowerCase() !== "closed"}
+																	disabled={item.organizeExamStatus.toLowerCase() !== "done"}
 																>
 																	Thống kê
 																</button>

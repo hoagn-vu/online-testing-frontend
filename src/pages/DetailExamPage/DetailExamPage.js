@@ -266,7 +266,7 @@ const DetailExamPage = () => {
                   </p>
                   <p className="m-0" style={{ fontSize: "14px" }}>
                     <span style={{ fontWeight: "bold" }}>Tổng điểm: </span>
-                    {totalScore} {/* Sử dụng totalScore thay vì reduce để đồng bộ */}
+                    {totalScore.toFixed(2)} {/* Sử dụng totalScore thay vì reduce để đồng bộ */}
                   </p>
                 </div>
                 <div className="col">

@@ -457,10 +457,17 @@ const DetailExamMatrixPage = () => {
 			return;
 		}
 		
-		// 👉 Thêm check tổng điểm trước khi lưu
-		const totalScoreFromDetails = data.reduce((sum, chapter) =>
-			sum + chapter.levels.reduce((levelSum, level) => levelSum + (level.score || 0), 0)
-		, 0);
+		// 👉 Tính tổng điểm chi tiết cho cả ChapterData và LevelData
+  const totalScoreFromDetails = data.reduce((sum, item) => {
+    if (item.levels && Array.isArray(item.levels)) {
+      return sum + item.levels.reduce(
+        (levelSum, level) => levelSum + (level.score || 0),
+        0
+      );
+    } else {
+      return sum + (item.score || 0);
+    }
+  }, 0);
 
 		if (parseFloat(totalScoreFromDetails.toFixed(2)) !== parseFloat(totalScore.toFixed(2))) {
 			Swal.fire({
