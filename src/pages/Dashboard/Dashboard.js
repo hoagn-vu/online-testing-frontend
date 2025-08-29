@@ -501,7 +501,7 @@ const Dashboard = () => {
                             style={{ cursor: "pointer", textDecoration: "none", color: "black" }}
                             className="text-center"
                           >
-                            {item.duration}
+                            {item.duration/60}
                           </td>
                           <td>
                           <div className="form-check form-switch d-flex align-items-center justify-content-center" >
