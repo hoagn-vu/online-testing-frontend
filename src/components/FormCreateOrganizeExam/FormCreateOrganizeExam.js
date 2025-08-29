@@ -186,8 +186,13 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 				icon: "success",
 				draggable: true
 			}).then(() => {
-				navigate(`/staff/organize/${organizeId}`, { state: { reload: true } });
-			});
+				navigate(`/staff/organize/${organizeId}`, { state: { reload: true } })});
+			/*}).then((result) => {
+				if (result.isConfirmed) {
+					navigate(`/staff/organize/${organizeId}`, { state: { reload: true } });
+					onClose(); 
+				}
+			});*/
 			console.log("Kỳ thi đã được tạo thành công:", response.data);
 		} catch (error) {
 			console.error("Lỗi khi tạo kỳ thi:", error);
