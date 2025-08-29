@@ -203,12 +203,11 @@ const SubjectPage = () => {
               </tr>
             </thead>
             <tbody>
-              {isLoading ? (
+              {listSubject.length === 0 ? (
                 <tr>
-                  <td colSpan="4" className="text-center">
-                    <div className="spinner-border text-primary" role="status">
-                      <span className="visually-hidden">Loading...</span>
-                    </div>
+                  <td colSpan="4" className="text-center fw-semibold text-muted"
+                    style={{ height: "100px", verticalAlign: "middle" }}>
+                    Không có dữ liệu
                   </td>
                 </tr>
               ) : listSubject.map((item, index) => (  
