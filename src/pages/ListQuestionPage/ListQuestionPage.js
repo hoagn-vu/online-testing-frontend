@@ -31,7 +31,7 @@ const ListQuestionPage = () => {
 
 	const [keyword, setKeyword] = useState("");
 	const [page, setPage] = useState(1);
-	const [pageSize, setPageSize] = useState(100);
+	const [pageSize, setPageSize] = useState(1000);
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalCount, setTotalCount] = useState(0);
 
@@ -979,6 +979,7 @@ const ListQuestionPage = () => {
 				open={openModal}
 				onClose={() => setOpenModal(false)}
 				onFilesDropped={handleFilesDropped}
+				sampleFile={{ url: questionFile, name: "upload_question.xlsx" }}
 			/>
 			<DragDropModal
 				open={openAddImageModal}
@@ -987,7 +988,6 @@ const ListQuestionPage = () => {
 				}}
 				onFilesDropped={handleImageFilesDropped}
 				title="Kéo Thả Ảnh Vào Đây"
-				sampleFile={{ url: questionFile, name: "upload_question.xlsx" }}
 			/>
 			{/* Modal hiển thị ảnh lớn */}
       <Modal show={!!modalImage} onHide={handleClose} centered size="lg">
