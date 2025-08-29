@@ -45,7 +45,7 @@ const HeaderCandidate = ({ avatarUrl, logoUrl }) => {
           </Link>
         </nav>
         <img src={avatarUrl} alt="Avatar" className="avatar" onClick={() => setIsOpen(!isOpen)} style={{ cursor: "pointer" }}/>
-        <span className="username" onClick={() => setIsOpen(!isOpen)} style={{ cursor: "pointer" }}>{user?.username} </span>
+        <span className="username" onClick={() => setIsOpen(!isOpen)} style={{ cursor: "pointer" }}>{user?.fullName} </span>
 
         {/* Nút mở dropdown */}
         <button className="dropdown-btn" onClick={() => setIsOpen(!isOpen)}>
