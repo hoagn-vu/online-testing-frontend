@@ -47,7 +47,6 @@ jobs:
           script: |
             echo "===== RESTART BACKEND SERVICE ====="
             sudo systemctl daemon-reload
-            sudo systemctl stop online-testing-frontend.service || true
-            sudo systemctl start online-testing-frontend.service
-            sudo systemctl status online-testing-frontend.service --no-pager
+            sudo nginx -t
+            sudo systemctl restart nginx
             echo "Deployment completed!"
