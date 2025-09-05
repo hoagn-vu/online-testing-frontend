@@ -1,11 +1,14 @@
 .notification-icon {
     background-color: #e7f1fa;
-    height: 40px;
-    width: 40px;
+    height: 40px !important;
+    width: 40px  !important;
+    min-width: 40px;
+    min-height: 40px;
     border-radius: 10px;
     display: flex;
     align-items: center;    
     justify-content: center; 
+    line-height: 1;
 }
 
 .fs-14 {
