@@ -15,10 +15,13 @@ import CancelButton from "../../components/CancelButton/CancelButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import DragDropModal from "../../components/DragDrop/DragDrop";
 import { CircularProgress } from "@mui/material";
-import userFile from "../../assets/file/upload_user.xlsx"
+import userFile from "../../assets/file/upload_user.xlsx";
+import { useSelector } from "react-redux";
+import hasPermission from "../../permissions";
 
 const AccountPage = () => {
   const inputRef = useRef(null);
+  const userRole = useSelector((state) => state.auth.user?.role);
 
   const [listAccount, setListAccount] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -599,9 +602,11 @@ const AccountPage = () => {
             </div>
           </div>
           <div className="role-selector d-flex align-items-center gap-2">
-            <AddButton onClick={handleAddNew}>
-              <i className="fas fa-plus me-2"></i> Thêm mới
-            </AddButton>
+            {hasPermission(userRole, "create_user")  && (
+              <AddButton onClick={handleAddNew}>
+                <i className="fas fa-plus me-2"></i> Thêm mới
+              </AddButton>
+            )}
             {/* <button className="btn btn-primary add-btn-hover" style={{fontSize: "14px"}} onClick={handleAddNew}>
               <i className="fas fa-plus me-2"></i>
               Thêm mới
@@ -615,9 +620,11 @@ const AccountPage = () => {
             <AddButton onClick={() => setShowAddGroupForm(true)}>
               <i className="fas fa-plus me-2"></i> Thêm nhóm
             </AddButton>
-            <AddButton className="upload-btn-hover" style={{backgroundColor: "#28A745"}} onClick={handleUploadClick}>
-              <i className="fas fa-upload me-2"></i>Upload File
-            </AddButton>
+            { hasPermission(userRole, "import_users") && (
+              <AddButton className="upload-btn-hover" style={{backgroundColor: "#28A745"}} onClick={handleUploadClick}>
+                <i className="fas fa-upload me-2"></i>Upload File
+              </AddButton>
+            )}
             <div className="modal fade" id="uploadModal" tabIndex="-1" aria-hidden="true"
             style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
             >
@@ -654,18 +661,20 @@ const AccountPage = () => {
 
         <ul className="nav nav-tabs ">
           { roleTabs.map((role) => (
-            <li className="nav-item" key={role.value}>
-              <a
-                className={`nav-link ${selectedRole === role.value ? "active" : ""}`}
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setSelectedRole(role.value);
-                }}
-              >
-                {role.label}
-              </a>
-            </li>
+            hasPermission(userRole, `get_${role.value}`)  && (
+              <li className="nav-item" key={role.value}>
+                <a
+                  className={`nav-link ${selectedRole === role.value ? "active" : ""}`}
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setSelectedRole(role.value);
+                  }}
+                >
+                  {role.label}
+                </a>
+              </li>
+            )
           ))}
         </ul>
 
@@ -748,28 +757,34 @@ const AccountPage = () => {
                           transform: 'translate3d(-10px, 10px, 0px)',
                         }}
                       >
-                        <li className="tbl-action" onClick={() => handleEdit(item)}> 
-                          <button className="dropdown-item tbl-action" onClick={() => handleEdit(item)}>
-                             Chỉnh sửa
-                          </button>
-                        </li>
-                        <li className="tbl-action" onClick={() => handleDelete(item.id)}>
-                          <button className="dropdown-item tbl-action" onClick={() => handleDelete(item.id)}>
-                             Xoá
-                          </button>
-                        </li>
-                        <li className="tbl-action" onClick={() => handleToggleStatus(item.id, item.accountStatus)}>
-                          <button
-                            className="dropdown-item tbl-action"
-                            onClick={() =>
-                              handleToggleStatus(item.id, item.accountStatus)
+                        {hasPermission(userRole, "update_user") && (
+                          <li className="tbl-action" onClick={() => handleEdit(item)}>
+                            <button className="dropdown-item tbl-action" onClick={() => handleEdit(item)}>
+                              Chỉnh sửa
+                            </button>
+                          </li>
+                        )}
+                        {hasPermission(userRole, "delete_user") && (
+                          <li className="tbl-action" onClick={() => handleDelete(item.id)}>
+                            <button className="dropdown-item tbl-action" onClick={() => handleDelete(item.id)}>
+                               Xoá
+                            </button>
+                          </li>
+                        )}
+                        {hasPermission(userRole, "toggle_status") && (
+                          <li className="tbl-action" onClick={() => handleToggleStatus(item.id, item.accountStatus)}>
+                            <button
+                              className="dropdown-item tbl-action"
+                              onClick={() =>
+                                handleToggleStatus(item.id, item.accountStatus)
                             }
                           >
                             {item.accountStatus.toLowerCase() === "active"
                               ? "Vô hiệu hoá"
                               : "Kích hoạt"}
-                          </button>
-                        </li>
+                            </button>
+                          </li>
+                        )}
                       </ul>
                     </div>
                   </td>
