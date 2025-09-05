@@ -543,20 +543,8 @@ const Dashboard = () => {
           <hr className="border-top border-secondary opacity-25 my-3" />
           <div className="ps-3 mb-3 d-flex justify-content-between align-items-center">
             <p className="fw-bold m-0">Thông báo</p>
-            <div className="d-flex align-items-center all-btn"
-                style={{ cursor: "pointer" }}
-              >
-              <p className="m-0" style={{color: '#545454'}}>Hiển thị tất cả</p>
-              <i className="fa-solid fa-angle-right ms-2" aria-hidden="true" style={{ color: "#545454" }}></i>
-            </div>
           </div>
           <div className="ps-3">
-            <NotificationDashboard/>
-            <NotificationDashboard/>
-            <NotificationDashboard/>
-            <NotificationDashboard/>
-            <NotificationDashboard/>
-            <NotificationDashboard/>
             <NotificationDashboard/>
           </div>
         </div>

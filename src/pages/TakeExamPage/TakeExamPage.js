@@ -367,9 +367,9 @@ const TakeExamPage = () => {
                 </button>
                 ))}
               </div>
-              <div className="leave-count-take-exam d-flex justify-content-center">
+              {/* <div className="leave-count-take-exam d-flex justify-content-center">
                 <p>Số lần rời khỏi trang: {leaveCount}</p>
-              </div>
+              </div> */}
             </div>
 
               <Modal show={isWarning} onHide={() => setIsWarning(false)} centered backdrop="static" keyboard={false}>
