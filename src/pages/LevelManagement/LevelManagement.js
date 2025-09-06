@@ -93,25 +93,37 @@ const LevelManagement = () => {
     levelName: "",
   });
 
+  function showToast(type, message, onClose) {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+
+    return Toast.fire({
+      icon: type,
+      title: message,
+      didClose: onClose
+    });
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (editingSubject) {
         await updateLevel({ ...editingSubject, ...formData });
-        Swal.fire({
-          icon: "success",
-          text: "Cập nhật mức độ thành công",
-          draggable: true
-        });
+        showToast("success", "Cập nhật mức độ thành công!");
         setShowForm(false);
       } else {
         // Thêm mới dữ liệu
         await createLevel(formData);
-        Swal.fire({
-          icon: "success",
-          text: "Tạo mức độ thành công",
-          draggable: true
-        });
+        showToast("success", "Tạo mức độ thành công!");
         setShowForm(false);
       }
     }catch (error) {
@@ -146,11 +158,7 @@ const LevelManagement = () => {
         try {
           await ApiService.delete(`/level/${levelId}`);
           fetchData();
-          Swal.fire({
-            title: "Đã xóa!",
-            text: "Mức độ đã bị xóa thành công",
-            icon: "success",
-          });
+          showToast("success", "Xóa mức độ thành công!");
         }
         catch (error) {
           console.error("Failed to update level: ", error);
