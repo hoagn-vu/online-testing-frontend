@@ -865,7 +865,19 @@ const ListQuestionPage = () => {
 												overflow: "hidden"
 											}}
 										>
-										<div style={{ width: "100%", height: "100%", position: "relative", paddingTop: "56.25%" }}>
+										<div 
+											style={{ 
+												width: "100%", 
+												height: "100%", 
+												position: "relative", 
+												aspectRatio: "16 / 9", 
+												overflow: "hidden", 
+												backgroundColor: "#dcdadaff", // hoặc dùng màu trung tính
+												display: "flex",
+												alignItems: "center",
+												justifyContent: "center",
+											}}
+										>
 											<img
 												src={
 													newQuestion.imageLinks.length > 0
@@ -880,7 +892,7 @@ const ListQuestionPage = () => {
 													left: 0,
 													width: "100%",
 													height: "100%",
-													objectFit: "cover",
+													objectFit: "contain",
 													borderRadius: "8px"
 												}}
 											/>

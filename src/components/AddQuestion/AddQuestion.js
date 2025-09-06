@@ -385,7 +385,19 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
                 <QuillEditor value={q.questionText} onChange={(val) => handleQuestionTextChange(qIndex, val)} />
               </div>
               <div className="col-4">
-                <div style={{ width: "100%", height: "100%", position: "relative", paddingTop: "56.25%" }}>
+                <div 
+                  style={{ 
+                    width: "100%", 
+                    height: "100%", 
+                    position: "relative", 
+                    aspectRatio: "16 / 9", 
+                    overflow: "hidden", 
+                    backgroundColor: "#dcdadaff", // hoặc dùng màu trung tính
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
                   <img
                     src={imageList[qIndex]?.preview || image}
                     alt="Ảnh câu hỏi"
@@ -395,8 +407,8 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
                       left: 0,
                       width: "100%",
                       height: "100%",
-                      objectFit: "cover",
-                      borderRadius: "8px"
+                      objectFit: "contain",
+                      borderRadius: "8px",
                     }}
                   />
                   {/* Nút thay ảnh + xoá ảnh */}
