@@ -282,11 +282,15 @@ const QuestionBankPage = () => {
                     <div className="mb-2">
                       <p className="badge bg-light text-dark border d-inline-block mb-2" style={{ fontSize: "12px" }}>
                         Phân môn: {subjectName}
-                      </p><br />
-                      <div className="d-flex justify-content-between">
-                        <p className="badge bg-light text-dark border d-inline-block" style={{ fontSize: "12px" }}>
+                      </p><br /> 
+                      <p className="badge bg-light text-dark border d-inline-block mb-2" style={{ fontSize: "12px" }}>
                         {item.totalQuestions} câu hỏi
-                        </p>
+                      </p>
+                      <div className="d-flex justify-content-between">
+                        <div className="d-flex align-items-center text-muted" style={{ fontSize: "13px" }}>
+                          <i className="fas fa-user-circle me-2 text-secondary" style={{ fontSize: "16px" }}></i>
+                          <span>Người tạo: <strong>{item.userFullname}</strong></span>
+                        </div>
                         <div className="dropdown" onClick={(e) => e.stopPropagation()}>
                           <button
                             className="dropdown-toggle-icon dropdown-custom"
