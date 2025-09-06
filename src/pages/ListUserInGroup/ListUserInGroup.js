@@ -93,6 +93,26 @@ const ListUserInGroup = () => {
     setShowForm(true);
   };
 
+  function showToast(type, message, onClose) {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+
+    return Toast.fire({
+      icon: type,
+      title: message,
+      didClose: onClose
+    });
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Tách listUserText thành mảng
@@ -102,25 +122,15 @@ const ListUserInGroup = () => {
       .filter(line => line); // Loại bỏ dòng rỗng
     console.log(lines)
     if (lines.length === 0) {
-      Swal.fire({
-        icon: "error",
-        title: "Lỗi",
-        text: "Vui lòng nhập ít nhất một mã sinh viên",
-        didClose: () => {
-          inputRef.current.focus()
-        }
+      showToast("warning", "Vui lòng nhập ít nhất một mã sinh viên", () => {
+        inputRef.current?.focus();
       });
       return;
     }
     
     try {      
       await addCandidate(groupuserId, lines);
-      Swal.fire({
-        icon: "success",
-        text: "Thêm người dùng vào nhóm thành công!",
-        draggable: true
-      });
-  
+      showToast("success", "Thêm người dùng vào nhóm thành công!");
       setShowForm(false);
     }catch (error) {
       Swal.fire({
@@ -146,11 +156,7 @@ const ListUserInGroup = () => {
         try {
           await ApiService.delete(`/groupUser/delete/${groupId}/user/${userId}`);
           fetchData();
-          Swal.fire({
-            title: "Đã xóa!",
-            text: "Người dùng đã bị xóa khỏi nhóm.",
-            icon: "success",
-          });
+          showToast("success", "Người dùng đã bị xóa khỏi nhóm!");
         }
         catch (error) {
         console.error("Failed to delete group: ", error);

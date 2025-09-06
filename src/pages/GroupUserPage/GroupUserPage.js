@@ -111,42 +111,47 @@ const GroupUserPage = () => {
     groupName: "",
   });
 
+  function showToast(type, message, onClose) {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+
+    return Toast.fire({
+      icon: type,
+      title: message,
+      didClose: onClose
+    });
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Kiểm tra dữ liệu trước khi gửi
     if (!formData.groupName && !editingSubject) {
-      Swal.fire({
-        icon: "error",
-        title: "Lỗi",
-        text: "Tên nhóm không được để trống",
-        didClose: () => {
-          inputRef.current.focus()
-        }
+      showToast("warning", "Tên nhóm không được để trống", () => {
+        inputRef.current?.focus();
       });
       return;
     }
 
     if (editingSubject && !formDataEdit.groupName) {
-      Swal.fire({
-        icon: "error",
-        title: "Lỗi",
-        text: "Tên nhóm không được để trống",
-        didClose: () => {
-          inputRef.current.focus()
-        }
+      showToast("warning", "Tên nhóm không được để trống", () => {
+        inputRef.current?.focus();
       });
       return;
     }
 
     if (!formData.listUserText || formData.listUserText.trim() === "") {
-      Swal.fire({
-        icon: "error",
-        title: "Lỗi",
-        text: "Vui lòng thêm ít nhất 1 mã sinh viên",
-        didClose: () => {
-          inputRef.current.focus()
-        }
+      showToast("warning", "Vui lòng thêm ít nhất một mã sinh viên", () => {
+        inputRef.current?.focus();
       });
       return;
     }
@@ -170,18 +175,10 @@ const GroupUserPage = () => {
     try {
       if (editingSubject) {
         await updateGroup(editingSubject.id, formDataEdit.groupName);
-        Swal.fire({
-          icon: "success",
-          title: "Cập nhật thành công",
-          draggable: true
-        });
+        showToast("success", "Cập nhật nhóm thành công!");
       } else {
         await createGroup(payloadCreate);
-        Swal.fire({
-          icon: "success",
-          title: "Tạo nhóm thành công",
-          draggable: true
-        });
+        showToast("success", "Tạo nhóm thành công!");
       }
       setShowForm(false);
       setShowFormEdit(false);
@@ -215,11 +212,7 @@ const GroupUserPage = () => {
         try {
           await ApiService.delete(`/groupUser/delete/${groupId}`);
           fetchData();
-          Swal.fire({
-            title: "Đã xóa!",
-            text: "Nhóm người dùng đã bị xóa.",
-            icon: "success",
-          });
+          showToast("success", "Nhóm người dùng đã bị xóa!");
         }
         catch (error) {
         console.error("Failed to delete group: ", error);
