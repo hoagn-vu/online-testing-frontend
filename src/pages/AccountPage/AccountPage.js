@@ -75,12 +75,15 @@ const AccountPage = () => {
   const createUser = async (user) => {
     setIsLoading(true);
     try {
-      await ApiService.post("/users", user);
+      const response = await ApiService.post("/users", user);
       await fetchData();
+      return response;
     } catch (error) {
       console.error("Failed to create user: ", error);
+      throw error; // ⬅️ ném lỗi ra ngoài để handleSubmit xử lý
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const updateUser = async (user) => {
@@ -262,23 +265,37 @@ const AccountPage = () => {
       //   password: formData.userCode.toLowerCase(),
       // };
 
-      if (formData.id || formData.id == "") {
-        await updateUser(formData);
-        
-        showToast("success", "Cập nhật người dùng thành công!");
-        // console.log("Dữ liệu thêm mới:", finalData);
-        setShowForm(false);
+      if (formData.id && formData.id !== "") {
+        try {
+          await updateUser(formData);
+          showToast("success", "Cập nhật người dùng thành công!");
+          setIsEditing(true);
+          setShowForm(false);
+        } catch (error) {
+          console.error("Lỗi cập nhật người dùng:", error);
+          showToast("error", error.response?.data?.message || "Cập nhật thất bại!");
+        }
       } else {
-        // Thêm mới dữ liệu
-        console.log("Dữ liệu thêm mới:", formData);
-        await createUser(formData);
-        showToast("success", "Thêm người dùng thành công!");
-        /*Swal.fire({
-          icon: "success",
-          text: "Thêm người dùng thành công",
-          draggable: true
-        });*/
-        setShowForm(false);
+        try {
+          // Thêm mới dữ liệu
+          console.log("Dữ liệu thêm mới:", formData);
+          await createUser(formData);
+          showToast("success", "Thêm người dùng thành công!");
+          setIsEditing(false);
+          setShowForm(false);
+        } catch (error) {
+          console.error("Lỗi thêm người dùng:", error);
+
+          if (error.response?.data?.message === "Error: UserName already exists") {
+            showToast("error", "Người dùng đã tồn tại");
+            // Focus lại vào input nhập mã
+            if (inputRef?.current) {
+              inputRef.current.focus();
+            }
+          } else {
+            showToast("error", error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại!");
+          }
+        }
       }
     } catch (error) {
       Swal.fire({
@@ -287,9 +304,6 @@ const AccountPage = () => {
         text: error?.message || "Không thể xử lý yêu cầu",
       });
     }
-    
-    setShowForm(false);
-    setIsEditing(false);
   };
 
   const handlePasswordSubmit = (e) => {
@@ -812,7 +826,7 @@ const AccountPage = () => {
               }}
             >   
               <p className="fw-bold p-4 pb-0">
-                {editingAccount ? "Chỉnh sửa tài khoản" : "Thêm tài khoản mới"}
+                {isEditing ? "Chỉnh sửa tài khoản" : "Thêm tài khoản mới"}
               </p>
               <button
                 className="p-4"
@@ -909,67 +923,6 @@ const AccountPage = () => {
                 </TextField>
               </Grid>
 
-              {/* Username và Password */}
-              {/* <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Username"
-                  value={formData.username}
-                  onChange={(e) =>
-                    setFormData({ ...formData, username: e.target.value })
-                  }
-                  sx={{
-                    "& .MuiInputBase-input": {
-                      fontSize: "14px",
-                      paddingBottom: "11px",
-                    },
-                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-                  }}
-                />
-              </Grid> */}
-              {/* <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  label="Password"
-                  // type="password"
-                  value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
-                  sx={{
-                    "& .MuiInputBase-input": {
-                      fontSize: "14px",
-                      paddingBottom: "11px",
-                    },
-                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-                  }}
-                />
-              </Grid> */}
-
-              {/* Trạng thái và Vai trò */}
-              {/* <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  select
-                  label="Trạng thái"
-                  required
-                  value={formData.accountStatus}
-                  onChange={(e) =>
-                    setFormData({ ...formData, accountStatus: e.target.value })
-                  }
-                  sx={{
-                    "& .MuiInputBase-input": {
-                      fontSize: "14px",
-                      paddingBottom: "11px",
-                    },
-                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-                  }}
-                >
-                  <MenuItem value="active">Active</MenuItem>
-                  <MenuItem value="disabled">Disabled</MenuItem>
-                </TextField>
-              </Grid> */}
-
               <Grid item xs={12}>
                 <TextField
                   fullWidth
@@ -1052,7 +1005,7 @@ const AccountPage = () => {
               </Grid>
               <Grid item xs={3}>
                 <AddButton style={{width: "100%"}}>
-                  {editingAccount ? "Cập nhật" : "Lưu"}
+                  {isEditing ? "Cập nhật" : "Lưu"}
                 </AddButton>
               </Grid>
             </Grid>
