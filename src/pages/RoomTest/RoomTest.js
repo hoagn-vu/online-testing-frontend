@@ -173,25 +173,37 @@ const RoomTest = () => {
     setTimeout(() => setShowForm(true), 0); // Đợi React cập nhật state rồi mới hiển thị form
   };
 
+  function showToast(type, message, onClose) {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+
+    return Toast.fire({
+      icon: type,
+      title: message,
+      didClose: onClose
+    });
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (editingAccount) {
         await updateRoom({ ...editingAccount, ...formData });
-        Swal.fire({
-          icon: "success",
-          title: "Cập nhật phòng thành công",
-          draggable: true
-        });
+        showToast("success", "Cập nhật phòng thành công!");
         setShowForm(false);
       } else {
         // Thêm mới dữ liệu
         await createRoom(formData);
-        Swal.fire({
-          icon: "success",
-          title: "Tạo phòng thành công",
-          draggable: true
-        });
+        showToast("success", "Tạo phòng thành công!");
         setShowForm(false);
       }
     }catch (error) {
@@ -228,11 +240,7 @@ const RoomTest = () => {
       if (result.isConfirmed) {
         try {
           await ApiService.put(`/rooms/${id}`, { roomStatus: "deleted" });
-          Swal.fire({
-            title: "Đã xóa!",
-            text: "Phòng đã bị xóa thành công",
-            icon: "success",
-          });
+          showToast("success", "Phòng đã bị xóa thành công!");
           fetchData();
         }
         catch (error) {
@@ -259,22 +267,12 @@ const RoomTest = () => {
 
         try {
           const response = await ApiService.put(`/rooms/${id}`, { roomStatus: newStatus });
-  
-          Swal.fire({
-            title: "Cập nhật thành công!",
-            text: `Trạng thái đã chuyển sang "${statusLabel}".`,
-            icon: "success",
-          });
+          showToast("success", `Trạng thái đã chuyển sang "${statusLabel}"`);
 
           fetchData();
         } catch (error) {
           console.error("Failed to update room status:", error);
-
-          Swal.fire({
-            title: "Lỗi",
-            text: "Không thể cập nhật trạng thái phòng. Vui lòng thử lại.",
-            icon: "error",
-          });
+          showToast("error", "Không thể cập nhật trạng thái phòng. Vui lòng thử lại");
         }
       }
     });
@@ -340,8 +338,8 @@ const RoomTest = () => {
                 {listRoom.length === 0 ? (
                 <tr>
                   <td colSpan="6" className="text-center fw-semibold text-muted"
-                          style={{ height: "100px", verticalAlign: "middle" }}>
-                      Không có dữ liệu
+                      style={{ height: "100px", verticalAlign: "middle" }}>
+                    Không có dữ liệu
                   </td>
                 </tr>
                 ) : (

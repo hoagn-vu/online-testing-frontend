@@ -126,25 +126,37 @@ const QuestionBankPage = () => {
     questionBankName: "",
   });
 
+  function showToast(type, message, onClose) {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+
+    return Toast.fire({
+      icon: type,
+      title: message,
+      didClose: onClose
+    });
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (editingBank) {
         await updateQuestionBank(editingBank.questionBankId, formData.questionBankName);
-        Swal.fire({
-          icon: "success",
-          text: "Cập nhật bộ câu hỏi thành công",
-          draggable: true
-        });
+        showToast("success", "Cập nhật bộ câu hỏi thành công!");
         setShowForm(false);
       } else {
         // Thêm mới dữ liệu
         await createQuestionBank(formData.questionBankName);
-        Swal.fire({
-          icon: "success",
-          text: "Tạo bộ câu hỏi thành công",
-          draggable: true
-        });
+        showToast("success", "Tạo bộ câu hỏi thành công!");
         setShowForm(false);
       }
     }catch (error) {
@@ -171,11 +183,7 @@ const QuestionBankPage = () => {
         try {
           await ApiService.delete(`/subjects/delete-question-bank?subjectId=${subjectId}&questionBankId=${questionBankId}`);
           fetchData();
-          Swal.fire({
-            title: "Đã xóa!",
-            text: "Bộ câu hỏi bị xóa thành công",
-            icon: "success",
-          });
+          showToast("success", "Bộ câu hỏi bị xóa thành công!");
         }
         catch (error) {
           console.error("Failed to update level: ", error);

@@ -108,6 +108,26 @@ const ExamMatrixPage = () => {
     setPage(1);
   };
 
+  function showToast(type, message, onClose) {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+
+    return Toast.fire({
+      icon: type,
+      title: message,
+      didClose: onClose
+    });
+  }
+
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -118,7 +138,7 @@ const ExamMatrixPage = () => {
       setTotalCount(response.data.totalCount)
     } catch (error) {
       console.error("Lỗi lấy dữ liệu:", error);
-      Swal.fire("Lỗi!", "Không thể tải danh sách ma trận.", "error");
+      showToast("error", "Không thể tải danh sách ma trận");
     }
     setIsLoading(false);
   };
@@ -138,27 +158,6 @@ const ExamMatrixPage = () => {
 
   const handleAddNew = () => {
     console.log("Thêm mới");
-  };
-
-  const handleStatusChange = (id, newStatus) => {
-    Swal.fire({
-      title: "Xác nhận thay đổi trạng thái?",
-      text: "Bạn có chắc chắn muốn thay đổi trạng thái của ma trận đề?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Đồng ý",
-      cancelButtonText: "Hủy",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const updatedRows = rows.map((row) =>
-          row.id === id ? { ...row, matrixStatus: newStatus } : row
-        );
-        setRows(updatedRows);
-        Swal.fire("Thành công!", "Trạng thái đã được cập nhật.", "success");
-      }
-    });
   };
 
   const handleEdit = (matrix) => {
@@ -181,20 +180,11 @@ const ExamMatrixPage = () => {
       console.log("Xóa tài khoản có ID:", id);
       try {
 				await ApiService.post(`/exam-matrices/${id}`, { matrixStatus: "deleted" }); 
-				Swal.fire({
-					title: "Đã xóa!",
-					icon: "success",
-					text: "Xóa ma trận đề thi thành công",
-				});
-
+				showToast("success", "Xóa ma trận đề thi thành công!");
 				fetchData();
 			} catch (error) {
 				console.error("Xóa thất bại:", error);
-				Swal.fire({
-					icon: "error",
-					title: "Lỗi khi xóa ma trận đề thi",
-					text: error.message,
-				});
+				showToast("error", error.message);
 			}}
     });
   };

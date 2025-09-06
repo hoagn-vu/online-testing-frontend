@@ -128,7 +128,27 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
     //newSessions[index][field] = value;
     //setSessions(newSessions);
   };
-  
+
+  function showToast(type, message, onClose) {
+		const Toast = Swal.mixin({
+			toast: true,
+			position: "top-end",
+			showConfirmButton: false,
+			timer: 3000,
+			timerProgressBar: true,
+			didOpen: (toast) => {
+				toast.onmouseenter = Swal.stopTimer;
+				toast.onmouseleave = Swal.resumeTimer;
+			}
+		});
+
+		return Toast.fire({
+			icon: type,
+			title: message,
+			didClose: onClose
+		});
+	}
+	
   // Xử lý submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -181,12 +201,9 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 			const response = await ApiService.post("/organize-exams", payload);
 			const organizeId = response.data.data.id;
 			console.log("id của kỳ thi được tạo:",organizeId )
-			Swal.fire({
-				text: "Kỳ thi đã được tạo thành công",
-				icon: "success",
-				draggable: true
-			}).then(() => {
-				navigate(`/staff/organize/${organizeId}`, { state: { reload: true } })});
+			showToast("success", "Kỳ thi đã được tạo thành công!");
+			navigate(`/staff/organize/${organizeId}`, { state: { reload: true } });
+			
 			/*}).then((result) => {
 				if (result.isConfirmed) {
 					navigate(`/staff/organize/${organizeId}`, { state: { reload: true } });
@@ -490,11 +507,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 													});
 
 													if (!isValid) {
-														Swal.fire({
-															icon: "warning",
-															title: "Số lượng câu hỏi không khớp!",
-															text: "Vui lòng chọn các đề thi có cùng số lượng câu hỏi.",
-														});
+														showToast("warning", "Vui lòng chọn các đề thi có cùng số lượng câu hỏi");
 														return; // Không update state
 													}
 												}

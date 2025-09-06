@@ -158,6 +158,26 @@ const ListQuestionPage = () => {
 		setOpenModal(true);
 	};
 
+	function showToast(type, message, onClose) {
+		const Toast = Swal.mixin({
+			toast: true,
+			position: "top-end",
+			showConfirmButton: false,
+			timer: 3000,
+			timerProgressBar: true,
+			didOpen: (toast) => {
+				toast.onmouseenter = Swal.stopTimer;
+				toast.onmouseleave = Swal.resumeTimer;
+			}
+		});
+
+		return Toast.fire({
+			icon: type,
+			title: message,
+			didClose: onClose
+		});
+	}
+
 	const handleFilesDropped = async (files) => {
 		console.log("Files received:", files);
 		const formData = new FormData();
@@ -188,19 +208,11 @@ const ListQuestionPage = () => {
 			});
 
 			setUploadProgress(100); // Khi hoàn thành, đặt 100%
-
-			await Swal.fire({
-					title: "Tải lên thành công",
-					icon: "success",
-			});
+			showToast("success", "Tải tệp câu hỏi lên thành công!");
 			await fetchData();
 			window.location.reload();
 		} catch (error) {
-				Swal.fire({
-					title: "Lỗi",
-					text: error.message,
-					icon: "error",
-				});
+			showToast("error", error.message);
 		}
 
 		document.getElementById("uploadModal").classList.remove("show");
@@ -274,8 +286,8 @@ const ListQuestionPage = () => {
 					params: { subjectId: subjectId, questionBankId: questionBankId, userId: user.id },
 				}
 			);
-
 			fetchData();
+      await showToast("success", "Cập nhật câu hỏi thành công!");
 		} catch (error) {
 			console.error("Failed to update question:", error);
 		}
@@ -284,7 +296,7 @@ const ListQuestionPage = () => {
 
 	const handleSaveQuestion = () => {
 		if (newQuestion.questionText.trim() === "" || newQuestion.options.some(opt => opt.optionText.trim() === "")) {
-			Swal.fire("Lỗi", "Vui lòng nhập đầy đủ câu hỏi và đáp án!", "error");
+			showToast("error", "Vui lòng nhập đầy đủ câu hỏi và đáp án");
 			return;
 		}
 
@@ -345,11 +357,7 @@ const ListQuestionPage = () => {
 			if (result.isConfirmed) {
 				console.log("Xóa tài khoản có ID:", id);
 				setQuestions(prev => prev.filter(question => question.questionId !== id));
-				Swal.fire({
-				title: "Đã xóa!",
-				text: "Câu hỏi đã bị xóa.",
-				icon: "success",
-				});
+				showToast("success", "Xóa câu hỏi thành công!");
 			}
 		});
 	};

@@ -85,12 +85,33 @@ const CandidateOrganizePage = () => {
 		setShowForm(true);
 	};
 
+	function showToast(type, message, onClose) {
+		const Toast = Swal.mixin({
+			toast: true,
+			position: "top-end",
+			showConfirmButton: false,
+			timer: 3000,
+			timerProgressBar: true,
+			didOpen: (toast) => {
+				toast.onmouseenter = Swal.stopTimer;
+				toast.onmouseleave = Swal.resumeTimer;
+			}
+		});
+
+		return Toast.fire({
+			icon: type,
+			title: message,
+			didClose: onClose
+		});
+	}
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		console.log("Dữ liệu thêm mới:", formData);
 		try {
 			const response = await ApiService.post(`/organize-exams/${organizeId}/sessions/${sessionId}/rooms/${roomId}/candidates`, formData);
 			console.log("Thêm thí sinh thành công:", response.data);
+			showToast("success", "Thêm thí sinh thành công!");
 			fetchData();
 		} catch (error) {
 			console.error("Lỗi khi thêm thí sinh:", error);
@@ -128,12 +149,7 @@ const CandidateOrganizePage = () => {
 // 			if (result.isConfirmed) {
 // 				console.log("Xóa thí sinh có ID:", id);
 // 				setListCandidate(prev => prev.filter(candidate => candidate.candidateId !== id));
-
-				Swal.fire({
-					title: "Đã xóa!",
-					text: "Thí sinh đã bị xóa.",
-					icon: "success",
-				});
+				showToast("success", "Thí sinh đã bị xóa!");
 			}
 		});
 	};

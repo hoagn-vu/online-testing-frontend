@@ -160,6 +160,26 @@ const RoomOrganizePage = () => {
 		}
 	}, [showForm]);
 
+	function showToast(type, message, onClose) {
+		const Toast = Swal.mixin({
+			toast: true,
+			position: "top-end",
+			showConfirmButton: false,
+			timer: 3000,
+			timerProgressBar: true,
+			didOpen: (toast) => {
+				toast.onmouseenter = Swal.stopTimer;
+				toast.onmouseleave = Swal.resumeTimer;
+			}
+		});
+
+		return Toast.fire({
+			icon: type,
+			title: message,
+			didClose: onClose
+		});
+	}
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		console.log("Dữ liệu thêm mới:", formData);
@@ -172,14 +192,11 @@ const RoomOrganizePage = () => {
 			try {
 				const response = await ApiService.post(`/organize-exams/${organizeId}/sessions/${sessionId}/rooms`, formData);
 				console.log("Thêm mới thành công:", response.data);
+				showToast("success", "Thêm phòng thi thành công!");
 				fetchData();
 			} catch (error) {
 				console.error("Lỗi khi thêm mới:", error);
-				Swal.fire({
-					title: "Lỗi",
-					text: "Không thể thêm phòng thi. Vui lòng thử lại sau.",
-					icon: "error",
-				});
+				showToast("error", "Không thể thêm phòng thi. Vui lòng thử lại sau");
 				return;
 			}
 		}
@@ -211,12 +228,7 @@ const RoomOrganizePage = () => {
 			if (result.isConfirmed) {
 				console.log("Xóa phòng thi có ID:", id);
 				setRoomsOrganize(prev => prev.filter(room => room.roomId !== id));
-
-				Swal.fire({
-					title: "Đã xóa!",
-					text: "Phòng thi đã bị xóa.",
-					icon: "success",
-				});
+				showToast("success", "Phòng thi đã bị xóa!");
 			}
 		});
 	};
@@ -243,11 +255,7 @@ const RoomOrganizePage = () => {
 			  )
 			);
 			console.log("organizeExamId được đổi status:", id)
-			Swal.fire({
-			  title: "Cập nhật thành công!",
-			  text: `Trạng thái đã chuyển sang "${statusLabel}".`,
-			  icon: "success",
-			});
+			showToast("success", `Trạng thái đã chuyển sang "${statusLabel}"`);
 		  }
 		});
 	};
