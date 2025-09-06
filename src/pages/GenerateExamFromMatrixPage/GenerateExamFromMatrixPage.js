@@ -110,6 +110,26 @@ const GenerateExamFromMatrixPage = () => {
     }
   }, [subjectChosen, bankChosen]);
 
+  function showToast(type, message, onClose) {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+
+    return Toast.fire({
+      icon: type,
+      title: message,
+      didClose: onClose
+    });
+  }
+
   // Fetch matrix details when matrix is chosen
   const fetchMatrixDetail = async (matrixId) => {
     try {
@@ -174,7 +194,7 @@ const GenerateExamFromMatrixPage = () => {
       );
     } catch (error) {
       console.error("Lỗi tải chi tiết ma trận:", error);
-      Swal.fire("Lỗi!", "Không thể tải chi tiết ma trận", "error");
+      showToast("error", "Không thể tải chi tiết ma trận");
     }
   };
 
@@ -266,15 +286,11 @@ const GenerateExamFromMatrixPage = () => {
         const classificationData = response.data;
         setTagClassification(classificationData.map((item) => ({ ...item, questionCount: 0 })));
         if (typeDefined === "level" && (!classificationData || classificationData.length === 0)) {
-          Swal.fire({
-            icon: "warning",
-            title: "Không có dữ liệu mức độ!",
-            text: "Không tìm thấy mức độ nào cho môn học và bộ câu hỏi đã chọn.",
-          });
+          showToast("warning", "Không tìm thấy mức độ nào cho môn học và bộ câu hỏi đã chọn!");
         }
       } catch (error) {
         console.error("Failed to fetch tag classification: ", error);
-        Swal.fire("Lỗi!", "Không thể tải danh sách mức độ", "error");
+        showToast("error", "Không thể tải danh sách mức độ");
       }
     };
     if (subjectChosen && bankChosen) {
@@ -287,11 +303,7 @@ const GenerateExamFromMatrixPage = () => {
     try {
       const response = await ApiService.post("/exam-matrices/generate-exam", generateExam);
       if (!response.data || response.data.length === 0) {
-        Swal.fire({
-          icon: "warning",
-          title: "Không có đề thi!",
-          text: "API không trả về danh sách đề thi.",
-        });
+        showToast("warning", "Không có đề thi!");
         return;
       }
       setDetailData([]);
@@ -329,43 +341,23 @@ const GenerateExamFromMatrixPage = () => {
   // Hàm xử lý sinh đề thi
   const handleSaveMatrix = async () => {
     if (!subjectChosen) {
-      Swal.fire({
-        icon: "warning",
-        title: "Chưa chọn môn học!",
-        text: "Vui lòng chọn môn học.",
-      });
+      showToast("warning", "Vui lòng chọn môn học");
       return;
     }
     if (!bankChosen) {
-      Swal.fire({
-        icon: "warning",
-        title: "Chưa chọn ngân hàng câu hỏi!",
-        text: "Vui lòng chọn ngân hàng câu hỏi.",
-      });
+      showToast("warning", "Vui lòng chọn ngân hàng câu hỏi");
       return;
     }
     if (!matrixChosen) {
-      Swal.fire({
-        icon: "warning",
-        title: "Chưa chọn ma trận!",
-        text: "Vui lòng chọn ma trận đề thi.",
-      });
+      showToast("warning", "Vui lòng chọn ma trận đề thi");
       return;
     }
     if (!matrixCount) {
-      Swal.fire({
-        icon: "warning",
-        title: "Thiếu số lượng đề thi!",
-        text: "Vui lòng nhập số lượng đề thi tạo sinh.",
-      });
+      showToast("warning", "Vui lòng nhập số lượng đề thi tạo sinh");
       return;
     }
     if (!data.length) {
-      Swal.fire({
-        icon: "warning",
-        title: "Dữ liệu ma trận trống!",
-        text: "Vui lòng nhập dữ liệu cho ma trận đề thi.",
-      });
+      showToast("warning", "Vui lòng nhập dữ liệu cho ma trận đề thi");
       return;
     }
     // Gọi API để sinh đề thi
@@ -376,18 +368,10 @@ const GenerateExamFromMatrixPage = () => {
     };
     try {
     await createExamFromMatrix(generateExam);
-    Swal.fire({
-      icon: "success",
-      title: "Tạo đề thi thành công!",
-      text: "Các đề thi đã được lưu vào hệ thống.",
-    })
+    showToast("success", "Tạo đề thi thành công!");
     }catch (error) {
       console.error("Failed to save exam:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Lỗi khi tạo đề thi!",
-        text: "Không thể lưu đề thi, vui lòng thử lại.",
-      });
+      showToast("error", "Lỗi khi tạo đề thi, vui lòng thử lại");
     }
   };
 
@@ -395,11 +379,7 @@ const GenerateExamFromMatrixPage = () => {
   const handleStoreExam = async () => {
     try {
       if (!generatedExams || generatedExams.length === 0) {
-        Swal.fire({
-          icon: "warning",
-          title: "Chưa có đề thi!",
-          text: "Vui lòng sinh đề thi trước khi lưu.",
-        });
+        showToast("warning", "Vui lòng sinh đề thi trước khi lưu");
         return;
       }
       
@@ -419,24 +399,11 @@ const GenerateExamFromMatrixPage = () => {
           examStatus: "available",
         }))
       );
-
-      Swal.fire({
-        icon: "success",
-        title: "Lưu đề thi thành công!",
-        text: "Các đề thi đã được lưu vào hệ thống.",
-      }).then(() => {
-        navigate(`/staff/exam`, {
-          state: { refresh: true },
-        });
-      });
-
+      showToast("success", "Lưu đề thi thành công!");
+      navigate(`/staff/exam`, {state: { refresh: true },});
     } catch (error) {
       console.error("Failed to save exam:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Lỗi khi lưu!",
-        text: "Không thể lưu đề thi, vui lòng thử lại.",
-      });
+      showToast("error", "Không thể lưu đề thi, vui lòng thử lại");
     }
   };
 
@@ -482,11 +449,7 @@ const GenerateExamFromMatrixPage = () => {
     } catch (error) {
       console.error("Failed to update exam:", error);
       // Có thể thêm Swal.fire để báo lỗi
-      Swal.fire({
-        icon: "error",
-        title: "Cập nhật thất bại",
-        text: "Không thể lưu thông tin đề thi. Vui lòng thử lại!",
-      });
+      showToast("error", "Không thể lưu thông tin đề thi. Vui lòng thử lại");
     }
   };
 

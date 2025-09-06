@@ -186,56 +186,55 @@ const FormDivideStudent = ({ onClose }) => {
     setRooms(newRoom);
   };
   
+  function showToast(type, message, onClose) {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+
+    return Toast.fire({
+      icon: type,
+      title: message,
+      didClose: onClose
+    });
+  }
+
   // Xử lý submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // ✅ Kiểm tra chọn nhóm
     if (!divideData.groupUserIds || divideData.groupUserIds.length === 0) {
-      Swal.fire({
-        icon: "warning",
-        title: "Thiếu thông tin",
-        text: "Vui lòng chọn nhóm thí sinh!",
-        didClose: () => {
-          document.getElementById(`groupUserSelect`)?.focus();
-        }     
-      })
+      showToast("warning", "Vui lòng chọn nhóm thí sinh!", () => {
+        document.getElementById(`groupUserSelect`)?.focus();
+      });
       return;
     }
 
     // 2. Check phòng, giám thị, số lượng theo thứ tự trong từng phòng
     for (let i = 0; i < rooms.length; i++) {
       if (!selectedRooms[i]) {
-        return Swal.fire({
-          icon: "warning",
-          title: "Thiếu thông tin",
-          text: `Phòng ${i + 1} chưa chọn phòng thi!`,
-          didClose: () => {
-            document.getElementById(`roomSelect-${i}-input`)?.focus();
-          }
+        return showToast("warning", `Phòng ${i + 1} chưa chọn phòng thi!`, () => {
+          document.getElementById(`roomSelect-${i}-input`)?.focus();
         });
       }
 
       if (!selectedSupervisors[i]) {
-        return Swal.fire({
-          icon: "warning",
-          title: "Thiếu thông tin",
-          text: `Phòng ${i + 1} chưa có giám thị!`,
-          didClose: () => {
-            document.getElementById(`supervisorSelect-${i}-input`)?.focus();
-          }
+        return showToast("warning", `Phòng ${i + 1} chưa có giám thị!`, () => {
+          document.getElementById(`supervisorSelect-${i}-input`)?.focus();
         });
       }
 
       if (!rooms[i].quantity || Number(rooms[i].quantity) <= 0) {
-        return Swal.fire({
-          icon: "warning",
-          title: "Thiếu thông tin",
-          text: `Phòng ${i + 1} chưa nhập số lượng thí sinh!`,
-          didClose: () => {
-            // focus trực tiếp vào input số lượng
-            document.querySelectorAll("input[type=number]")[i]?.focus();
-          }
+        return showToast("warning", `Phòng ${i + 1} chưa nhập số lượng thí sinh!`, () => {
+          document.querySelectorAll("input[type=number]")[i]?.focus();
         });
       }
     }
@@ -257,13 +256,9 @@ const FormDivideStudent = ({ onClose }) => {
       console.log("API result:", result);
       if (result.status && result.status.toLowerCase() === "success") {
         // ✅ Thành công
-        Swal.fire({
-          icon: "success",
-          text: "Chia phòng thi thành công",
-        }).then(() => {
-          navigate(`/staff/organize/${organizeId}/${sessionId}`, {
-            state: { refresh: true },
-          });
+        showToast("success", "Chia phòng thi thành công!");
+        navigate(`/staff/organize/${organizeId}/${sessionId}`, {
+          state: { refresh: true },
         });
       } else {
         Swal.fire({
@@ -402,12 +397,7 @@ const FormDivideStudent = ({ onClose }) => {
       const modal = new window.bootstrap.Modal(modalElement);
       modal.show();
     } else {
-      Swal.fire({
-        icon: "warning",
-        title: "Thiếu thông tin",
-        text: `Vui lòng nhập đầy đủ thông tin để xem trước`,
-      });
-
+      showToast("warning", "Vui lòng nhập đầy đủ thông tin để xem trước");
       setPreviewInfo({});
       setPreviewList([]);
     }
@@ -737,12 +727,7 @@ const FormDivideStudent = ({ onClose }) => {
 
                       // check vượt quá
                       if (value > (divideData.totalStudents || 0)) {
-                        Swal.fire({
-                          icon: "error",
-                          title: "Lỗi",
-                          text: `Số lượng không được vượt quá ${divideData.totalStudents} thí sinh`,
-                          confirmButtonText: "OK",
-                        });
+                        showToast("warning", `Số lượng không được vượt quá ${divideData.totalStudents} thí sinh`);
                         return; // ❌ không update state khi nhập sai
                       }
 

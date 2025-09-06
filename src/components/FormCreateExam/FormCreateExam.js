@@ -218,14 +218,30 @@ const FormCreateExam = ({ onClose, initialData  }) => {
     setSelectedItems(selectedItems.filter((id) => id !== questionId));
   };
 
+  function showToast(type, message, onClose) {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+
+    return Toast.fire({
+      icon: type,
+      title: message,
+      didClose: onClose
+    });
+  }
+
   const handleScoreChange = (questionId, value) => {
   const newScore = parseFloat(value) || 0;
   if (newScore < 0) {
-    Swal.fire({
-      icon: "error",
-      title: "Lỗi",
-      text: "Điểm không được nhỏ hơn 0!",
-    });
+    showToast("warning", "Điểm không được nhỏ hơn 0!");
     return;
   }
 
@@ -239,11 +255,8 @@ const FormCreateExam = ({ onClose, initialData  }) => {
       const newTotal = currentTotal - oldScore + newScore;
 
       if (newTotal > totalScore) {
-        Swal.fire({
-          icon: "error",
-          title: "Lỗi",
-          text: "Tổng điểm vượt quá tổng điểm đã nhập!",
-        });
+        showToast("warning", "Tổng điểm vượt quá tổng điểm đã nhập");
+
         return prevScores;
       }
 
@@ -263,11 +276,7 @@ const handleSave = async () => {
   }, 0);
 
   if (currentTotal !== totalScore) {
-    Swal.fire({
-      icon: "error",
-      title: "Lỗi",
-      text: `Tổng điểm (${currentTotal.toFixed(2)}) không khớp với tổng điểm đã nhập (${totalScore})!`,
-    });
+    showToast("warning", `Tổng điểm (${currentTotal.toFixed(2)}) không khớp với tổng điểm đã nhập (${totalScore})!`);
     return;
   }
 
@@ -287,28 +296,16 @@ const handleSave = async () => {
     if (isEditMode) {
       console.log("Updating exam with data:", payload);
       await updateExam(examId, payload);
-      Swal.fire({
-        icon: "success",
-        text: "Cập nhật đề thi thành công",
-        draggable: true
-      });
+      showToast("success", "Cập nhật đề thi thành công!");
       onClose();
     } else {
       const res = ApiService.post("/exams", payload);
-      Swal.fire({
-        icon: "success",
-        text: "Tạo đề thi thành công",
-        draggable: true
-      });
+      showToast("success", "Tạo đề thi thành công!");
       onClose();
     }
   } catch (error) {
     console.error("Error saving exam:", error);
-    Swal.fire({
-      icon: "error",
-      title: "Lỗi",
-      text: "Không thể lưu đề thi, vui lòng thử lại sau!",
-    });
+    showToast("error", "Không thể lưu đề thi, vui lòng thử lại sau!");
     return;
   }
 };

@@ -38,54 +38,54 @@ const ChangePasswordForm = () => {
 
   const handleTogglePassword = () => setShowPassword((prev) => !prev);
 
+  function showToast(type, message, onClose) {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+
+    return Toast.fire({
+      icon: type,
+      title: message,
+      didClose: onClose
+    });
+  }
+
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
 
     // 1. Check rỗng
     if (!passwordData.oldPassword) {
-      Swal.fire({
-        icon: "error",
-        title: "Lỗi!",
-        text: "Vui lòng nhập mật khẩu cũ!",
-      });
+      showToast("warning", "Vui lòng nhập mật khẩu cũ!");
       return;
     }
     
     if (!passwordData.newPassword) {
-      Swal.fire({
-        icon: "error",
-        title: "Lỗi!",
-        text: "Vui lòng nhập mật khẩu mới!",
-      });
+      showToast("warning", "Vui lòng nhập mật khẩu mới!");
       return;
     }
 
     if (!passwordData.confirmNewPassword) {
-      Swal.fire({
-        icon: "error",
-        title: "Lỗi!",
-        text: "Vui lòng nhập lại mật khẩu xác nhận!",
-      });
+      showToast("warning", "Vui lòng nhập lại mật khẩu xác nhận!");
       return;
     }
 
     // 2. Check new != old
     if (passwordData.newPassword === passwordData.oldPassword) {
-      Swal.fire({
-        icon: "error",
-        title: "Lỗi!",
-        text: "Mật khẩu mới không được trùng mật khẩu cũ!",
-      });
+      showToast("warning", "Mật khẩu mới không được trùng mật khẩu cũ!");
       return;
     }
 
     // 3. Check confirm
     if (passwordData.newPassword !== passwordData.confirmNewPassword) {
-      Swal.fire({
-        icon: "error",
-        title: "Lỗi!",
-        text: "Mật khẩu xác nhận không khớp!",
-      });
+      showToast("warning", "Mật khẩu xác nhận không khớp!");
       return;
     }
 
@@ -106,19 +106,10 @@ const ChangePasswordForm = () => {
 
       // Nếu backend trả về message lỗi nhưng vẫn là 200
       if (response.code === "op-incorrect") {
-        Swal.fire({
-          icon: "error",
-          title: "Lỗi!",
-          text: "Mật khẩu cũ không đúng!",
-        });
+        showToast("warning", "Mật khẩu cũ không đúng!");
         return;
       }
-
-      Swal.fire({
-        icon: "success",
-        title: "Thành công!",
-        text: "Đổi mật khẩu thành công",
-      });
+      showToast("success", "Đổi mật khẩu thành công!");
     } catch (err) {
       console.log("Lỗi đổi mật khẩu:", err);
 
@@ -131,12 +122,7 @@ const ChangePasswordForm = () => {
       } else if (err?.data?.message) {
         message = err.data.message;
       }
-
-      Swal.fire({
-        icon: "error",
-        title: "Lỗi!",
-        text: message,
-      });
+      showToast("error", message);
     }
 
   };

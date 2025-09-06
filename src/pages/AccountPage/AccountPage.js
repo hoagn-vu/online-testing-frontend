@@ -18,6 +18,7 @@ import { CircularProgress } from "@mui/material";
 import userFile from "../../assets/file/upload_user.xlsx";
 import { useSelector } from "react-redux";
 import hasPermission from "../../permissions";
+import InputMask from "react-input-mask";
 
 const AccountPage = () => {
   const inputRef = useRef(null);
@@ -233,6 +234,25 @@ const AccountPage = () => {
     });
   };
 
+  function showToast(type, message) {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+
+    return Toast.fire({
+      icon: type,
+      title: message
+    });
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -245,22 +265,19 @@ const AccountPage = () => {
       if (formData.id || formData.id == "") {
         await updateUser(formData);
         
-        Swal.fire({
-          icon: "success",
-          text: "Cập nhật thông tin người dùng thành công",
-          draggable: true
-        });
+        showToast("success", "Cập nhật người dùng thành công!");
         // console.log("Dữ liệu thêm mới:", finalData);
         setShowForm(false);
       } else {
         // Thêm mới dữ liệu
         console.log("Dữ liệu thêm mới:", formData);
         await createUser(formData);
-        Swal.fire({
+        showToast("success", "Thêm người dùng thành công!");
+        /*Swal.fire({
           icon: "success",
           text: "Thêm người dùng thành công",
           draggable: true
-        });
+        });*/
         setShowForm(false);
       }
     } catch (error) {
@@ -320,11 +337,7 @@ const AccountPage = () => {
         try {
           await ApiService.delete(`/users/delete/${id}`);
           fetchData();
-          Swal.fire({
-            title: "Đã xóa!",
-            text: "Người dùng đã bị xóa thành công",
-            icon: "success",
-          });
+          showToast("success", "Người dùng đã bị xóa thành công!");
         }
         catch (error) {
           console.error("Failed to delete users: ", error);
@@ -371,18 +384,10 @@ const AccountPage = () => {
 			});
 
 			setUploadProgress(100); // Khi hoàn thành, đặt 100%
-
-			await Swal.fire({
-					title: "Tải lên thành công",
-					icon: "success",
-			});
+      showToast("success", "Tải tệp người dùng thàng công!");
 			await fetchData();
 		} catch (error) {
-				Swal.fire({
-					title: "Lỗi",
-					text: error.message,
-					icon: "error",
-				});
+      showToast("error", error.message);
 		}
 
 		document.getElementById("uploadModal").classList.remove("show");
@@ -418,20 +423,18 @@ const AccountPage = () => {
 
         try {
           const response = await ApiService.put(`/users/${id}`, { accountStatus: newStatus });
+          let message = "";
+          if (newStatus === "active") {
+            message = "Kích hoạt tài khoản người dùng thành công!";
+          } else {
+            message = "Tài khoản người dùng đã bị vô hiệu hoá!";
+          }
 
-          Swal.fire({
-            title: "Cập nhật thành công!",
-            text: `Trạng thái đã chuyển sang "${statusLabel}".`,
-            icon: "success",
-          });
+          showToast("success", message);
           await fetchData(); // Làm mới danh sách sau khi cập nhật
         } catch (error) {
           console.error("Failed to update status:", error);
-          Swal.fire({
-            title: "Lỗi",
-            text: "Không thể cập nhật trạng thái. Vui lòng thử lại.",
-            icon: "error",
-          });
+          showToast("error", "Không thể cập nhật trạng thái. Vui lòng thử lại.");
         }
       }
     });
@@ -450,11 +453,7 @@ const AccountPage = () => {
     console.log("selectedGroup in handleCreateGroup:", selectedGroup);
     console.log("selectedItems:", selectedItems);  
     if (!selectedGroup || !selectedGroup.label) {
-      await Swal.fire({
-        icon: 'error',
-        title: 'Lỗi',
-        text: 'Vui lòng chọn hoặc nhập tên nhóm',
-      });
+      showToast("warning", "Vui lòng chọn hoặc nhập tên nhóm");
       return false;
     }
     
@@ -465,14 +464,9 @@ const AccountPage = () => {
     }).filter(code => code !== null); // Loại bỏ các giá trị null (nếu có)
     
     if (!listUser.length) {
-    await Swal.fire({
-      icon: 'error',
-      title: 'Lỗi',
-      text: 'Vui lòng chọn ít nhất một tài khoản',
-      draggable: true
-    });
-    return false;
-  }
+      await showToast("warning", "Vui lòng chọn ít nhất một tài khoản");
+      return false;
+    }
 
     // Debug: Log listUser to verify mapping result
     console.log('Tạo nhóm:', groupName);
@@ -515,11 +509,7 @@ const AccountPage = () => {
         };
 
         await ApiService.post('/groupUser/create-group-users', payload);
-        await Swal.fire({
-          icon: 'success',
-          text: 'Tạo nhóm thành công',
-          draggable: true
-        });
+        await showToast("success", "Tạo nhóm người dùng thành công!");
         await getGroupUser();   
         setSelectedGroup(null);
       } else {
@@ -530,7 +520,7 @@ const AccountPage = () => {
           listUser,
           { headers: { "Content-Type": "application/json" } }
         );
-        await Swal.fire({ icon: 'success', text: 'Thêm người dùng vào nhóm thành công', draggable: true });
+        await showToast("success", "Thêm người dùng vào nhóm thành công!");
         setSelectedGroup(null);
       }
 

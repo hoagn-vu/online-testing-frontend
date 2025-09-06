@@ -72,6 +72,26 @@ const DetailExamMatrixPage = () => {
 				: "both";
 	}
 
+	function showToast(type, message, onClose) {
+		const Toast = Swal.mixin({
+			toast: true,
+			position: "top-end",
+			showConfirmButton: false,
+			timer: 3000,
+			timerProgressBar: true,
+			didOpen: (toast) => {
+				toast.onmouseenter = Swal.stopTimer;
+				toast.onmouseleave = Swal.resumeTimer;
+			}
+		});
+
+		return Toast.fire({
+			icon: type,
+			title: message,
+			didClose: onClose
+		});
+	}
+		
   // Reset data when personName changes
 	useEffect(() => {
   if (!isEditMode && tagClassification.length > 0) {
@@ -290,7 +310,7 @@ const DetailExamMatrixPage = () => {
 			console.log("totalScore set in fetchMatrixDetail:", matrixTotalScore); // Debug giá trị totalScore
     } catch (error) {
       console.error("❌ Lỗi tải chi tiết ma trận:", error);
-      Swal.fire("Lỗi!", "Không thể tải chi tiết ma trận", "error");
+      showToast("error", "Không thể tải chi tiết ma trận");
     }
 	};
 
@@ -318,15 +338,11 @@ const DetailExamMatrixPage = () => {
         setTagClassification(classificationData.map((item) => ({ ...item, questionCount: 0 })));
         console.log("tagClassification:", classificationData);
         if (typeDefined === "level" && (!classificationData || classificationData.length === 0)) {
-          Swal.fire({
-            icon: "warning",
-            title: "Không có dữ liệu mức độ!",
-            text: "Không tìm thấy mức độ nào cho môn học và bộ câu hỏi đã chọn.",
-          });
+          showToast("warning", "Không tìm thấy mức độ nào cho môn học và bộ câu hỏi đã chọn");
         }
       } catch (error) {
         console.error("Failed to fetch tag classification: ", error);
-        Swal.fire("Lỗi!", "Không thể tải danh sách mức độ", "error");
+        showToast("error", "Không thể tải danh sách mức độ");
       }
     };
 
@@ -422,38 +438,22 @@ const DetailExamMatrixPage = () => {
 
 	const handleSaveMatrix = async () => {
 		if (!matrixName) {
-			Swal.fire({
-				icon: "warning",
-				title: "Thiếu tên ma trận!",
-				text: "Vui lòng nhập tên ma trận đề thi.",
-			});
+			showToast("warning", "Vui lòng nhập tên ma trận đề thi");
 			return;
 		}
 		
 		if (!subjectChosen) {
-			Swal.fire({
-				icon: "warning",
-				title: "Chưa chọn môn học!",
-				text: "Vui lòng chọn môn học.",
-			});
+			showToast("warning", "Vui lòng chọn môn học");
 			return;
 		}
 		
 		if (!bankChosen) {
-			Swal.fire({
-				icon: "warning",
-				title: "Chưa chọn ngân hàng câu hỏi!",
-				text: "Vui lòng chọn ngân hàng câu hỏi.",
-			});
+			showToast("warning", "Vui lòng chọn ngân hàng câu hỏi");
 			return;
 		}
 		
 		if (!data.length) {
-			Swal.fire({
-				icon: "warning",
-				title: "Dữ liệu ma trận trống!",
-				text: "Vui lòng nhập dữ liệu cho ma trận đề thi.",
-			});
+			showToast("warning", "Vui lòng nhập dữ liệu cho ma trận đề thi");
 			return;
 		}
 		
@@ -470,11 +470,7 @@ const DetailExamMatrixPage = () => {
   }, 0);
 
 		if (parseFloat(totalScoreFromDetails.toFixed(2)) !== parseFloat(totalScore.toFixed(2))) {
-			Swal.fire({
-				icon: "error",
-				title: "Tổng điểm không khớp!",
-				text: `Tổng điểm chi tiết (${totalScoreFromDetails}) không bằng ${totalScore}.`,
-			});
+			showToast("warning", `Tổng điểm chi tiết (${totalScoreFromDetails}) không bằng ${totalScore}`);
 			return;
 		}
 
@@ -531,16 +527,11 @@ const DetailExamMatrixPage = () => {
 		try {
 			const response = await ApiService.post("/exam-matrices", examMatrixData);
 			console.log("✅ Tạo mới thành công: ", response.data);
-			Swal.fire({
-				icon: "success",
-				title: "Tạo ma trận thành công!",
-				text: "Ma trận đề thi đã được lưu.",
-			}).then(() => {
-				navigate("/staff/matrix-exam");
-			});
+			showToast("success", "Tạo ma trận thành công!");
+			navigate("/staff/matrix-exam");
 		} catch (error) {
 			console.error("❌ Lỗi khi tạo mới ma trận đề: ", error);
-			Swal.fire("Lỗi!", "Không thể tạo ma trận!", "error");
+			showToast("error", "Không thể tạo ma trận!");
 		}
 	};
 
@@ -559,16 +550,11 @@ const DetailExamMatrixPage = () => {
 				examMatrixData
 			);
 			console.log("✅ Cập nhật thành công: ", response.data);
-			Swal.fire({
-				icon: "success",
-				title: "Cập nhật ma trận thành công!",
-				text: "Thông tin ma trận đề thi đã được cập nhật.",
-			}).then(() => {
-				navigate("/staff/matrix-exam");
-			});
+			showToast("success", "Cập nhật ma trận thành công!");
+			navigate("/staff/matrix-exam");
 		} catch (error) {
 			console.error("❌ Lỗi khi cập nhật ma trận đề: ", error);
-			Swal.fire("Lỗi!", "Không thể cập nhật ma trận!", "error");
+			showToast("error", "Không thể cập nhật ma trận!");
 		}
 	};
 

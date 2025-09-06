@@ -165,6 +165,26 @@ const OrganizeExamPage = () => {
     }
 	}, [showForm]);
 
+	function showToast(type, message, onClose) {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+
+    return Toast.fire({
+      icon: type,
+      title: message,
+      didClose: onClose
+    });
+  }
+
   const handleToggleStatus = async (id, currentStatus) => {
     Swal.fire({
       title: "Bạn có chắc muốn thay đổi trạng thái?",
@@ -205,13 +225,8 @@ const OrganizeExamPage = () => {
 					} else {
 						successMessage = "Kích hoạt kỳ thi thành công";
 					}
-
-
-					Swal.fire({
-						title: "Thành công!",
-						text: successMessage,
-						icon: "success",
-					});
+					
+					showToast("success", successMessage);
 				} catch (error) {
 					console.error("Failed to toggle session status: ", error);
 					Swal.fire({
@@ -229,11 +244,7 @@ const OrganizeExamPage = () => {
 		if (editingOrganizeExam) {
 			try {
 				await ApiService.put(`/organize-exams/${editingOrganizeExam.id}`, formData);
-				Swal.fire({
-					icon: "success",
-					text: "Cập nhật tên kỳ thi thành công",
-					draggable: true
-				});
+				showToast("success", "Cập nhật tên kỳ thi thành công!");
 				fetchData();
 			} catch (error) {
 				console.error("Failed to update organize exam", error);
@@ -274,19 +285,11 @@ const OrganizeExamPage = () => {
 				try {
           await ApiService.put(`/organize-exams/${id}`, { organizeExamStatus: "deleted" });
           fetchData();
-          Swal.fire({
-            title: "Đã xóa!",
-            text: "Kỳ thi đã bị xóa thành công",
-            icon: "success",
-          });
+          showToast("success", "Kỳ thi đã bị xóa thành công!");
         }
         catch (error) {
           console.error("Xóa thất bại:", error);
-					Swal.fire({
-						icon: "error",
-						title: "Lỗi khi xóa kỳ thi",
-						text: error.message,
-					});
+					showToast("error", error.message);
         }
       }
     });
@@ -383,10 +386,9 @@ const OrganizeExamPage = () => {
 			console.log("classification:", classification);
 		} catch (error) {
 			console.error("Lỗi lấy chi tiết ma trận:", error);
-			Swal.fire("Lỗi!", "Không thể tải chi tiết ma trận. Vui lòng kiểm tra lại.", "error");
+			showToast("error", "Không thể tải chi tiết ma trận. Vui lòng kiểm tra lại");
 		}
 	};
-
 
   return (
     <div className="p-4">

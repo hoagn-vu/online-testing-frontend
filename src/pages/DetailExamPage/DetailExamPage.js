@@ -185,6 +185,26 @@ const DetailExamPage = () => {
     new window.bootstrap.Modal(document.getElementById("questionModal")).show();
   };*/
 
+  function showToast(type, message, onClose) {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+
+    return Toast.fire({
+      icon: type,
+      title: message,
+      didClose: onClose
+    });
+  }
+
   const handleDeleteExam = (examId) => {
     Swal.fire({
       title: "Bạn có chắc chắn muốn xóa đề thi này?",
@@ -199,21 +219,12 @@ const DetailExamPage = () => {
       if (result.isConfirmed) {
         try {
           //await ApiService.delete(`/exams/${examId}`);
-
-          Swal.fire({
-            title: "Đã xóa!",
-            text: "Đề thi đã bị xóa thành công.",
-            icon: "success",
-          });
+          showToast("success", "Xóa đề thi thành công!");
 
           navigate("/staff/exam"); 
         } catch (error) {
           console.error("Xóa đề thi thất bại:", error);
-          Swal.fire({
-            title: "Lỗi",
-            text: "Không thể xóa đề thi. Vui lòng thử lại!",
-            icon: "error",
-          });
+          showToast("error", "Không thể xóa đề thi. Vui lòng thử lại!");
         }
       }
     });

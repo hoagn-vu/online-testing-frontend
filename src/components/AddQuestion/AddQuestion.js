@@ -85,6 +85,26 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
     fetchData();
   },[])
 
+  function showToast(type, message, onClose) {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+
+    return Toast.fire({
+      icon: type,
+      title: message,
+      didClose: onClose
+    });
+  }
+
   const handleSaveQuestions = async () => {
     try {
       const formData = new FormData();
@@ -117,16 +137,13 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
       );
 
       console.log("Thêm câu hỏi thành công:", response.data);
-      await Swal.fire({
-        text: "Thêm câu hỏi thành công!",
-        icon: "success",
-      });
-      if (onSuccess) await onSuccess();
+      await showToast("success", "Thêm câu hỏi thành công!");
+      if (onSuccess) onSuccess();
       onClose();
       window.location.reload();
     } catch (error) {
       console.error("Lỗi khi thêm câu hỏi:", error);
-      alert("Có lỗi xảy ra khi thêm câu hỏi ❌");
+      showToast("error", "Có lỗi xảy ra khi thêm câu hỏi");
     }
     // try {
     //   const payload = addedQuestions.map(q => ({

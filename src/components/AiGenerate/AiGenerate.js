@@ -62,9 +62,29 @@ const AiGenerate = ({ onClose  }) => {
     }); 
   }
 
+  function showToast(type, message, onClose) {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+
+    return Toast.fire({
+      icon: type,
+      title: message,
+      didClose: onClose
+    });
+  }
+
   const handleGenerateQuestions = async () => {
     if (!file) {
-      alert("Vui lòng chọn file PDF");
+      showToast("warning", "Vui lòng chọn file PDF");
       return;
     }
 
@@ -152,12 +172,7 @@ const AiGenerate = ({ onClose  }) => {
         const newQuestions = [...generatedQuestions];
         newQuestions.splice(index, 1); // Xóa phần tử tại vị trí index
         setGeneratedQuestions(newQuestions);
-
-        Swal.fire({
-          title: "Đã xóa!",
-          text: "Câu hỏi đã bị xóa.",
-          icon: "success",
-        });
+        showToast("success", "Xóa câu hỏi thành công!");
       }
     });
   };

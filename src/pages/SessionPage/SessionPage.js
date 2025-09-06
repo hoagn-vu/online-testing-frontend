@@ -90,26 +90,25 @@ const SessionPage = () => {
 		}
 	}, [showForm]);
 
-	const handleStatusChange = (id, newStatus) => {
-		Swal.fire({
-		title: "Xác nhận thay đổi trạng thái?",
-		text: "Bạn có chắc chắn muốn thay đổi trạng thái của ca thi?",
-		icon: "warning",
-		showCancelButton: true,
-		confirmButtonColor: "#3085d6",
-		cancelButtonColor: "#d33",
-		confirmButtonText: "Đồng ý",
-		cancelButtonText: "Hủy",
-		}).then((result) => {
-			if (result.isConfirmed) {
-				const updatedRows = rows.map((row) =>
-					row.sessionId === id ? { ...row, sessionStatus: newStatus } : row
-				);
-				setRows(updatedRows);
-				Swal.fire("Thành công!", "Trạng thái đã được cập nhật.", "success");
+	function showToast(type, message, onClose) {
+		const Toast = Swal.mixin({
+			toast: true,
+			position: "top-end",
+			showConfirmButton: false,
+			timer: 3000,
+			timerProgressBar: true,
+			didOpen: (toast) => {
+				toast.onmouseenter = Swal.stopTimer;
+				toast.onmouseleave = Swal.resumeTimer;
 			}
 		});
-	};
+
+		return Toast.fire({
+			icon: type,
+			title: message,
+			didClose: onClose
+		});
+	}
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -117,10 +116,7 @@ const SessionPage = () => {
 		if (editingAccount) {
 			try {
 				await ApiService.put(`/organize-exams/${organizeId}/sessions/${formData.sessionId}`, formData);
-				Swal.fire({
-					icon: "success",
-					text: "Chỉnh sửa ca thi thành công",
-				});
+				showToast("success", "Chỉnh sửa ca thi thành công!");
 				fetchData();
 			}
 			catch (error) {
@@ -129,10 +125,7 @@ const SessionPage = () => {
 		} else {
 			try {
 				await ApiService.post(`/organize-exams/${organizeId}/sessions`, formData);
-				Swal.fire({
-					icon: "success",
-					text: "Thêm ca thi thành công",
-				});
+				showToast("success", "Thêm ca thi thành công!");
 				fetchData();
 			} catch (error) {
 				console.error("Failed to  add new session: ", error);
@@ -168,53 +161,14 @@ const SessionPage = () => {
 			if (result.isConfirmed) {
 				try {
 					await ApiService.put(`/organize-exams/${organizeId}/sessions/${id}`, { sessionStatus: "deleted" });
-					Swal.fire({
-						title: "Đã xóa!",
-						icon: "success",
-						text: "Xóa ca thi thành công",
-					});
+					showToast("success", "Xóa ca thi thành công!");
 
 					// Sau khi xóa thì load lại danh sách
 					fetchData();
 				} catch (error) {
 					console.error("Xóa thất bại:", error);
-					Swal.fire({
-						icon: "error",
-						title: "Lỗi khi xóa ca thi",
-						text: error.message,
-					});
+					showToast("error", error.message);
 				}
-			}
-		});
-	};
-
-	const handleToggleStatus = (id, currentStatus) => {
-		Swal.fire({
-			title: "Bạn có chắc muốn thay đổi trạng thái?",
-			text: "Trạng thái sẽ được cập nhật ngay sau khi xác nhận!",
-			icon: "warning",
-			showCancelButton: true,
-			confirmButtonColor: "#3085d6",
-			cancelButtonColor: "#d33",
-			confirmButtonText: "Xác nhận",
-			cancelButtonText: "Hủy",
-		}).then((result) => {
-			if (result.isConfirmed) {
-				const newStatus = currentStatus === "Active" ? "Disabled" : "Active";
-        const statusLabel = newStatus === "active" ? "Kích hoạt" : "Đóng";
-
-				// Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
-				setRows((prevRows) =>
-					prevRows.map((row) =>
-						row.id === id ? { ...row, sessionStatus: newStatus } : row
-					)
-				);
-				console.log("sessionId được đổi status:", id)
-				Swal.fire({
-					title: "Cập nhật thành công!",
-					text: `Trạng thái đã chuyển sang "${statusLabel}".`,
-					icon: "success",
-				});
 			}
 		});
 	};
@@ -263,24 +217,23 @@ const SessionPage = () => {
 					// Xác định trạng thái mới dựa vào trạng thái hiện tại
 					let successMessage = "";
 					if (currentStatus === "active") {
-						successMessage = "Đóng ca thi thành công";
+						successMessage = "Đóng ca thi thành công!";
 					} else {
-						successMessage = "Kích hoạt ca thi thành công";
+						successMessage = "Kích hoạt ca thi thành công!";
 					}
-
-
-					Swal.fire({
-						title: "Thành công!",
-						text: successMessage,
-						icon: "success",
-					});
+					showToast("success", successMessage);
 				} catch (error) {
 					console.error("Failed to toggle session status: ", error);
-					Swal.fire({
-						icon: "error",
-						title: "Lỗi",
-						text: error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại!",
-					});
+					// Kiểm tra code từ API
+					if (error.response?.data?.code === "session-has-no-room") {
+						showToast("error", "Ca thi không có phòng thi!");
+					} else {
+						Swal.fire({
+							icon: "error",
+							title: "Lỗi",
+							text: error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại!",
+						});
+					}
 				}
 			}
 		});
@@ -298,11 +251,7 @@ const SessionPage = () => {
 	const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-			Swal.fire({
-				icon: "warning",
-				title: "Mật khẩu xác nhận không khớp",
-				text: "Vui lòng nhập lại mật khẩu xác nhận.",
-			});
+			showToast("warning", "Vui lòng nhập lại mật khẩu xác nhận");
 			return;
 		}
 
@@ -314,20 +263,11 @@ const SessionPage = () => {
 					newPassword: passwordData.newPassword,
 				}
 			);
-			Swal.fire({
-				icon: "success",
-				title: "Thành công!",
-				text: "Mật khẩu thí sinh đã được cập nhật.",
-			});
-
+			showToast("success", "Mật khẩu thí sinh đã được cập nhật!");
 			setShowPasswordForm(false);
 		} catch (error) {
 			console.error("Lỗi đổi mật khẩu:", error);
-			Swal.fire({
-				icon: "error",
-				title: "Thất bại",
-				text: "Không thể cập nhật mật khẩu, vui lòng thử lại.",
-			});
+			showToast("error", "Không thể cập nhật mật khẩu, vui lòng thử lại");
 		}
   };
 	const handleTogglePassword = () => setShowPassword((prev) => !prev);

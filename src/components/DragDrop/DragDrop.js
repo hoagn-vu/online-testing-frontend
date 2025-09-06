@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Modal, Box, Typography, Button, Link, List, ListItem } from "@mui/material";
 import FolderIcon from "@mui/icons-material/Folder";
 import uploadFile from "../../assets/file/upload_user.xlsx"
+import Swal from "sweetalert2";
 
 const DragDropModal = ({ open, onClose, onFilesDropped, title = "Kéo Thả Tệp Tài Liệu Vào Đây", sampleFile }) => {
   const [dragActive, setDragActive] = useState(false);
@@ -36,9 +37,28 @@ const DragDropModal = ({ open, onClose, onFilesDropped, title = "Kéo Thả Tệ
     setSelectedFiles((prev) => [...prev, ...files]); // ✅ Lưu file nhưng KHÔNG đóng modal
   };
 
+  function showToast(type, message) {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+
+    return Toast.fire({
+      icon: type,
+      title: message
+    });
+  }
+
   const handleUpload = () => {
     if (selectedFiles.length === 0) {
-      alert("Vui lòng chọn ít nhất một file!");
+      showToast("warning", "Vui lòng chọn ít nhất một file!");
       return;
     }
     onFilesDropped(selectedFiles); // ✅ Gửi file ra ngoài

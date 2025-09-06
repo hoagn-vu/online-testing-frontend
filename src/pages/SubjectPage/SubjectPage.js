@@ -76,17 +76,33 @@ const SubjectPage = () => {
       subjectName: "",
   });
 
+  function showToast(type, message, onClose) {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+
+    return Toast.fire({
+      icon: type,
+      title: message,
+      didClose: onClose
+    });
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (editingSubject) {
         const response = await ApiService.put(`/subjects/${editingSubject.id}`, formData);
         if (response.data.status == "success") {
-          Swal.fire({
-            icon: "success",
-            text: "Cập nhật phân môn thành công",
-            draggable: true
-          });
+          showToast("success", "Cập nhật phân môn thành công!");
         } else {
           Swal.fire({
             icon: "error",
@@ -100,11 +116,7 @@ const SubjectPage = () => {
       } else {
         // Thêm mới dữ liệu
         await createSubject(formData);
-        Swal.fire({
-          icon: "success",
-          text: "Tạo phân môn thành công",
-          draggable: true
-        });
+        showToast("success", "Tạo phân môn thành công!");
         setShowForm(false);
       }
     }catch (error) {
@@ -139,11 +151,7 @@ const SubjectPage = () => {
         try {
           await ApiService.delete(`/subjects/delete-subject?subjectId=${subjectId}`);
           fetchData();
-          Swal.fire({
-            title: "Đã xóa!",
-            text: "Phân môn bị xóa thành công",
-            icon: "success",
-          });
+          showToast("success", "Phân môn bị xóa thành công!");
         }
         catch (error) {
           console.error("Failed to delete subject: ", error);

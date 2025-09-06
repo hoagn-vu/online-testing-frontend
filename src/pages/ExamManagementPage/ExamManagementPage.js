@@ -166,6 +166,26 @@ const ExamManagementPage = () => {
     setShowForm(true);
   };
 
+	function showToast(type, message, onClose) {
+		const Toast = Swal.mixin({
+			toast: true,
+			position: "top-end",
+			showConfirmButton: false,
+			timer: 3000,
+			timerProgressBar: true,
+			didOpen: (toast) => {
+				toast.onmouseenter = Swal.stopTimer;
+				toast.onmouseleave = Swal.resumeTimer;
+			}
+		});
+
+		return Toast.fire({
+			icon: type,
+			title: message,
+			didClose: onClose
+		});
+	}
+
   const handleDelete = async (id) => {
 		Swal.fire({
 			title: "Bạn có chắc chắn xóa?",
@@ -181,21 +201,12 @@ const ExamManagementPage = () => {
 			console.log("Xóa tài khoản có ID:", id);
 			try {
 				await ApiService.put(`/exams/${id}`, { examStatus: "deleted" }); 
-				Swal.fire({
-					title: "Đã xóa!",
-					icon: "success",
-					text: "Xóa đề thi thành công",
-				});
-
+				showToast("success", "Xóa đề thi thành công!");
 				// Sau khi xóa thì load lại danh sách
 				fetchData();
 			} catch (error) {
 				console.error("Xóa thất bại:", error);
-				Swal.fire({
-					icon: "error",
-					title: "Lỗi khi xóa đề thi",
-					text: error.message,
-				});
+				showToast("error", error.message);
 			}
 			}
 		});
