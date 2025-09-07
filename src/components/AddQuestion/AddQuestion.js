@@ -111,7 +111,10 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
 
       addedQuestions.forEach((q, qIndex) => {
         formData.append(`questions[${qIndex}].questionText`, stripHtml(q.questionText));
-        formData.append(`questions[${qIndex}].questionType`, q.questionType);
+        formData.append(
+          `questions[${qIndex}].questionType`,
+          q.isMultipleChoice ? "multiple-choice" : "single-choice"
+        );
         formData.append(`questions[${qIndex}].questionStatus`, q.questionStatus);
         formData.append(`questions[${qIndex}].isRandomOrder`, q.isRandomOrder);
 
@@ -194,27 +197,39 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
   };
 
   const handleToggleCorrect = (qIndex, optIndex) => {
-    const updated = [...addedQuestions];
-    const currentOptions = updated[qIndex].options;
+    setAddedQuestions(prev => {
+      return prev.map((q, i) => {
+        if (i !== qIndex) return q;
 
-    // Chỉ cho phép tick nhiều checkbox nếu isMultipleChoice là true
-    if (isMultipleChoice || !currentOptions[optIndex].isCorrect) {
-      currentOptions[optIndex].isCorrect = !currentOptions[optIndex].isCorrect;
-    } else {
-      // Chế độ Single Choice: Chỉ cho phép một checkbox được tick, nhưng cho phép uncheck
-      const currentCorrectCount = currentOptions.filter((opt) => opt.isCorrect).length;
-      if (currentCorrectCount === 1 && currentOptions[optIndex].isCorrect) {
-        // Nếu chỉ còn một đáp án đúng và đang uncheck, cho phép uncheck
-        currentOptions[optIndex].isCorrect = false;
-      } else {
-        // Uncheck tất cả các đáp án khác và chỉ tick cái được chọn
-        currentOptions.forEach((opt, i) => {
-          opt.isCorrect = i === optIndex;
-        });
-      }
-    }
-    setAddedQuestions(updated);
+        const currentIsCorrect = q.options[optIndex]?.isCorrect;
+        // Multiple-choice: toggle option
+        if (q.isMultipleChoice) {
+          return {
+            ...q,
+            options: q.options.map((opt, idx) =>
+              idx === optIndex ? { ...opt, isCorrect: !opt.isCorrect } : opt
+            )
+          };
+        }
+
+        // Single-choice:
+        if (currentIsCorrect) {
+          // bấm lại chính option đang đúng -> bỏ hết
+          return {
+            ...q,
+            options: q.options.map(opt => ({ ...opt, isCorrect: false }))
+          };
+        } else {
+          // chọn option mới -> bỏ tất cả và chỉ tick cái được chọn
+          return {
+            ...q,
+            options: q.options.map((opt, idx) => ({ ...opt, isCorrect: idx === optIndex }))
+          };
+        }
+      });
+    });
   };
+
 
   const handleAddOptionToQuestion = (qIndex) => {
     const updated = [...addedQuestions];
@@ -233,7 +248,7 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
   };
 
   const [newQuestion, setNewQuestion] = useState({
-    questionType: "single-choice",
+    questionType: "",
     questionStatus: "available",
     questionText: "",
     options: [{ optionText: "", isCorrect: false }, { optionText: "", isCorrect: false }],
@@ -250,7 +265,7 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
   const [addedQuestions, setAddedQuestions] = useState([
     {
       id: Date.now(), 
-      questionType: "single-choice",
+      questionType: "",
       questionStatus: "available",
       questionText: "",
       options: [
@@ -265,7 +280,7 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
   const handleAddQuestion = () => {
     const newQ = {
       id: Date.now(), 
-      questionType: "single-choice",
+      questionType: "",
       questionStatus: "available",
       questionText: "",
       options: [
@@ -328,6 +343,23 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
     });
   };
 
+  const handleToggleMultipleChoice = (qIndex) => {
+    setAddedQuestions(prev => {
+      const updated = [...prev];
+      updated[qIndex].isMultipleChoice = !updated[qIndex].isMultipleChoice;
+
+      // Nếu tắt Multiple Choice, chỉ giữ lại 1 đáp án đúng
+      if (!updated[qIndex].isMultipleChoice) {
+        const firstCorrectIndex = updated[qIndex].options.findIndex(o => o.isCorrect);
+        updated[qIndex].options = updated[qIndex].options.map((o, i) => ({
+          ...o,
+          isCorrect: i === firstCorrectIndex // chỉ giữ 1 đáp án đúng
+        }));
+      }
+
+      return updated;
+    });
+  };
 
   return (
     <div className="">
@@ -470,7 +502,12 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
                 <label className="form-check-label">Đảo thứ tự đáp án</label>
               </div>
               <div className="form-check form-switch m-0">
-                <input className="form-check-input" type="checkbox" />
+                <input 
+                  className="form-check-input" 
+                  type="checkbox" 
+                  checked={addedQuestions[qIndex].isMultipleChoice}
+                  onChange={() => handleToggleMultipleChoice(qIndex)}
+                />
                 <label className="form-check-label">Multiple Choice</label>
               </div>
             </div>
@@ -483,7 +520,6 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
                     type="checkbox"
                     checked={opt.isCorrect}
                     onChange={() => handleToggleCorrect(qIndex, optIndex)}
-                    disabled={!isMultipleChoice && addedQuestions[qIndex].options.filter(o => o.isCorrect).length > 0 && !opt.isCorrect}
                   />
                 </div>
                 <textarea
