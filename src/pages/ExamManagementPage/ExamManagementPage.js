@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useRef} from "react";
+import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import './ExamManagementPage.css'
 import { Box, Button, Grid, IconButton, TextField, Pagination, MenuItem, Select} from "@mui/material";
 import Paper from "@mui/material/Paper";
@@ -25,6 +25,7 @@ const ExamManagementPage = () => {
 	const [questionBankOptions, setQuestionBankOptions] = useState([]);
 	const [showFormCreateExam, setShowFormCreateExam] = useState(false);
 	const [refreshFlag, setRefreshFlag] = useState(false);
+	const location = useLocation();
 
 	const navigate = useNavigate();
 	const handleKeywordChange = (e) => {

@@ -33,6 +33,7 @@ const FormCreateExam = ({ onClose, initialData  }) => {
   const [formData, setFormData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const { examId } = useParams();
+  const navigate = useNavigate();
 
   // Gỡ lỗi editExamId
   useEffect(() => {
@@ -239,76 +240,76 @@ const FormCreateExam = ({ onClose, initialData  }) => {
   }
 
   const handleScoreChange = (questionId, value) => {
-  const newScore = parseFloat(value) || 0;
-  if (newScore < 0) {
-    showToast("warning", "Điểm không được nhỏ hơn 0!");
-    return;
-  }
+    const newScore = parseFloat(value) || 0;
+    if (newScore < 0) {
+      showToast("warning", "Điểm không được nhỏ hơn 0!");
+      return;
+    }
 
-  setScores((prevScores) => {
-    const currentScores = { ...prevScores };
-    const oldScore = currentScores[questionId] || 0;
-    const scoreDifference = newScore - oldScore;
+    setScores((prevScores) => {
+      const currentScores = { ...prevScores };
+      const oldScore = currentScores[questionId] || 0;
+      const scoreDifference = newScore - oldScore;
 
-    if (scoreDifference !== 0) {
-      const currentTotal = Object.values(currentScores).reduce((sum, score) => sum + score, 0);
-      const newTotal = currentTotal - oldScore + newScore;
+      if (scoreDifference !== 0) {
+        const currentTotal = Object.values(currentScores).reduce((sum, score) => sum + score, 0);
+        const newTotal = currentTotal - oldScore + newScore;
 
-      if (newTotal > totalScore) {
-        showToast("warning", "Tổng điểm vượt quá tổng điểm đã nhập");
+        if (newTotal > totalScore) {
+          showToast("warning", "Tổng điểm vượt quá tổng điểm đã nhập");
 
-        return prevScores;
+          return prevScores;
+        }
+
+        return {
+          ...currentScores,
+          [questionId]: newScore,
+        };
       }
 
-      return {
-        ...currentScores,
-        [questionId]: newScore,
-      };
-    }
-
-    return prevScores;
-  });
-};
-
-const handleSave = async () => {
-  const currentTotal = selectedItems.reduce((sum, qid) => {
-    return sum + (scores[qid] ?? (initialData.questions.find(q => q.questionId === qid)?.questionScore ?? 0));
-  }, 0);
-
-  if (currentTotal !== totalScore) {
-    showToast("warning", `Tổng điểm (${currentTotal.toFixed(2)}) không khớp với tổng điểm đã nhập (${totalScore})!`);
-    return;
-  }
-
-  const payload = {
-    examCode: examCode,
-    examName: examName,
-    subjectId: subjectChosen,
-    questionBankId: bankChosen,
-    questionSets: selectedItems.map((qid) => ({
-      questionId: qid,
-      questionScore: scores[qid] ?? (initialData.questions.find(q => q.questionId === qid)?.questionScore ?? 0),
-    })),
-    examStatus: "available",
+      return prevScores;
+    });
   };
 
-  try {
-    if (isEditMode) {
-      console.log("Updating exam with data:", payload);
-      await updateExam(examId, payload);
-      showToast("success", "Cập nhật đề thi thành công!");
-      onClose();
-    } else {
-      const res = ApiService.post("/exams", payload);
-      showToast("success", "Tạo đề thi thành công!");
-      onClose();
+  const handleSave = async () => {
+    const currentTotal = selectedItems.reduce((sum, qid) => {
+      return sum + (scores[qid] ?? (initialData.questions.find(q => q.questionId === qid)?.questionScore ?? 0));
+    }, 0);
+
+    if (currentTotal !== totalScore) {
+      showToast("warning", `Tổng điểm (${currentTotal.toFixed(2)}) không khớp với tổng điểm đã nhập (${totalScore})!`);
+      return;
     }
-  } catch (error) {
-    console.error("Error saving exam:", error);
-    showToast("error", "Không thể lưu đề thi, vui lòng thử lại sau!");
-    return;
-  }
-};
+
+    const payload = {
+      examCode: examCode,
+      examName: examName,
+      subjectId: subjectChosen,
+      questionBankId: bankChosen,
+      questionSets: selectedItems.map((qid) => ({
+        questionId: qid,
+        questionScore: scores[qid] ?? (initialData.questions.find(q => q.questionId === qid)?.questionScore ?? 0),
+      })),
+      examStatus: "available",
+    };
+
+    try {
+      if (isEditMode) {
+        console.log("Updating exam with data:", payload);
+        await updateExam(examId, payload);
+        showToast("success", "Cập nhật đề thi thành công!");
+        onClose();
+      } else {
+        const res = ApiService.post("/exams", payload);
+        showToast("success", "Tạo đề thi thành công!");
+        navigate("/staff/exam", { state: { refresh: true } });
+      }
+    } catch (error) {
+      console.error("Error saving exam:", error);
+      showToast("error", "Không thể lưu đề thi, vui lòng thử lại sau!");
+      return;
+    }
+  };
 
   /*const handleSave = () => {
     const currentTotal = Object.values(scores).reduce((sum, score) => sum + (score || 0), 0);
