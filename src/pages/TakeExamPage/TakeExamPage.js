@@ -320,7 +320,7 @@ const TakeExamPage = () => {
                     questionId={q.questionId}
                     question={q.questionText} 
                     options={q.options} 
-                    allowMultiple={q.allowMultiple}
+                    allowMultiple={q.questionType === "multiple-choice"}
                     defaultSelectedOptions={q.options.filter(o => o.isChosen).map(o => o.optionId)} 
                     onAnswerSelect={(questionId, selectedOptionIds, index) => {
                       handleAnswerChange(questionId, selectedOptionIds);
