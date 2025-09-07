@@ -3,7 +3,14 @@ import React, { useEffect, useRef } from 'react';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import PropTypes from 'prop-types';
+import "./QuillEditor.css"
+import 'katex/dist/katex.min.css';
+// Import KaTeX (JS + CSS)
+import katex from 'katex';
+import 'katex/dist/katex.min.css';
 
+// Gắn vào global cho Quill formula dùng
+window.katex = katex;
 const QuillEditor = ({ value, onChange }) => {
   const editorRef = useRef(null);
   const quillInstance = useRef(null);
@@ -15,21 +22,26 @@ const QuillEditor = ({ value, onChange }) => {
         placeholder: 'Nhập câu hỏi tại đây...',
         modules: {
           toolbar: [
-            ['bold', 'italic', 'underline'],
+            ['bold', 'italic', 'underline','formula'],
           ]
         }
       });
 
       // Set initial content if any
       if (value) {
-        quillInstance.current.clipboard.dangerouslyPasteHTML(value);
+        try {
+          quillInstance.current.setContents(value);
+        } catch (err) {
+          console.error('Invalid delta format:', err);
+        }
       }
 
       // Handle text change
       quillInstance.current.on('text-change', () => {
-        const html = editorRef.current.querySelector('.ql-editor').innerHTML;
-        onChange?.(html);
-      });
+  const delta = quillInstance.current.getContents(); // dạng JSON, giữ nguyên công thức LaTeX
+  onChange?.(delta);
+});
+
     }
 
     return () => {
@@ -57,7 +69,7 @@ const QuillEditor = ({ value, onChange }) => {
 };
 
 QuillEditor.propTypes = {
-  value: PropTypes.string.isRequired,    
+  value: PropTypes.object,    
   onChange: PropTypes.func.isRequired,
 
 };
