@@ -149,9 +149,17 @@ const ExamManagementPage = () => {
   });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Dữ liệu thêm mới:", formData);
+		if (editingAccount) {
+			try {
+				await ApiService.put(`/exams/${editingAccount.id}`, formData);
+				showToast("success", "Cập nhật tên đề thi thành công!");
+				fetchData();
+			} catch (error) {
+				console.error("Failed to update exam", error);
+			}
+		}
     setShowForm(false);
   };
 
@@ -390,14 +398,12 @@ const ExamManagementPage = () => {
 			{/* Form thêm đề thi */}
 			{showForm && (
 				<div className="form-overlay">
-					<Box
-						component="form"
-						sx={{
+					<form
+						style={{
 							width: "700px",
 							backgroundColor: "white",
 							borderRadius: "8px",
 							boxShadow: 3,
-							mx: "auto",
 						}}
 						onSubmit={handleSubmit}
 					>
@@ -477,7 +483,7 @@ const ExamManagementPage = () => {
 								</AddButton>
 							</Grid>
 						</Grid>
-					</Box>
+					</form>
 				</div>
 			)}
 		</div>
