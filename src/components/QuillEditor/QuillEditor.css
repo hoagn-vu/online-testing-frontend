@@ -1,0 +1,9 @@
+/* Tooltip của formula trong Quill */
+.ql-tooltip.ql-editing {
+  left: 1% !important;
+  right: 50 !important;   /* ép sát bên phải */
+  transform: none !important;
+  z-index: 1000 !important;
+  top: 5% !important;
+
+}

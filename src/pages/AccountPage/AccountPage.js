@@ -18,7 +18,6 @@ import { CircularProgress } from "@mui/material";
 import userFile from "../../assets/file/upload_user.xlsx";
 import { useSelector } from "react-redux";
 import hasPermission from "../../permissions";
-import InputMask from "react-input-mask";
 
 const AccountPage = () => {
   const inputRef = useRef(null);
