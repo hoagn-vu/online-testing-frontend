@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "./SubjectPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Box, Button, Grid, Pagination, TextField, Paper } from "@mui/material";
+import { InputLabel , OutlinedInput , Grid, Pagination, TextField, ListItemText, FormControl, Select, MenuItem, Checkbox  } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
 import SearchBox from "../../components/SearchBox/SearchBox";
@@ -28,6 +28,48 @@ const SubjectPage = () => {
     setKeyword(e.target.value);
     setPage(1);
   };
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
+  const [personName, setPersonName] = React.useState([]);
+  const [listUser, setListUser] = React.useState([]);
+  const [listAssignee, setListAssignee] = useState([]);
+  const handleChange = (event) => {
+    const {target: { value },} = event;
+    const selected = typeof value === "string" ? value.split(",") : value;
+    setPersonName(selected);
+    setFormData((prev) => ({
+      ...prev,
+      assignee: selected,
+    }));
+  };
+
+  const fetchUserOptions = async () => {
+		try {
+			const response = await ApiService.get(`/users/get-by-role`, {
+				params: { role: "lecturer" },
+			});
+			
+			setListUser(response.data.map((user) => ({
+				value: user.userId,
+				label: user.fullName,
+			})));
+		} catch (error) {
+			console.error("Failed to fetch matrix options", error);
+			return [];
+		}
+	};
+
+  useEffect(() => {
+    fetchUserOptions();
+  }, []);
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -37,6 +79,7 @@ const SubjectPage = () => {
       });
       setListSubject(response.data.subjects);
       setTotalCount(response.data.totalCount);
+      setListAssignee(response.data.subjects.assignee);
     } catch (error) {
       console.error("Failed to fetch data: ", error);
     }
@@ -60,7 +103,8 @@ const SubjectPage = () => {
 
   const preAddNew = () => {
     setEditingSubject(null);
-    setFormData({ subjectName: "" });
+    setFormData({ subjectName: "", assignee: [] });
+    setPersonName([]);
     setShowForm(true);
   };
 
@@ -73,7 +117,8 @@ const SubjectPage = () => {
   }, [showForm]);
 
   const [formData, setFormData] = useState({
-      subjectName: "",
+    subjectName: "",
+    assignee: [],
   });
 
   function showToast(type, message, onClose) {
@@ -115,24 +160,26 @@ const SubjectPage = () => {
         setShowForm(false);
       } else {
         // Thêm mới dữ liệu
+        console.log(formData)
         await createSubject(formData);
         showToast("success", "Tạo phân môn thành công!");
         setShowForm(false);
       }
     }catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Có lỗi xảy ra",
-        text: error?.message || "Không thể xử lý yêu cầu",
-      });;
+      showToast("error", error?.message || "Không thể xử lý yêu cầu");
     }
   };
 
   const preEdit = (subject) => {
-    setFormData({ subjectName: subject.subjectName });
+    setFormData({
+      subjectName: subject.subjectName,
+      assignee: subject.assignee?.map(a => a.userId) || [],  // chỉ lấy userId
+    });
+    setPersonName(subject.assignee?.map(a => a.userId) || []); // Select hiểu đúng value
     setEditingSubject(subject);
     setShowForm(true);
   };
+
 
   const handleDelete = async (subjectId) => {
     Swal.fire({
@@ -207,6 +254,7 @@ const SubjectPage = () => {
                 <th scope="col" className="text-center title-row" style={{ width: "50px"}}>STT</th>
                 <th scope="col" className="title-row">Phân môn</th>
                 <th className="text-center">Số lượng bộ câu hỏi</th>
+                <th>Người được phân công</th>
                 <th className="text-center" style={{ width: "120px"}}>Thao tác</th>
               </tr>
             </thead>
@@ -236,6 +284,18 @@ const SubjectPage = () => {
                     className="text-center"
                   >
                     {item.totalQuestionBanks}
+                  </td>
+                  <td>
+                    {item.assignee && item.assignee.length > 0 ? (
+                      item.assignee.map((user) => (
+                        <div key={user.userId} className="d-flex align-items-center text-muted mb-2" style={{ fontSize: "14px" }}>
+                          <i className="fas fa-user-circle me-2" style={{ fontSize: "18px", color: "#5188d4ff" }}></i>
+                          <span style={{color: "black"}}>{user.fullName}</span>
+                        </div>
+                      ))
+                    ) : (
+                      <span className="text-muted fst-italic">Chưa phân công</span>
+                    )}
                   </td>
                   <td className="text-center align-middle">
                     <div className="dropdown d-inline-block">
@@ -327,6 +387,9 @@ const SubjectPage = () => {
                   }
                   inputRef={inputRef}
                   sx={{
+                    "& .MuiInputBase-root": {
+                      height: "50px",
+                    },
                     "& .MuiDataGrid-cell": {
                         whiteSpace: "normal",
                         wordWrap: "break-word",
@@ -343,7 +406,7 @@ const SubjectPage = () => {
                         borderBottom: "none",
                     },
                     "& .MuiTablePagination-displayedRows": {
-                        textAlign: "center",        // Căn giữa chữ "1-1 of 1"
+                        textAlign: "center",     
                         marginTop: "16px",
                         marginLeft: "0px"
                     },
@@ -353,11 +416,48 @@ const SubjectPage = () => {
                     },
                     "& .MuiTablePagination-select": {
                         marginLeft: "0px",
-                    } 
+                    },
                   }}
                 />
+                <Grid item xs={12} sx={{mt: 2}}>
+                  <FormControl sx={{width: "100%" }}>
+                    <InputLabel id="demo-multiple-checkbox-label">Phân công</InputLabel>
+                    <Select
+                      labelId="demo-multiple-checkbox-label"
+                      id="demo-multiple-checkbox"
+                      multiple
+                      value={personName}
+                      onChange={handleChange}
+                      input={<OutlinedInput label="Phân công" />}
+                      renderValue={(selected) => 
+                        listUser
+                          .filter((u) => selected.includes(u.value))
+                          .map((u) => u.label)
+                          .join(", ")
+                      }
+                      MenuProps={MenuProps}
+                      sx={{
+                        "& .MuiSelect-select": {
+                          height: "50px", 
+                          display: "flex",
+                          alignItems: "center",  
+                          paddingY: "0px",       
+                        },
+                        ".css-w76bbz-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select": {
+                          height: "50px"
+                        }
+                      }}
+                    >
+                      {listUser.map((user) => (
+                        <MenuItem key={user.value} value={user.value}>
+                          <Checkbox checked={personName.includes(user.value)} />
+                          <ListItemText primary={user.label} />
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
               </Grid>
-
               <Grid container spacing={2} sx={{justifyContent: "flex-end", p: 3, pt: 1 }}>
                 <Grid item xs={3}>
                   <CancelButton style={{width: "100%"}} onClick={() => setShowForm(false)}>Hủy</CancelButton>

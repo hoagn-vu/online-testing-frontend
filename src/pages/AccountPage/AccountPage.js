@@ -523,8 +523,8 @@ const AccountPage = () => {
         };
 
         await ApiService.post('/groupUser/create-group-users', payload);
-        await showToast("success", "Tạo nhóm người dùng thành công!");
-        await getGroupUser();   
+        showToast("success", "Tạo nhóm người dùng thành công!");
+        getGroupUser();   
         setSelectedGroup(null);
       } else {
         // 👉 Nhóm đã có: gọi API add-users
@@ -534,7 +534,7 @@ const AccountPage = () => {
           listUser,
           { headers: { "Content-Type": "application/json" } }
         );
-        await showToast("success", "Thêm người dùng vào nhóm thành công!");
+        showToast("success", "Thêm người dùng vào nhóm thành công!");
         setSelectedGroup(null);
       }
 

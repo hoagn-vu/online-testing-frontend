@@ -773,7 +773,7 @@ const ListQuestionPage = () => {
 																{question.options.map((option, index) => (
 																	<div key={index} className="d-flex align-items-center mb-1">
 																		<input
-																			type="radio"
+																			type={question.questionType === "multiple-choice" ? "checkbox" : "radio"}
 																			name={`answer-${question.questionId}`}
 																			className="form-check-input mt-1 me-2"
 																			checked={option.isCorrect}
