@@ -290,7 +290,7 @@ const SubjectPage = () => {
                       item.assignee.map((user) => (
                         <div key={user.userId} className="d-flex align-items-center text-muted mb-2" style={{ fontSize: "14px" }}>
                           <i className="fas fa-user-circle me-2" style={{ fontSize: "18px", color: "#5188d4ff" }}></i>
-                          <span><strong>{user.fullName}</strong></span>
+                          <span style={{color: "black"}}>{user.fullName}</span>
                         </div>
                       ))
                     ) : (
