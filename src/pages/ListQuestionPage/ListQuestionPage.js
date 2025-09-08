@@ -929,21 +929,42 @@ const ListQuestionPage = () => {
 											</div>
 										</div>
 									</div>
+								</div>		
 								</div>
-									
+								<div className="d-flex justify-content-between align-items-center mb-3 mt-3">
+									<div className="form-check mt-0 form-switch">
+										<input
+											type="checkbox"
+											className="form-check-input"
+											id="shuffleQuestion"
+											checked={newQuestion.isRandomOrder}
+											onChange={(e) => setNewQuestion({ ...newQuestion, isRandomOrder: e.target.checked })}
+										/>
+										<label className="form-check-label" htmlFor="shuffleQuestion">
+											Đảo thứ tự đáp án
+										</label>
+									</div>
+									<div className="form-check form-switch m-0">
+										<input 
+											className="form-check-input" 
+											type="checkbox" 
+											checked={newQuestion.questionType === "multiple-choice"}
+											onChange={(e) => {
+												const isMultiple = e.target.checked;
+												setNewQuestion((prev) => ({
+													...prev,
+													questionType: isMultiple ? "multiple-choice" : "single-choice",
+													// Nếu chuyển từ multiple → single thì chỉ giữ lại 1 đáp án đúng
+													options: isMultiple 
+														? prev.options 
+														: prev.options.map((opt, i) => ({ ...opt, isCorrect: i === 0 && opt.isCorrect })),
+												}));
+											}}
+										/>
+										<label className="form-check-label">Multiple Choice</label>
+									</div>
 								</div>
-								<div className="form-check mt-0 mb-2">
-									<input
-										type="checkbox"
-										className="form-check-input"
-										id="shuffleQuestion"
-										checked={newQuestion.isRandomOrder}
-										onChange={(e) => setNewQuestion({ ...newQuestion, isRandomOrder: e.target.checked })}
-									/>
-									<label className="form-check-label" htmlFor="shuffleQuestion">
-										Đảo thứ tự đáp án
-									</label>
-								</div>
+								
 								{newQuestion.options.map((option, index) => (
 									<div key={index} className="input-group mb-2">
 										<div className="input-group-text">
@@ -953,7 +974,15 @@ const ListQuestionPage = () => {
 												checked={option.isCorrect}
 												onChange={() => {
 													const newOptions = [...newQuestion.options];
-													newOptions[index].isCorrect = !newOptions[index].isCorrect;
+													if (newQuestion.questionType === "single-choice") {
+														// Nếu là single thì chỉ chọn 1 đáp án
+														newOptions.forEach((opt, i) => {
+															opt.isCorrect = i === index ? !opt.isCorrect : false;
+														});
+													} else {
+														// Multiple thì toggle bình thường
+														newOptions[index].isCorrect = !newOptions[index].isCorrect;
+													}
 													setNewQuestion({ ...newQuestion, options: newOptions });
 												}}
 											/>

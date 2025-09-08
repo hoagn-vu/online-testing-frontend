@@ -33,6 +33,7 @@ const AccountPage = () => {
   const [showAddGroupForm, setShowAddGroupForm] = useState(false);
   const [groupName, setGroupName] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [selectedUserId, setSelectedUserId] = useState(null);
 
   const roleTabs = [
     { label: "Thí sinh", value: "candidate" },
@@ -221,7 +222,6 @@ const AccountPage = () => {
   };
 
   const [passwordData, setPasswordData] = useState({
-    role: "candidate",
     newPassword: "",
     confirmPassword: "",
   });
@@ -305,14 +305,27 @@ const AccountPage = () => {
     }
   };
 
-  const handlePasswordSubmit = (e) => {
+  const handlePasswordSubmit = async (e) => {
     e.preventDefault();
+    console.log(selectedUserId)
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      alert("Mật khẩu xác nhận không khớp!");
+      showToast("warning", "Vui lòng nhập lại mật khẩu xác nhận");
       return;
     }
-    console.log("Cập nhật mật khẩu cho vai trò:", passwordData);
-    setShowPasswordForm(false);
+    try {
+      const response = await ApiService.post("/users/bulk-change-password",
+        {
+          userIds: [selectedUserId],
+          newPassword: passwordData.newPassword,
+        }
+      );
+      showToast("success", "Đổi mật khẩu thành công!");
+      setShowPasswordForm(false);
+      setPasswordData({ newPassword: "", confirmPassword: "" });
+    } catch (error) {
+      console.error("Lỗi đổi mật khẩu:", error);
+      showToast("error", "Không thể cập nhật mật khẩu, vui lòng thử lại");
+    }
   };
 
   const handleEdit = (account) => {
@@ -760,6 +773,23 @@ const AccountPage = () => {
                           transform: 'translate3d(-10px, 10px, 0px)',
                         }}
                       >
+                          <li className="tbl-action" 
+                            onClick={() => {
+                              setSelectedUserId(item.id); // lưu user id được chọn
+                              setShowPasswordForm(true);
+                            }}
+                          >
+                            <button className="dropdown-item tbl-action" 
+                              onClick={() => {
+                                setSelectedUserId(item.id); // lưu user id được chọn
+                                setShowPasswordForm(true);
+                              }}
+                            >
+                              Đổi mật khẩu
+                            </button>
+                          </li>
+                        {/* {hasPermission(userRole, "change_password_user") && (
+                        )} */}
                         {hasPermission(userRole, "update_user") && (
                           <li className="tbl-action" onClick={() => handleEdit(item)}>
                             <button className="dropdown-item tbl-action" onClick={() => handleEdit(item)}>
@@ -1015,7 +1045,7 @@ const AccountPage = () => {
       {/* Form Đổi mật khẩu */}
       {showPasswordForm && (
         <div className="form-overlay">
-          <div
+          <form
             className="shadow form-fade bg-white bd-radius-8"
             style={{ width: "800px", boxShadow: 3,}}
             onSubmit={handlePasswordSubmit}
@@ -1043,32 +1073,6 @@ const AccountPage = () => {
               ><i className="fa-solid fa-xmark"></i></button>            
             </div>
             <Grid container spacing={2} sx={{p: 3, pt: 1}}>
-              {/* Mã và Họ Tên */}
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  select
-                  required
-                  label="Vai trò"
-                  value={passwordData.role}
-                  onChange={(e) =>
-                    setPasswordData({ ...passwordData, role: e.target.value })
-                  }
-                  sx={{
-                    "& .MuiInputBase-input": {
-                      fontSize: "14px",
-                      paddingBottom: "11px",
-                    },
-                    "& .MuiInputLabel-root": { fontSize: "14px" }, // Giảm cỡ chữ label
-                  }}
-                >
-                  <MenuItem value="candidate">Thí sinh</MenuItem>
-                  <MenuItem value="supervisor">Giám thị</MenuItem>
-                  <MenuItem value="lecturer">Giảng viên</MenuItem>
-                  <MenuItem value="admin">Quản trị viên</MenuItem>
-                  <MenuItem value="staff">Cán bộ phụ trách kỳ thi</MenuItem>
-                </TextField>
-              </Grid>
               <Grid item xs={12}>
                 <TextField
                   fullWidth
@@ -1076,7 +1080,7 @@ const AccountPage = () => {
                   type={showPassword ? "text" : "password"}
                   required
                   inputRef={inputRef}
-                  value={formData.newPassword}
+                  value={passwordData.newPassword}
                   onChange={(e) =>
                     setPasswordData({ ...passwordData, newPassword: e.target.value })
                   }
@@ -1105,7 +1109,7 @@ const AccountPage = () => {
                   required
                   inputRef={inputRef}
                   type={showConfirmPassword  ? "text" : "password"}
-                  value={formData.confirmPassword}
+                  value={passwordData.confirmPassword}
                   onChange={(e) =>
                     setPasswordData({ ...passwordData, confirmPassword: e.target.value })
                   }
@@ -1145,7 +1149,7 @@ const AccountPage = () => {
                 </AddButton>
               </Grid>
             </Grid>
-          </div>
+          </form>
         </div>
       )}
 
