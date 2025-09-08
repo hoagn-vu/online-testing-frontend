@@ -69,10 +69,10 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 		}
 	};
 
-	const fetchMatrixOptions = async (subjectId) => {
+	const fetchMatrixOptions = async (subjectId, questionBankId) => {
 		try {
 			const response = await ApiService.get("/exam-matrices/options", {
-				params: { subjectId: subjectId },
+				params: { subjectId: subjectId, questionBankId: questionBankId },
 			});
 			
 			setMatrixOptions(response.data.map((matrix) => ({
@@ -336,17 +336,17 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 										getOptionLabel={(option) => option.label}
 										onChange={(event, selectedOption) => {
 											const newSubjectId = selectedOption?.value || null;
-											setExamData((prev) => ({ ...prev, subjectId: newSubjectId }));
+											setExamData(prev => ({ ...prev, subjectId: newSubjectId }));
 
 											// Nếu đã chọn loại auto rồi => fetch luôn
 											if (newSubjectId) {
 												fetchQuestionBankOptions(newSubjectId);
 
-												if (selectedType === "matrix") {
-													fetchMatrixOptions(newSubjectId);
+												if (selectedType === "matrix" && examData.questionBankId) {
+													fetchMatrixOptions(newSubjectId, examData.questionBankId);
 												}
 
-												if (selectedType === "exams") {
+												if (selectedType === "exams" && examData.questionBankId) {
 													fetchExamOptions(newSubjectId, examData.questionBankId);
 												}
 											}
@@ -385,17 +385,16 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 										getOptionLabel={(option) => option.label || ""}
 										value={questionBankOptions.find((opt) => opt.value === examData.questionBankId) || null}
 										onChange={(e, newValue) => {
-											setExamData({ ...examData, questionBankId: newValue?.value || null });
+											const newQuestionBankId = newValue?.value || null;
+											setExamData(prev => ({ ...prev, questionBankId: newQuestionBankId }));
 
-											const questionBankId = newValue?.value || null;
-											if (examData.subjectId && questionBankId) {
-												if (selectedType === "exams") {
-													fetchExamOptions(examData.subjectId, questionBankId);
-												}
-
-												if (selectedType === "matrix") {
-													fetchMatrixOptions(examData.subjectId);
-												}
+											// Chỉ fetch exam khi đã chọn môn học + loại exams
+											if (selectedType === "exams" && examData.subjectId && newQuestionBankId) {
+												fetchExamOptions(examData.subjectId, newQuestionBankId);
+											}
+											// Chỉ fetch exam khi đã chọn môn học + loại exams
+											if (selectedType === "matrix" && examData.subjectId && newQuestionBankId) {
+												fetchMatrixOptions(examData.subjectId, newQuestionBankId);
 											}
 										}}
 										renderInput={(params) => (
@@ -440,13 +439,12 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 												examType: selectedValue,
 											}));
 
-											// 👉 Chỉ fetch ma trận khi loại là matrix + subjectId đã chọ
-											if (selectedValue === "matrix" && examData.subjectId) {
-												fetchMatrixOptions(examData.subjectId);
+											if (selectedValue === "matrix" && examData.subjectId && examData.questionBankId) {
+												fetchMatrixOptions(examData.subjectId, examData.questionBankId);
 											}
 
-											if (selectedValue === "exams") {
-												fetchExamOptions(examData.subjectId);
+											if (selectedValue === "exams" && examData.subjectId && examData.questionBankId) {
+												fetchExamOptions(examData.subjectId, examData.questionBankId);
 											}
 										}}
 										renderInput={(params) => (
@@ -764,6 +762,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 														handleSessionChange(index, 'startAt', newValue ? newValue.toISOString() : '')
 													}
 													sx={{ width: '100%' }}
+													required
 													slotProps={{
 														textField: {
 															fullWidth: true,
