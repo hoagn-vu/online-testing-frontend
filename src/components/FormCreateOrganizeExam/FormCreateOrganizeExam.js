@@ -151,7 +151,82 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 	
   // Xử lý submit form
   const handleSubmit = async (e) => {
-    e.preventDefault();
+		// 1. Kiểm tra các trường chung
+		if (!examData.organizeExamName?.trim()) {
+			showToast("warning", "Vui lòng nhập tên kỳ thi");
+			return;
+		}
+		if (!examData.duration) {
+			showToast("warning", "Vui lòng nhập thời lượng kỳ thi");
+			return;
+		}
+		if (!examData.subjectId) {
+			showToast("warning", "Vui lòng chọn phân môn");
+			return;
+		}
+		if (!examData.questionBankId) {
+				showToast("warning", "Vui lòng chọn bộ câu hỏi");
+				return;
+			}
+		if (!selectedType) {
+			showToast("warning", "Vui lòng chọn loại kỳ thi");
+			return;
+		}
+
+		// 2. Kiểm tra theo loại đề
+		if (selectedType === "auto") {
+			if (!examData.questionBankId) {
+				showToast("warning", "Vui lòng chọn bộ câu hỏi");
+				return;
+			}
+			if (!examData.totalQuestions || examData.totalQuestions <= 0) {
+				showToast("warning", "Vui lòng nhập số lượng câu hỏi hợp lệ");
+				return;
+			}
+			if (!examData.maxScore || examData.maxScore <= 0) {
+				showToast("warning", "Vui lòng nhập điểm tối đa hợp lệ");
+				return;
+			}
+		}
+
+		if (selectedType === "matrix") {
+			if (!examData.matrixId) {
+				showToast("warning", "Vui lòng chọn ma trận đề thi");
+				return;
+			}
+			if (!examData.questionBankId) {
+				showToast("warning", "Vui lòng chọn bộ câu hỏi");
+				return;
+			}
+		}
+
+		if (selectedType === "exams") {
+			if (!examData.questionBankId) {
+				showToast("warning", "Vui lòng chọn bộ câu hỏi");
+				return;
+			}
+			if (!examData.examIds || examData.examIds.length === 0) {
+				showToast("warning", "Vui lòng chọn ít nhất một đề thi");
+				return;
+			}
+		}
+
+		// 3. Kiểm tra ca thi
+		for (const [i, session] of examData.sessions.entries()) {
+			if (!session.sessionName?.trim()) {
+				showToast("warning", `Vui lòng nhập tên ca thi ${i + 1}`);
+				return;
+			}
+			if (!session.startAt) {
+				showToast("warning", `Vui lòng chọn thời gian bắt đầu ca thi ${i + 1}`);
+				return;
+			}
+			// Nếu muốn, có thể kiểm tra finishAt > startAt
+			if (session.finishAt && new Date(session.finishAt) <= new Date(session.startAt)) {
+				showToast("warning", `Thời gian kết thúc ca thi ${i + 1} phải lớn hơn thời gian bắt đầu`);
+				return;
+			}
+		}
     let payload;
 		switch (selectedType) {
 			case "auto":
@@ -239,7 +314,7 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
   return (
     <Box sx={{}}>
 
-      <Box component="form" onSubmit={handleSubmit}>
+      <div>
         <div className='d-flex'>
 					{/* Phần thông tin kỳ thi */}
 					<div className='col-6 me-2'
@@ -274,7 +349,6 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
 									<TextField
 										fullWidth
 										label="Tên kỳ thi"
-										required
 										value={examData.organizeExamName}
 										inputRef={inputRef}
 										onChange={(e) => setExamData({...examData, organizeExamName: e.target.value})}
@@ -851,11 +925,11 @@ const FormCreateOrganizeExam = ({ onClose, typeOptions}) => {
           <CancelButton onClick={onClose} type="button">
 						Hủy
 					</CancelButton>
-					<AddButton >
+					<AddButton onClick={handleSubmit}>
 						<i className="fas fa-plus me-2"></i> Tạo kỳ thi
 					</AddButton>
         </Box>
-      </Box>
+      </div>
     </Box>
   );
 };
