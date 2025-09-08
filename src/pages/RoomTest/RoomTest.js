@@ -54,9 +54,17 @@ const RoomTest = () => {
        // nếu có phòng -> lấy roomId của phòng mới nhất
 
       if (rooms && rooms.length > 0) {
-        const newestRoom  = rooms[0]; // giả sử API trả về field roomId
+        const newestRoom = rooms[0];
         setSelectedRoomId(newestRoom.roomId);
-        fetchSchedule(newestRoom.roomId);
+
+        // tuần hiện tại
+        const today = new Date();
+        const startOfWeek = new Date(today);
+        startOfWeek.setDate(today.getDate() - today.getDay()); // Chủ nhật
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 7);
+
+        fetchSchedule(newestRoom.roomId, startOfWeek, endOfWeek);
       }
 
     } catch (error) {
@@ -65,10 +73,16 @@ const RoomTest = () => {
     setIsLoading(false);
   };
 
-  const fetchSchedule = async (roomId) => {
+  const fetchSchedule = async (roomId, start, end) => {
+    if (!roomId) return;
     setIsLoading(true);
     try {
-      const response = await ApiService.get(`/rooms/${roomId}/schedules`);
+      const response = await ApiService.get(`/rooms/${roomId}/schedules`, {
+        params: {
+          start: start.toISOString().split("T")[0], // YYYY-MM-DD
+          end: end.toISOString().split("T")[0]
+        }
+      });
       setSchedules(response.data.schedules || []);
       setRoomName(response.data.roomName);
     } catch (error) {
@@ -76,10 +90,15 @@ const RoomTest = () => {
     }
     setIsLoading(false);
   };
-
+  const calendarRef = useRef(null);
   const handleSelectRoom = (roomId) => {
     setSelectedRoomId(roomId);
-    fetchSchedule(roomId);
+    const calendarApi = calendarRef.current?.getApi();
+    if (calendarApi) {
+      const start = calendarApi.view.activeStart;
+      const end = calendarApi.view.activeEnd;
+      fetchSchedule(roomId, start, end);
+    }
   };
 
   useEffect(() => {
@@ -432,10 +451,11 @@ const RoomTest = () => {
           <div className="col-7 pe-0">
             <div className="tbl-shadow">
               <FullCalendar
+                ref={calendarRef}
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                 initialView="timeGridWeek"
-                slotMinTime="06:00:00"
-                slotMaxTime="20:00:00"
+                slotMinTime="05:00:00"
+                slotMaxTime="24:00:00"
                 events={events.map(e => ({
                   ...e,
                   extendedProps: { fullTitle: e.title } // lưu full title
@@ -452,6 +472,10 @@ const RoomTest = () => {
                   right: "next"
                 }}
                 titleFormat={{ year: 'numeric', month: 'short' }}
+                datesSet={(arg) => {
+                  // arg.start và arg.end là range của view hiện tại
+                  fetchSchedule(selectedRoomId, arg.start, arg.end);
+                }}
               />
             </div>
           </div>
