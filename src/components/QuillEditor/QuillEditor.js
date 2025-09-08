@@ -29,19 +29,14 @@ const QuillEditor = ({ value, onChange }) => {
 
       // Set initial content if any
       if (value) {
-        try {
-          quillInstance.current.setContents(value);
-        } catch (err) {
-          console.error('Invalid delta format:', err);
-        }
+        quillInstance.current.clipboard.dangerouslyPasteHTML(value);
       }
 
       // Handle text change
       quillInstance.current.on('text-change', () => {
-  const delta = quillInstance.current.getContents(); // dạng JSON, giữ nguyên công thức LaTeX
-  onChange?.(delta);
-});
-
+        const html = editorRef.current.querySelector('.ql-editor').innerHTML;
+        onChange?.(html);
+      });
     }
 
     return () => {
@@ -69,7 +64,7 @@ const QuillEditor = ({ value, onChange }) => {
 };
 
 QuillEditor.propTypes = {
-  value: PropTypes.object,    
+  value: PropTypes.string.isRequired,    
   onChange: PropTypes.func.isRequired,
 
 };
