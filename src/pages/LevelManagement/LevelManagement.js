@@ -225,7 +225,17 @@ const LevelManagement = () => {
                     </div>
                   </td>
                 </tr>
-              ) : listLevel.map((item, index) => (  
+              ) : listLevel.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan="4"
+                    className="text-center fw-semibold text-muted"
+                    style={{ height: "100px", verticalAlign: "middle" }}
+                  >
+                    Không có dữ liệu
+                  </td>
+                </tr>
+              ) : (listLevel.map((item, index) => (  
                 <tr key={item.id} className="align-middle">
                   <td className="text-center">{index + 1}</td>
                   <td >{item.levelName}</td>
@@ -259,7 +269,7 @@ const LevelManagement = () => {
                     </div>
                   </td>
                 </tr>
-              ))}
+              )))}
             </tbody>
 
           </table>

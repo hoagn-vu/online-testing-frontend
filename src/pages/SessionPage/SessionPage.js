@@ -52,6 +52,7 @@ const SessionPage = () => {
   };
 
 	const fetchData = async () => {
+		setIsLoading(true);
 		try {
 			const response = await ApiService.get(`/organize-exams/sessions`, {
 				params: { orgExamId: organizeId, keyword, page, pageSize },
@@ -61,7 +62,9 @@ const SessionPage = () => {
 			setOrganizeExamName(response.data.organizeExamName);
 		} catch (error) {
 			console.error("Failed to fetch data: ", error);
-		}
+		}finally {
+      setIsLoading(false);
+    }
 	};
 
 	useEffect(() => {
@@ -379,7 +382,15 @@ const SessionPage = () => {
 								</tr>
 							</thead>
 							<tbody style={{ fontSize: "14px" }}>
-								{listSession.length === 0 ? (
+								{isLoading ? (
+									<tr>
+										<td colSpan="8" className="text-center">
+											<div className="spinner-border text-primary" role="status">
+												<span className="visually-hidden">Loading...</span>
+											</div>
+										</td>
+									</tr>
+								) : listSession.length === 0 ? (
 									<tr>
 										<td colSpan="8" className="text-center fw-semibold text-muted"
 												style={{ height: "100px", verticalAlign: "middle" }}>

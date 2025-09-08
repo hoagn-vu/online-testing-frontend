@@ -718,14 +718,24 @@ const AccountPage = () => {
             </thead>
             <tbody>
             {isLoading ? (
-                <tr>
-                  <td colSpan="9" className="text-center">
-                    <div className="spinner-border text-primary" role="status">
-                      <span className="visually-hidden">Loading...</span>
-                    </div>
-                  </td>
-                </tr>
-              ) :
+              <tr>
+                <td colSpan="9" className="text-center">
+                  <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                </td>
+              </tr>
+            ) : listAccount.length === 0 ? (
+              <tr>
+                <td
+                  colSpan="9"
+                  className="text-center fw-semibold text-muted"
+                  style={{ height: "100px", verticalAlign: "middle" }}
+                >
+                  Không có dữ liệu
+                </td>
+              </tr>
+            ) : (
               processData(listAccount).map((item, index) => (
                 <tr key={item.id} className="align-middle">
                   <td className=" text-center" style={{ width: "50px" }}>
@@ -822,7 +832,7 @@ const AccountPage = () => {
                     </div>
                   </td>
                 </tr>
-              ))}
+              )))}
             </tbody>
           </table>
         </div>

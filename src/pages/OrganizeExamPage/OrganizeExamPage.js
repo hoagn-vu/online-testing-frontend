@@ -115,7 +115,9 @@ const OrganizeExamPage = () => {
 			setTotalCount(response.data.totalCount);
 		} catch (error) {
 			console.error("Failed to fetch data", error);
-		}
+		}finally {
+      setIsLoading(false);
+    }
 	};
 
   useEffect(() => {
@@ -448,14 +450,22 @@ const OrganizeExamPage = () => {
 										</tr>
 									</thead>
 									<tbody>
-									{listOrganizeExam.length === 0 ? (
-										<tr>
-											<td colSpan="11" className="text-center fw-semibold text-muted"
-													style={{ height: "100px", verticalAlign: "middle" }}>
-												Không có dữ liệu
-											</td>
-										</tr>
-									) : (
+										{isLoading ? (
+											<tr>
+												<td colSpan="10" className="text-center">
+													<div className="spinner-border text-primary" role="status">
+														<span className="visually-hidden">Loading...</span>
+													</div>
+												</td>
+											</tr>
+										) : listOrganizeExam.length === 0 ? (
+											<tr>
+												<td colSpan="10" className="text-center fw-semibold text-muted"
+														style={{ height: "100px", verticalAlign: "middle" }}>
+													Không có dữ liệu
+												</td>
+											</tr>
+										) : (
 										listOrganizeExam.map((item, index) => (
 											<tr key={item.id} className="align-middle">
 												<td

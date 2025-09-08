@@ -220,7 +220,15 @@ const ListUserInGroup = () => {
                 </tr>
               </thead>
               <tbody style={{fontSize: "14px"}}>
-                {processData(listCandidate).length === 0 ? (
+                {isLoading ? (
+                  <tr>
+                    <td colSpan="7" className="text-center">
+                      <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </div>
+                    </td>
+                  </tr>
+                ): processData(listCandidate).length === 0 ? (
                   <tr>
                     <td colSpan="7" className="text-center fw-semibold text-muted" 
                       style={{ height: "100px", verticalAlign: "middle" }}>

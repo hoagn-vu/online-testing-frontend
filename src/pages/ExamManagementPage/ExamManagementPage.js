@@ -40,6 +40,7 @@ const ExamManagementPage = () => {
 	}, [location.state]);
 
 	const fetchData = async () => {
+		setIsLoading(true);
 		try {
 			const response = await ApiService.get("/exams", {
         params: { keyword, page, pageSize },
@@ -48,6 +49,8 @@ const ExamManagementPage = () => {
 			setTotalCount(response.data.totalCount);
 		} catch (error) {
 			console.error("Lỗi lấy dữ liệu:", error);
+		} finally{
+			setIsLoading(false);
 		}
 	};
 
@@ -305,7 +308,15 @@ const ExamManagementPage = () => {
 							</tr>
 						</thead>
 						<tbody>
-						{listExam.length === 0 ? (
+						{isLoading ? (
+              <tr>
+                <td colSpan="6" className="text-center">
+                  <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                </td>
+              </tr>
+            ) : listExam.length === 0 ? (
 								<tr>
 									<td colSpan="6" className="text-center fw-semibold text-muted"
 											style={{ height: "100px", verticalAlign: "middle" }}>
