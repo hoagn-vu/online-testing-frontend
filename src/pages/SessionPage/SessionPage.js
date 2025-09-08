@@ -366,7 +366,7 @@ const SessionPage = () => {
 
 				<div className="session-table-container mt-3">
 					<div className="table-responsive" 
-						style={{minHeight: "300px"}}
+						style={{minHeight: "310px"}}
 					>
 						<table className="table sample-table tbl-organize-hover table-hover">
 							<thead style={{fontSize: "14px"}}>
