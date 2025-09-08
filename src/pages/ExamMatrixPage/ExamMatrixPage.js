@@ -250,7 +250,15 @@ const ExamMatrixPage = () => {
               </tr>
             </thead>
             <tbody>
-            {listExamMatrix.length === 0 ? (
+            {isLoading ? (
+              <tr>
+                <td colSpan="7" className="text-center">
+                  <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                </td>
+              </tr>
+            ) : listExamMatrix.length === 0 ? (
 								<tr>
 									<td colSpan="7" className="text-center fw-semibold text-muted"
 											style={{ height: "100px", verticalAlign: "middle" }}>

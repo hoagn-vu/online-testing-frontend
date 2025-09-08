@@ -233,7 +233,16 @@ const QuestionBankPage = () => {
               gap: "16px",
             }}
           >
-            {listQuestionBank.length === 0 ? (
+            {isLoading ? (
+              <div
+                className="d-flex justify-content-center align-items-center text-center text-muted fw-semibold"
+                style={{ minHeight: "200px", gridColumn: "1 / -1" }}
+              >
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            ) : listQuestionBank.length === 0 ? (
               <div
                 className="d-flex justify-content-center align-items-center text-center text-muted fw-semibold"
                 style={{ minHeight: "200px", gridColumn: "1 / -1" }}

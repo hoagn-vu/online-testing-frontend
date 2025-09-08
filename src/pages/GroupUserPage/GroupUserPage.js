@@ -285,7 +285,17 @@ const GroupUserPage = () => {
                     </div>
                   </td>
                 </tr>
-              ) : listGroup.map((item, index) => (  
+              ) : listGroup.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan="4"
+                    className="text-center fw-semibold text-muted"
+                    style={{ height: "100px", verticalAlign: "middle" }}
+                  >
+                    Không có dữ liệu
+                  </td>
+                </tr>
+              ) : (listGroup.map((item, index) => (  
                 <tr key={item.id} className="align-middle">
                   <td className="text-center">{index + 1}</td>
                   <td
@@ -334,7 +344,7 @@ const GroupUserPage = () => {
                     </div>
                   </td>
                 </tr>
-              ))}
+              )))}
             </tbody>
 
           </table>
