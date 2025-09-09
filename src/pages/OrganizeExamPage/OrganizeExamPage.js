@@ -39,6 +39,10 @@ const OrganizeExamPage = () => {
 	const [totalScore, setTotalScore] = useState(0);
 	const [difficultyData, setDifficultyData] = useState([]); 
 	const dynamicColSpan = 1 + (showChapter ? 1 : 0) + (showLevel ? 1 : 0);
+	const [selectedExam, setSelectedExam] = useState(null); // Đề thi được chọn
+	const [isGenerated, setIsGenerated] = useState(false);
+	const [openAnswers, setOpenAnswers] = useState({});
+	const [examDetailData, setExamDetailData] = useState([]); 
 
 	useEffect(() => {
 		if (location.state?.reload) {
@@ -391,7 +395,32 @@ const OrganizeExamPage = () => {
 			showToast("error", "Không thể tải chi tiết ma trận. Vui lòng kiểm tra lại");
 		}
 	};
+	// Hàm lấy câu hỏi theo examId
+  const fetchExamQuestions = async (examId) => {
+    try {
+      const examDetailRes = await ApiService.get("/exams/questions", {
+        params: { examId },
+      });
+      setExamDetailData(examDetailRes.data?.listQuestion || []);
+      console.log("đề thi được chọn", examDetailData);
+    } catch (error) {
+      console.error("Failed to fetch exam questions: ", error);
+    }
+  };
 
+	// Khi click chọn đề thi khác
+  const handleSelectExam = async (exam) => {
+    setSelectedExam(exam);
+    await fetchExamQuestions(exam.id);
+  };
+
+  const toggleAnswer = (id) => {
+    setOpenAnswers(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
+	
   return (
     <div className="p-4">
       {/* Breadcrumb */}
@@ -509,6 +538,7 @@ const OrganizeExamPage = () => {
 														if (item.examType === "exams" && item.exams && item.exams.length > 0) {
 															setSelectedItem(item);  
 															setShowDetailExamForm(true);
+															handleSelectExam(item.exams[0]);
 														}
 													}}
 													style={{
@@ -765,14 +795,14 @@ const OrganizeExamPage = () => {
 				<div className="form-overlay">
 					<div
 						className="shadow form-fade bg-white bd-radius-8"
-						style={{ width: "800px", boxShadow: 3 }}
+						style={{ minWidth: "950px", boxShadow: 3 }}
 					>
 						{/* Header */}
 						<div
-							className="d-flex justify-content-between align-items-center p-4"
+							className="d-flex justify-content-between align-items-center p-3"
 							style={{
 								borderBottom: "1px solid #ccc",
-								marginBottom: "20px",
+								marginBottom: "10px",
 								padding: "10px 20px",
 							}}
 						>
@@ -784,26 +814,112 @@ const OrganizeExamPage = () => {
 						</div>
 
 						{/* Nội dung danh sách đề thi */}
-						<div style={{ maxHeight: "400px", overflowY: "auto", padding: "0 20px" }}>
+						<div style={{ maxHeight: "520px", overflowY: "auto", padding: "0 20px" }}>
 							{selectedItem.exams && selectedItem.exams.length > 0 ? (
-								<table className="table table-bordered table-hover">
-									<thead className="table-light">
-										<tr className="text-center">
-											<th>STT</th>
-											<th>Tên đề thi</th>
-											<th>Mã đề thi</th>
-										</tr>
-									</thead>
-									<tbody>
-										{selectedItem.exams.map((exam, idx) => (
-											<tr key={exam.id || idx}>
-												<td className="text-center">{idx + 1}</td>
-												<td>{exam.examName}</td>
-												<td className="text-center">{exam.examCode || "-"}</td>
-											</tr>
-										))}
-									</tbody>
-								</table>
+								<div className="d-flex">
+									<div className="table-responsive tbl-shadow pb-0 mb-2 mt-2 me-2"
+										style={{
+											flex: 1,                // chiếm 1 phần nhỏ
+											maxWidth: "400px",      // bạn có thể chỉnh rộng hơn
+											overflow: "hidden",     // không scroll
+										}}
+									>
+										<table className="table sample-table table-hover tbl-organize-hover w-100">
+											<thead className="table-light">
+												<tr className="text-center align-middle">
+													<th>STT</th>
+													<th>Tên đề thi</th>
+													<th>Mã đề thi</th>
+												</tr>
+											</thead>
+											<tbody>
+												{selectedItem.exams.map((exam, idx) => (
+													<tr key={exam.id || idx}
+														onClick={() => handleSelectExam(exam)}
+														className={`${
+															selectedExam?.id === exam.id ? "table-active bg-light-blue" : ""
+														}`}
+													>
+														<td className="text-center align-middle">{idx + 1}</td>
+														<td className="align-middle">{exam.examName}</td>
+														<td className="text-center align-middle">{exam.examCode || "-"}</td>
+													</tr>
+												))}
+											</tbody>
+										</table>
+									</div>
+									<div
+										className="p-2 bg-white mt-2 mb-2"
+										style={{
+											flex: 2,
+											fontSize: "14px",
+											boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
+											borderRadius: "8px",
+											overflowY: "auto",   // ✅ chỉ phần này scroll
+     							 		maxHeight: "500px",
+										}}
+										>
+										{examDetailData.map((q, index) => {
+										const isOpen = openAnswers[q.questionId];
+
+										return (
+											<div key={q.questionId} id={`question-${index + 2}`} className="border p-3 rounded m-1 mt-0 mb-2">
+												{/* Header */}
+												<div className="d-flex justify-content-between">
+													<div className="d-flex align-items-center">
+														<p style={{ fontSize: "15px" }} className="mb-0">
+															<i className="fa-solid fa-question me-1"></i> Câu {index + 1}:
+														</p>
+													</div>
+
+													<div className="d-flex mb-0 align-items-center">
+														<i className="fa-solid fa-star me-1 star-color"></i>
+														<p className="mb-0">
+															{q.questionScore} điểm
+														</p>
+
+														{/* Chevron toggle */}
+														<i
+															className={`fa-solid ms-3 mt-1 ${
+																isOpen ? "fa-chevron-down" : "fa-chevron-up"
+															}`}
+															style={{ cursor: "pointer", transition: "transform 0.3s" }}
+															onClick={() => toggleAnswer(q.questionId)}
+														></i>
+													</div>
+												</div>
+
+												{/* Question text */}
+												<h6 className="fw-bold mt-2">{q.questionText}</h6>
+
+												{/* Collapse đáp án */}
+												{isOpen && (
+												<div className={`collapse ${isOpen ? "show" : ""}`}>
+													<div className="pt-2">
+														{q.options.map((option, index) => {
+															const isCorrect = option.isCorrect;
+															let className = "option mb-1";
+															if (isCorrect) {
+																className += " correct";
+															} 
+															
+															// Tạo nhãn ABCD từ index
+															const labels = ["A", "B", "C", "D", "E", "F"];
+
+															return (
+																<p key={option.optionId} className={className}>
+																	{labels[index]}. {option.optionText}
+																</p>
+															);
+														})}
+													</div>
+												</div>
+												)}
+											</div>
+										);
+									})}
+									</div>
+								</div>
 							) : (
 								<p>Không có đề thi nào</p>
 							)}
