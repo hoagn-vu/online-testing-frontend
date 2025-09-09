@@ -8,7 +8,11 @@
         "c": "10.000 vòng/phút",
         "d": "15.000 vòng/phút"
       },
-      "đáp án": "7200 vòng/phút"
+      "đáp án": "7200 vòng/phút",
+      "difficulty": {
+        "score": 0.485555555,
+        "label": "medium"
+      }
     },
     "2": {
       "câu hỏi": "Đĩa mềm 3.5 inch thông dụng nhất hiện nay có dung lượng bao nhiêu?",

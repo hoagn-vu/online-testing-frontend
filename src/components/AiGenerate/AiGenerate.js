@@ -19,7 +19,9 @@ const AiGenerate = ({ onClose  }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [generatedQuestions, setGeneratedQuestions] = useState([]); 
   const [editingIndex, setEditingIndex] = useState(null);
-  
+  const [keyword, setKeyword] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(1000);
   const { subjectId, questionBankId } = useParams();
   const [ subjectName, setSubjectName ] = useState("");
   const [ questionBankName, setQuestionBankName ] = useState("");	
@@ -31,15 +33,47 @@ const AiGenerate = ({ onClose  }) => {
     isRandomOrder: false,
   });
   const [editQuestionId, setEditQuestionId] = useState(null);
-
+  const [allChapters, setAllChapters] = useState([]);
   const [file, setFile] = useState(null);
   const [nQuestions, setNQuestions] = useState(5);
+  const difficultyMap = {
+    easy: "Nhận biết",
+    medium: "Thông hiểu",
+    difficult: "Vận dụng",
+  };
+  useEffect(() => {
+    const fetchTagsClassification = async () => {
+      try {
+        const response = await ApiService.get(
+          `/subjects/questions/tags-classification?subjectId=${subjectId}&questionBankId=${questionBankId}&type=both`
+        );
+
+        const data = response.data;
+
+        // Lấy các chapter khác rỗng và loại bỏ trùng lặp
+        const chapters = Array.from(new Set(data.map(item => item.chapter).filter(ch => ch && ch.trim() !== "")))
+          .map(ch => ({ value: ch, label: ch }));
+
+        // Lấy các level khác rỗng và loại bỏ trùng lặp
+        const levels = Array.from(new Set(data.map(item => item.level).filter(lv => lv && lv.trim() !== "")))
+          .map(lv => ({ value: lv, label: lv }));
+
+        setAllChapters(chapters);
+        //setAllLevels(levels);
+      } catch (error) {
+        console.error("Lỗi khi lấy chapter/level:", error);
+      }
+    };
+
+    fetchTagsClassification();
+  }, [subjectId, questionBankId]);
 
   const convertDataForDisplay = (data) => {
     return Object.values(data).map(item => ({
       question: item["câu hỏi"],
       correctAnswer: item["đáp án"],
-      allAnswers: Object.values(item["lựa chọn"])
+      allAnswers: Object.values(item["lựa chọn"]),
+      difficulty: item["difficulty"],
     }));
   }
 
@@ -250,7 +284,7 @@ const AiGenerate = ({ onClose  }) => {
   };
 
   // Dữ liệu mẫu cho CreatableSelect
-  const allChapters = [{ value: "Chuyên đề 1", label: "Chuyên đề 1" }, { value: "Chuyên đề 2", label: "Chuyên đề 2" }];
+  //const allChapters = [{ value: "Chuyên đề 1", label: "Chuyên đề 1" }, { value: "Chuyên đề 2", label: "Chuyên đề 2" }];
   const allLevels = [
     { value: "Dễ", label: "Dễ" },
     { value: "Trung bình", label: "Trung bình" },
@@ -261,18 +295,18 @@ const AiGenerate = ({ onClose  }) => {
     <div className="">
       <h5 className="mb-3 fw-bold" style={{color: '#1976d2', fontSize: "20px"}}>Sinh câu hỏi bằng AI</h5>
       
-      <div className="row g-3 mb-1">
-        <div className="col-md-6">
+      <div className="d-flex g-2 mb-1">
+        <div className="col-5 flex-grow-1">
           <label className="form-label">Tải tài liệu đầu vào:</label>
           <input type="file" className="form-control" onChange={(e) => setFile(e.target.files[0])} />
         </div>
         
-        <div className="col-md-3">
+        <div className="col-3 ms-2 me-2">
           <label className="form-label">Số lượng câu hỏi:</label>
           <input type="number" className="form-control" placeholder="Ví dụ: 10" value={nQuestions} onChange={(e) => setNQuestions(e.target.value)} />
         </div>
 
-        <div className="col-md-3 d-flex align-items-end">
+        <div className="d-flex align-items-end ms-2" style={{ whiteSpace: "nowrap" }}>
           <AddButton className="me-2" onClick={handleGenerateQuestions}>
             <i className="fas fa-brain me-2"></i>Tạo câu hỏi
           </AddButton>
@@ -310,53 +344,85 @@ const AiGenerate = ({ onClose  }) => {
         </div>
       )}
       {generatedQuestions.length > 0 && (
-        <div className="mb-3 mt-3">
-          <input
-            type="checkbox"
-            className="form-check-input"
-            checked={selectedQuestions.length === generatedQuestions.length}
-            onChange={handleSelectAll}
-            style={{ marginRight: '10px', }}
-          />
-          <span>Chọn tất cả</span>
-        </div>
+        <>
+          <div style={{ flex: 1 }}>
+            <p className="mb-2 mt-3">Chọn chuyên đề kiến thức:</p>
+            <CreatableSelect
+              isClearable
+              options={allChapters}
+              value={newQuestion.tags[0] ? { value: newQuestion.tags[0], label: newQuestion.tags[0] } : null}
+              onChange={(newValue) => handleTagChange(0, newValue)}
+              menuPortalTarget={document.body}
+              placeholder="Chọn chuyên đề kiến thức"
+              styles={{
+                menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                container: (provided) => ({ ...provided, flex: 1 })
+              }}
+            />
+          </div>
+          <div className="mb-3 mt-3">
+            <input
+              type="checkbox"
+              className="form-check-input"
+              checked={selectedQuestions.length === generatedQuestions.length}
+              onChange={handleSelectAll}
+              style={{ marginRight: '10px', }}
+            />
+            <span>Chọn tất cả</span>
+          </div>
+        </>
       )}
 
       <div className="d-flex flex-column w-100"> 
         {generatedQuestions.map((q, index) => (
-          <div key={index} className="d-flex align-items-start mb-3"> {/* Căn xchỉnh theo đầu */}
-            <div className="d-flex align-items-center"> {/* Khoảng cách giữa checkbox và card */}
+          <div key={index} className="d-flex question-card mb-3 p-3 bd-radius-8 pb-2 bg-white pt-2">
+            <div className="d-flex mt-2">
               <input
                 type="checkbox"
                 className="form-check-input"
                 checked={selectedQuestions.includes(index)}
                 onChange={() => handleSelectQuestion(index)}
-                style={{ marginRight: '15px',  }}
+                style={{ marginRight: '15px', borderColor: "#afafafff" }}
               />
             </div>
-            <div className="card flex-grow-1"> {/* Cho card mở rộng hết không gian còn lại */}
-              <div className="card-header d-flex justify-content-between align-items-center">
-                <div style={{ flex: 1 }}>
-                  {editingIndex === index ? (
-                    <input
-                      type="text"
-                      value={q.question}
-                      onChange={(e) => handleQuestionChange(index, e.target.value)}
-                      className="form-control"
-                    />
-                  ) : (
-                    <strong>{q.question}</strong>
-                  )}
+            <div className="flex-grow-1"> {/* Cho card mở rộng hết không gian còn lại */}
+              <div className="d-flex justify-content-between align-items-center">
+                <p className="fw-bold pb-0 mb-0">Câu hỏi:</p>
+                  {/* Dấu 3 chấm phía bên phải */}
+                  <div className="dropdown">
+                    <button
+                      className="btn btn-link p-0"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <i className="fa-solid fa-ellipsis-vertical" style={{ fontSize: "18px", color: "#000000ff" }}></i>
+                    </button>
+                    <ul className="dropdown-menu dropdown-menu-end">
+                      <li>
+                        <button className="dropdown-item" onClick={() => handleEdit(index)}>
+                          <i className="fa-solid fa-pen-to-square me-2"></i> Chỉnh sửa
+                        </button>
+                      </li>
+                      <li>
+                        <button className="dropdown-item text-danger" onClick={() => handleDelete(index)}>
+                          <i className="fa-solid fa-trash-can me-2"></i> Xóa
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                {/* <div style={{ flex: 1 }}>                  
+                  <strong>{q.question}</strong>
                   <div className="text-muted">Dễ</div>
-                </div>
-                <div className="d-flex" style={{ marginLeft: "50px" }}>
+                </div> */}
+                {/* <div className="d-flex" style={{ marginLeft: "50px" }}>
                   <button className="btn pe-1 ps-1" style={{ fontSize: "20px" }} onClick={() => handleEdit(index)}>
                     <i className="fa-solid fa-pen-to-square" style={{color: "#A6A6A6"}}></i>	
                   </button>
                   <button className="btn pe-1 ps-1" style={{ fontSize: "20px" }} onClick={() => handleDelete(index)} >
                     <i className="fa-solid fa-trash-can" style={{color: "#A6A6A6"}}></i>
                   </button>
-                </div>
+                </div> */}
                 {/* <div className="text-end" style={{ minWidth: "150px" }}>
                   {editingIndex === index ? (
                     <button className="btn btn-success btn-sm me-2" onClick={handleSave}>
@@ -370,14 +436,30 @@ const AiGenerate = ({ onClose  }) => {
                   <button className="btn btn-danger btn-sm">Xoá</button>
                 </div> */}
               </div>
-
+              <div className="d-flex">
+                {/* Nội dung câu hỏi */}
+                <div className="col-12 card-header mb-2">
+                  <div className="d-flex">
+                    <div className="question-text d-flex justify-content-between align-items-start p-2"
+                      style={{width: "100%"}}
+                    >
+                      <div className="me-2">
+                        <p className="mb-1" style={{ fontSize: "16px" }}>
+                          {q.question}
+                        </p>
+                        <p className="tag-level mb-0">
+                          {difficultyMap[q.difficulty?.label] || "Không xác định"}
+                        </p>
+                      </div>									
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div className="list-group list-group-flush">
                 {q.allAnswers.map((ans, i) => (
                   <div
                     key={i}
-                    className={`list-group-item d-flex align-items-center ${
-                      ans === q.correctAnswer && editingIndex !== index ? "list-group-item-success" : ""
-                    }`}
+                    className="d-flex align-items-center mb-1"
                   >
                     {editingIndex === index ? (
                       <>
@@ -396,7 +478,23 @@ const AiGenerate = ({ onClose  }) => {
                         />
                       </>
                     ) : (
-                      <>{ans}</>
+                      <>
+                        <input
+                          type="radio"
+                          name={`correct-${index}`}
+                          className="form-check-input mt-1 me-2"
+                          checked={ans === q.correctAnswer}
+                          readOnly
+                        />
+                        <li
+                          className={`flex-grow-1 ${
+                            ans === q.correctAnswer ? "list-group-item-success" : "list-options"
+                          }`}
+                          style={{ listStyle: "none", fontSize: "14px" }}
+                        >
+                          {ans}
+                        </li>
+                      </>
                     )}
                   </div>
                 ))}
