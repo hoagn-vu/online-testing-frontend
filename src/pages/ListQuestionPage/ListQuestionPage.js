@@ -125,8 +125,8 @@ const ListQuestionPage = () => {
 			setSubjectName(response.data.subjectName);
 			setQuestionBankName(response.data.questionBankName);
 			setTotalCount(response.data.totalCount);
-			setAllChapters(response.data.allChapter.map((chapter) => ({ value: chapter, label: chapter })));
-			setAllLevels(response.data.allLevel.map((level) => ({ value: level, label: level })));
+			//setAllChapters(response.data.allChapter.map((chapter) => ({ value: chapter, label: chapter })));
+			//setAllLevels(response.data.allLevel.map((level) => ({ value: level, label: level })));
 		} catch (error) {
 			console.error("Failed to fetch data:", error);
 		}
@@ -136,6 +136,50 @@ const ListQuestionPage = () => {
 	useEffect(() => {
 		fetchData();
 	}, [subjectId, questionBankId, keyword, page, pageSize]);
+
+	useEffect(() => {
+		const fetchTagsClassification = async () => {
+			try {
+				const response = await ApiService.get(
+					`/subjects/questions/tags-classification?subjectId=${subjectId}&questionBankId=${questionBankId}&type=both`
+				);
+
+				const data = response.data;
+
+				// Lấy các chapter khác rỗng và loại bỏ trùng lặp
+				const chapters = Array.from(new Set(data.map(item => item.chapter).filter(ch => ch && ch.trim() !== "")))
+					.map(ch => ({ value: ch, label: ch }));
+
+				// Lấy các level khác rỗng và loại bỏ trùng lặp
+				const levels = Array.from(new Set(data.map(item => item.level).filter(lv => lv && lv.trim() !== "")))
+					.map(lv => ({ value: lv, label: lv }));
+
+				setAllChapters(chapters);
+				//setAllLevels(levels);
+			} catch (error) {
+				console.error("Lỗi khi lấy chapter/level:", error);
+			}
+		};
+
+		fetchTagsClassification();
+	}, [subjectId, questionBankId]);
+
+	const fetchDataLevel = async () => {
+		setIsLoading(true);
+		try {
+			const response = await ApiService.get("/level", {
+				params: { keyword, page, pageSize },
+			});
+			setAllLevels(response.data.levels.map((item) => ({ value: item.levelName, label: item.levelName })));
+		} catch (error) {
+			console.error("Failed to fetch data: ", error);
+		}
+		setIsLoading(false);
+	};
+
+	useEffect(() => {
+		fetchDataLevel();
+	},[])
 
 	const groupedQuestions = {};
 	questions.forEach((question) => {
