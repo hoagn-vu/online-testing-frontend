@@ -13,6 +13,8 @@ const permissions = {
   delete_user: ["admin"],
   import_users: ["admin"],
   toggle_status: ["admin", "staff"],
+  change_password: ["admin"],
+  vo_hieu_hoa_stu: ["staff"],
   // groups
 
   // organize exams
@@ -26,7 +28,9 @@ const permissions = {
   // rooms
 
   // subjects
-
+  add_subject: ["staff"],
+  edit_del_subject: ["staff"],
+  del_subject: ["staff"],
   // question banks
 
   // questions
@@ -36,7 +40,8 @@ const permissions = {
   // exams
 
   // levels
-
+  add_level: ["staff"],
+  edit_del_level: ["staff"],
   // logs
 
   // monitoring

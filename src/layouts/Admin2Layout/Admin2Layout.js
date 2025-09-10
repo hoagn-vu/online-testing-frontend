@@ -63,7 +63,7 @@ const menuItems = [
   { 
     title: "Quản lý nội dung thi", 
     icon: <i className="fa-solid fa-database icon-color"></i>, 
-    role: ["staff"],
+    role: ["staff", "lecturer"],
     children: [
       { title: "Ngân hàng câu hỏi", path: "/staff/question" },
       { title: "Quản lý ma trận đề", path: "/staff/matrix-exam" },
@@ -71,7 +71,7 @@ const menuItems = [
       { title: "Quản lý mức độ", path: "/staff/level" },
     ],
   },
-  { 
+  /*{ 
     title: "Quản lý nội dung thi", 
     icon: <i className="fa-solid fa-database icon-color"></i>, 
     role: ["lecturer"],
@@ -81,7 +81,7 @@ const menuItems = [
       { title: "Quản lý đề thi", path: "/lecturer/exam" },
       { title: "Quản lý mức độ", path: "/lecturer/level" },
     ],
-  },
+  },*/
   // { title: "Quản lý ma trận đề", icon: <i className="fa-solid fa-table icon-color"></i>, path: "/staff/matrix-exam", role: ["admin"] },
   // { title: "Quản lý đề thi", icon: <i className="fa-solid fa-file-lines icon-color"></i>, path: "/staff/exam", role: ["admin"] },
   { title: "Nhật ký sử dụng", icon: <i className="fa-solid fa-book icon-color"></i>, path: "/admin/log", role: ["admin"] },

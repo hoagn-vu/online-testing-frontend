@@ -782,7 +782,8 @@ const AccountPage = () => {
                           right: "50%",
                           transform: 'translate3d(-10px, 10px, 0px)',
                         }}
-                      >
+                      > 
+                        {hasPermission(userRole, "change_password") && (
                           <li className="tbl-action" 
                             onClick={() => {
                               setSelectedUserId(item.id); // lưu user id được chọn
@@ -798,6 +799,7 @@ const AccountPage = () => {
                               Đổi mật khẩu
                             </button>
                           </li>
+                        )}
                         {/* {hasPermission(userRole, "change_password_user") && (
                         )} */}
                         {hasPermission(userRole, "update_user") && (
@@ -814,20 +816,32 @@ const AccountPage = () => {
                             </button>
                           </li>
                         )}
-                        {hasPermission(userRole, "toggle_status") && (
-                          <li className="tbl-action" onClick={() => handleToggleStatus(item.id, item.accountStatus)}>
-                            <button
-                              className="dropdown-item tbl-action"
-                              onClick={() =>
-                                handleToggleStatus(item.id, item.accountStatus)
-                            }
-                          >
-                            {item.accountStatus.toLowerCase() === "active"
-                              ? "Vô hiệu hoá"
-                              : "Kích hoạt"}
-                            </button>
-                          </li>
+                        {hasPermission(userRole, "vo_hieu_hoa_stu") && (
+                          selectedRole === "candidate" ? (
+                            <li
+                              className="tbl-action"
+                              onClick={() => handleToggleStatus(item.id, item.accountStatus)}
+                            >
+                              <button
+                                className="dropdown-item tbl-action"
+                                onClick={() =>
+                                  handleToggleStatus(item.id, item.accountStatus)
+                                }
+                              >
+                                {item.accountStatus.toLowerCase() === "active"
+                                  ? "Vô hiệu hoá"
+                                  : "Kích hoạt"}
+                              </button>
+                            </li>
+                          ) : (
+                            <li className="tbl-action">
+                              <span className="p-3" style={{ color: "gray", cursor: "not-allowed" }}>
+                                Không có quyền
+                              </span>
+                            </li>
+                          )
                         )}
+
                       </ul>
                     </div>
                   </td>
