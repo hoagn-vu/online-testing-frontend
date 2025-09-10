@@ -92,7 +92,7 @@ function App() {
   };
 
   return (
-    <Router>
+    /*<Router>
 
       <Routes>
         <Route path="/" element={<Login2 />} /> 
@@ -125,119 +125,262 @@ function App() {
           </Route>
         ))}
       </Routes>
+    </Router>*/
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login2 />} />
+        <Route path="/not-found" element={<NotFound />} />
+        <Route path="/test" element={<WelcomePage />} />
+      </Routes>
+
+      <Routes>
+        <Route 
+          path="/admin" 
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <Admin2Layout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="accountmanage" element={<AccountPage />} />
+          <Route path="groupuser" element={<GroupUserPage />} />
+          <Route path="log" element={<LogPage />} />
+          <Route path="change-password" element={<ChangePasswordPage />} />
+        </Route>
+      </Routes>
+
+      <Routes>
+        <Route path="/staff" element={<Admin2Layout />}>
+          <Route path="accountmanage" 
+            element={
+              <ProtectedRoute allowedRoles={["staff"]}>
+                <AccountPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="groupuser" 
+            element={
+              <ProtectedRoute allowedRoles={["staff"]}>
+                <GroupUserPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="groupuser/:groupuserId" 
+            element={
+              <ProtectedRoute allowedRoles={["staff"]}>
+                <ListUserInGroup />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="dashboard" 
+            element={
+              <ProtectedRoute allowedRoles={["staff"]}>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="organize">
+            <Route index 
+              element={
+              <ProtectedRoute allowedRoles={["staff"]}>
+                <OrganizeExamPage />
+              </ProtectedRoute>
+            }
+          />
+            <Route path=":organizeId" 
+              element={
+              <ProtectedRoute allowedRoles={["staff"]}>
+                <SessionPage />
+              </ProtectedRoute>
+            }
+          />
+          </Route>
+          <Route path="organize/statistic-auto/:organizeExamId" 
+            element={
+              <ProtectedRoute allowedRoles={["staff"]}>
+                <AutoStatisticPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="organize/report/:organizeExamId" 
+            element={
+              <ProtectedRoute allowedRoles={["staff"]}>
+                <ReportEachOrganizePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="organize/:organizeId/:sessionId" 
+            element={
+              <ProtectedRoute allowedRoles={["staff"]}>
+                <RoomOrganizePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="organize/monitor/:organizeId/:sessionId" 
+            element={
+              <ProtectedRoute allowedRoles={["staff"]}>
+                <MonitorOrganizePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="organize/score/:organizeId/:sessionId/:roomId" 
+            element={
+              <ProtectedRoute allowedRoles={["staff"]}>
+                <ScoreTableSessionPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="organize/:organizeId/:sessionId/:roomId" 
+            element={
+              <ProtectedRoute allowedRoles={["staff"]}>
+                <CandidateOrganizePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="organize/:organizeId/:sessionId/:roomId/:candidateId" 
+            element={
+              <ProtectedRoute allowedRoles={["staff"]}>
+                <CandidateExamResultTest />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="question" 
+            element={
+              <ProtectedRoute allowedRoles={["lecturer", "staff"]}>
+                <SubjectPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="question/:subjectId" 
+           element={
+              <ProtectedRoute allowedRoles={["lecturer", "staff"]}>
+                <QuestionBankPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="question/:subjectId/:questionBankId" 
+           element={
+              <ProtectedRoute allowedRoles={["lecturer", "staff"]}>
+                <ListQuestionPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="matrix-exam" 
+           element={
+              <ProtectedRoute allowedRoles={["lecturer", "staff"]}>
+                <ExamMatrixPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="exam/generate-exam-matrix" 
+           element={
+              <ProtectedRoute allowedRoles={["lecturer", "staff"]}>
+                <GenerateExamFromMatrixPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="matrix-exam/matrix-detail" 
+           element={
+              <ProtectedRoute allowedRoles={["lecturer", "staff"]}>
+                <DetailExamMatrixPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="exam" 
+           element={
+              <ProtectedRoute allowedRoles={["lecturer", "staff"]}>
+                <ExamManagementPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="exam/:examId" 
+           element={
+              <ProtectedRoute allowedRoles={["lecturer", "staff"]}>
+                <DetailExamPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="room" 
+           element={
+              <ProtectedRoute allowedRoles={["staff"]}>
+                <RoomTest />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="level" 
+           element={
+              <ProtectedRoute allowedRoles={["lecturer", "staff"]}>
+                <LevelManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="change-password" 
+           element={
+              <ProtectedRoute allowedRoles={["lecturer", "staff"]}>
+                <ChangePasswordPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="statistic-auto" 
+           element={
+              <ProtectedRoute allowedRoles={["lecturer", "staff"]}>
+                <AutoStatisticPage />
+              </ProtectedRoute>
+            }
+          />
+        </Route>
+      </Routes>
+
+      {/* <Routes>
+        <Route 
+          path="/lecturer" 
+          element={<Admin2Layout />}
+        >
+          <Route path="question" element={
+            <ProtectedRoute allowedRoles={["lecturer"]}>
+              <SubjectPage />
+            </ProtectedRoute>
+          }/>
+          <Route path="question/:subjectId" element={<QuestionBankPage />} />
+          <Route path="question/:subjectId/:questionBankId" element={<ListQuestionPage />} />
+          <Route path="matrix-exam" element={<ExamMatrixPage />} />
+          <Route path="exam/generate-exam-matrix" element={<GenerateExamFromMatrixPage />} />
+          <Route path="matrix-exam/matrix-detail" element={<DetailExamMatrixPage />} />
+          <Route path="exam" element={<ExamManagementPage />} />
+          <Route path="exam/:examId" element={<DetailExamPage />} />
+          <Route path="level" element={<LevelManagement />} />
+          <Route path="change-password" element={<ChangePasswordPage />} />
+        </Route>
+      </Routes> */}
+
+      <Routes>
+        <Route 
+          path="/candidate" 
+          element={
+            <ProtectedRoute allowedRoles={["candidate"]}>
+              <DefaultLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="home" element={<HomeCandidate />} />
+          <Route path="history" element={<HistoryCandidatePage />} />
+          <Route path="result/:takeExamId" element={<ResultCandidatePage />} />
+          <Route path="take-exam/:organizeExamId/:sessionId/:roomId/:takeExamId" element={<TakeExamPage />} />
+        </Route>
+      </Routes>
+
+      <Routes>
+        <Route path="/supervisor" element={
+          <ProtectedRoute allowedRoles={["supervisor"]}>
+            <SupervisorLayout />
+          </ProtectedRoute>
+        }>
+          <Route path="home" element={<SupervisorHomePage />} />
+          <Route path="monitor/:organizeExamId/:sessionId/:roomId" element={<MonitoringPage />} />
+          <Route path="change-passwords" element={<SupvChangePasswordPage />} />
+        </Route>
+      </Routes>
     </Router>
-    // <Router>
-    //   <Routes>
-    //     <Route path="/" element={<Login2 />} />
-    //     <Route path="/not-found" element={<NotFound />} />
-    //     <Route path="/test" element={<WelcomePage />} />
-    //   </Routes>
-
-    //   <Routes>
-    //     <Route 
-    //       path="/admin" 
-    //       element={
-    //         <ProtectedRoute allowedRoles={["admin"]}>
-    //           <Admin2Layout />
-    //         </ProtectedRoute>
-    //       }
-    //     >
-    //       <Route path="accountmanage" element={<AccountPage />} />
-    //       <Route path="groupuser" element={<GroupUserPage />} />
-    //       <Route path="log" element={<LogPage />} />
-    //       <Route path="change-password" element={<ChangePasswordPage />} />
-    //     </Route>
-    //   </Routes>
-
-    //   <Routes>
-    //     <Route 
-    //       path="/staff" 
-    //       element={
-    //         <ProtectedRoute allowedRoles={["staff"]}>
-    //           <Admin2Layout />
-    //         </ProtectedRoute>
-    //       }
-    //     >
-    //       <Route path="accountmanage" element={<AccountPage />} />
-    //       <Route path="groupuser" element={<GroupUserPage />} />
-    //       <Route path="groupuser/:groupuserId" element={<ListUserInGroup />} />
-    //       <Route path="dashboard" element={<Dashboard />} />
-    //       <Route path="organize">
-    //         <Route index element={<OrganizeExamPage />} />
-    //         <Route path=":organizeId" element={<SessionPage />} />
-    //       </Route>
-    //       <Route path="organize/statistic-auto/:organizeExamId" element={<AutoStatisticPage />} />
-    //       <Route path="organize/report/:organizeExamId" element={<ReportEachOrganizePage />} />
-    //       <Route path="organize/:organizeId/:sessionId" element={<RoomOrganizePage />} />
-    //       <Route path="organize/monitor/:organizeId/:sessionId" element={<MonitorOrganizePage />} />
-    //       <Route path="organize/score/:organizeId/:sessionId/:roomId" element={<ScoreTableSessionPage />} />
-    //       <Route path="organize/:organizeId/:sessionId/:roomId" element={<CandidateOrganizePage />} />
-    //       <Route path="organize/:organizeId/:sessionId/:roomId/:candidateId" element={<CandidateExamResultTest />} />
-    //       <Route path="question" element={<SubjectPage />}/>
-    //       <Route path="question/:subjectId" element={<QuestionBankPage />} />
-    //       <Route path="question/:subjectId/:questionBankId" element={<ListQuestionPage />} />
-    //       <Route path="matrix-exam" element={<ExamMatrixPage />} />
-    //       <Route path="exam/generate-exam-matrix" element={<GenerateExamFromMatrixPage />} />
-    //       <Route path="matrix-exam/matrix-detail" element={<DetailExamMatrixPage />} />
-    //       <Route path="exam" element={<ExamManagementPage />} />
-    //       <Route path="exam/:examId" element={<DetailExamPage />} />
-    //       <Route path="room" element={<RoomTest />} />
-    //       <Route path="level" element={<LevelManagement />} />
-    //       <Route path="change-password" element={<ChangePasswordPage />} />
-    //       <Route path="statistic-auto" element={<AutoStatisticPage />} />
-    //     </Route>
-    //   </Routes>
-
-    //   <Routes>
-    //     <Route 
-    //       path="/lecturer" 
-    //       element={
-    //         <ProtectedRoute allowedRoles={["lecturer"]}>
-    //           <Admin2Layout />
-    //         </ProtectedRoute>
-    //       }
-    //     >
-    //       <Route path="question" element={<SubjectPage />}/>
-    //       <Route path="question/:subjectId" element={<QuestionBankPage />} />
-    //       <Route path="question/:subjectId/:questionBankId" element={<ListQuestionPage />} />
-    //       <Route path="matrix-exam" element={<ExamMatrixPage />} />
-    //       <Route path="exam/generate-exam-matrix" element={<GenerateExamFromMatrixPage />} />
-    //       <Route path="matrix-exam/matrix-detail" element={<DetailExamMatrixPage />} />
-    //       <Route path="exam" element={<ExamManagementPage />} />
-    //       <Route path="exam/:examId" element={<DetailExamPage />} />
-    //       <Route path="level" element={<LevelManagement />} />
-    //       <Route path="change-password" element={<ChangePasswordPage />} />
-    //     </Route>
-    //   </Routes>
-
-    //   <Routes>
-    //     <Route 
-    //       path="/candidate" 
-    //       element={
-    //         <ProtectedRoute allowedRoles={["candidate"]}>
-    //           <DefaultLayout />
-    //         </ProtectedRoute>
-    //       }
-    //     >
-    //       <Route path="home" element={<HomeCandidate />} />
-    //       <Route path="history" element={<HistoryCandidatePage />} />
-    //       <Route path="result/:takeExamId" element={<ResultCandidatePage />} />
-    //       <Route path="take-exam/:organizeExamId/:sessionId/:roomId/:takeExamId" element={<TakeExamPage />} />
-    //     </Route>
-    //   </Routes>
-
-    //   <Routes>
-    //     <Route path="/supervisor" element={
-    //       <ProtectedRoute allowedRoles={["supervisor"]}>
-    //         <SupervisorLayout />
-    //       </ProtectedRoute>
-    //     }>
-    //       <Route path="home" element={<SupervisorHomePage />} />
-    //       <Route path="monitor/:organizeExamId/:sessionId/:roomId" element={<MonitoringPage />} />
-    //       <Route path="change-passwords" element={<SupvChangePasswordPage />} />
-    //     </Route>
-    //   </Routes>
-    // </Router>
   );
 }
 

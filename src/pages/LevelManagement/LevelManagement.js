@@ -10,6 +10,8 @@ import SearchBox from "../../components/SearchBox/SearchBox";
 import ApiService from "../../services/apiService";
 import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
+import hasPermission from "../../permissions";
+import {useSelector} from "react-redux"
 
 const LevelManagement = () => {
   const [listLevel, setListLevel] = useState([]);
@@ -19,7 +21,7 @@ const LevelManagement = () => {
   const [pageSize, setPageSize] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
-
+  const userRole = useSelector((state) => state.auth.user?.role);
   const [showForm, setShowForm] = useState(false);
   const [editingSubject, setEditingSubject] = useState(null);
   const navigate = useNavigate();
@@ -200,10 +202,12 @@ const LevelManagement = () => {
           </div>
 
           <div className='right-header'>
-            <AddButton onClick={preAddNew}>
-              <i className="fas fa-plus me-2"></i>
-              Thêm mới
-            </AddButton>
+            {hasPermission(userRole, "add_level") && (
+              <AddButton onClick={preAddNew}>
+                <i className="fas fa-plus me-2"></i>
+                Thêm mới
+              </AddButton>
+            )}
           </div>
         </div>
 
@@ -255,16 +259,26 @@ const LevelManagement = () => {
                           transform: 'translate3d(-10px, 10px, 0px)',
                         }}
                       >
-                        <li className="tbl-action" onClick={() => preEdit(item)}> 
-                          <button className="dropdown-item tbl-action" onClick={() => preEdit(item)}>
-                             Chỉnh sửa
-                          </button>
-                        </li>
-                        <li className="tbl-action" onClick={() => handleDelete(item.id)}>
-                          <button className="dropdown-item tbl-action" onClick={() => handleDelete(item.id)}>
-                             Xoá
-                          </button>
-                        </li>
+                        {hasPermission(userRole, "edit_del_level") ? (
+                        <>
+                          <li className="tbl-action" onClick={() => preEdit(item)}> 
+                            <button className="dropdown-item tbl-action" onClick={() => preEdit(item)}>
+                              Chỉnh sửa
+                            </button>
+                          </li>
+                          <li className="tbl-action" onClick={() => handleDelete(item.id)}>
+                            <button className="dropdown-item tbl-action" onClick={() => handleDelete(item.id)}>
+                              Xoá
+                            </button>
+                          </li>
+                        </>
+                         ) : (
+                          <li className="tbl-action">
+                            <span className="p-3" style={{ color: "gray", cursor: "not-allowed" }}>
+                              Không có quyền
+                            </span>
+                          </li>
+                        )}
                       </ul>
                     </div>
                   </td>

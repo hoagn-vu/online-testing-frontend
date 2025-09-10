@@ -50,7 +50,7 @@ const LoginPage2 = () => {
       if (profileResult.role === 'admin') {
         navigate('/admin/accountmanage');
       } else if (profileResult.role === 'lecturer') {
-        navigate('/lecturer/question');
+        navigate('/staff/question');
       } else if (profileResult.role === 'staff') {
         navigate('/staff/dashboard');
       } else if (profileResult.role === 'candidate') {
