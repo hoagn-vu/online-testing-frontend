@@ -54,6 +54,10 @@ const Dashboard = () => {
   const [scoreDistributionArray, setScoreDistributionArray] = useState([]);
   const [subjectOptions, setSubjectOptions] = useState([]);
   const [subjectId, setSubjectId] = useState(null);
+  const [countCandidate, setCountCandidate] = useState(0);
+  const [countStaffLecturerSupervisor, setCountStaffLecturerSupervisor] = useState(0);
+  const [countOrganizeExamDone, setCountOrganizeExamDone] = useState(0);
+  const [countRoom, setCountRoom] = useState(0);
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -79,28 +83,22 @@ const Dashboard = () => {
     }
   };
 
-  const fetchTotals = async () => {
+  const fetchNumber = async () => {
+    setIsLoading(true);
     try {
-      const roles = ['candidate', 'admin', 'staff', 'supervisor', 'lecturer'];
-      const results = await Promise.all(
-        roles.map(role =>
-          ApiService.get('/users', { params: { role } })
-        )
-      );
-
-      setTotalCandidate(results[0].data.total);
-      const others = results
-      .slice(1)
-      .reduce((sum, res) => sum + res.data.total, 0);
-      setTotalOthers(others);
-
-      console.log('Candidate total:', totalCandidate);
-      console.log('Others total:', totalOthers);
-      console.log('Tổng tất cả:', totalCandidate + totalOthers);
-    } catch (err) {
-      console.error(err);
+      const response = await ApiService.get('/statistics/dashboard-statistic');
+      setCountCandidate(response.data.countCandidate);
+      setCountStaffLecturerSupervisor(response.data.countStaffLecturerSupervisor);
+      setCountOrganizeExamDone(response.data.countOrganizeExamDone);
+      setCountRoom(response.data.countRoom);
+    } catch (error) {
+      console.error("Failed to fetch data", error);
     }
   };
+
+  useEffect(() => {
+    fetchNumber();
+  }, []);
 
   /*useEffect(() => {
     const fetchOrganizeExamOptions = async () => {
@@ -225,35 +223,30 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchData();
-    fetchDataRoom();
   }, [page, pageSize, keyword]);
-
-  useEffect(() => {
-    fetchTotals();
-  }, [page, pageSize, keyword, role]);
 
   return (
     <div className="dashboard-page p-4">
       <div className="justify-between gap-4 w-full card-dash">
         <CardDashboard
           title="Số lượng thí sinh"
-          value={"+" + totalCandidate}
+          value={"+" + countCandidate}
           icon={<i className="fa-solid fa-users"></i>}
         />
         <CardDashboard
           title="Cán bộ nhân viên"
-          value={"+" + totalOthers}
+          value={"+" + countStaffLecturerSupervisor}
           icon={<i className="fa-solid fa-chalkboard-user"></i>}
         />
         <CardDashboard
           title="Kỳ thi đã tổ chức"
-          value={"+" + totalCount}
+          value={"+" + countOrganizeExamDone}
           icon={<i className="fa-solid fa-calendar"></i>}
         />
         <CardDashboard
           title="Số lượng phòng thi"
-          value={"+" + totalRoom}
-          icon={<FaDollarSign />}
+          value={"+" + countRoom}
+          icon={<i className="fa-solid fa-door-open"></i>}
         />
       </div>
       {/* Biểu đồ đường - Gian lận qua từng kỳ thi */}
