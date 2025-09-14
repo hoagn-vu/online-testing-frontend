@@ -15,8 +15,9 @@ import AiGenerate from "../../components/AiGenerate/AiGenerate";
 import AddQuestion from "../../components/AddQuestion/AddQuestion";
 import DragDropModal from "../../components/DragDrop/DragDrop";
 import Modal from "react-bootstrap/Modal";
-import image from "../../../src/assets/images/img-def.png"
-import questionFile from "../../assets/file/upload_question.docx"
+import image from "../../../src/assets/images/img-def.png";
+import questionFile from "../../assets/file/upload_question.docx";
+import questionExcel from "../../assets/file/question_excel.xlsx";
 
 const ListQuestionPage = () => {
 	const user = useSelector((state) => state.auth.user);
@@ -224,8 +225,11 @@ const ListQuestionPage = () => {
 
 	const handleFilesDropped = async (files) => {
 		console.log("Files received:", files);
+		const file = files[0];
+  	const extension = file.name.split(".").pop().toLowerCase();
+
 		const formData = new FormData();
-		formData.append("file", files[0]);
+		formData.append("file", file);
 
 		setIsUploading(true);
 		setUploadProgress(0);
@@ -233,7 +237,17 @@ const ListQuestionPage = () => {
 		document.getElementById("uploadModal").style.display = "block";
 
 		try {
-			const response = await ApiService.post(`/file/upload-file-question`, formData, {
+			// ✅ chọn API theo loại file
+			let apiUrl = "";
+			if (extension === "docx") {
+				apiUrl = `/file/upload-file-question`;
+			} else if (extension === "xlsx") {
+				apiUrl = `/file/upload-question-excel`;
+			} else {
+				throw new Error("Chỉ hỗ trợ định dạng .docx hoặc .xlsx");
+			}
+
+			const response = await ApiService.post(apiUrl, formData, {
 				params: { subjectId, questionBankId },
 				headers: { "Content-Type": "multipart/form-data" },
 				onUploadProgress: (progressEvent) => {
@@ -1072,7 +1086,10 @@ const ListQuestionPage = () => {
 				open={openModal}
 				onClose={() => setOpenModal(false)}
 				onFilesDropped={handleFilesDropped}
-				sampleFile={{ url: questionFile, name: "upload_question.xlsx" }}
+				sampleFiles={[
+					{ url: questionFile, name: "upload_question.docx" },
+					{ url: questionExcel, name: "question_excel.xlsx" }
+				]}	
 			/>
 			<DragDropModal
 				open={openAddImageModal}

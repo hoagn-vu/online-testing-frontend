@@ -5,7 +5,7 @@ import FolderIcon from "@mui/icons-material/Folder";
 import uploadFile from "../../assets/file/upload_user.xlsx"
 import Swal from "sweetalert2";
 
-const DragDropModal = ({ open, onClose, onFilesDropped, title = "Kéo Thả Tệp Tài Liệu Vào Đây", sampleFile }) => {
+const DragDropModal = ({ open, onClose, onFilesDropped, title = "Kéo Thả Tệp Tài Liệu Vào Đây", sampleFiles = [] }) => {
   const [dragActive, setDragActive] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]); // ✅ Lưu danh sách file
   const fileInputRef = useRef(null);
@@ -145,17 +145,25 @@ const DragDropModal = ({ open, onClose, onFilesDropped, title = "Kéo Thả Tệ
                 </span>
               </p>
               
-              {sampleFile && (
-                <p style={{ marginTop: "8px", fontSize: "14px", color: "#555" }}>
-                  Bạn có thể tải file mẫu tại đây:{" "}
-                  <a 
-                    href={sampleFile.url} 
-                    download 
-                    style={{ color: "#3f8efc", textDecoration: "underline" }}
-                  >
-                    {sampleFile.name}
-                  </a>
-                </p>
+              {/* ✅ Nhiều file mẫu */}
+              {sampleFiles.length > 0 && (
+                <div style={{ marginTop: "8px", fontSize: "14px", color: "#555" }}>
+                  Bạn có thể tải file mẫu tại đây:
+                  <ul style={{ paddingLeft: "20px", marginTop: "6px" }}>
+                    {sampleFiles.map((file, index) => (
+                      <span key={index}>
+                        <a
+                          href={file.url}
+                          download
+                          style={{ color: "#3f8efc", textDecoration: "underline" }}
+                        >
+                          {file.name}
+                        </a>
+                        {index < sampleFiles.length - 1 && ", "}
+                      </span>
+                    ))}
+                  </ul>
+                </div>
               )}
 
               {/* Hidden input */}
@@ -221,7 +229,12 @@ DragDropModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   onFilesDropped: PropTypes.func.isRequired,
   title: PropTypes.string,
-  sampleFile: PropTypes.string,
+  sampleFiles: PropTypes.arrayOf(
+    PropTypes.shape({
+      url: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+    })
+  ),
 };
 
 export default DragDropModal;
