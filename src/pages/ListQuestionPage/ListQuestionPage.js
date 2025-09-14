@@ -48,14 +48,15 @@ const ListQuestionPage = () => {
 	const [modalImage, setModalImage] = useState(null);
 	const [openAddImageModal, setOpenAddImageModal] = useState(false);
 	const [newQuestion, setNewQuestion] = useState({
-			questionType: "single-choice",
-			questionStatus: "available",
-			questionText: "",
-			options: [{ optionText: "", isCorrect: false }, { optionText: "", isCorrect: false }],
-			isRandomOrder: false,
-			tags: ["", ""],
-			imageLinks: [],
-		});
+		questionType: "single-choice",
+		questionStatus: "available",
+		questionText: "",
+		options: [{ optionText: "", isCorrect: false }, { optionText: "", isCorrect: false }],
+		isRandomOrder: false,
+		tags: ["", ""],
+		imageLinks: [],
+	});
+	const [newImageFile, setNewImageFile] = useState(null);
   const handleClose = () => setModalImage(null);
 	const handleOpenFormAddQuestion = () => {
 		const newSearchParams = new URLSearchParams(location.search);
@@ -338,16 +339,43 @@ const ListQuestionPage = () => {
 	const handleUpdateQuestion = async () => {
 		setIsLoading(true);
 		try {
-			const response = await ApiService.put(`/subjects/update-question/${editQuestionId}`,
-				newQuestion,
+			const formData = new FormData();
+			formData.append("questionText", newQuestion.questionText);
+			formData.append("questionType", newQuestion.questionType);
+			formData.append("questionStatus", newQuestion.questionStatus);
+			formData.append("isRandomOrder", newQuestion.isRandomOrder);
+			newQuestion.tags.forEach((tag, index) =>
+				formData.append(`tags[${index}]`, tag)
+			);
+			newQuestion.options.forEach((opt, index) => {
+				formData.append(`options[${index}].optionText`, opt.optionText);
+				formData.append(`options[${index}].isCorrect`, opt.isCorrect);
+			});
+
+			// giữ lại link ảnh cũ nếu có
+			newQuestion.imageLinks.forEach((link, index) =>
+				formData.append(`imgLinks[${index}]`, link)
+			);
+
+			// thêm ảnh mới upload
+			if (newImageFile) {
+				formData.append("images", newImageFile);
+			}
+
+			const response = await ApiService.put(
+				`/subjects/update-question/${editQuestionId}`,
+				formData,
 				{
+					headers: { "Content-Type": "multipart/form-data" },
 					params: { subjectId: subjectId, questionBankId: questionBankId, userId: user.id },
 				}
 			);
+
 			fetchData();
-      await showToast("success", "Cập nhật câu hỏi thành công!");
+			await showToast("success", "Cập nhật câu hỏi thành công!");
 		} catch (error) {
 			console.error("Failed to update question:", error);
+			showToast("error", "Cập nhật thất bại!");
 		}
 		setIsLoading(false);
 	};
@@ -457,6 +485,7 @@ const ListQuestionPage = () => {
 			const file = files[0];
 			const newImageUrl = URL.createObjectURL(file); // Tạo URL tạm thời từ file
 
+			setNewImageFile(file);
 			setNewQuestion((prev) => ({
 				...prev,
 				imageLinks: [newImageUrl], // Cập nhật imageLinks với URL tạm thời
