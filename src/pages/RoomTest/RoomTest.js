@@ -59,10 +59,13 @@ const RoomTest = () => {
 
         // tuần hiện tại
         const today = new Date();
+        let day = today.getDay();
+        if (day === 0) day = 7; // nếu chủ nhật thì gán = 7
+
         const startOfWeek = new Date(today);
-        startOfWeek.setDate(today.getDate() - today.getDay()); // Chủ nhật
+        startOfWeek.setDate(today.getDate() - day + 1); // lùi về thứ 2
         const endOfWeek = new Date(startOfWeek);
-        endOfWeek.setDate(startOfWeek.getDate() + 7);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
 
         fetchSchedule(newestRoom.roomId, startOfWeek, endOfWeek);
       }
@@ -454,6 +457,7 @@ const RoomTest = () => {
                 ref={calendarRef}
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                 initialView="timeGridWeek"
+                firstDay={1}
                 slotMinTime="05:00:00"
                 slotMaxTime="24:00:00"
                 events={events.map(e => ({
