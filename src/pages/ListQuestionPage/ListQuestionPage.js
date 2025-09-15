@@ -337,8 +337,17 @@ const ListQuestionPage = () => {
 	};
 
 	const handleUpdateQuestion = async () => {
-		setIsLoading(true);
 		try {
+			// ✅ Hiện loading ngay khi bắt đầu call API
+			Swal.fire({
+				title: "Đang cập nhật...",
+				html: "Vui lòng chờ trong giây lát...",
+				allowOutsideClick: false,
+				didOpen: () => {
+					Swal.showLoading();
+				}
+			});
+
 			const formData = new FormData();
 			formData.append("questionText", newQuestion.questionText);
 			formData.append("questionType", newQuestion.questionType);
@@ -367,18 +376,26 @@ const ListQuestionPage = () => {
 				formData,
 				{
 					headers: { "Content-Type": "multipart/form-data" },
-					params: { subjectId: subjectId, questionBankId: questionBankId, userId: user.id },
+					params: {
+						subjectId,
+						questionBankId,
+						userId: user.id,
+					},
 				}
 			);
 
 			fetchData();
-			await showToast("success", "Cập nhật câu hỏi thành công!");
+
+			// ✅ Đóng loading và show toast thành công
+			Swal.close();
+			showToast("success", "Cập nhật câu hỏi thành công!");
 		} catch (error) {
 			console.error("Failed to update question:", error);
+			Swal.close();
 			showToast("error", "Cập nhật thất bại!");
 		}
-		setIsLoading(false);
 	};
+
 
 	const handleSaveQuestion = () => {
 		if (newQuestion.questionText.trim() === "" || newQuestion.options.some(opt => opt.optionText.trim() === "")) {

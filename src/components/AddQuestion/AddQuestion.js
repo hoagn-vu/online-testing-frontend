@@ -14,6 +14,7 @@ import image from "../../../src/assets/images/img-def.png"
 import DragDropModal from "../../components/DragDrop/DragDrop";
 import ApiService from "../../services/apiService";
 import Swal from "sweetalert2";
+import newStyled from "@emotion/styled";
 
 const AddQuestion = ({ onClose, onSuccess  }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -108,7 +109,7 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
   const handleSaveQuestions = async () => {
     try {
       const formData = new FormData();
-
+      
       addedQuestions.forEach((q, qIndex) => {
         formData.append(`questions[${qIndex}].questionText`, stripHtml(q.questionText));
         formData.append(
@@ -117,10 +118,16 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
         );
         formData.append(`questions[${qIndex}].questionStatus`, q.questionStatus);
         formData.append(`questions[${qIndex}].isRandomOrder`, q.isRandomOrder);
-
-        q.tags.forEach((tag, tIndex) => {
+        
+        tags.forEach((tag, tIndex) => {
           formData.append(`questions[${qIndex}].tags[${tIndex}]`, tag);
+          console.log("lời gì đấy: ",tIndex, tag);
+          console.log("lời gì đấyy: ",tags);
         });
+
+        /*formData.append(`questions[${qIndex}].tags`, tags);
+        console.log("anh vũ: ", `questions[${qIndex}].tags`)
+        console.log("anh vũu: ", tags)*/
 
         q.options.forEach((opt, oIndex) => {
           formData.append(`questions[${qIndex}].options[${oIndex}].optionText`, opt.optionText);
@@ -262,6 +269,7 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
 		setNewQuestion({ ...newQuestion, options: [...newQuestion.options, { optionText: "", isCorrect: false }] });
 	};
 
+  const [tags, setTags] = useState(["", ""])
   const [addedQuestions, setAddedQuestions] = useState([
     {
       id: Date.now(), 
@@ -335,6 +343,11 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
   };
 
   const handleTagChange = (index, newValue) => {
+    setTags(prev => {
+      const updated = [...prev];
+      updated[index] = newValue ? newValue.value : "";
+      return updated;
+    })
     setNewQuestion((prev) => {
       const updatedTags = [...prev.tags]; // clone
       updatedTags[index] = newValue ? newValue.value : "";
