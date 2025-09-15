@@ -4,13 +4,13 @@ import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import PropTypes from 'prop-types';
 import "./QuillEditor.css"
-import 'katex/dist/katex.min.css';
+//import 'katex/dist/katex.min.css';
 // Import KaTeX (JS + CSS)
-import katex from 'katex';
-import 'katex/dist/katex.min.css';
+//import katex from 'katex';
+//import 'katex/dist/katex.min.css';
 
 // Gắn vào global cho Quill formula dùng
-window.katex = katex;
+//window.katex = katex;
 const QuillEditor = ({ value, onChange }) => {
   const editorRef = useRef(null);
   const quillInstance = useRef(null);
