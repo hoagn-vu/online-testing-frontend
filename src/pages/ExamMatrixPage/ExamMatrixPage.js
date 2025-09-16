@@ -27,13 +27,16 @@ const ExamMatrixPage = () => {
   const navigate = useNavigate();
   const dynamicColSpan = 1 + (showChapter ? 1 : 0) + (showLevel ? 1 : 0);
   const [openId, setOpenId] = useState(null);
+  const [loadingDetail, setLoadingDetail] = useState(false);
 
   const toggleDropdown = (id) => {
     setOpenId(prev => prev === id ? null : id);
   };
-
+  
   const handleDetailClick = async (matrix) => {
     setEditingMatrix(matrix);
+    setShowDetailModal(true);
+    setLoadingDetail(true);
     try {
       const response = await ApiService.get(`/exam-matrices/${matrix.id}`);
       const selectedMatrix = response.data?.data;
@@ -94,12 +97,13 @@ const ExamMatrixPage = () => {
         ))
       );
 
-      setShowDetailModal(true);
       console.log("detailData:", tags);
       console.log("classification:", classification);
     } catch (error) {
       console.error("Lỗi lấy chi tiết ma trận:", error);
       Swal.fire("Lỗi!", "Không thể tải chi tiết ma trận. Vui lòng kiểm tra lại.", "error");
+    }finally {
+      setLoadingDetail(false);  // ✅ Tắt loading sau khi load xong
     }
   };
 
@@ -415,6 +419,12 @@ const ExamMatrixPage = () => {
       {/* Modal chi tiết */}
       {showDetailModal && (
       <div className="form-overlay">
+      {loadingDetail ? (
+    <div style={{ textAlign: "center", padding: "50px" }}>
+      <i className="fa fa-spinner fa-spin" style={{ fontSize: "30px", color: "#666" }}></i>
+      <p>Đang tải dữ liệu...</p>
+    </div>
+  ) : (
         <div style={{ backgroundColor: "#ffff",borderRadius: "8px"}}>
           <div className="p-3"
             style={{
@@ -568,9 +578,10 @@ const ExamMatrixPage = () => {
               Đóng
             </button>
           </div>
-        </div>
+        </div>)}
       </div>
       )}
+      
     </div>
   );
 };
