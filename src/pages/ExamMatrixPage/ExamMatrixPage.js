@@ -103,7 +103,7 @@ const ExamMatrixPage = () => {
       console.error("Lỗi lấy chi tiết ma trận:", error);
       Swal.fire("Lỗi!", "Không thể tải chi tiết ma trận. Vui lòng kiểm tra lại.", "error");
     }finally {
-      setLoadingDetail(false);  // ✅ Tắt loading sau khi load xong
+      setLoadingDetail(false); 
     }
   };
 
