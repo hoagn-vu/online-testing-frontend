@@ -387,7 +387,7 @@ const ExamManagementPage = () => {
 						<tbody>
 						{isLoading ? (
               <tr>
-                <td colSpan="6" className="text-center">
+                <td colSpan="7" className="text-center">
                   <div className="spinner-border text-primary" role="status">
                     <span className="visually-hidden">Loading...</span>
                   </div>
@@ -395,7 +395,7 @@ const ExamManagementPage = () => {
               </tr>
             ) : listExam.length === 0 ? (
 								<tr>
-									<td colSpan="6" className="text-center fw-semibold text-muted"
+									<td colSpan="7" className="text-center fw-semibold text-muted"
 											style={{ height: "100px", verticalAlign: "middle" }}>
 										Không có dữ liệu
 									</td>
