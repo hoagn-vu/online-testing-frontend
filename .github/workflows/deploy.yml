@@ -3,8 +3,6 @@ name: Deploy to server
 on:
   push:
     branches:
-      - main
-      - nam02
       - dev
   workflow_dispatch:
 
