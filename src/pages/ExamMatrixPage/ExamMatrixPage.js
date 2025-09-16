@@ -419,12 +419,6 @@ const ExamMatrixPage = () => {
       {/* Modal chi tiết */}
       {showDetailModal && (
       <div className="form-overlay">
-      {loadingDetail ? (
-    <div style={{ textAlign: "center", padding: "50px" }}>
-      <i className="fa fa-spinner fa-spin" style={{ fontSize: "30px", color: "#666" }}></i>
-      <p>Đang tải dữ liệu...</p>
-    </div>
-  ) : (
         <div style={{ backgroundColor: "#ffff",borderRadius: "8px"}}>
           <div className="p-3"
             style={{
@@ -433,8 +427,9 @@ const ExamMatrixPage = () => {
               justifyContent: 'space-between',
               alignItems: 'center',
               backgroundColor: "#ffff",
-              borderRadius: "8px"
-            }}
+              borderRadius: "8px",
+              minWidth: "700px"
+            }}  
           >
             <h5 className="modal-title fw-bold">Chi tiết ma trận: {editingMatrix?.matrixName}</h5>
             <button
@@ -448,6 +443,13 @@ const ExamMatrixPage = () => {
               }}
             ><i className="fa-solid fa-xmark"></i></button>
           </div>
+          {loadingDetail ? (
+          <div style={{ textAlign: "center", padding: "50px" }}>
+            <i className="fa fa-spinner fa-spin" style={{ fontSize: "30px", color: "#666" }}></i>
+            <p>Đang tải dữ liệu...</p>
+          </div>
+        ) : (
+         <>
           <div className="p-4" style={{ overflowY: 'auto',}}>
             <div className="d-flex gap-2 w-100" style={{ flexWrap: 'wrap' }}>
               <div className="table-responsive tbl-shadow pb-0 mb-0" style={{ flex: '1', fontSize: '14px' }}>
@@ -578,7 +580,9 @@ const ExamMatrixPage = () => {
               Đóng
             </button>
           </div>
-        </div>)}
+         </> 
+          )}
+        </div>
       </div>
       )}
       
