@@ -330,23 +330,23 @@ const OrganizeExamPage = () => {
 		try {
 			const response = await ApiService.get(`/exam-matrices/${matrixId}`);
 			const selectedMatrix = response.data?.data;
-
+			const classification = response.data?.data.matrixTags;
 			if (!selectedMatrix) {
 				throw new Error("Không tìm thấy ma trận với ID: " + matrixId);
 			}
 
 			// Lấy dữ liệu classification để bổ sung total
-			const tagRes = await ApiService.get("/subjects/questions/tags-classification", {
-				params: { 
-					subjectId: selectedMatrix.subjectId, 
-					questionBankId: selectedMatrix.questionBankId, 
-					type: selectedMatrix.matrixType   // dùng selectedMatrix thay vì matrix
-				},
-			});
-			const classification = tagRes.data || [];
+			//const tagRes = await ApiService.get("/subjects/questions/tags-classification", {
+			//	params: { 
+			//		subjectId: selectedMatrix.subjectId, 
+			//		questionBankId: selectedMatrix.questionBankId, 
+			//		type: selectedMatrix.matrixType   // dùng selectedMatrix thay vì matrix
+			//	},
+			//});
+			//const classification = tagRes.data || [];
 
 			// Kết hợp matrixTags với classification để thêm total
-			const tags = (selectedMatrix.matrixTags || []).map(tag => {
+			/*const tags = (selectedMatrix.matrixTags || []).map(tag => {
 				if (tag.chapter && tag.chapter.trim() !== "") {
 					if (tag.level && tag.level.trim() !== "") {
 						const found = classification.find(c => c.chapter === tag.chapter && c.level === tag.level);
@@ -363,21 +363,21 @@ const OrganizeExamPage = () => {
 						.reduce((sum, c) => sum + (c.total || 0), 0);
 					return { ...tag, total: levelTotals };
 				}
-			});
+			});*/
 
-			setDetailData(tags);
-			const hasChapter = tags.some(tag => tag.chapter && tag.chapter.trim() !== "");
-			const hasLevel = tags.some(tag => tag.level && tag.level.trim() !== "");
+			setDetailData(classification);
+			const hasChapter = classification.some(tag => tag.chapter && tag.chapter.trim() !== "");
+			const hasLevel = classification.some(tag => tag.level && tag.level.trim() !== "");
 
 			setShowChapter(hasChapter);
 			setShowLevel(hasLevel);
 
-			setTotalSelectedQuestions(tags.reduce((sum, tag) => sum + (tag.questionCount || 0), 0));
-			setTotalScore(tags.reduce((sum, tag) => sum + (tag.score || 0), 0));
+			setTotalSelectedQuestions(classification.reduce((sum, tag) => sum + (tag.questionCount || 0), 0));
+			setTotalScore(classification.reduce((sum, tag) => sum + (tag.score || 0), 0));
 
 			setDifficultyData(
 				Object.entries(
-					tags.reduce((acc, tag) => {
+					classification.reduce((acc, tag) => {
 						const key = hasLevel ? (tag.level || "Không xác định") : (tag.chapter || "Không xác định");
 						acc[key] = (acc[key] || 0) + (tag.questionCount || 0);
 						return acc;
@@ -388,8 +388,7 @@ const OrganizeExamPage = () => {
 			);
 
 			setShowDetailModal(true);
-			console.log("detailData:", tags);
-			console.log("classification:", classification);
+			console.log("detailData:", classification);
 		} catch (error) {
 			console.error("Lỗi lấy chi tiết ma trận:", error);
 			showToast("error", "Không thể tải chi tiết ma trận. Vui lòng kiểm tra lại");
@@ -975,7 +974,7 @@ const OrganizeExamPage = () => {
 											<th className="border p-2">STT</th>
 											{showChapter && <th className="border p-2">Chuyên đề kiến thức</th>}
 											{showLevel && <th className="border p-2">Mức độ</th>}
-											<th className="border p-2 text-center">Số lượng chọn / Tổng</th>
+											<th className="border p-2 text-center">Số lượng</th>
 											<th className="border p-2 text-center">Đơn vị</th>
 											<th className="border p-2 text-center">Tổng điểm</th>
 											<th className="border p-2 text-center">Điểm/Câu</th>
@@ -1014,7 +1013,7 @@ const OrganizeExamPage = () => {
 																	{tag.level || "-"}
 																</td>
 															)}
-															<td className="border p-2 text-center">{tag.questionCount} / {(tag.total || 0).toString().padStart(2, '0')}</td>
+															<td className="border p-2 text-center">{(tag.questionCount).toString().padStart(2, '0')}</td>
 															<td className="border p-2 text-center">Câu</td>
 															<td className="border p-2 text-center">{(tag.score || 0).toFixed(1)}</td>
 															<td className="border p-2 text-center">
@@ -1034,7 +1033,7 @@ const OrganizeExamPage = () => {
 															{tag.level || "-"}
 														</td>
 													)}
-													<td className="border p-2 text-center">{tag.questionCount} / {(tag.total || 0).toString().padStart(2, '0')}</td>
+													<td className="border p-2 text-center">{(tag.questionCount).toString().padStart(2, '0')}</td>
 													<td className="border p-2 text-center">Câu</td>
 													<td className="border p-2 text-center">{(tag.score || 0).toFixed(1)}</td>
 													<td className="border p-2 text-center">

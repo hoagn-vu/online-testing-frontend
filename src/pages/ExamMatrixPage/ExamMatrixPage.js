@@ -40,19 +40,22 @@ const ExamMatrixPage = () => {
     try {
       const response = await ApiService.get(`/exam-matrices/${matrix.id}`);
       const selectedMatrix = response.data?.data;
-
+      console.log("selectedMatrix:", selectedMatrix);
+      const classification = response.data?.data.matrixTags;
+      //const classification = buildClassification(selectedMatrix);
+      console.log("classification:", classification);
       if (!selectedMatrix) {
         throw new Error("Không tìm thấy ma trận với ID: " + matrix.id);
       }
 
       // Lấy dữ liệu classification để bổ sung total
-      const tagRes = await ApiService.get("/subjects/questions/tags-classification", {
-        params: { subjectId: selectedMatrix.subjectId, questionBankId: selectedMatrix.questionBankId, type: matrix.matrixType },
-      });
-      const classification = tagRes.data || [];
+      //const tagRes = await ApiService.get("/subjects/questions/tags-classification", {
+      //  params: { subjectId: selectedMatrix.subjectId, questionBankId: selectedMatrix.questionBankId, type: matrix.matrixType },
+      //});
+      //const classification = tagRes.data || [];
 
       // Kết hợp matrixTags với classification để thêm total
-      const tags = (selectedMatrix.matrixTags || []).map(tag => {
+      /*const tags = (selectedMatrix.matrixTags || []).map(tag => {
         if (tag.chapter && tag.chapter.trim() !== "") {
           if (tag.level && tag.level.trim() !== "") {
             // Trường hợp có cả chapter và level (ma trận loại both)
@@ -72,22 +75,22 @@ const ExamMatrixPage = () => {
             .reduce((sum, c) => sum + (c.total || 0), 0);
           return { ...tag, total: levelTotals };
         }
-      });
-
-      setDetailData(tags);
-      const hasChapter = tags.some(tag => tag.chapter && tag.chapter.trim() !== "");
-      const hasLevel = tags.some(tag => tag.level && tag.level.trim() !== "");
+      });*/
+      //console.log("tag:", tags)
+      setDetailData(classification);
+      const hasChapter = classification.some(tag => tag.chapter && tag.chapter.trim() !== "");
+      const hasLevel = classification.some(tag => tag.level && tag.level.trim() !== "");
 
       setShowChapter(hasChapter);
       setShowLevel(hasLevel);
 
-      setTotalSelectedQuestions(tags.reduce((sum, tag) => sum + (tag.questionCount || 0), 0));
-      setTotalScore(tags.reduce((sum, tag) => sum + (tag.score || 0), 0));
+      setTotalSelectedQuestions(classification.reduce((sum, tag) => sum + (tag.questionCount || 0), 0));
+      setTotalScore(classification.reduce((sum, tag) => sum + (tag.score || 0), 0));
 
      // Tạo difficultyData dựa trên showLevel
       setDifficultyData(
         Object.entries(
-          tags.reduce((acc, tag) => {
+          classification.reduce((acc, tag) => {
             const key = hasLevel ? (tag.level || "Không xác định") : (tag.chapter || "Không xác định");
             acc[key] = (acc[key] || 0) + (tag.questionCount || 0);
             return acc;
@@ -97,8 +100,7 @@ const ExamMatrixPage = () => {
         ))
       );
 
-      console.log("detailData:", tags);
-      console.log("classification:", classification);
+      console.log("detailData:", classification);
     } catch (error) {
       console.error("Lỗi lấy chi tiết ma trận:", error);
       Swal.fire("Lỗi!", "Không thể tải chi tiết ma trận. Vui lòng kiểm tra lại.", "error");
@@ -459,7 +461,7 @@ const ExamMatrixPage = () => {
                       <th className="border p-2">STT</th>
                       {showChapter && <th className="border p-2">Chuyên đề kiến thức</th>}
                       {showLevel && <th className="border p-2">Mức độ</th>}
-                      <th className="border p-2 text-center">Số lượng chọn / Tổng</th>
+                      <th className="border p-2 text-center">Số lượng chọn</th>
                       <th className="border p-2 text-center">Đơn vị</th>
                       <th className="border p-2 text-center">Tổng điểm</th>
                       <th className="border p-2 text-center">Điểm/Câu</th>
@@ -498,7 +500,7 @@ const ExamMatrixPage = () => {
                                   {tag.level || "-"}
                                 </td>
                               )}
-                              <td className="border p-2 text-center">{tag.questionCount} / {(tag.total || 0).toString().padStart(2, '0')}</td>
+                              <td className="border p-2 text-center">{(tag.questionCount)}</td>
                               <td className="border p-2 text-center">Câu</td>
                               <td className="border p-2 text-center">{(tag.score || 0).toFixed(1)}</td>
                               <td className="border p-2 text-center">
@@ -518,7 +520,7 @@ const ExamMatrixPage = () => {
                               {tag.level || "-"}
                             </td>
                           )}
-                          <td className="border p-2 text-center">{tag.questionCount} / {(tag.total || 0).toString().padStart(2, '0')}</td>
+                          <td className="border p-2 text-center">{(tag.questionCount)}</td>
                           <td className="border p-2 text-center">Câu</td>
                           <td className="border p-2 text-center">{(tag.score || 0).toFixed(1)}</td>
                           <td className="border p-2 text-center">

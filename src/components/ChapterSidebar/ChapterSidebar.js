@@ -10,13 +10,15 @@ import ApiService from "../../services/apiService";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import "./ChapterSidebar.css";
 import PropTypes from 'prop-types';
+import { Pointer } from 'lucide-react';
 
-const ChapterSidebar = ({ onChapterSelect }) => {
+const ChapterSidebar = ({ onFilterSelect, selectedFilter  }) => {
   const { subjectId, questionBankId } = useParams();
   const [chapters, setChapters] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedChapter, setSelectedChapter] = useState(null);
   const [groupedQuestions, setGroupedQuestions] = useState({});
+  //const [selectedFilter, setSelectedFilter] = useState(null);
 
    useEffect(() => {
     const fetchChaptersWithLevels = async () => {
@@ -61,12 +63,27 @@ const ChapterSidebar = ({ onChapterSelect }) => {
     }));
   };
 
-  // Gửi chapter lên cha khi chọn
+  // Khi click chapter
   const handleChapterClick = (chapter) => {
-    setSelectedChapter(chapter); // Cập nhật local state
-    if (onChapterSelect) onChapterSelect(chapter); // Gửi lên cha
+    if (selectedFilter?.chapter === chapter && !selectedFilter?.level) {
+      // Nếu đang chọn cùng chapter thì reset -> hiển thị all
+      onFilterSelect(null);
+    } else {
+      onFilterSelect({ chapter }); // Chỉ lọc theo chapter
+    }
   };
-  
+
+  // Khi click level
+  const handleLevelClick = (chapter, level) => {
+    if (selectedFilter?.chapter === chapter && selectedFilter?.level === level) {
+      // Nếu click lại đúng chapter + level thì reset
+      onFilterSelect(null);
+    } else {
+      onFilterSelect({ chapter, level }); // Lọc theo chapter + level
+    }
+  };
+
+
   return (
     <div>
       <img className="m-3" src={logo} alt="Logo" style={{ height: 40 }} />
@@ -84,9 +101,13 @@ const ChapterSidebar = ({ onChapterSelect }) => {
               <ListItem 
                 onClick={() => handleChapterClick(chapter)}
                 sx={{ 
-                  backgroundColor: selectedChapter === chapter ? '#e6f2fc' : '#f0f0f0',
+                  backgroundColor:
+                selectedFilter?.chapter === chapter && !selectedFilter?.level
+                  ? "#e6f2fc"
+                  : "#f0f0f0",
                   '&:hover': {
                     backgroundColor: '#e0f0ff',
+                    cursor: "pointer",
                   }, 
                   mb: 1,
                 }}
@@ -101,7 +122,7 @@ const ChapterSidebar = ({ onChapterSelect }) => {
                 >            
                   <ArrowDropDownIcon 
                     style={{
-                      transform: collapsedLevels[chapter] ? "rotate(180deg)" : "rotate(0deg)",
+                      transform: collapsedLevels[chapter] ? "rotate(0deg)" : "rotate(180deg)",
                       transition: "transform 0.3s ease"
                     }}
                   />
@@ -117,9 +138,15 @@ const ChapterSidebar = ({ onChapterSelect }) => {
                       sx={{
                         pl: 4,
                         py: 0.6,
+                        backgroundColor:
+                      selectedFilter?.chapter === chapter &&
+                      selectedFilter?.level === level
+                        ? "#e6f2fc"
+                        : "transparent",
                         '&:hover': { backgroundColor: '#f5f5f5', cursor: 'pointer' },
                       }}
                       button
+                      onClick={() => handleLevelClick(chapter, level)}
                     >
                       <ListItemText primary={`${level} (${questions.length})`} />
                     </ListItem>
@@ -136,6 +163,10 @@ const ChapterSidebar = ({ onChapterSelect }) => {
 };
 
 ChapterSidebar.propTypes = {
-  onChapterSelect: PropTypes.func, // Khai báo onChapterSelect là một hàm
+  onFilterSelect: PropTypes.func, // Khai báo onChapterSelect là một hàm
+  selectedFilter: PropTypes.shape({
+    chapter: PropTypes.string,
+    level: PropTypes.string,
+  }),
 };
 export default ChapterSidebar;
