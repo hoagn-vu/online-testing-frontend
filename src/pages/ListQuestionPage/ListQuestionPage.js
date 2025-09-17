@@ -42,6 +42,8 @@ const ListQuestionPage = () => {
 	const [showAddQuestionForm, setShowAddQuestionForm] = useState(false);
 
 	const { selectedChapter } = useOutletContext(); // Lấy selectedChapter từ context
+	const { selectedFilter } = useOutletContext();
+	
 	const [selectedQuestions, setSelectedQuestions] = useState([]); // State để theo dõi câu hỏi được chọn
   const [showModal, setShowModal] = useState(false);
 	const navigate = useNavigate();
@@ -473,13 +475,25 @@ const ListQuestionPage = () => {
 };
 
 	// Lọc câu hỏi theo selectedChapter
-  const filteredQuestions = selectedChapter
-    ? { [selectedChapter]: groupedQuestions[selectedChapter] || {} }
-    : groupedQuestions;
+  //const filteredQuestions = selectedChapter
+  //  ? { [selectedChapter]: groupedQuestions[selectedChapter] || {} }
+  //  : groupedQuestions;
+
+	const filteredQuestions = selectedFilter
+  ? selectedFilter.level
+    ? { 
+        [selectedFilter.chapter]: { 
+          [selectedFilter.level]: groupedQuestions[selectedFilter.chapter]?.[selectedFilter.level] || [] 
+        } 
+      }
+    : { 
+        [selectedFilter.chapter]: groupedQuestions[selectedFilter.chapter] || {} 
+      }
+  : groupedQuestions; // Nếu null thì show all
 
 	const [editingChapter, setEditingChapter] = useState(null);
 	const [editedName, setEditedName] = useState("");
-
+	
 	useEffect(() => {
 		if (editQuestionId) {
 			const question = questions.find((q) => q.questionId === editQuestionId);
@@ -745,7 +759,7 @@ const ListQuestionPage = () => {
 												<ArrowDropDownIcon
 													fontSize="large"
 													style={{
-														transform: collapsedChapters[chapter] ? "rotate(180deg)" : "rotate(0deg)",
+														transform: collapsedChapters[chapter] ? "rotate(0deg)" : "rotate(180deg)",
 														transition: "transform 0.3s ease",
 													}}
 												/>

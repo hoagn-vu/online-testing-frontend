@@ -169,6 +169,7 @@ export default function Admin2Layout() {
   const [isOpen, setIsOpen] = useState(false);
   const [openMenus, setOpenMenus] = useState({});
   const [selectedChapter, setSelectedChapter] = useState(null);
+  const [selectedFilter, setSelectedFilter] = useState(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -300,7 +301,8 @@ export default function Admin2Layout() {
 
       <Drawer variant="permanent" open={open}>
         {isListQuestionPage ? (
-          <ChapterSidebar onChapterSelect={(chapter) => setSelectedChapter(chapter)} />
+          <ChapterSidebar onFilterSelect={setSelectedFilter}
+    selectedFilter={selectedFilter} />
         ) : (
           <>
             <DrawerHeader>
@@ -414,7 +416,7 @@ export default function Admin2Layout() {
         }}
       >        
         <DrawerHeader />
-        <Outlet context={{ selectedChapter }} /> {/* Truyền selectedChapter qua context */}      </Box>
+        <Outlet context={{ selectedFilter  }} /> {/* Truyền selectedChapter qua context */}      </Box>
     </Box>
   );
 }
