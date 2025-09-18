@@ -467,6 +467,9 @@ const SubjectPage = () => {
                         },
                         ".css-w76bbz-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select": {
                           height: "50px"
+                        },
+                        ".css-mp9f0v.MuiSelect-select": {
+                          height: "50px",
                         }
                       }}
                     >

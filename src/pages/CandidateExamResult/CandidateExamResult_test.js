@@ -145,7 +145,7 @@ const CandidateExamResultTest = () => {
                 </div>
                 <div className="mx-3">
                   <p className="text-second">Điểm số</p>
-                  <p><i className="fa-solid fa-star me-1 star-color"></i>{totalScore}</p> 
+                  <p><i className="fa-solid fa-star me-1 star-color"></i>{Number(totalScore).toFixed(2)}</p> 
                 </div>
                 <div className="mx-3">
                   <p className="text-second">Câu trả lời đúng</p> 
@@ -358,7 +358,7 @@ const CandidateExamResultTest = () => {
                   <div className="d-flex mb-0 align-items-center">
                     <i className="fa-solid fa-star me-1 star-color"></i>
                     <p className="mb-0">
-                      {q.isUserChosenCorrect ? pointPerCorrect : 0} điểm
+                      {(q.isUserChosenCorrect ? pointPerCorrect : 0).toFixed(2)} điểm
                     </p>
 
                     {/* Chevron toggle */}
