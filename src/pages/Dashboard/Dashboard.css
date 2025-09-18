@@ -3,6 +3,7 @@
     box-sizing: border-box;
     overflow-y: auto;
     background-color: #F8F9FA;
+    
 }
 
 .content-1 {
@@ -20,10 +21,10 @@
 }
 
 .barchart-score {
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 4px 4px 27px 0 rgba(181, 180, 180, 0.25);
-
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 4px 4px 27px 0 rgba(181, 180, 180, 0.25);
+  padding: 15px;
 }
 
 .calendar {

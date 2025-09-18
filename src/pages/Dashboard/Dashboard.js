@@ -230,22 +230,22 @@ const Dashboard = () => {
       <div className="justify-between gap-4 w-full card-dash">
         <CardDashboard
           title="Số lượng thí sinh"
-          value={"+" + countCandidate}
+          value={"+ " + countCandidate}
           icon={<i className="fa-solid fa-users"></i>}
         />
         <CardDashboard
           title="Cán bộ nhân viên"
-          value={"+" + countStaffLecturerSupervisor}
+          value={"+ " + countStaffLecturerSupervisor}
           icon={<i className="fa-solid fa-chalkboard-user"></i>}
         />
         <CardDashboard
           title="Kỳ thi đã tổ chức"
-          value={"+" + countOrganizeExamDone}
+          value={"+ " + countOrganizeExamDone}
           icon={<i className="fa-solid fa-calendar"></i>}
         />
         <CardDashboard
           title="Số lượng phòng thi"
-          value={"+" + countRoom}
+          value={"+ " + countRoom}
           icon={<i className="fa-solid fa-door-open"></i>}
         />
       </div>

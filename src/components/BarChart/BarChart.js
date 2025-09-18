@@ -50,7 +50,7 @@ const BarChart = ({ title, labels, dataPoints, width, height, isShowLegend=true,
       {
         label: title,
         data: dataPoints,
-        backgroundColor: "#4A88D9",
+        backgroundColor: "#5794e3ff",
         borderColor: "#4A88D9",
         borderWidth: 1,
       },
