@@ -105,7 +105,7 @@ const ChangePasswordForm = () => {
       }).unwrap();
 
       // Nếu backend trả về message lỗi nhưng vẫn là 200
-      if (response.code === "op-incorrect") {
+      if (response.status === "op-incorrect") {
         showToast("warning", "Mật khẩu cũ không đúng!");
         return;
       }
