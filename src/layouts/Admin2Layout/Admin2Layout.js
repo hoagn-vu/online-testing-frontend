@@ -241,11 +241,11 @@ export default function Admin2Layout() {
 
   const handleNavigateToChangePassword = () => {
     if (user.role === "lecturer") {
-      navigate("/lecturer/change-password");
+      navigate("/staff/change-password");
     } else if (user.role === "staff") {
       navigate("/staff/change-password");
     } else if (user.role === "admin") {
-      navigate("/admin/change-password");
+      navigate("/staff/change-password");
     }
   };
 
