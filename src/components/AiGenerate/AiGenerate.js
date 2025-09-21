@@ -293,15 +293,50 @@ const AiGenerate = ({ onClose  }) => {
 
   return (
     <div className="">
-      <h5 className="mb-3 fw-bold" style={{color: '#1976d2', fontSize: "20px"}}>Sinh câu hỏi bằng AI</h5>
-      
-      <div className="d-flex g-2 mb-1">
-        <div className="col-5 flex-grow-1">
+      <div  className="d-flex justify-content-between align-items-center">
+        <h5 className="fw-bold mb-0" style={{color: '#1976d2', fontSize: "20px"}}>Sinh câu hỏi bằng AI</h5>
+
+        <div className="d-flex align-items-end ms-2" style={{ whiteSpace: "nowrap" }}>
+          <AddButton className="me-2" onClick={handleGenerateQuestions}>
+            <i className="fas fa-brain me-2"></i>Tạo câu hỏi
+          </AddButton>
+          <CancelButton onClick={onClose}>Hủy</CancelButton>
+        </div>
+      </div>
+
+      <div className="row g-2 mb-1 mt-3">
+        <div className="col-md-5 col-12">
           <label className="form-label">Tải tài liệu đầu vào:</label>
           <input type="file" className="form-control" onChange={(e) => setFile(e.target.files[0])} />
         </div>
-        
-        <div className="col-3 ms-2 me-2">
+        <div className="col-md-4 col-12">
+          <p className="mb-2">Chọn chuyên đề kiến thức:</p>
+          <CreatableSelect
+            isClearable
+            options={allChapters}
+            value={newQuestion.tags[0] ? { value: newQuestion.tags[0], label: newQuestion.tags[0] } : null}
+            onChange={(newValue) => handleTagChange(0, newValue)}
+            menuPortalTarget={document.body}
+            placeholder="Chọn chuyên đề kiến thức"
+            styles={{
+              menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+              container: (provided) => ({ ...provided, flex: 1 })
+            }}
+          />
+        </div>
+        <div className="col-md-1 col-4">
+          <label className="form-label">Nhận biết:</label>
+          <input type="number" className="form-control" placeholder="Ví dụ: 10" value={nQuestions} onChange={(e) => setNQuestions(e.target.value)} />
+        </div>
+        <div className="col-md-1 col-4">
+          <label className="form-label">Thông hiểu:</label>
+          <input type="number" className="form-control" placeholder="Ví dụ: 10" value={nQuestions} onChange={(e) => setNQuestions(e.target.value)} />
+        </div>
+        <div className="col-md-1 col-4">
+          <label className="form-label">Vận dụng:</label>
+          <input type="number" className="form-control" placeholder="Ví dụ: 10" value={nQuestions} onChange={(e) => setNQuestions(e.target.value)} />
+        </div>
+        {/* <div className="col-3 ms-2 me-2">
           <label className="form-label">Số lượng câu hỏi:</label>
           <input type="number" className="form-control" placeholder="Ví dụ: 10" value={nQuestions} onChange={(e) => setNQuestions(e.target.value)} />
         </div>
@@ -311,7 +346,7 @@ const AiGenerate = ({ onClose  }) => {
             <i className="fas fa-brain me-2"></i>Tạo câu hỏi
           </AddButton>
           <CancelButton onClick={onClose}>Hủy</CancelButton>
-        </div>
+        </div> */}
       </div>
       
       <Modal
@@ -345,7 +380,7 @@ const AiGenerate = ({ onClose  }) => {
       )}
       {generatedQuestions.length > 0 && (
         <>
-          <div style={{ flex: 1 }}>
+          {/* <div style={{ flex: 1 }}>
             <p className="mb-2 mt-3">Chọn chuyên đề kiến thức:</p>
             <CreatableSelect
               isClearable
@@ -359,7 +394,7 @@ const AiGenerate = ({ onClose  }) => {
                 container: (provided) => ({ ...provided, flex: 1 })
               }}
             />
-          </div>
+          </div> */}
           <div className="mb-3 mt-3">
             <input
               type="checkbox"
