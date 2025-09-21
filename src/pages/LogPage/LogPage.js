@@ -49,12 +49,19 @@ const LogPage = () => {
   const [logAt, setLogAt] = useState("");
   const [logDetails, setLogDetails] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+  const [filterAction, setFilterAction] = useState("");
+  
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const response = await ApiService.get("/logs");
-      setLogs(response.data);
+      const response = await ApiService.get("/logs", {
+        params: { type: filterAction || "post, put, delete", page, pageSize },
+      });
+      setLogs(response.data.data);
+      setTotalCount(response.data.total);
     } catch (error) {
       console.error("Failed to fetch data: ", error);
     }
@@ -63,7 +70,47 @@ const LogPage = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [page, pageSize]);
+
+  // mapping log action -> icon, color, text
+  const getTagConfig = (action) => {
+    if (!action) return {};
+
+    const lower = action.toLowerCase();
+
+    if (lower.includes("delete")) {
+      return {
+        text: "Xóa",
+        icon: "fas fa-trash-alt",
+        color: "#e53935",
+        background: "#fdecea"
+      };
+    }
+    if (lower.includes("post")) {
+      return {
+        text: "Thêm mới",
+        icon: "fas fa-plus-circle",
+        color: "#2e7d32",
+        background: "#e8f5e9"
+      };
+    }
+    if (lower.includes("put")) {
+      return {
+        text: "Cập nhật",
+        icon: "fas fa-edit",
+        color: "#1976d2",
+        background: "#e3f2fd"
+      };
+    }
+
+    // fallback mặc định
+    return {
+      text: action,
+      icon: "fas fa-info-circle",
+      color: "#616161",
+      background: "#f5f5f5"
+    };
+  };
 
   return (
     <div className="p-4">
@@ -77,17 +124,25 @@ const LogPage = () => {
       <div className="tbl-shadow p-3">
                 {/* Thanh tìm kiếm + Nút lọc */}
         <div className="log-actions">
-          <div className="action-selector">
-          <select className="form-select" defaultValue="">
-            <option value="" disabled>Hành động</option>
-            <option value="Login">Login</option>
-            <option value="Thêm mới">Thêm mới</option>
-            <option value="Sửa">Sửa</option>
-            <option value="Xóa">Xóa</option>
-          </select>
+          <div className="action-selector" >
+            <select style={{minWidth: "200px"}}
+              className="form-select" 
+              value={filterAction}
+              onChange={(e) => setFilterAction(e.target.value)}
+            >
+              <option value="">Tất cả hành động</option>
+              <option value="post">Thêm mới</option>
+              <option value="put">Cập nhật</option>
+              <option value="delete">Xóa</option>
+            </select>
 
             <input type="date" className="date-log" />
-            <button className="add-btn d-flex filter-btn align-items-center">
+            <button className="add-btn d-flex filter-btn align-items-center"
+              onClick={() => {
+                setPage(1); // reset về trang 1 khi lọc
+                fetchData();
+              }}
+            >
               <i className="fas fa-filter me-2 mt-1 "></i>
               Lọc
             </button>
@@ -103,7 +158,7 @@ const LogPage = () => {
                   <th scope="col" className="title-row text-center">STT</th>
                   <th scope="col" className="title-row" style={{ width: "200px" }}>Thời điểm</th>
                   <th scope="col" className="title-row text-center" style={{ width: "200px" }}>Hành động</th>
-                  <th scope="col" className="title-row">Người thực hiện</th>
+                  <th scope="col" className="title-row" style={{ width: "250px" }}>Người thực hiện</th>
                   <th scope="col" className="title-row">Mô tả</th>
                 </tr>
               </thead>
@@ -129,43 +184,48 @@ const LogPage = () => {
                       <td className="text-center">{index + 1}</td>
                       <td>{new Date(log.logAt).toLocaleString()}</td>
                       <td className="text-center">
-                        <Chip
-                          label={
-                            <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                              <i
-                                className={getTagColor(log.logAction).icon}
-                                style={{
-                                  fontSize: "1rem",
-                                  color: getTagColor(log.logAction).color,
-                                  filter: "drop-shadow(0 1px 1px rgba(0,0,0,0.1))"
-                                }}
-                              />
-                              <span style={{ fontWeight: 600 }}>{log.logAction}</span>
-                            </span>
-                          }
-                          sx={{
-                            background: getTagColor(log.logAction).background,
-                            color: getTagColor(log.logAction).color,
-                            fontWeight: 600,
-                            fontSize: "0.85rem",
-                            borderRadius: "16px",
-                            padding: "6px 14px",
-                            minWidth: "110px",
-                            textAlign: "center",
-                            boxShadow: "0 2px 4px rgba(0,0,0,0.08)",
-                            transition: "all 0.2s ease-in-out",
-                            "&:hover": {
-                              transform: "scale(1.03)",
-                              boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-                              cursor: "pointer"
-                            },
-                            "& .MuiChip-label": {
-                              padding: 0,
-                            },
-                          }}
-                        />
+                        {(() => {
+                          const cfg = getTagConfig(log.logAction);
+                          return (
+                            <Chip
+                              label={
+                                <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                  <i
+                                    className={cfg.icon}
+                                    style={{
+                                      fontSize: "1rem",
+                                      color: cfg.color,
+                                      filter: "drop-shadow(0 1px 1px rgba(0,0,0,0.1))"
+                                    }}
+                                  />
+                                  <span style={{ fontWeight: 600 }}>{cfg.text}</span>
+                                </span>
+                              }
+                              sx={{
+                                background: cfg.background,
+                                color: cfg.color,
+                                fontWeight: 600,
+                                fontSize: "0.85rem",
+                                borderRadius: "16px",
+                                padding: "6px 14px",
+                                minWidth: "110px",
+                                textAlign: "center",
+                                boxShadow: "0 2px 4px rgba(0,0,0,0.08)",
+                                transition: "all 0.2s ease-in-out",
+                                "&:hover": {
+                                  transform: "scale(1.03)",
+                                  boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+                                  cursor: "pointer"
+                                },
+                                "& .MuiChip-label": {
+                                  padding: 0,
+                                },
+                              }}
+                            />
+                          );
+                        })()}
                       </td>
-                      <td>{log.madeBy}</td>
+                      <td>{log.fullName}</td>
                       <td>{log.logDetails}</td>
                     </tr>
                   ))
@@ -174,7 +234,15 @@ const LogPage = () => {
             </table>
           </div>
           <div className="d-flex justify-content-end">
-            <Pagination count={10} color="primary" shape="rounded"/>        
+            { totalCount > 0 && (
+              <Pagination
+                count={Math.ceil(totalCount / pageSize)}
+                shape="rounded"
+                page={page}
+                onChange={(e, value) => setPage(value)}
+                color="primary"
+              />
+            )}       
           </div>
         </div>
       </div>
