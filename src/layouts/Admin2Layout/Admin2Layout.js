@@ -170,7 +170,7 @@ export default function Admin2Layout() {
   const [openMenus, setOpenMenus] = useState({});
   const [selectedChapter, setSelectedChapter] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState(null);
-
+  
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 960) {
@@ -189,6 +189,21 @@ export default function Admin2Layout() {
   const dispatch = useDispatch();
  
   const user = useSelector((state) => state.auth.user);
+
+  useEffect(() => {
+    if (user?.role === "lecturer") {
+      setOpenMenus((prev) => ({
+        ...prev,
+        "Quản lý nội dung thi": true, // auto mở menu này
+      }));
+    }
+    if (user?.role === "admin") {
+      setOpenMenus((prev) => ({
+        ...prev,
+        "Quản lý người dùng": true, // auto mở menu này
+      }));
+    }
+  }, [user]);
 
   const handleLogout = () => {
     dispatch(logout());
