@@ -12,6 +12,7 @@ import ApiService from "../../services/apiService";
 import AddButton from "../../components/AddButton/AddButton";
 import CancelButton from "../../components/CancelButton/CancelButton";
 import ThesisImage from "../../../src/assets/images/Thesis-bro.png";
+import Nodata from "../../assets/images/no-data1.png"
 
 const QuestionBankPage = () => {
   const { subjectId } = useParams();
@@ -243,15 +244,17 @@ const QuestionBankPage = () => {
                 </div>
               </div>
             ) : listQuestionBank.length === 0 ? (
-              <div
-                className="d-flex justify-content-center align-items-center text-center text-muted fw-semibold"
-                style={{ minHeight: "200px", gridColumn: "1 / -1" }}
-              >
-                <div className="text-center p-4 rounded shadow-sm bg-light text-muted" style={{ width: "400px"}}>
-                  <i className="fa-solid fa-circle-info fa-2x mb-2"></i>
-                  <h5>Không có dữ liệu</h5>
-                </div>
+             <div
+              className="d-flex justify-content-center align-items-center text-center text-muted"
+              style={{gridColumn: "1 / -1"}} // chiều cao tối thiểu để căn giữa
+            >
+              <div>
+                <img src={Nodata} alt="No questions" style={{ maxWidth: "500px" }} />
+                <p className="m-0">
+                  Chưa có bộ câu hỏi nào được tạo. Hãy nhấn <strong>Thêm mới</strong>
+                </p>
               </div>
+            </div>
             ) : (
               listQuestionBank.map((item, index) => (
                 <div key={item.questionBankId}

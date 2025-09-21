@@ -18,6 +18,7 @@ import Modal from "react-bootstrap/Modal";
 import image from "../../../src/assets/images/img-def.png";
 import questionFile from "../../assets/file/upload_question.docx";
 import questionExcel from "../../assets/file/question_excel.xlsx";
+import Nodata from "../../assets/images/no-data1.png"
 
 const ListQuestionPage = () => {
 	const user = useSelector((state) => state.auth.user);
@@ -680,12 +681,14 @@ const ListQuestionPage = () => {
 				))} */}
 				{Object.keys(groupedQuestions).length === 0 ? (
 					<div
-						className="d-flex align-items-center justify-content-center"
-						style={{ minHeight: "350px" }} // Hoặc bạn có thể dùng height: "60vh"
+						className="d-flex justify-content-center align-items-center text-center text-muted"
+						style={{gridColumn: "1 / -1"}} // chiều cao tối thiểu để căn giữa
 					>
-						<div className="text-center p-4 rounded shadow-sm bg-light text-muted" style={{ width: "400px"}}>
-							<i className="fa-solid fa-circle-info fa-2x mb-2"></i>
-							<h5>Không có dữ liệu</h5>
+						<div>
+							<img src={Nodata} alt="No questions" style={{ maxWidth: "500px" }} />
+							<p className="m-0">
+  							Hiện chưa có câu hỏi nào. Vui lòng chọn <strong>Thêm câu hỏi</strong>, <strong>Tải lên File</strong> hoặc sử dụng <strong>AI sinh câu hỏi</strong> để bắt đầu.
+							</p>
 						</div>
 					</div>
 					) : (
