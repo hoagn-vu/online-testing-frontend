@@ -128,7 +128,7 @@ const RoomTest = () => {
   const updateRoom = async (room) => {
     setIsLoading(true);
     try {
-      const response = await ApiService.put(`/rooms/${room.id}`, room);
+      const response = await ApiService.put(`/rooms/${room.roomId}`, room);
       if (response.status >= 200 && response.status < 300) {
         await fetchData();
         return true; // thành công
@@ -219,6 +219,8 @@ const RoomTest = () => {
     e.preventDefault();
     try {
       if (editingAccount) {
+        console.log("editingRoomId:", editingAccount); 
+        console.log("formData:", formData);
         await updateRoom({ ...editingAccount, ...formData });
         showToast("success", "Cập nhật phòng thành công!");
         setShowForm(false);
