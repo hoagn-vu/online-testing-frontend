@@ -154,7 +154,10 @@ const ListUserInGroup = () => {
     }).then(async(result) => {
       if (result.isConfirmed) {
         try {
-          await ApiService.delete(`/groupUser/delete/${groupId}/user/${userId}`);
+          await ApiService.delete(`/groupUser/${groupId}/remove-users`, {
+            headers: { "Content-Type": "application/json" },
+            data: { userIds: [userId] }, // gửi đúng body JSON
+          });
           fetchData();
           showToast("success", "Người dùng đã bị xóa khỏi nhóm!");
         }
