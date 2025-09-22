@@ -48,7 +48,7 @@ const LoginPage2 = () => {
 
       // Điều hướng dựa trên role
       if (profileResult.role === 'admin') {
-        navigate('/admin/accountmanage');
+        navigate('/staff/accountmanage');
       } else if (profileResult.role === 'lecturer') {
         navigate('/staff/question');
       } else if (profileResult.role === 'staff') {

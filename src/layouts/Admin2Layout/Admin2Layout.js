@@ -33,7 +33,7 @@ const drawerWidth = 250;
 
 const menuItems = [
   { title: "Trang chủ", icon: <i className="fa-solid fa-chart-column icon-color" aria-hidden="true"></i>, path: "/staff/dashboard", role: ["staff"] },
-  { 
+  /*{ 
     title: "Quản lý người dùng", 
     icon: <i className="fa-solid fa-user-gear icon-color"></i>, 
     role: ["admin"],
@@ -41,11 +41,11 @@ const menuItems = [
       { title: "Danh sách người dùng", path: "/admin/accountmanage" },
       { title: "Nhóm người dùng", path: "/admin/groupuser" },
     ],
-  },
+  },*/
   { 
     title: "Quản lý người dùng", 
     icon: <i className="fa-solid fa-user-gear icon-color"></i>, 
-    role: ["staff"],
+    role: ["staff", "admin"],
     children: [
       { title: "Danh sách người dùng", path: "/staff/accountmanage" },
       { title: "Nhóm người dùng", path: "/staff/groupuser" },
