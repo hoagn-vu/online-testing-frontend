@@ -53,12 +53,13 @@ const LogPage = () => {
   const [pageSize, setPageSize] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
   const [filterAction, setFilterAction] = useState("");
-  
+  const [filterDate, setFilterDate] = useState("");
+
   const fetchData = async () => {
     setIsLoading(true);
     try {
       const response = await ApiService.get("/logs", {
-        params: { type: filterAction || "post, put, delete", page, pageSize },
+        params: { type: filterAction || "post, put, delete", page, pageSize, start: filterDate || undefined },
       });
       setLogs(response.data.data);
       setTotalCount(response.data.total);
@@ -136,7 +137,12 @@ const LogPage = () => {
               <option value="delete">Xóa</option>
             </select>
 
-            <input type="date" className="date-log" />
+            <input 
+              type="date" 
+              className="date-log"
+              value={filterDate}
+              onChange={(e) => setFilterDate(e.target.value)}
+            />
             <button className="add-btn d-flex filter-btn align-items-center"
               onClick={() => {
                 setPage(1); // reset về trang 1 khi lọc
@@ -225,7 +231,7 @@ const LogPage = () => {
                           );
                         })()}
                       </td>
-                      <td>{log.fullName}</td>
+                      <td>{log.fullName} - {log.userCode}</td>
                       <td>{log.logDetails}</td>
                     </tr>
                   ))
