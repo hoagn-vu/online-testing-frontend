@@ -219,7 +219,7 @@ const ExamManagementPage = () => {
 			if (result.isConfirmed) {
 			console.log("Xóa tài khoản có ID:", id);
 			try {
-				await ApiService.put(`/exams/${id}`, { examStatus: "deleted" }); 
+				await ApiService.delete(`/exams/${id}`); 
 				showToast("success", "Xóa đề thi thành công!");
 				// Sau khi xóa thì load lại danh sách
 				fetchData();
