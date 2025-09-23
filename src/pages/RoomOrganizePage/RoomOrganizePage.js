@@ -217,7 +217,7 @@ const RoomOrganizePage = () => {
 		setShowForm(true);
 	};
 	
-	const handleDelete = (id) => {
+	const handleDelete = async (id) => {
 		Swal.fire({
 			title: "Bạn có chắc chắn xóa?",
 			text: "Bạn sẽ không thể hoàn tác hành động này!",
@@ -227,16 +227,26 @@ const RoomOrganizePage = () => {
 			cancelButtonColor: "#d33",
 			confirmButtonText: "Xóa",
 			cancelButtonText: "Hủy",
-		}).then((result) => {
+		}).then(async(result) => {
 			if (result.isConfirmed) {
-				console.log("Xóa phòng thi có ID:", id);
-				setRoomsOrganize(prev => prev.filter(room => room.roomId !== id));
-				showToast("success", "Phòng thi đã bị xóa!");
+				try {
+					await ApiService.delete(`/organize-exams/${organizeId}/sessions/${sessionId}/rooms/${id}`);
+					showToast("success", "Xóa phòng thi thành công!");
+
+					// Sau khi xóa thì load lại danh sách
+					fetchData();
+				} catch (error) {
+					console.error("Xóa thất bại:", error);
+					showToast("error", error.message);
+				}
+				//console.log("Xóa phòng thi có ID:", id);
+				//setRoomsOrganize(prev => prev.filter(room => room.roomId !== id));
+				//showToast("success", "Phòng thi đã bị xóa!");
 			}
 		});
 	};
 	
-	const handleToggleStatus = (id, currentStatus) => {
+	const handleToggleStatus = async (id, currentStatus) => {
 		Swal.fire({
 		  title: "Bạn có chắc muốn thay đổi trạng thái?",
 		  text: "Trạng thái sẽ được cập nhật ngay sau khi xác nhận!",
@@ -246,19 +256,46 @@ const RoomOrganizePage = () => {
 		  cancelButtonColor: "#d33",
 		  confirmButtonText: "Xác nhận",
 		  cancelButtonText: "Hủy",
-		}).then((result) => {
+		}).then(async(result) => {
 		  if (result.isConfirmed) {
-			const newStatus = currentStatus.toLowerCase() === "active" ? "disabled" : "active";
+				try {
+					const newStatus = currentStatus === "active" ? "disabled" : "active";
+					const response = await ApiService.put(
+						`/organize-exams/${organizeId}/sessions/${sessionId}/rooms/${id}`,
+						{
+							roomStatus: newStatus 
+						}
+					);
+
+					// Sau khi gọi API thành công thì fetch lại dữ liệu
+					await fetchData();
+
+					// Xác định trạng thái mới dựa vào trạng thái hiện tại
+					let successMessage = "";
+					if (currentStatus === "active") {
+						successMessage = "Đóng phòng thi thành công!";
+					} else {
+						successMessage = "Kích hoạt phòng thi thành công!";
+					}
+					showToast("success", successMessage);
+				} catch (error) {
+					console.error("Failed to toggle session status: ", error);
+					Swal.fire({
+						icon: "error",
+						title: "Lỗi",
+						text: error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại!",
+					});	
+				}
+			/*const newStatus = currentStatus.toLowerCase() === "active" ? "disabled" : "active";
 			const statusLabel = newStatus === "active" ? "Kích hoạt" : "Đóng";
 
-			// Cập nhật state (sau này sẽ gửi API để cập nhật cơ sở dữ liệu)
 			setRows((prevRows) =>
 			  prevRows.map((row) =>
 				row.roomId === id ? { ...row, roomStatus: newStatus } : row
 			  )
 			);
 			console.log("organizeExamId được đổi status:", id)
-			showToast("success", `Trạng thái đã chuyển sang "${statusLabel}"`);
+			showToast("success", `Trạng thái đã chuyển sang "${statusLabel}"`);*/
 		  }
 		});
 	};
@@ -435,16 +472,16 @@ const RoomOrganizePage = () => {
 															Chỉnh sửa
 														</button>
 													</li> */}
-													<li className="tbl-action" onClick={() => handleDelete(item.roomId)}>
-														<button className="dropdown-item tbl-action" onClick={() => handleDelete(item.roomId)}>
+													<li className="tbl-action" onClick={() => handleDelete(item.roomInSessionId)}>
+														<button className="dropdown-item tbl-action" onClick={() => handleDelete(item.roomInSessionId)}>
 															Xoá
 														</button>
 													</li>
-													<li className="tbl-action" onClick={() => handleToggleStatus(item.roomId, item.roomStatus)}>
+													<li className="tbl-action" onClick={() => handleToggleStatus(item.roomInSessionId, item.roomStatus)}>
 														<button
 															className="dropdown-item tbl-action"
 															onClick={() =>
-																handleToggleStatus(item.roomId, item.roomStatus)
+																handleToggleStatus(item.roomInSessionId, item.roomStatus)
 															}
 														>
 															{item.roomStatus.toLowerCase() === "active"

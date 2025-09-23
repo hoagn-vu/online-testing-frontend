@@ -142,8 +142,8 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route path="accountmanage" element={<AccountPage />} />
-          <Route path="groupuser" element={<GroupUserPage />} />
+          {/* <Route path="accountmanage" element={<AccountPage />} /> */}
+          {/* <Route path="groupuser" element={<GroupUserPage />} /> */}
           <Route path="log" element={<LogPage />} />
           <Route path="change-password" element={<ChangePasswordPage />} />
         </Route>
@@ -153,21 +153,21 @@ function App() {
         <Route path="/staff" element={<Admin2Layout />}>
           <Route path="accountmanage" 
             element={
-              <ProtectedRoute allowedRoles={["staff"]}>
+              <ProtectedRoute allowedRoles={["staff", "admin"]}>
                 <AccountPage />
               </ProtectedRoute>
             }
           />
           <Route path="groupuser" 
             element={
-              <ProtectedRoute allowedRoles={["staff"]}>
+              <ProtectedRoute allowedRoles={["staff", "admin"]}>
                 <GroupUserPage />
               </ProtectedRoute>
             }
           />
           <Route path="groupuser/:groupuserId" 
             element={
-              <ProtectedRoute allowedRoles={["staff"]}>
+              <ProtectedRoute allowedRoles={["staff", "admin"]}>
                 <ListUserInGroup />
               </ProtectedRoute>
             }

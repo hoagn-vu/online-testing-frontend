@@ -198,7 +198,7 @@ const SubjectPage = () => {
         // Xóa phân môn khỏi danh sách
         //setListSubject(prev => prev.filter(subject => subject.id !== subjectId));
         try {
-          await ApiService.delete(`/subjects/delete-subject?subjectId=${subjectId}`);
+          await ApiService.delete(`/subjects/${subjectId}`, );
           fetchData();
           showToast("success", "Phân môn bị xóa thành công!");
         }

@@ -185,7 +185,7 @@ const ExamMatrixPage = () => {
       if (result.isConfirmed) {
       console.log("Xóa tài khoản có ID:", id);
       try {
-				await ApiService.post(`/exam-matrices/${id}`, { matrixStatus: "deleted" }); 
+				await ApiService.put(`/exam-matrices/${id}`, { matrixStatus: "deleted" }); 
 				showToast("success", "Xóa ma trận đề thi thành công!");
 				fetchData();
 			} catch (error) {
