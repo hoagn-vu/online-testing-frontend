@@ -163,7 +163,7 @@ const SessionPage = () => {
 		}).then(async(result) => {
 			if (result.isConfirmed) {
 				try {
-					await ApiService.put(`/organize-exams/${organizeId}/sessions/${id}`, { sessionStatus: "deleted" });
+					await ApiService.delete(`/organize-exams/${organizeId}/sessions/${id}`);
 					showToast("success", "Xóa ca thi thành công!");
 
 					// Sau khi xóa thì load lại danh sách
