@@ -358,7 +358,7 @@ const CandidateExamResultTest = () => {
                   <div className="d-flex mb-0 align-items-center">
                     <i className="fa-solid fa-star me-1 star-color"></i>
                     <p className="mb-0">
-                      {(q.isUserChosenCorrect ? pointPerCorrect : 0).toFixed(2)} điểm
+                      {(q.isUserChosenCorrect ? q.score : 0).toFixed(2)} điểm
                     </p>
 
                     {/* Chevron toggle */}

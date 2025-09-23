@@ -289,7 +289,7 @@ const OrganizeExamPage = () => {
       if (result.isConfirmed) {
 				console.log("Xóa tài khoản có ID:", id);
 				try {
-          await ApiService.put(`/organize-exams/${id}`, { organizeExamStatus: "deleted" });
+          await ApiService.delete(`/organize-exams/${id}`);
           fetchData();
           showToast("success", "Kỳ thi đã bị xóa thành công!");
         }
