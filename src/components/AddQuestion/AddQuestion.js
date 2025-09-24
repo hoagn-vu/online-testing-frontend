@@ -259,7 +259,7 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
     questionStatus: "available",
     questionText: "",
     options: [{ optionText: "", isCorrect: false }, { optionText: "", isCorrect: false }],
-    isRandomOrder: false,
+    isRandomOrder: true,
     tags: ["", ""],
     // imageLinks: [],
     images: []
@@ -280,7 +280,7 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
         { optionText: "", isCorrect: false },
         { optionText: "", isCorrect: false }
       ],
-      isRandomOrder: false,
+      isRandomOrder: true,
       tags: ["", ""],
     }
   ]);
@@ -295,7 +295,7 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
         { optionText: "", isCorrect: false },
         { optionText: "", isCorrect: false }
       ],
-      isRandomOrder: false,
+      isRandomOrder: true,
       tags: ["", ""],
     };
     setAddedQuestions(prev => [...prev, newQ]);
@@ -521,7 +521,7 @@ const AddQuestion = ({ onClose, onSuccess  }) => {
                   checked={addedQuestions[qIndex].isMultipleChoice}
                   onChange={() => handleToggleMultipleChoice(qIndex)}
                 />
-                <label className="form-check-label">Multiple Choice</label>
+                <label className="form-check-label">Nhiều lựa chọn</label>
               </div>
             </div>
 

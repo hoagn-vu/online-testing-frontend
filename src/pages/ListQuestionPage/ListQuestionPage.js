@@ -229,6 +229,26 @@ const ListQuestionPage = () => {
 		});
 	}
 
+	function showToastFast(type, message, onClose) {
+		const Toast = Swal.mixin({
+			toast: true,
+			position: "top-end",
+			showConfirmButton: false,
+			timer: 1500,
+			timerProgressBar: true,
+			didOpen: (toast) => {
+				toast.onmouseenter = Swal.stopTimer;
+				toast.onmouseleave = Swal.resumeTimer;
+			}
+		});
+
+		return Toast.fire({
+			icon: type,
+			title: message,
+			didClose: onClose
+		});
+	}
+
 	const handleFilesDropped = async (files) => {
 		console.log("Files received:", files);
 		const file = files[0];
@@ -272,10 +292,11 @@ const ListQuestionPage = () => {
 			});
 
 			setUploadProgress(100); // Khi hoàn thành, đặt 100%
-			showToast("success", "Tải tệp câu hỏi lên thành công!");
+			await showToastFast("success", "Tải tệp câu hỏi lên thành công!");
 
 			await fetchData();
 			await fetchTagsClassification();
+			window.location.reload();
 			// window.location.reload();
 		} catch (error) {
 			showToast("error", error.message);
@@ -454,7 +475,7 @@ const ListQuestionPage = () => {
 		new window.bootstrap.Modal(document.getElementById("questionModal")).show(); 
 	};
 
-	const handleDelete = (id) => {
+	const handleDelete = async (id) => {
 		Swal.fire({
 			title: "Bạn có chắc chắn xóa?",
 			text: "Bạn sẽ không thể hoàn tác hành động này!",
@@ -464,18 +485,19 @@ const ListQuestionPage = () => {
 			cancelButtonColor: "#d33",
 			confirmButtonText: "Xóa",
 			cancelButtonText: "Hủy",
-		}).then((result) => {
+		}).then(async(result) => {
 			if (result.isConfirmed) {
 				// console.log("Xóa tài khoản có ID:", id);
 				// setQuestions(prev => prev.filter(question => question.questionId !== id));
 				try {
-					ApiService.delete(`/subjects/delete/question`,
+					await ApiService.delete(`/subjects/delete/question`,
 						{ params: { questionId: id, subjectId: subjectId, questionBankId: questionBankId } }
 					);
-					showToast("success", "Xóa câu hỏi thành công!");
+					await showToast("success", "Xóa câu hỏi thành công!");
 
 					fetchTagsClassification();
 					fetchData();
+					window.location.reload(); 
 				} catch (error) {
 					console.error("Failed to delete question:", error);
 					showToast("error", "Xóa câu hỏi thất bại!");
@@ -900,7 +922,7 @@ const ListQuestionPage = () => {
 																	checked={question.questionType === 'multiple-choice'}
 																	readOnly
 																/>
-																<label className="form-check-label" style={{fontSize: "14px"}}>Multiple Choice</label>
+																<label className="form-check-label" style={{fontSize: "14px"}}>Nhiều lựa chọn</label>
 															</div>
 														</div>
 
@@ -1098,7 +1120,7 @@ const ListQuestionPage = () => {
 												}));
 											}}
 										/>
-										<label className="form-check-label">Multiple Choice</label>
+										<label className="form-check-label">Nhiều lựa chọn</label>
 									</div>
 								</div>
 								
