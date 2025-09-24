@@ -121,6 +121,8 @@ const SessionPage = () => {
 				await ApiService.put(`/organize-exams/${organizeId}/sessions/${formData.sessionId}/update`, formData);
 				showToast("success", "Chỉnh sửa ca thi thành công!");
 				fetchData();
+				resetForm();
+				setShowForm(false);
 			}
 			catch (error) {
 				console.error("Failed to update session: ", error);
@@ -130,13 +132,22 @@ const SessionPage = () => {
 				await ApiService.post(`/organize-exams/${organizeId}/sessions`, formData);
 				showToast("success", "Thêm ca thi thành công!");
 				fetchData();
+				resetForm();
+				setShowForm(false);
 			} catch (error) {
 				console.error("Failed to  add new session: ", error);
+				// Kiểm tra xem có trả về lỗi chồng chéo không
+				if (
+					error.response &&
+					error.response.data &&
+					error.response.data.status === "session-overlap"
+				) {
+					showToast("error", error.response.data.message || "Ca thi bị chồng chéo thời gian.");
+				} else {
+					showToast("error", "Có lỗi khi thêm ca thi!");
+				}
 			}
 		}
-
-		resetForm();
-		setShowForm(false);
 	};
 
 	const preEdit = (session) => {
