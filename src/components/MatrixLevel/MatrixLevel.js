@@ -79,15 +79,27 @@ const MatrixLevel = ({ data, handleInputChange, totalScore: propTotalScore, setT
                     value={item.totalSelected}
                     min="0"
                     max={item.totalQuestions || 999}
-                    onChange={(e) =>
-                      handleInputChangeLevel(item.originalIndex, "totalSelected", Math.max(0, Number(e.target.value)))
-                    }
                     onKeyDown={(e) => {
                       if ([".", ",", "e"].includes(e.key)) e.preventDefault();
                     }}
                     className="border p-1 text-center"
                     style={{ width: "60px" }}
-                  />{" "}
+                    onChange={(e) =>{
+                      let value = Number(e.target.value);
+
+                      // Nếu không phải số thì gán 0
+                      if (isNaN(value)) value = 0;
+
+                      // Nếu lớn hơn tổng câu hỏi thì gán = tổng câu hỏi
+                      if (value > (item.totalQuestions || 0)) {
+                        value = item.totalQuestions || 0;
+                      }
+
+                      // Nếu nhỏ hơn 0 thì gán = 0
+                      if (value < 0) value = 0;
+                      handleInputChangeLevel(item.originalIndex, "totalSelected", value)
+                    }}
+                    />{" "}
                   / {(item.totalQuestions ?? 0).toString().padStart(2, "0")}
                 </td>
                 <td className="text-center">Câu</td>
