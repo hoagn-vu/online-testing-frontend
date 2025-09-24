@@ -322,9 +322,9 @@ export default function Admin2Layout() {
           <>
             <DrawerHeader>
               <img src={logo} alt="Logo" style={{ height: 40 }} />
-              <IconButton onClick={handleDrawerClose}>
+              {/* <IconButton onClick={handleDrawerClose}>
                 {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-              </IconButton>
+              </IconButton> */}
             </DrawerHeader>
             <Divider />
             <List>
