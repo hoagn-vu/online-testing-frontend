@@ -144,30 +144,30 @@ const ListQuestionPage = () => {
 		fetchData();
 	}, [subjectId, questionBankId, keyword, page, pageSize]);
 
+	const fetchTagsClassification = async () => {
+		try {
+			const response = await ApiService.get(
+				`/subjects/questions/tags-classification?subjectId=${subjectId}&questionBankId=${questionBankId}&type=both`
+			);
+
+			const data = response.data;
+
+			// Lấy các chapter khác rỗng và loại bỏ trùng lặp
+			const chapters = Array.from(new Set(data.map(item => item.chapter).filter(ch => ch && ch.trim() !== "")))
+				.map(ch => ({ value: ch, label: ch }));
+
+			// Lấy các level khác rỗng và loại bỏ trùng lặp
+			const levels = Array.from(new Set(data.map(item => item.level).filter(lv => lv && lv.trim() !== "")))
+				.map(lv => ({ value: lv, label: lv }));
+
+			setAllChapters(chapters);
+			//setAllLevels(levels);
+		} catch (error) {
+			console.error("Lỗi khi lấy chapter/level:", error);
+		}
+	};
+
 	useEffect(() => {
-		const fetchTagsClassification = async () => {
-			try {
-				const response = await ApiService.get(
-					`/subjects/questions/tags-classification?subjectId=${subjectId}&questionBankId=${questionBankId}&type=both`
-				);
-
-				const data = response.data;
-
-				// Lấy các chapter khác rỗng và loại bỏ trùng lặp
-				const chapters = Array.from(new Set(data.map(item => item.chapter).filter(ch => ch && ch.trim() !== "")))
-					.map(ch => ({ value: ch, label: ch }));
-
-				// Lấy các level khác rỗng và loại bỏ trùng lặp
-				const levels = Array.from(new Set(data.map(item => item.level).filter(lv => lv && lv.trim() !== "")))
-					.map(lv => ({ value: lv, label: lv }));
-
-				setAllChapters(chapters);
-				//setAllLevels(levels);
-			} catch (error) {
-				console.error("Lỗi khi lấy chapter/level:", error);
-			}
-		};
-
 		fetchTagsClassification();
 	}, [subjectId, questionBankId]);
 
@@ -273,8 +273,10 @@ const ListQuestionPage = () => {
 
 			setUploadProgress(100); // Khi hoàn thành, đặt 100%
 			showToast("success", "Tải tệp câu hỏi lên thành công!");
+
 			await fetchData();
-			window.location.reload();
+			await fetchTagsClassification();
+			// window.location.reload();
 		} catch (error) {
 			showToast("error", error.message);
 		}
@@ -390,6 +392,7 @@ const ListQuestionPage = () => {
 			);
 
 			fetchData();
+			fetchTagsClassification();
 
 			// ✅ Đóng loading và show toast thành công
 			Swal.close();
@@ -463,9 +466,20 @@ const ListQuestionPage = () => {
 			cancelButtonText: "Hủy",
 		}).then((result) => {
 			if (result.isConfirmed) {
-				console.log("Xóa tài khoản có ID:", id);
-				setQuestions(prev => prev.filter(question => question.questionId !== id));
-				showToast("success", "Xóa câu hỏi thành công!");
+				// console.log("Xóa tài khoản có ID:", id);
+				// setQuestions(prev => prev.filter(question => question.questionId !== id));
+				try {
+					ApiService.delete(`/subjects/delete/question`,
+						{ params: { questionId: id, subjectId: subjectId, questionBankId: questionBankId } }
+					);
+					showToast("success", "Xóa câu hỏi thành công!");
+
+					fetchTagsClassification();
+					fetchData();
+				} catch (error) {
+					console.error("Failed to delete question:", error);
+					showToast("error", "Xóa câu hỏi thất bại!");
+				}
 			}
 		});
 	};
