@@ -50,7 +50,7 @@ const LogPage = () => {
   const [logDetails, setLogDetails] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [page_size, setPage_size] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
   const [filterAction, setFilterAction] = useState("");
   const [filterDate, setFilterDate] = useState("");
@@ -59,7 +59,7 @@ const LogPage = () => {
     setIsLoading(true);
     try {
       const response = await ApiService.get("/logs", {
-        params: { type: filterAction || "post, put, delete", page, pageSize, start: filterDate || undefined },
+        params: { type: filterAction || "post, put, delete", page, page_size, start: filterDate || undefined },
       });
       setLogs(response.data.data);
       setTotalCount(response.data.total);
@@ -71,7 +71,7 @@ const LogPage = () => {
 
   useEffect(() => {
     fetchData();
-  }, [page, pageSize]);
+  }, [page, page_size]);
 
   // mapping log action -> icon, color, text
   const getTagConfig = (action) => {
@@ -242,7 +242,7 @@ const LogPage = () => {
           <div className="d-flex justify-content-end">
             { totalCount > 0 && (
               <Pagination
-                count={Math.ceil(totalCount / pageSize)}
+                count={Math.ceil(totalCount / page_size)}
                 shape="rounded"
                 page={page}
                 onChange={(e, value) => setPage(value)}

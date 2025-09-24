@@ -6,13 +6,13 @@ function NotificationDashboard() {
 	const [logs, setLogs] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 	const [page, setPage] = useState(1);
-	const [pageSize, setPageSize] = useState(7);	
+	const [page_size, setPage_size] = useState(7);	
 
 	const fetchLogData = async () => {
 		setIsLoading(true);
 		try {
 			const response = await ApiService.get("/logs", {
-        params: { type: "post, put, delete", page, pageSize },
+        params: { type: "post, put, delete", page, page_size },
       });
 			setLogs(response.data.data);
 		} catch (error) {
@@ -23,7 +23,7 @@ function NotificationDashboard() {
 
 	useEffect(() => {
 		fetchLogData();
-	}, [page, pageSize]);
+	}, [page, page_size]);
 
 	const formatDateTime = (isoString) => {
 		const date = new Date(isoString);
