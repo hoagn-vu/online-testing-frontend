@@ -12,8 +12,9 @@ import CreatableSelect from 'react-select/creatable';
 import Swal from "sweetalert2";
 import axios from "axios";
 import ApiService from "../../services/apiService";
-import mock_data from "./generate-response.json"
-import mock_data2 from "./mock2.json"
+import mock_data from "./mock/generate-response.json"
+import mock_data2 from "./mock/mock2.json"
+import mock_data3 from "./mock/mock3_w_diff.json"
 
 const AiGenerate = ({ onClose  }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -36,11 +37,16 @@ const AiGenerate = ({ onClose  }) => {
   const [allChapters, setAllChapters] = useState([]);
   const [file, setFile] = useState(null);
   const [nQuestions, setNQuestions] = useState(5);
+  const [nEasy, setNEasy] = useState(1);
+  const [nMedium, setNMedium] = useState(1);
+  const [nHard, setNHard] = useState(1);
+  const [chapter, setChapter] = useState("");
   const difficultyMap = {
     easy: "Nhận biết",
     medium: "Thông hiểu",
-    difficult: "Vận dụng",
+    hard: "Vận dụng",
   };
+
   useEffect(() => {
     const fetchTagsClassification = async () => {
       try {
@@ -78,19 +84,21 @@ const AiGenerate = ({ onClose  }) => {
   }
 
   const convertDataForRequest = (data) => {
+    console.log("Dữ liệu đầu vào:", data);
     return Object.values(data).map(item => {
       const correctAnswer = item["đáp án"];
       const options = Object.values(item["lựa chọn"]).map(opt => ({
         optionText: opt,
         isCorrect: opt === correctAnswer
       }));
+      const difficulty = item["_difficulty"] ? difficultyMap[item["_difficulty"]] : "";
 
       return {
         questionType: "single-choice",
         questionText: item["câu hỏi"],
         options,
         isRandomOrder: false,
-        tags: ["", ""],
+        tags: [chapter, difficulty],
         imgLinks: []
       };
     }); 
@@ -124,43 +132,48 @@ const AiGenerate = ({ onClose  }) => {
 
     setIsLoading(true);
 
-    // Giả lập gọi API tạo câu hỏi
-    setTimeout(() => {
-      // setGeneratedQuestions(convertDataForDisplay(mock_data.mcqs));
-      // console.log("Generated Questions:", convertDataForRequest(mock_data.mcqs));
-      setGeneratedQuestions(convertDataForDisplay(mock_data2.mcqs));
-      setIsLoading(false);
-      // handleSaveQuestions(mock_data2.mcqs); // Lưu câu hỏi luôn 
-      // onClose(); // Nếu lưu luôn thì quay lại danh sách câu hỏi luôn
-    }, 2000);
+    // // Giả lập gọi API tạo câu hỏi
+    // setTimeout(() => {
+    //   // setGeneratedQuestions(convertDataForDisplay(mock_data.mcqs));
+    //   // console.log("Generated Questions:", convertDataForRequest(mock_data.mcqs));
+    //   setGeneratedQuestions(convertDataForDisplay(mock_data3.mcqs));
+    //   setIsLoading(false);
+    //   console.log("Dữ liệu gửi lên:", convertDataForRequest(mock_data3.mcqs));
+    //   handleSaveQuestions(mock_data3.mcqs); // Lưu câu hỏi luôn
+    //   // onClose(); // Nếu lưu luôn thì quay lại danh sách câu hỏi luôn
+    // }, 2000);
 
     // // Gọi API
-    // try {
-    //   const formData = new FormData();
-    //   formData.append("file", file);
-    //   formData.append("n_questions", nQuestions);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      // formData.append("n_questions", nQuestions);
+      formData.append("n_easy_questions", nEasy);
+      formData.append("n_medium_questions", nMedium);
+      formData.append("n_hard_questions", nHard);
 
-    //   const response = await axios.post(
-    //     "https://namberino-mcq-generator.hf.space/generate",
-    //     formData,
-    //     {
-    //       headers: {
-    //         "Content-Type": "multipart/form-data",
-    //         Accept: "application/json",
-    //       },
-    //     }
-    //   );
+      const response = await axios.post(
+        // "https://namberino-mcq-generator.hf.space/generate",
+        "https://namberino-test-generator.hf.space/generate_with_difficulty",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Accept: "application/json",
+          },
+        }
+      );
 
-    //   console.log("Kết quả:", response.data);
-    //   // return response.data;
-    //   setGeneratedQuestions(convertDataForDisplay(response.data.mcqs));
-    //   handleSaveQuestions(response.data.mcqs);
-    // } catch (error) {
-    //   console.error("Lỗi gọi API:", error);
-    // } finally {
-    //   setIsLoading(false);
-    //   onClose();
-    // }
+      console.log("Kết quả:", response.data);
+      // return response.data;
+      setGeneratedQuestions(convertDataForDisplay(response.data.mcqs));
+      handleSaveQuestions(response.data.mcqs);
+    } catch (error) {
+      console.error("Lỗi gọi API:", error);
+    } finally {
+      setIsLoading(false);
+      onClose();
+    }
   };
 
   const handleSaveQuestions = async (data) => {
@@ -170,6 +183,8 @@ const AiGenerate = ({ onClose  }) => {
       console.log("Lưu câu hỏi thành công:", response.data);
     } catch (error) {
       console.error("Lỗi lưu câu hỏi:", error);
+    } finally {
+      onClose();
     }
   };
 
@@ -254,6 +269,7 @@ const AiGenerate = ({ onClose  }) => {
     const updatedTags = [...newQuestion.tags];
     updatedTags[tagIndex] = newValue ? newValue.value : "";
     setNewQuestion({ ...newQuestion, tags: updatedTags });
+    setChapter(newValue ? newValue.value : "");
   };
 
   // Thêm đáp án mới
@@ -326,15 +342,15 @@ const AiGenerate = ({ onClose  }) => {
         </div>
         <div className="col-md-1 col-4">
           <label className="form-label">Nhận biết:</label>
-          <input type="number" className="form-control" placeholder="Ví dụ: 10" value={nQuestions} onChange={(e) => setNQuestions(e.target.value)} />
+          <input type="number" className="form-control" min={1} placeholder="Ví dụ: 10" value={nEasy} onChange={(e) => setNEasy(e.target.value)} />
         </div>
         <div className="col-md-1 col-4">
           <label className="form-label">Thông hiểu:</label>
-          <input type="number" className="form-control" placeholder="Ví dụ: 10" value={nQuestions} onChange={(e) => setNQuestions(e.target.value)} />
+          <input type="number" className="form-control" min={1} placeholder="Ví dụ: 10" value={nMedium} onChange={(e) => setNMedium(e.target.value)} />
         </div>
         <div className="col-md-1 col-4">
           <label className="form-label">Vận dụng:</label>
-          <input type="number" className="form-control" placeholder="Ví dụ: 10" value={nQuestions} onChange={(e) => setNQuestions(e.target.value)} />
+          <input type="number" className="form-control" min={1} placeholder="Ví dụ: 10" value={nHard} onChange={(e) => setNHard(e.target.value)} />
         </div>
         {/* <div className="col-3 ms-2 me-2">
           <label className="form-label">Số lượng câu hỏi:</label>

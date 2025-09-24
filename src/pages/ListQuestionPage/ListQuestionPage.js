@@ -98,6 +98,8 @@ const ListQuestionPage = () => {
 			: location.pathname;
 		navigate(newUrl, { replace: true });
 		setShowAiGenerate(false);
+
+		fetchData();
 	};
 
 	useEffect(() => {
