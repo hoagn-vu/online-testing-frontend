@@ -80,6 +80,26 @@ const MonitoringPage = () => {
 		}
 	};
 
+	function showToast(type, message, onClose) {
+		const Toast = Swal.mixin({
+			toast: true,
+			position: "top-end",
+			showConfirmButton: false,
+			timer: 3000,
+			timerProgressBar: true,
+			didOpen: (toast) => {
+				toast.onmouseenter = Swal.stopTimer;
+				toast.onmouseleave = Swal.resumeTimer;
+			}
+		});
+
+		return Toast.fire({
+			icon: type,
+			title: message,
+			didClose: onClose
+		});
+	}
+	
 	const formatTime = (timeString) => {
 		// const options = { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" };
 		const options = { hour: "2-digit", minute: "2-digit", second: "2-digit" };
@@ -88,20 +108,38 @@ const MonitoringPage = () => {
 
 	const handleToggleRoomStatus = async () => {
 		try {
-			const response = await ApiService.post(`/process-take-exams/toggle-room-status`, {
-				organizeExamId: organizeExamId,
-				sessionId: sessionId,
-				roomId: roomId
+			// Hiện confirm trước khi thực hiện
+			const result = await Swal.fire({
+				title: "Bạn có chắc muốn thay đổi trạng thái?",
+				text: "Trạng thái sẽ được cập nhật ngay sau khi xác nhận!",
+				icon: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#3085d6",
+				cancelButtonColor: "#d33",
+				confirmButtonText: "Xác nhận",
+				cancelButtonText: "Hủy"
 			});
-			if (response.data.newStatus === "closed") {
-				setStartTrack(false);
-				fetchData();
-			} else if (response.data.newStatus === "active") {
-				setStartTrack(true);
-				fetchData();
+
+			if (result.isConfirmed) {
+				const response = await ApiService.post(`/process-take-exams/toggle-room-status`, {
+					organizeExamId: organizeExamId,
+					sessionId: sessionId,
+					roomId: roomId
+				});
+
+				if (response.data.newStatus === "closed") {
+					setStartTrack(false);
+					fetchData();
+					showToast("success", "Đã đóng phòng thi thành công!");
+				} else if (response.data.newStatus === "active") {
+					setStartTrack(true);
+					fetchData();
+					showToast("success", "Phòng thi đã được kích hoạt thành công!");
+				}
 			}
 		} catch (error) {
 			console.error("Failed to update room status:", error);
+			showToast("error", "Có lỗi xảy ra khi cập nhật trạng thái phòng thi!");
 		}
 	};
 
@@ -180,11 +218,25 @@ const MonitoringPage = () => {
 
 				{/* Khối thông tin kỳ thi */}
 				<div className="exam-info-card position-relative p-3">
-					<button 
+					{/* <button 
 						className="btn btn-primary position-absolute top-0 end-0 m-2" 
 						onClick={handleToggleRoomStatus}
 					>
 						{startTrack ? "Đóng phòng thi" : "Kích hoạt phòng thi"}
+					</button> */}
+					<button
+						className={`btn position-absolute top-0 end-0 m-2 ${startTrack ? "btn-danger" : "btn-success"}`}
+						onClick={handleToggleRoomStatus}
+					>
+						{startTrack ? (
+							<>
+								<i className="bi bi-door-closed me-1"></i> Đóng phòng thi
+							</>
+						) : (
+							<>
+								<i className="bi bi-door-open me-1"></i> Kích hoạt phòng thi
+							</>
+						)}
 					</button>
 
 					<h4 className="text-center fw-bold mb-3">
