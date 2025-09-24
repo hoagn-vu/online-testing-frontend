@@ -454,7 +454,7 @@ const ListQuestionPage = () => {
 		new window.bootstrap.Modal(document.getElementById("questionModal")).show(); 
 	};
 
-	const handleDelete = (id) => {
+	const handleDelete = async (id) => {
 		Swal.fire({
 			title: "Bạn có chắc chắn xóa?",
 			text: "Bạn sẽ không thể hoàn tác hành động này!",
@@ -464,18 +464,19 @@ const ListQuestionPage = () => {
 			cancelButtonColor: "#d33",
 			confirmButtonText: "Xóa",
 			cancelButtonText: "Hủy",
-		}).then((result) => {
+		}).then(async(result) => {
 			if (result.isConfirmed) {
 				// console.log("Xóa tài khoản có ID:", id);
 				// setQuestions(prev => prev.filter(question => question.questionId !== id));
 				try {
-					ApiService.delete(`/subjects/delete/question`,
+					await ApiService.delete(`/subjects/delete/question`,
 						{ params: { questionId: id, subjectId: subjectId, questionBankId: questionBankId } }
 					);
-					showToast("success", "Xóa câu hỏi thành công!");
+					await showToast("success", "Xóa câu hỏi thành công!");
 
 					fetchTagsClassification();
 					fetchData();
+					window.location.reload(); 
 				} catch (error) {
 					console.error("Failed to delete question:", error);
 					showToast("error", "Xóa câu hỏi thất bại!");
