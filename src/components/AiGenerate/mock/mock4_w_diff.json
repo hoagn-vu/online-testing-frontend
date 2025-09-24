@@ -1,0 +1,238 @@
+{
+  "mcqs": {
+    "1": {
+      "câu hỏi": "Thời gian truy cập của đĩa cứng hiện đại khoảng bao nhiêu?",
+      "lựa chọn": {
+        "a": "khoảng 5 ms",
+        "b": "khoảng 10 ms",
+        "c": "khoảng 20 ms",
+        "d": "khoảng 30 ms"
+      },
+      "đáp án": "khoảng 10 ms",
+      "khái niệm sử dụng": {
+        "Đĩa cứng": [
+          "thời gian truy cập ~10 ms",
+          "bộ nhớ đệm (cache) giảm thời gian chờ",
+          "độ tin cậy (MTBF) hàng chục nghìn giờ",
+          "hộp kín, lớp đệm không khí, tuổi thọ dài"
+        ]
+      },
+      "độ khó": {
+        "điểm": 0.6173978559252491,
+        "mức độ": "trung bình"
+      },
+      "_difficulty": "easy"
+    },
+    "2": {
+      "câu hỏi": "Phương pháp đọc dữ liệu trên đĩa CD là gì?",
+      "lựa chọn": {
+        "a": "đọc bằng đầu đọc cơ học",
+        "b": "đọc bằng tia laser",
+        "c": "đọc bằng từ trường",
+        "d": "đọc bằng điện tử"
+      },
+      "đáp án": "đọc bằng tia laser",
+      "khái niệm sử dụng": {
+        "Đĩa quang (CD)": [
+          "vật liệu polycarbonate",
+          "lớp phim nhôm phản xạ",
+          "lớp bảo vệ",
+          "dữ liệu dạng pit và land",
+          "đọc bằng laser, không tiếp xúc cơ học"
+        ]
+      },
+      "độ khó": {
+        "điểm": 0.5005142493798017,
+        "mức độ": "dễ"
+      },
+      "_difficulty": "easy"
+    },
+    "3": {
+      "câu hỏi": "Khi mất nguồn, dữ liệu trong RAM sẽ xảy ra gì?",
+      "lựa chọn": {
+        "a": "Dữ liệu vẫn được giữ",
+        "b": "Dữ liệu bị xóa khi mất nguồn",
+        "c": "Dữ liệu chuyển sang ROM",
+        "d": "Dữ liệu chuyển sang đĩa cứng"
+      },
+      "đáp án": "Dữ liệu bị xóa khi mất nguồn",
+      "khái niệm sử dụng": {
+        "RAM (Random Access Memory)": [
+          "đọc/ghi, cần nguồn, xóa khi mất nguồn",
+          "truy nhập ngẫu nhiên"
+        ]
+      },
+      "độ khó": {
+        "điểm": 0.47436585373578993,
+        "mức độ": "dễ"
+      },
+      "_difficulty": "easy"
+    },
+    "4": {
+      "câu hỏi": "Cổng nào dùng để cắm chuột?",
+      "lựa chọn": {
+        "a": "cổng nối tiếp",
+        "b": "cổng song song",
+        "c": "cổng USB",
+        "d": "cổng HDMI"
+      },
+      "đáp án": "cổng USB",
+      "khái niệm sử dụng": {
+        "Cổng kết nối": [
+          "cổng USB"
+        ]
+      },
+      "độ khó": {
+        "điểm": 0.5012622450047239,
+        "mức độ": "dễ"
+      },
+      "_difficulty": "easy"
+    },
+    "5": {
+      "câu hỏi": "Card nào cho phép máy tính kết nối mạng?",
+      "lựa chọn": {
+        "a": "sound card",
+        "b": "network card",
+        "c": "modem‑fax card",
+        "d": "video card"
+      },
+      "đáp án": "network card",
+      "khái niệm sử dụng": {
+        "Card mở rộng": [
+          "network card (bản mạch giao tiếp mạng)"
+        ]
+      },
+      "độ khó": {
+        "điểm": 0.5298029154994832,
+        "mức độ": "dễ"
+      },
+      "_difficulty": "easy"
+    },
+    "6": {
+      "câu hỏi": "Khi một phím trên bàn phím được ấn, tín hiệu được truyền tới CPU qua bộ nào, và bộ này chịu trách nhiệm mã hoá ký tự của phím?",
+      "lựa chọn": {
+        "a": "đầu đọc/ghi",
+        "b": "bộ lập mã",
+        "c": "cylinder",
+        "d": "độ tin cậy"
+      },
+      "đáp án": "bộ lập mã",
+      "khái niệm sử dụng": {
+        "Bàn phím": [
+          "bộ lập mã"
+        ],
+        "CPU": [
+          "bộ xử lí trung tâm (CPU)"
+        ]
+      },
+      "độ khó": {
+        "điểm": 0.4805935216246256,
+        "mức độ": "dễ"
+      },
+      "_difficulty": "medium"
+    },
+    "7": {
+      "câu hỏi": "Trong bộ nhớ trong, mỗi trạng thái biểu thị bit 0 hoặc 1; dữ liệu trên đĩa cứng được tổ chức theo gì, và yếu tố này ảnh hưởng đến cách truy cập?",
+      "lựa chọn": {
+        "a": "cylinder",
+        "b": "đầu đọc/ghi",
+        "c": "bộ lập mã",
+        "d": "độ tin cậy"
+      },
+      "đáp án": "cylinder",
+      "khái niệm sử dụng": {
+        "Bộ nhớ trong (BNT)": [
+          "bit 0 và bit 1"
+        ],
+        "Đĩa cứng": [
+          "cylinder"
+        ]
+      },
+      "độ khó": {
+        "điểm": 0.4445135891805184,
+        "mức độ": "dễ"
+      },
+      "_difficulty": "medium"
+    },
+    "8": {
+      "câu hỏi": "Đĩa mềm có đầu đọc/ghi và dung lượng tối đa bao nhiêu megabyte, và giá trị này tương đương với sức chứa tối đa mà một bộ nhớ có thể lưu trữ?",
+      "lựa chọn": {
+        "a": "1.44 MB",
+        "b": "2.00 MB",
+        "c": "3.50 MB",
+        "d": "0.50 MB"
+      },
+      "đáp án": "1.44 MB",
+      "khái niệm sử dụng": {
+        "Ổ đĩa (đĩa mềm)": [
+          "đầu đọc/ghi",
+          "độ dung lượng 1.44 MB"
+        ],
+        "Bộ nhớ": [
+          "sức chứa"
+        ]
+      },
+      "độ khó": {
+        "điểm": 0.6472091765578077,
+        "mức độ": "trung bình"
+      },
+      "_difficulty": "medium"
+    },
+    "9": {
+      "câu hỏi": "Trong quá trình CPU thực hiện thao tác ghi vào một ô nhớ, quy trình nào sau đây mô tả đúng trình tự các thành phần và hành động liên quan, bao gồm việc sử dụng bộ giải mã địa chỉ, thanh ghi (vùng nhớ phụ) và việc thay thế nội dung ô nhớ?",
+      "lựa chọn": {
+        "a": "CPU gửi địa chỉ tới bộ giải mã địa chỉ, kích hoạt nó, sau đó nội dung của thanh ghi được sao chép vào ô nhớ, thay thế dữ liệu cũ.",
+        "b": "CPU gửi địa chỉ tới bộ giải mã địa chỉ, kích hoạt nó, rồi nội dung ô nhớ được sao chép ra thanh ghi, giữ nguyên dữ liệu cũ trong ô nhớ.",
+        "c": "CPU chỉ cần gửi địa chỉ, bộ giải mã tự động ghi dữ liệu mới mà không cần qua thanh ghi.",
+        "d": "CPU gửi địa chỉ tới bộ giải mã địa chỉ, kích hoạt nó, và nội dung của thanh ghi được sao chép ra ô nhớ, đồng thời dữ liệu cũ được lưu lại trong một vùng nhớ phụ khác."
+      },
+      "đáp án": "CPU gửi địa chỉ tới bộ giải mã địa chỉ, kích hoạt nó, sau đó nội dung của thanh ghi được sao chép vào ô nhớ, thay thế dữ liệu cũ.",
+      "khái niệm sử dụng": {
+        "ô nhớ": [
+          "lưu trữ dữ liệu tĩnh"
+        ],
+        "bộ giải mã địa chỉ": [
+          "mở kết nối tới ô nhớ"
+        ],
+        "thao tác đọc/ghi": [
+          "sao chép nội dung vào ô nhớ"
+        ],
+        "thanh ghi (register)": [
+          "vùng nhớ phụ"
+        ]
+      },
+      "độ khó": {
+        "điểm": 0.6874917315949937,
+        "mức độ": "trung bình"
+      },
+      "_difficulty": "hard"
+    },
+    "10": {
+      "câu hỏi": "Khi người dùng nhấn một phím trên bàn phím, quá trình nào sau đây mô tả đúng vai trò của bộ lập mã trong việc chuyển tín hiệu phím thành mã ký tự, đồng thời giải thích tại sao thiết bị chuột không can thiệp vào quá trình này?",
+      "lựa chọn": {
+        "a": "Bộ lập mã chuyển tín hiệu phím thành mã ký tự, trong khi chuột không tham gia vào quá trình chuyển đổi này.",
+        "b": "Bộ lập mã chỉ ghi lại vị trí của chuột, còn tín hiệu phím được xử lý trực tiếp bởi CPU mà không qua bộ lập mã.",
+        "c": "Bộ lập mã và chuột cùng nhau mã hoá tín hiệu phím, tạo ra mã ký tự dựa trên vị trí con trỏ chuột.",
+        "d": "Bộ lập mã chuyển tín hiệu phím thành mã ký tự, nhưng chuột cũng gửi tín hiệu đồng thời, gây ra xung đột trong việc xác định ký tự."
+      },
+      "đáp án": "Bộ lập mã chuyển tín hiệu phím thành mã ký tự, trong khi chuột không tham gia vào quá trình chuyển đổi này.",
+      "khái niệm sử dụng": {
+        "bàn phím": [
+          "phím soạn thảo"
+        ],
+        "bộ lập mã": [
+          "chuyển tín hiệu phím thành mã ký tự"
+        ],
+        "chuột (mouse)": [
+          "thiết bị chỉ trỏ"
+        ]
+      },
+      "độ khó": {
+        "điểm": 0.6591981516544487,
+        "mức độ": "trung bình"
+      },
+      "_difficulty": "hard"
+    }
+  },
+  "validation": null
+}

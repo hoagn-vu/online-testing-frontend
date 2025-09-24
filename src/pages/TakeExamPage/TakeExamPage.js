@@ -16,7 +16,7 @@ const TakeExamPage = () => {
   const navigate = useNavigate();
   const [organizeExamName, setOrganizeExamName] = useState("");
   const [questions, setQuestions] = useState([]);
-  const [duration, setDuration] = useState(1);
+  const [duration, setDuration] = useState(600);
   const [isLoading, setIsLoading] = useState(true);
   const [fullName, setFullName] = useState("");
   const [userCode, setUserCode] = useState("");

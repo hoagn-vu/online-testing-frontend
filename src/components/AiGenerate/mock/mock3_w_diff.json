@@ -1,0 +1,243 @@
+{
+  "mcqs": {
+    "1": {
+      "câu hỏi": "Chuột chuyển chuyển động thành tín hiệu điện bằng cách nào?",
+      "lựa chọn": {
+        "a": "Bi lăn",
+        "b": "Ánh sáng",
+        "c": "Tia hồng ngoại",
+        "d": "Cảm biến áp lực"
+      },
+      "đáp án": "Bi lăn",
+      "khái niệm sử dụng": {
+        "Chuột": [
+          "bi lăn",
+          "truyền xung điện",
+          "điều khiển con trỏ"
+        ]
+      },
+      "độ khó": {
+        "điểm": 0.4785804388006556,
+        "mức độ": "dễ"
+      },
+      "_difficulty": "easy"
+    },
+    "2": {
+      "câu hỏi": "Trong các thiết bị ra, thiết bị nào dùng để hiển thị hình ảnh?",
+      "lựa chọn": {
+        "a": "Loa",
+        "b": "Thiết bị in",
+        "c": "Màn hình",
+        "d": "Bàn phím"
+      },
+      "đáp án": "Màn hình",
+      "khái niệm sử dụng": {
+        "Thiết bị ra": [
+          "màn hình (display/monitor)",
+          "thiết bị in",
+          "loa"
+        ]
+      },
+      "độ khó": {
+        "điểm": 0.4748398806472352,
+        "mức độ": "dễ"
+      },
+      "_difficulty": "easy"
+    },
+    "3": {
+      "câu hỏi": "Cổng nào thường dùng để kết nối chuột và ổ cứng ngoài?",
+      "lựa chọn": {
+        "a": "Cổng nối tiếp",
+        "b": "Cổng song song",
+        "c": "Cổng USB",
+        "d": "Slot"
+      },
+      "đáp án": "Cổng USB",
+      "khái niệm sử dụng": {
+        "Cổng kết nối": [
+          "cổng nối tiếp",
+          "cổng song song",
+          "cổng USB",
+          "slot"
+        ]
+      },
+      "độ khó": {
+        "điểm": 0.4488251353703702,
+        "mức độ": "dễ"
+      },
+      "_difficulty": "easy"
+    },
+    "4": {
+      "câu hỏi": "Bộ nhớ phụ (BNN) cần được truyền vào bộ nhớ chính (BNT) vào thời điểm nào để dữ liệu có thể được xử lý?",
+      "lựa chọn": {
+        "a": "Khi dữ liệu đã được ghi vào BNT",
+        "b": "Trước khi dữ liệu được xử lý",
+        "c": "Sau khi dữ liệu được xử lý",
+        "d": "Khi dữ liệu được xóa khỏi BNT"
+      },
+      "đáp án": "Trước khi dữ liệu được xử lý",
+      "khái niệm sử dụng": {
+        "Bộ nhớ chính (BNT)": [
+          "lưu trữ dữ liệu chính"
+        ],
+        "Bộ nhớ phụ (BNN)": [
+          "cần truyền vào BNT trước khi xử lý"
+        ]
+      },
+      "độ khó": {
+        "điểm": 0.5725119898110721,
+        "mức độ": "trung bình"
+      },
+      "_difficulty": "medium"
+    },
+    "5": {
+      "câu hỏi": "Trong bộ nhớ bán dẫn, hai trạng thái đóng/mở được dùng để biểu diễn các giá trị nào của bit?",
+      "lựa chọn": {
+        "a": "Bit 0 và Bit 1",
+        "b": "Bit 2 và Bit 3",
+        "c": "Bit 0 và Bit 2",
+        "d": "Bit 1 và Bit 3"
+      },
+      "đáp án": "Bit 0 và Bit 1",
+      "khái niệm sử dụng": {
+        "Trạng thái đối lập": [
+          "bit 0",
+          "bit 1"
+        ],
+        "Bộ nhớ bán dẫn": [
+          "hai trạng thái đóng/mở"
+        ]
+      },
+      "độ khó": {
+        "điểm": 0.6560730890660992,
+        "mức độ": "trung bình"
+      },
+      "_difficulty": "medium"
+    },
+    "6": {
+      "câu hỏi": "Đĩa quang CD được đọc bằng tia laser và tốc độ 48X tương đương bao nhiêu KB/s?",
+      "lựa chọn": {
+        "a": "150 KB/s",
+        "b": "48 KB/s",
+        "c": "300 KB/s",
+        "d": "75 KB/s"
+      },
+      "đáp án": "150 KB/s",
+      "khái niệm sử dụng": {
+        "Đĩa quang (CD)": [
+          "đọc bằng tia laser"
+        ],
+        "Tốc độ đọc CD": [
+          "48X",
+          "150 KB/s"
+        ]
+      },
+      "độ khó": {
+        "điểm": 0.6461179910919967,
+        "mức độ": "trung bình"
+      },
+      "_difficulty": "medium"
+    },
+    "7": {
+      "câu hỏi": "Để kết nối máy tính với mạng, cần dùng bản mạch nào và cổng nào thường được sử dụng để gắn vào khe slot?",
+      "lựa chọn": {
+        "a": "Bản mạch âm thanh (sound card) kết nối qua cổng USB",
+        "b": "Bản mạch giao tiếp mạng (Network Interface Card) kết nối qua cổng USB",
+        "c": "Bản mạch modem‑fax kết nối qua cổng song song",
+        "d": "Bản mạch video kết nối qua cổng nối tiếp"
+      },
+      "đáp án": "Bản mạch giao tiếp mạng (Network Interface Card) kết nối qua cổng USB",
+      "khái niệm sử dụng": {
+        "cổng kết nối": [
+          "cổng USB"
+        ],
+        "bản mạch mở rộng": [
+          "network card (giao tiếp mạng)"
+        ]
+      },
+      "độ khó": {
+        "điểm": 0.5730018558601991,
+        "mức độ": "trung bình"
+      },
+      "_difficulty": "medium"
+    },
+    "8": {
+      "câu hỏi": "Bộ nhớ trong có thời gian truy cập ngắn hơn; nó lưu trữ dữ liệu bằng cách sử dụng các trạng thái nào của bit?",
+      "lựa chọn": {
+        "a": "bit 0 và bit 1",
+        "b": "bit 2 và bit 3",
+        "c": "bit A và bit B",
+        "d": "bit X và bit Y"
+      },
+      "đáp án": "bit 0 và bit 1",
+      "khái niệm sử dụng": {
+        "bộ nhớ": [
+          "thời gian truy cập"
+        ],
+        "bộ nhớ trong (BNT)": [
+          "bit 0",
+          "bit 1"
+        ]
+      },
+      "độ khó": {
+        "điểm": 0.605254804918195,
+        "mức độ": "trung bình"
+      },
+      "_difficulty": "medium"
+    },
+    "9": {
+      "câu hỏi": "Khi xác định vị trí dữ liệu cần đọc trên một đĩa mềm và một đĩa cứng, các yếu tố nào sau đây phải được kết hợp để tạo thành địa chỉ duy nhất, và trong trường hợp đĩa cứng, yếu tố nào thay thế chỉ số cung của đĩa mềm?",
+      "lựa chọn": {
+        "a": "Tên đĩa, mặt (trên/dưới), chỉ số đường ghi, và trong đĩa cứng thay thế bằng số trụ (cylinder).",
+        "b": "Tên đĩa, mặt (trên/dưới), chỉ số cung, và trong đĩa cứng thay thế bằng tốc độ quay.",
+        "c": "Tên đĩa, mặt (trên/dưới), chỉ số đường ghi, và trong đĩa cứng thay thế bằng dung lượng (GB).",
+        "d": "Tên đĩa, mặt (trên/dưới), chỉ số cung, và trong đĩa cứng thay thế bằng đầu đọc/ghi."
+      },
+      "đáp án": "Tên đĩa, mặt (trên/dưới), chỉ số đường ghi, và trong đĩa cứng thay thế bằng số trụ (cylinder).",
+      "khái niệm sử dụng": {
+        "đĩa mềm": [
+          "địa chỉ (tên đĩa, mặt, chỉ số đường ghi, chỉ số cung)"
+        ],
+        "đĩa cứng": [
+          "cylinder (mặt trụ)"
+        ],
+        "địa chỉ": [
+          "tên đĩa",
+          "mặt (trên/dưới)",
+          "chỉ số đường ghi",
+          "chỉ số cung"
+        ]
+      },
+      "độ khó": {
+        "điểm": 0.6698683843716685,
+        "mức độ": "trung bình"
+      },
+      "_difficulty": "hard"
+    },
+    "10": {
+      "câu hỏi": "Nếu một ổ đĩa cứng có tốc độ quay 7200 vòng/phút và thời gian di chuyển đầu đọc/ghi trung bình là 8 ms, so sánh thời gian truy nhập tổng cộng với ổ có tốc độ 5400 vòng/phút và thời gian di chuyển đầu 5 ms; yếu tố nào đóng góp lớn hơn vào sự khác biệt về thời gian truy nhập?",
+      "lựa chọn": {
+        "a": "Thời gian di chuyển đầu đọc/ghi là yếu tố chính gây khác biệt.",
+        "b": "Tốc độ quay là yếu tố chính gây khác biệt.",
+        "c": "Dung lượng ổ đĩa quyết định thời gian truy nhập.",
+        "d": "Số trụ (cylinder) ảnh hưởng nhiều hơn thời gian di chuyển."
+      },
+      "đáp án": "Thời gian di chuyển đầu đọc/ghi là yếu tố chính gây khác biệt.",
+      "khái niệm sử dụng": {
+        "đĩa cứng": [
+          "tốc độ quay (vòng/phút)"
+        ],
+        "thời gian truy nhập": [
+          "phụ thuộc tốc độ quay",
+          "phụ thuộc thời gian di chuyển đầu đọc"
+        ]
+      },
+      "độ khó": {
+        "điểm": 0.5353504958257005,
+        "mức độ": "dễ"
+      },
+      "_difficulty": "hard"
+    }
+  },
+  "validation": null
+}
