@@ -229,6 +229,26 @@ const ListQuestionPage = () => {
 		});
 	}
 
+	function showToastFast(type, message, onClose) {
+		const Toast = Swal.mixin({
+			toast: true,
+			position: "top-end",
+			showConfirmButton: false,
+			timer: 1500,
+			timerProgressBar: true,
+			didOpen: (toast) => {
+				toast.onmouseenter = Swal.stopTimer;
+				toast.onmouseleave = Swal.resumeTimer;
+			}
+		});
+
+		return Toast.fire({
+			icon: type,
+			title: message,
+			didClose: onClose
+		});
+	}
+
 	const handleFilesDropped = async (files) => {
 		console.log("Files received:", files);
 		const file = files[0];
@@ -272,10 +292,11 @@ const ListQuestionPage = () => {
 			});
 
 			setUploadProgress(100); // Khi hoàn thành, đặt 100%
-			showToast("success", "Tải tệp câu hỏi lên thành công!");
+			await showToastFast("success", "Tải tệp câu hỏi lên thành công!");
 
 			await fetchData();
 			await fetchTagsClassification();
+			window.location.reload();
 			// window.location.reload();
 		} catch (error) {
 			showToast("error", error.message);
