@@ -431,7 +431,7 @@ const GenerateExamFromMatrixPage = () => {
       const response = await ApiService.put(`/exams/${examId}`, {
         examCode: editForm.examCode,
         examName: editForm.examName,
-        examStatus: "pending",
+        examStatus: "available",
       });
 
       console.log("API update success:", response.data);
