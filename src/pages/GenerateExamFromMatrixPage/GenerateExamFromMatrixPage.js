@@ -878,7 +878,7 @@ const GenerateExamFromMatrixPage = () => {
                       {/* Chevron toggle */}
                       <i
                         className={`fa-solid ms-3 mt-1 ${
-                          isOpen ? "fa-chevron-down" : "fa-chevron-up"
+                          isOpen ? "fa-chevron-up" : "fa-chevron-down"
                         }`}
                         style={{ cursor: "pointer", transition: "transform 0.3s" }}
                         onClick={() => toggleAnswer(q.questionId)}
