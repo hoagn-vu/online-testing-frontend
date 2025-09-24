@@ -118,7 +118,7 @@ const SessionPage = () => {
 		console.log("Dữ liệu thêm mới:", formData);
 		if (editingAccount) {
 			try {
-				await ApiService.put(`/organize-exams/${organizeId}/sessions/${formData.sessionId}`, formData);
+				await ApiService.put(`/organize-exams/${organizeId}/sessions/${formData.sessionId}/update`, formData);
 				showToast("success", "Chỉnh sửa ca thi thành công!");
 				fetchData();
 			}
