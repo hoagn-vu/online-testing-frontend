@@ -900,7 +900,7 @@ const ListQuestionPage = () => {
 																	checked={question.questionType === 'multiple-choice'}
 																	readOnly
 																/>
-																<label className="form-check-label" style={{fontSize: "14px"}}>Multiple Choice</label>
+																<label className="form-check-label" style={{fontSize: "14px"}}>Nhiều lựa chọn</label>
 															</div>
 														</div>
 
@@ -1098,7 +1098,7 @@ const ListQuestionPage = () => {
 												}));
 											}}
 										/>
-										<label className="form-check-label">Multiple Choice</label>
+										<label className="form-check-label">Nhiều lựa chọn</label>
 									</div>
 								</div>
 								
