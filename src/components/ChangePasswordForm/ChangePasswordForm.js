@@ -110,6 +110,11 @@ const ChangePasswordForm = () => {
         return;
       }
       showToast("success", "Đổi mật khẩu thành công!");
+      setPasswordData({
+        oldPassword: "",
+        newPassword: "",
+        confirmNewPassword: "",
+      });
     } catch (err) {
       console.log("Lỗi đổi mật khẩu:", err);
 
