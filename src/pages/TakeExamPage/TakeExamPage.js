@@ -394,7 +394,7 @@ const TakeExamPage = () => {
                 </Modal.Header>
                 <Modal.Body className="text-center">
                   <h5 className="fw-bold pb-2">Cảnh báo vi phạm</h5>
-                  <p>Bạn đã rời khỏi trang {leaveCount} lần</p>
+                  <p>Bạn đã rời khỏi trang</p>
                   <p>Đã thông báo cho giám thị</p>
                   <p>Nếu bạn tiếp tục rời khỏi trang, bài thi của bạn có thể bị hủy</p>
                 </Modal.Body>

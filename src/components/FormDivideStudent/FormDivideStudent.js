@@ -261,19 +261,12 @@ const FormDivideStudent = ({ onClose }) => {
           state: { refresh: true },
         });
       } else {
-        Swal.fire({
-          icon: "error",
-          title: "Thất bại",
-          text: result.message || "Có lỗi xảy ra, vui lòng thử lại!",
-        });
+        showToast("error", result.message || "Có lỗi xảy ra, vui lòng thử lại!");
       }
     } catch (error) {
       console.error("Lỗi khi chia phòng thi:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Thất bại",
-        text: error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại!",
-      });
+      showToast("error", error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại!");
+      
     }
   };
 

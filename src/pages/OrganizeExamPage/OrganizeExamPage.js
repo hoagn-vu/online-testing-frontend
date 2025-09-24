@@ -247,10 +247,16 @@ const OrganizeExamPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+		// clone lại data để sửa duration trước khi gửi API
+		const payload = {
+			...formData,
+			duration: formData.duration ? formData.duration / 60 : 0, // gửi phút thay vì giây
+		};
+
 		if (editingOrganizeExam) {
 			try {
-				await ApiService.put(`/organize-exams/${editingOrganizeExam.id}`, formData);
-				showToast("success", "Cập nhật tên kỳ thi thành công!");
+				await ApiService.put(`/organize-exams/${editingOrganizeExam.id}`, payload);
+				showToast("success", "Cập nhật kỳ thi thành công!");
 				fetchData();
 			} catch (error) {
 				console.error("Failed to update organize exam", error);
@@ -270,6 +276,7 @@ const OrganizeExamPage = () => {
   const preEdit = (organizeExam) => {
     setFormData({
       organizeExamName: organizeExam.organizeExamName,
+			duration: organizeExam.duration,
     });
     setEditingOrganizeExam(organizeExam);
     setShowForm(true);
@@ -718,7 +725,7 @@ const OrganizeExamPage = () => {
 								}}
 							>
 								<p className="fw-bold p-4 pb-0">
-									{editingOrganizeExam ? "Chỉnh sửa kỳ thi" : "Thêm mức độ"}
+									{editingOrganizeExam ? "Chỉnh sửa thông tin kỳ thi" : "Thêm mức độ"}
 								</p>
 								<button
 									className="p-4"
@@ -742,6 +749,52 @@ const OrganizeExamPage = () => {
 										setFormData({ ...formData, organizeExamName: e.target.value })
 									}
 									inputRef={inputRef}
+									sx={{
+										"& .MuiDataGrid-cell": {
+												whiteSpace: "normal",
+												wordWrap: "break-word",
+												lineHeight: "1.2",
+												padding: "8px",
+										},
+										"& .MuiDataGrid-columnHeaders": {
+												borderBottom: "2px solid #ccc",
+										},
+										"& .MuiDataGrid-cell": {
+												borderRight: "1px solid #ddd",
+										},
+										"& .MuiDataGrid-row:last-child .MuiDataGrid-cell": {
+												borderBottom: "none",
+										},
+										"& .MuiTablePagination-displayedRows": {
+												textAlign: "center",        // Căn giữa chữ "1-1 of 1"
+												marginTop: "16px",
+												marginLeft: "0px"
+										},
+										"& .MuiTablePagination-selectLabel": {
+												marginTop: "13px",
+												marginLeft: "0px"
+										},
+										"& .MuiTablePagination-select": {
+												marginLeft: "0px",
+										} 
+									}}
+								/>
+							</Grid>
+							<Grid container sx={{p: 3, pt: 0}}>
+								<TextField
+									fullWidth
+									label="Thời gian làm bài thi (Phút)"
+									required
+									type="number"
+									value={formData.duration ? formData.duration / 60 : ""}
+									onChange={(e) =>
+										setFormData({ ...formData, 
+											duration: e.target.value ? parseInt(e.target.value, 10) * 60 : 0, // lưu giây
+										})
+									}
+									InputProps={{
+										inputProps: { min: 1 } // chỉ cho phép nhập >= 1
+									}}
 									sx={{
 										"& .MuiDataGrid-cell": {
 												whiteSpace: "normal",
