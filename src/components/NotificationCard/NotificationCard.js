@@ -6,7 +6,7 @@ function NotificationDashboard() {
 	const [logs, setLogs] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 	const [page, setPage] = useState(1);
-	const [page_size, setPage_size] = useState(7);	
+	const [page_size, setPage_size] = useState(6);	
 
 	const fetchLogData = async () => {
 		setIsLoading(true);
