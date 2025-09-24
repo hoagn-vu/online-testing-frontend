@@ -319,8 +319,13 @@ const SessionPage = () => {
 						<div style={{ flex: 1 }}>
 							<p><strong>Thời gian làm bài:</strong> {Math.floor(organizeExam.duration / 60)} phút</p>
 							{/* Chỉ hiển thị examSet khi loại đề là "exam" */}
-							{organizeExam.examType === "exam" && (
-								<p><strong>Bộ đề thi:</strong> {organizeExam.exams?.length > 0 ? organizeExam.examSet.join(", ") : "Chưa có dữ liệu"}</p>
+							{organizeExam.examType === "exams" && (
+								<p>
+									<strong>Bộ đề thi:</strong>{" "}
+									{organizeExam.exams?.length > 0
+										? organizeExam.exams.map(e => e.examName).join(", ")
+										: "Chưa có dữ liệu"}
+								</p>
 							)}
 
 							{/* Chỉ hiển thị tổng số câu hỏi khi loại đề là "auto" */}
@@ -334,8 +339,8 @@ const SessionPage = () => {
 
 						{/* Cột 3 - Hiển thị thông tin đặc biệt */}
 						<div style={{ flex: 1 }}>
-							{(organizeExam.examType === "matrix" || organizeExam.examType === "auto") && (
-								<p><strong>Điểm tối đa:</strong> {organizeExam.maxScore}</p>
+							{(organizeExam.examType === "matrix" || organizeExam.examType === "auto" || organizeExam.examType === "exams") && (
+								<p><strong>Điểm tối đa:</strong> {organizeExam.maxScore?.toFixed(2)}</p>
 							)}
 						</div>
 					</div>
