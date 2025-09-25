@@ -338,15 +338,15 @@ const MonitoringPage = () => {
                         <li className="px-2 py-1"> 
 													<button
 														className={`btn btn-sm w-100 d-flex align-items-center justify-content-center 
-															${row.status === "done" || row.status === "terminate" 
+															${row.status === "terminate" 
 																? "btn-secondary disabled" 
 																: "btn-outline-danger"}`}
-														data-bs-toggle={row.status === "done" || row.status === "terminate" ? "" : "modal"}
-														data-bs-target={row.status === "done" || row.status === "terminate" ? "" : "#violationModal"}
-														disabled={row.status === "done" || row.status === "terminate"}
+														data-bs-toggle={row.status === "terminate" ? "" : "modal"}
+														data-bs-target={row.status === "terminate" ? "" : "#violationModal"}
+														disabled={row.status === "terminate"}
 														onClick={() => setSelectedUser(row)}
 													>
-														<i className="fas fa-stop-circle me-1"></i> Dừng thi
+														<i className="fas fa-stop-circle me-1"></i> Hủy thi
 													</button>
 												</li>
                         <li className="px-2 py-1">
