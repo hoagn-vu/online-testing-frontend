@@ -173,6 +173,7 @@ const AiGenerate = ({ onClose  }) => {
     } finally {
       setIsLoading(false);
       onClose();
+      window.location.reload();
     }
   };
 
